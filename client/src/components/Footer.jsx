@@ -6,6 +6,7 @@ import TextInput from "../components/TextInput";
 import CustomButton from "../components/CustomButton";
 
 const Footer = () => {
+
   return (
     <footer className='text-white mp-20'>
       <div className='overflow-x-hidden -mb-0.5'>
@@ -57,7 +58,7 @@ const Footer = () => {
           <div className='container mx-auto px-5 pt-6 pb-8 flex flex-wrap items-center justify-between '>
             <div className='w-full md:w-2/4 lg:w-1/3 h-16 flex items-center justify-center md:justify-start '>
               <TextInput
-                styles='w-full flex-grow md:w-40 2xl:w-64 bg-gray-100 sm:mr-4 md-2'
+                styles='text-black w-full flex-grow md:w-40 2xl:w-64 bg-gray-100 sm:mr-4 md-2 '
                 type='email'
                 placeholder='Email Address'
               />
