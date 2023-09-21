@@ -9,7 +9,7 @@ import AdminLayout from "../components/Layout/AdminLayout"
 const publicRoutes = [
     {path:'/', component: Home, layout: UserLayout},
     {path:'/user-auth', component: Login, layout: UserLayout},
-    {path:'/user-management', component: UserMng, layout: AdminLayout},
+    {path:'/user-management', component: UserMng, layout: AdminLayout}
 
     
 ]
