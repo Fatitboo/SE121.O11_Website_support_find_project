@@ -3,9 +3,9 @@ import Navbar from "../Navbar/Navbar";
 
 function UserLayout({children}) {
     return ( 
-        <div>
+        <div >
             <Navbar/>
-            <div className="content">{children} </div>
+            <div className="">{children} </div>
             <Footer/>
         </div>
      );

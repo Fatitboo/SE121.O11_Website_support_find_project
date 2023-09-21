@@ -5,7 +5,7 @@ import { publicRoutes, privateRoutes } from './routes/index.js'
 
 
 function Layout() {
-  const user = false;
+  const user = true;
 
   const location = useLocation();
   return user ? (<Outlet />) : (<Navigate to='user-auth' state={{ from: location }} replace />);

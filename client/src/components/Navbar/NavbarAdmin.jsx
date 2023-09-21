@@ -16,12 +16,12 @@ function NavbarAdmin() {
     } 
     return (
         <>
-            <div className='relative bg-[#f7fdfd] z-50  shadow'>
+            <div className='fixed l-0 r-0 t-0 w-full h-16 bg-[#f7fdfd] z-50 shadow'>
                 <nav className='container mx-auto flex items-center justify-between p-5'>
                     <div>
-                        <Link to='/' className="text-blue-600 font-bold text-xl">
+                        <div className="text-blue-600 font-bold text-xl">
                             Job<span className="text-[#1677cccb]">Finder</span>
-                        </Link>
+                        </div>
                     </div>
                     
                 </nav>
