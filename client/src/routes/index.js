@@ -1,5 +1,5 @@
 import Profile from "../pages/Profile"
-import Home from "../pages/Home"
+import Home from "../pages/Seeker/Home"
 import Login from "../pages/Login"
 import UserMng from "../pages/UserMng"
 import UserLayout from "../components/Layout/UserLayout"

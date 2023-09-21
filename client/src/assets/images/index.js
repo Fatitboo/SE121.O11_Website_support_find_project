@@ -1,0 +1,1 @@
+export { default as backgroundSearch } from './backgroundSearch.svg'
