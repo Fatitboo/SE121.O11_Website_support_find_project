@@ -9,14 +9,14 @@ import { Link, useLocation } from 'react-router-dom';
 import classNames from 'classnames';
 
 
-const itemStyle = '!mb-2 p-0 m-0 hover:bg-[#E9EFFB] hover:text-blue-600 rounded-lg'
+const itemStyle = '!mb-2 pr-6 m-0 hover:bg-[#E9EFFB] hover:text-blue-600 rounded-lg'
 
 function Sidebar() {
     const {pathname} = useLocation();
     return (
-        <aside className="fixed left-0 bottom-0 h-full w-80 pt-16 bg-white overflow-auto 
+        <aside className=" h-full  pt-16  bg-white overflow-auto 
                             ease-in duration-300 border-solid border border-[#ecedf2] shadow-lg shadow-gray-300 z-10">
-            <div className="relative p-14">
+            <div className=" p-10 fixed">
                 <div className="relative w-full l-0 m-0 p-0">
                     <div className={classNames(pathname==='/Admin'?'bg-[#E9EFFB] text-blue-600': '', itemStyle)}>
                         <Link to="/Admin" className="relative text-sm text-center p-3  flex items-center leading-7 font-normal  capitalize rounded-lg ">

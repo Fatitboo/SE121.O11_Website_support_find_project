@@ -24,11 +24,11 @@ const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, per
 
 export default function UserChart() {
 	return (
-		<div className="w-[18rem] h-[20rem] bg-white pt-3 pl-3 rounded-sm  flex flex-col">
+		<div className="w-3/4 h-3/4 bg-white pt-3 pl-3 rounded-sm  flex flex-col">
 			<strong className="text-gray-700 font-medium mb-5">User Profile</strong>
-			<div className="mt-4 w-full flex-1 text-xs">
+			<div className="mt-4 w-full  flex-1 text-xs">
 				<ResponsiveContainer width="100%" height="100%">
-					<PieChart width={300} height={300}>
+					<PieChart width='100%' height='100%'>
 						<Pie
 							data={data}
 							cx="50%"

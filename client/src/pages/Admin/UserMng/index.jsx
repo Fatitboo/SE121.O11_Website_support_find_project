@@ -70,7 +70,7 @@ function UserMng() {
             <div className="flex flex-wrap mx-3 mt-3 ">
                 <div className="max-w-full px-3 pt-3 shrink-0 w-full">
                     <div className="relative rounded-lg mb-8 bg-white shadow max-w-full px-3 pt-1 shrink-0 w-full">
-                        <div className="relative">
+                        <div className="relative w-full">
 
                             {/* Start header of content */}
                             <div className="relative flex justify-between items-center flex-wrap bg-transparent px-8 py-5">
@@ -94,13 +94,12 @@ function UserMng() {
                             <div className="px-6 relative">
                                 <div className="overflow-y-hidden overflow-x-auto">
                                     <table className="relative w-full overflow-y-hidden overflow-x-hidden rounded-md mb-8 bg-white border-0">
-                                        <thead className="bg-[#f5f7fc] color-white border-transparent border-0 ">
-                                            <tr >
+                                        <thead className="bg-[#f5f7fc] color-white border-transparent border-0 w-full">
+                                            <tr className="w-full">
                                                 <th className="relative text-[#3a60bf] font-normal py-6 text-base text-left w-1/3 pl-5 pr-0">Originazer Name</th>
-                                                <th className="relative text-[#3a60bf] font-normal py-6 text-base px-0 text-left w-64">Email</th>
-                                                <th className="relative text-[#3a60bf] font-normal py-6 text-base text-left w-44">Founding Date</th>
-                                                <th className="relative text-[#3a60bf] font-normal py-6 text-base text-left">PhoneNum</th>
-
+                                                <th className="relative text-[#3a60bf] font-normal py-6 text-base px-0 text-left w-2/12">Email</th>
+                                                <th className="relative text-[#3a60bf] font-normal py-6 text-base text-left w-212">Founding Date</th>
+                                                <th className="relative text-[#3a60bf] font-normal py-6 text-base text-left w-2/12">PhoneNum</th>
                                                 <th className="relative text-[#3a60bf] font-normal py-6 text-base text-left">Action</th>
                                             </tr>
                                         </thead>
