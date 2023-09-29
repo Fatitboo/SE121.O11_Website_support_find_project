@@ -19,7 +19,7 @@ const publicRoutes = [
     // User Layout
     {path:'/', component: Home, layout: UserLayout},
     {path:'/user-auth', component: Login, layout: UserLayout},
-    {path:'/find-projects', component: FindProjects, layout: UserLayout},
+    {path:'/projects', component: FindProjects, layout: UserLayout},
     {path:'/seeker-profile', component: SeekerProfile, layout: UserLayout},
 
     //Company layout

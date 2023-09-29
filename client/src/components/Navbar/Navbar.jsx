@@ -10,7 +10,7 @@ import NavbarAdmin from "./NavbarAdmin";
 import NavbarUser from "./NavbarUser";
 
 function Navbar() {
-    const isAdmin = true;
+    const isAdmin = false;
 
     return (
         <>

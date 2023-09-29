@@ -106,15 +106,18 @@ function NavbarUser() {
                 <nav className='container mx-auto flex items-center justify-between p-5'>
                     <div>
                         <Link to='/' className="text-blue-600 font-bold text-xl">
-                            Job<span className="text-[#1677cccb]">Finder</span>
+                            Project<span className="text-[#1677cccb]">Finder</span>
                         </Link>
                     </div>
                     <ul className="hidden lg:flex gap-10 text-base">
                         <li>
-                            <Link to='/' >Find Job</Link>
+                            <Link to='/projects' >Projects</Link>
                         </li>
                         <li>
-                            <Link to='/' >Companies</Link>
+                            <Link to='/' >Vacancies</Link>
+                        </li>
+                        <li>
+                            <Link to='/' >Organizer</Link>
                         </li>
                         <li>
                             <Link to='/' >About us</Link>
