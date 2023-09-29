@@ -9,8 +9,8 @@ import CustomButton from "../CustomButton";
 import NavbarAdmin from "./NavbarAdmin";
 import NavbarUser from "./NavbarUser";
 
-function Navbar() {
-    const isAdmin = true;
+function Navbar({isAdmin}) {
+    
 
     return (
         <>

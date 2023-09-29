@@ -1,4 +1,4 @@
-import ComboBox from "../../../components/ComboBox";
+import {ComboBox} from "../../../components";
 import { AiOutlineSearch } from 'react-icons/ai'
 import OrganizerItem from "./OrganizerItem";
 const listOriginazers = [
@@ -58,11 +58,11 @@ function UserMng() {
         console.log(filterValue)
     }
     return (
-        <div className="px-16  pb-0">
+        <div className="px-10  pb-0">
 
             {/* Start title of page  */}
             <div className="mb-8">
-                <h3 className="font-medium text-3xl text-gray-900 mb-2 leading-10">Originazer Mangement!</h3>
+                <h3 className="font-medium text-3xl text-gray-900 mb-2 leading-10">Organizer Mangement!</h3>
                 <div className="text-sm leading-6 font-normal m-0 right-0 flex justify-between items-center " >Ready to jump back in?</div>
 
             </div>
@@ -86,7 +86,7 @@ function UserMng() {
                                     <ComboBox listItem={listItemCbb} filterValueSelected={onFilterValueSelected}/>
                                 </div>
                                 <div className="flex ">
-                                    <h4 className="mr-1">Registed Originazer: </h4> <span>  10</span>
+                                    <h4 className="mr-1">Registed Organizer: </h4> <span>  10</span>
                                 </div>
                             </div>
 
@@ -96,7 +96,7 @@ function UserMng() {
                                     <table className="relative w-full overflow-y-hidden overflow-x-hidden rounded-md mb-8 bg-white border-0">
                                         <thead className="bg-[#f5f7fc] color-white border-transparent border-0 w-full">
                                             <tr className="w-full">
-                                                <th className="relative text-[#3a60bf] font-normal py-6 text-base text-left w-1/3 pl-5 pr-0">Originazer Name</th>
+                                                <th className="relative text-[#3a60bf] font-normal py-6 text-base text-left w-1/3 pl-5 pr-0">Organizer Name</th>
                                                 <th className="relative text-[#3a60bf] font-normal py-6 text-base px-0 text-left w-2/12">Email</th>
                                                 <th className="relative text-[#3a60bf] font-normal py-6 text-base text-left w-212">Founding Date</th>
                                                 <th className="relative text-[#3a60bf] font-normal py-6 text-base text-left w-2/12">PhoneNum</th>

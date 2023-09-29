@@ -1,5 +1,5 @@
 import { useState } from "react";
-import CustomButton from "../../../components/CustomButton";
+import {CustomButton} from "../../../components";
 
 function AddOccupation() {
     const handleAddMajor = () => {
@@ -20,7 +20,7 @@ function AddOccupation() {
     }
     const [listMajor, setListMajor] = useState(['dsfsdf'])
     return (
-        <div className="px-16 pb-0">
+        <div className="px-10 pb-0">
 
             {/* Start title of page  */}
             <div className="mb-8">

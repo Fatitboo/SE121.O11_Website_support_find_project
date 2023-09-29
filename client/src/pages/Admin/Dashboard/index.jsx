@@ -2,7 +2,7 @@ import { FiUsers } from 'react-icons/fi'
 import { GrOrganization } from 'react-icons/gr'
 import { AiOutlineFundProjectionScreen } from 'react-icons/ai'
 import ProjectChart from './ProjectChart';
-import ComboBox from '../../../components/ComboBox'
+import {ComboBox} from '../../../components'
 import UserChart from './UserChart';
 import RecentProject from './RecentProject'
 import RecentOrganizerRegisted from './RecentOrganizer';
@@ -118,7 +118,7 @@ function Dashboard() {
          
     }
     return (
-        <div className="px-16 pb-0">
+        <div className="px-10 pb-0">
 
             {/* Start title of page  */}
             <div className="mb-8">
@@ -197,11 +197,11 @@ function Dashboard() {
                         <table className="relative overflow-y-hidden overflow-x-hidden rounded-md mb-8 bg-white border-0 text-sm h-fit">
                             <thead className="bg-white color-white w-full border-b border-solid border-[#ecedf2]">
                                 <tr className='w-full'>
-                                    <th className="relative text-[#3a60bf] font-normal py-6 text-sm text-left w-3/12 pl-5 pr-0">Originazer Name</th>
+                                    <th className="relative text-[#3a60bf] font-normal py-6 text-sm text-left w-4/12 pl-5 pr-0">Organizer Name</th>
                                     <th className="relative text-[#3a60bf] font-normal py-6 text-sm px-0 text-left w-3/12">Project Name</th>
                                     <th className="relative text-[#3a60bf] font-normal py-6 text-sm text-left px-5 w-1/12">Status</th>
                                     <th className="relative text-[#3a60bf] font-normal py-6 text-sm text-left px-5 w-1/12">SocialLink</th>
-                                    <th className="relative text-[#3a60bf] font-normal py-6 text-sm  w-2/12 text-center px-3">Upload date</th>
+                                    <th className="relative text-[#3a60bf] font-normal py-6 text-sm  w-1/12 text-center px-3">Upload date</th>
                                     <th className="relative text-[#3a60bf] font-normal py-6 text-sm text-left pl-6">Action</th>
                                 </tr>
                             </thead>

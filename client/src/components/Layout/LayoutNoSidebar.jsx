@@ -1,7 +1,5 @@
-import Footer from "../Footer";
-import Navbar from "../Navbar/Navbar";
-
-function UserLayout({children}) {
+import {Footer, Navbar} from '../index'
+function LayoutNoSidebar({children}) {
     return ( 
         <div >
             <Navbar/>
@@ -11,4 +9,4 @@ function UserLayout({children}) {
      );
 }
 
-export default UserLayout;
+export default LayoutNoSidebar;

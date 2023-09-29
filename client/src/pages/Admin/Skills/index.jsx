@@ -1,4 +1,4 @@
-import CustomButton from "../../../components/CustomButton";
+import {CustomButton} from "../../../components";
 import { AiOutlineSearch } from "react-icons/ai";
 import {  LiaTrashAltSolid } from "react-icons/lia";
 import {CiEdit} from 'react-icons/ci'
@@ -21,7 +21,7 @@ const listSkills = [
 
 function Skills() {
     return (
-        <div className="px-16 pb-0">
+        <div className="px-10 pb-0">
 
             {/* Start title of page  */}
             <div className="mb-8">

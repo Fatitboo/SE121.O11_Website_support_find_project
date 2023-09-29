@@ -1,5 +1,5 @@
 import { useState } from "react";
-import CustomButton from "../../../components/CustomButton";
+import {CustomButton} from "../../../components";
 import { useParams } from "react-router-dom";
 
 function EditOccupation() {
@@ -22,7 +22,7 @@ function EditOccupation() {
     }
     const [listMajor, setListMajor] = useState([id])
     return (
-        <div className="px-16 pb-0">
+        <div className="px-10 pb-0">
 
             {/* Start title of page  */}
             <div className="mb-8">

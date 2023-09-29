@@ -24,7 +24,7 @@ const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, per
 
 export default function UserChart() {
 	return (
-		<div className="w-3/4 h-3/4 bg-white pt-3 pl-3 rounded-sm  flex flex-col">
+		<div className="w-full h-3/4 bg-white pt-3 px-3 rounded-sm flex flex-col">
 			<strong className="text-gray-700 font-medium mb-5">User Profile</strong>
 			<div className="mt-4 w-full  flex-1 text-xs">
 				<ResponsiveContainer width="100%" height="100%">
@@ -32,7 +32,7 @@ export default function UserChart() {
 						<Pie
 							data={data}
 							cx="50%"
-							cy="45%"
+							cy="50%"
 							labelLine={false}
 							label={renderCustomizedLabel}
 							outerRadius={105}

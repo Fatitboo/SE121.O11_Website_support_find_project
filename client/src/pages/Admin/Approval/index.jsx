@@ -1,7 +1,5 @@
-import { AiOutlineSearch, AiOutlineCheckCircle } from "react-icons/ai";
-import ComboBox from "../../../components/ComboBox";
-import { LiaEyeSolid, LiaTrashAltSolid } from "react-icons/lia";
-import { BiMap } from "react-icons/bi";
+import { AiOutlineSearch} from "react-icons/ai";
+import {ComboBox} from "../../../components";
 import ProjectItem from "./ProjectItem";
 import { useState } from "react";
 
@@ -68,7 +66,7 @@ function Approval() {
             
     }
     return (
-        <div className="px-16 pb-0">
+        <div className="px-10 pb-0">
             {/* Start title of page  */}
             <div className="mb-8">
                 <h3 className="font-medium text-3xl text-gray-900 mb-2 leading-10">All Projects!</h3>

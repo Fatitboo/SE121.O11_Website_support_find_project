@@ -3,7 +3,7 @@ import { LiaEyeSolid, LiaTrashAltSolid } from "react-icons/lia";
 import { BiMap } from "react-icons/bi";
 function RecentProject({item}) {
     return (
-        <tr  className="relative border-b border-solid border-[#ecedf2] w-full hover:bg-[#f4f2f2] cursor-pointer">
+        <tr  className="relative border-b border-solid border-[#ecedf2] w-full hover:bg-[#f4f2f2] cursor-pointer px-3">
             <td className="relative pl-5 py-5 font-normal text-base w-2/12">
                 <div className="mb-0 relative h-14 ">
                     <span className="absolute l-0 t-0 w-10">
@@ -24,7 +24,7 @@ function RecentProject({item}) {
             <td className="font-light underline text-blue-400 text-center w-1/12">
                 <a href={item.socialLink} >Link</a>
             </td>
-            <td className="text-center w-2/12">
+            <td className="text-center w-1/12">
                 <h4>{item.uploadDate.toLocaleDateString('vi-VN')}</h4>
             </td>
             <td >
