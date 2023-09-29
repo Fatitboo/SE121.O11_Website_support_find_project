@@ -86,9 +86,9 @@ function Skills() {
                             <div className="px-6 relative">
                                 <div className="overflow-y-hidden overflow-x-auto">
                                     <table className="relative w-full overflow-y-hidden overflow-x-hidden rounded-md mb-8 bg-white border-0">
-                                        <thead className="bg-[#f5f7fc] color-white border-transparent border-0 ">
-                                            <tr >
-                                                <th className="relative text-[#3a60bf] font-normal py-6 text-base text-left pl-6">Skill Name</th>
+                                        <thead className="bg-[#f5f7fc] color-white border-transparent border-0 w-full">
+                                            <tr className="w-full">
+                                                <th className="relative text-[#3a60bf] font-normal py-6 text-base text-left pl-6" >Skill Name</th>
                                                 <th className="relative text-[#3a60bf] font-normal py-6 text-base text-left  ">Description</th>
                                                 <th className="relative text-[#3a60bf] font-normal py-6 text-base text-left ">Action</th>
                                             </tr>

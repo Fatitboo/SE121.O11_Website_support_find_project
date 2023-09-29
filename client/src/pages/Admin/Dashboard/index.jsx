@@ -94,7 +94,7 @@ const listOriginazers = [
         key: 'originazer1',
         logoOriginazer: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSCW82MIe3_DxiUjQUFlKNJrZuDng8sQ1Y_aQ&usqp=CAU',
         originazerName: 'Google company',
-        address: 'London, Uk',
+        address: 'London, Uk zcx xcv zxd zdf xzd dsf zsd szdf',
         registedDate: '26/09/2023',
     },
     {
@@ -130,7 +130,7 @@ function Dashboard() {
             <div className="grid grid-cols-4 gap-5 ">
                 <div className="bg-white h-[100px] rounded-lg shadow flex ">
                     <div className='basis-1/3 place-content-center place-items-cent items-center flex'>
-                        <div className='rounded-full bg-[#0d747444] h-[70px] w-[70px] flex items-center place-content-center'>
+                        <div className='rounded-full bg-[#0d747444] h-2/3 w-2/3 flex items-center place-content-center'>
                             <FiUsers fontSize={40} />
                         </div>
                     </div>
@@ -141,7 +141,7 @@ function Dashboard() {
                 </div>
                 <div className="bg-white h-[100px] rounded-lg shadow flex ">
                     <div className='basis-1/3 place-content-center place-items-cent items-center flex'>
-                        <div className='rounded-full bg-[#e68e3b44] h-[70px] w-[70px] flex items-center place-content-center'>
+                        <div className='rounded-full bg-[#e68e3b44] h-2/3 w-2/3 flex items-center place-content-center'>
                             <GrOrganization fontSize={40} />
                         </div>
                     </div>
@@ -152,7 +152,7 @@ function Dashboard() {
                 </div>
                 <div className="bg-white h-[100px] rounded-lg shadow flex ">
                     <div className='basis-1/3 place-content-center place-items-cent items-center flex'>
-                        <div className='rounded-full bg-[#70d72bd5] h-[70px] w-[70px] flex items-center place-content-center'>
+                        <div className='rounded-full bg-[#70d72bd5] h-2/3 w-2/3 flex items-center place-content-center'>
                             <AiOutlineFundProjectionScreen fontSize={40} />
                         </div>
                     </div>
@@ -163,7 +163,7 @@ function Dashboard() {
                 </div>
                 <div className="bg-white h-[100px] rounded-lg shadow flex ">
                     <div className='basis-1/3 place-content-center place-items-cent items-center flex'>
-                        <div className='rounded-full bg-[#70d72bd5] h-[70px] w-[70px] flex items-center place-content-center'>
+                        <div className='rounded-full bg-[#70d72bd5] h-2/3 w-2/3 flex items-center place-content-center'>
                             <AiOutlineFundProjectionScreen fontSize={40} />
                         </div>
                     </div>
@@ -195,17 +195,17 @@ function Dashboard() {
                     <div className="relative rounded-lg mb-8 bg-white shadow max-w-full pt-1 shrink-0 col-span-3">
                         <div className='pt-3 px-4'>Recent Projects: </div>
                         <table className="relative overflow-y-hidden overflow-x-hidden rounded-md mb-8 bg-white border-0 text-sm h-fit">
-                            <thead className="bg-white color-white  border-b border-solid border-[#ecedf2]">
-                                <tr >
-                                    <th className="relative text-[#3a60bf] font-normal py-6 text-sm text-left w-40 pl-5 pr-0">Originazer Name</th>
-                                    <th className="relative text-[#3a60bf] font-normal py-6 text-sm px-0 text-left w-56">Project Name</th>
-                                    <th className="relative text-[#3a60bf] font-normal py-6 text-sm text-left px-5 w-16">Status</th>
-                                    <th className="relative text-[#3a60bf] font-normal py-6 text-sm text-left px-5 w-16">SocialLink</th>
-                                    <th className="relative text-[#3a60bf] font-normal py-6 text-sm  w-24 text-left px-3">Upload date</th>
+                            <thead className="bg-white color-white w-full border-b border-solid border-[#ecedf2]">
+                                <tr className='w-full'>
+                                    <th className="relative text-[#3a60bf] font-normal py-6 text-sm text-left w-3/12 pl-5 pr-0">Originazer Name</th>
+                                    <th className="relative text-[#3a60bf] font-normal py-6 text-sm px-0 text-left w-3/12">Project Name</th>
+                                    <th className="relative text-[#3a60bf] font-normal py-6 text-sm text-left px-5 w-1/12">Status</th>
+                                    <th className="relative text-[#3a60bf] font-normal py-6 text-sm text-left px-5 w-1/12">SocialLink</th>
+                                    <th className="relative text-[#3a60bf] font-normal py-6 text-sm  w-2/12 text-center px-3">Upload date</th>
                                     <th className="relative text-[#3a60bf] font-normal py-6 text-sm text-left pl-6">Action</th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody className='w-full'>
                                 {listApprovalProjects.map((item) => (
                                     <RecentProject key={item.key} item={item} />
                                 ))}
@@ -213,11 +213,14 @@ function Dashboard() {
                             </tbody>
                         </table>
                     </div>
-                    <div className="relative rounded-lg mb-8 bg-white shadow max-w-full pt-1 shrink-0 ">
+                    <div className="relative rounded-lg mb-8 bg-white shadow w-full pt-1 shrink-0 overflow-hidden">
                         <div className='pt-3 px-4'>Recent Registed Organizer: </div>
-                        {listOriginazers.map((item) => (
-                            <RecentOrganizerRegisted key={item.key} item={item} />
-                        ))}
+                        <div className='w-full'>
+                            {listOriginazers.map((item) => (
+                                <RecentOrganizerRegisted key={item.key} item={item} />
+                            ))}
+
+                        </div>
                     </div>
                 </div>
             </div>

@@ -62,22 +62,22 @@ function OccupationManagement() {
                             <div className="px-6 relative">
                                 <div className="overflow-y-hidden overflow-x-auto">
                                     <table className="relative w-full overflow-y-hidden overflow-x-hidden rounded-md mb-8 bg-white border-0">
-                                        <thead className="bg-[#f5f7fc] color-white border-transparent border-0 ">
-                                            <tr >
-                                                <th className="relative text-[#3a60bf] font-normal py-6 text-base text-left pl-6 w-96">Occupation Name</th>
-                                                <th className="relative text-[#3a60bf] font-normal py-6 text-base text-left  w-[600px]">Detail Major</th>
-                                                <th className="relative text-[#3a60bf] font-normal py-6 text-base text-left ">Action</th>
+                                        <thead className="bg-[#f5f7fc] color-white border-transparent border-0 w-full">
+                                            <tr className="w-full">
+                                                <th className="relative text-[#3a60bf] font-normal py-6 text-base text-left pl-6 w-4/12">Occupation Name</th>
+                                                <th className="relative text-[#3a60bf] font-normal py-6 text-base text-left  w-1/2">Detail Major</th>
+                                                <th className="relative text-[#3a60bf] font-normal py-6 text-base text-left w-2/12">Action</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             {
                                                 listSkills.map((item, index) => (
                                                     <tr key={index} className="relative border-b border-solid border-[#ecedf2] w-full text-base min-h-[64px] hover:bg-[#f4f2f2] ">
-                                                        <td className="w-96">
-                                                            <h4 className="text-ellipsis w-96 line-clamp-1 text-left pl-6 py-3">{item.name}</h4>
+                                                        <td className="w-4/12">
+                                                            <h4 className="text-ellipsis w-full line-clamp-1 text-left pl-6 py-3">{item.name}</h4>
                                                         </td>
-                                                        <td className="w-[600px]">
-                                                            <div className="flex text-ellipsis w-[600px] line-clamp-2 text-left"> <span>[ </span>
+                                                        <td className="w-1/2">
+                                                            <div className="flex text-ellipsis w-full line-clamp-2 text-left"> <span>[ </span>
                                                                 {item.listMajor.map((i, index) => {
                                                                     if (index === item.listMajor.length - 1)
                                                                         return <div key={index} className="px-2">{i}</div>
@@ -88,7 +88,7 @@ function OccupationManagement() {
                                                                 <span> ]</span>
                                                             </div>
                                                         </td>
-                                                        <td>
+                                                        <td className="w-2/12">
                                                             <div className="py-3">
                                                                 <ul className="list-none flex relative item-center ">
 

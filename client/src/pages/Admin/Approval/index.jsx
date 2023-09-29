@@ -79,7 +79,7 @@ function Approval() {
             <div className="flex flex-wrap mx-3 mt-3">
                 <div className="max-w-full px-3 pt-3 shrink-0 w-full">
                     <div className="relative rounded-lg mb-8 bg-white shadow max-w-full px-3 pt-1 shrink-0 w-full">
-                        <div className="relative">
+                        <div className="relative w-full">
 
                             {/* Start header of content */}
                             <div className="relative flex justify-between items-center flex-wrap bg-transparent px-8 py-5">
@@ -102,14 +102,14 @@ function Approval() {
                             {/* Start table */}
                             <div className="px-6 relative">
                                 <div className="overflow-y-hidden overflow-x-auto">
-                                    <table className="relative w-full overflow-y-hidden overflow-x-hidden rounded-md mb-8 bg-white border-0">
-                                        <thead className="bg-[#f5f7fc] color-white border-transparent border-0 ">
-                                            <tr >
-                                                <th className="relative text-[#3a60bf] font-normal py-6 text-base text-left w-60 pl-5 pr-0">Originazer Name</th>
-                                                <th className="relative text-[#3a60bf] font-normal py-6 text-base px-0 text-left w-64 ">Project Name</th>
-                                                <th className="relative text-[#3a60bf] font-normal py-6 text-base text-left w-20 px-5">Participants</th>
-                                                <th className="relative text-[#3a60bf] font-normal py-6 text-base text-left px-5 w-16">SocialLink</th>
-                                                <th className="relative text-[#3a60bf] font-normal py-6 text-base  w-32 text-center px-3">Upload date</th>
+                                    <table className="relative w-full overflow-y-hidden overflow-x-hidden rounded-md mb-8 bg-white border-0 ">
+                                        <thead className="bg-[#f5f7fc] color-white border-transparent border-0 w-full">
+                                            <tr className="w-full">
+                                                <th className="relative text-[#3a60bf] font-normal py-6 text-base text-left w-3/12 pl-5 pr-0">Originazer Name</th>
+                                                <th className="relative text-[#3a60bf] font-normal py-6 text-base px-0 text-left w-3/12 ">Project Name</th>
+                                                <th className="relative text-[#3a60bf] font-normal py-6 text-base text-left w-1/12 px-5">Participants</th>
+                                                <th className="relative text-[#3a60bf] font-normal py-6 text-base text-left px-5 w-1/12">SocialLink</th>
+                                                <th className="relative text-[#3a60bf] font-normal py-6 text-base  w-2/12 text-center px-3">Upload date</th>
                                                 <th className="relative text-[#3a60bf] font-normal py-6 text-base text-left pl-6">Action</th>
                                             </tr>
                                         </thead>

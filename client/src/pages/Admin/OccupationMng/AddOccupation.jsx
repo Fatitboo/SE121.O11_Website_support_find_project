@@ -31,14 +31,14 @@ function AddOccupation() {
 
             <div className="flex flex-wrap mx-3 mt-3 ">
                 <div className="max-w-full px-3 pt-3 shrink-0 w-full">
-                    <div className="relative rounded-lg mb-8 bg-white min-h-[600px] shadow max-w-full px-3 pt-1 shrink-0 w-full">
+                    <div className="relative rounded-lg mb-8 bg-white  shadow max-w-full px-3 pt-1 shrink-0 w-full">
                         <div className="relative">
 
                             {/* Input form create/ update skill information */}
                             <div className="relative flex text-left flex-col bg-transparent px-16 py-8">
                                 <div className="text-lg font-medium mb-5">Occupation informations:</div>
 
-                                <form action="#" method="post" className="w-full max" >
+                                <form action="#" method="post" className="w-full " >
                                     <div className="w-full flex flex-col">
                                         <div className="flex mb-6">
                                             <div className="mr-6 w-5/6 ">
@@ -51,7 +51,7 @@ function AddOccupation() {
                                                 <CustomButton title="Add Major" onClick={handleAddMajor} containerStyles="text-green-600 py-1.5 mt-8 px-3 focus:outline-none hover:bg-green-700 hover:text-white rounded-md text-base border border-green-600" />
                                             </div>
                                         </div>
-                                        <div  className="min-h-[450px]">
+                                        <div  >
                                             <div className=" mb-4">List detail Majors: </div>
                                             <div className="grid grid-cols-2 ">
                                                 {listMajor.map((item, index) => (
