@@ -1,55 +1,70 @@
-import {LiaHomeSolid} from 'react-icons/lia';
-import {MdOutlineFactCheck} from 'react-icons/md'
-import {FiUsers} from 'react-icons/fi'
-import {GrWorkshop} from 'react-icons/gr'
-import {AiOutlineLogout} from 'react-icons/ai'
-import {MdReportGmailerrorred} from 'react-icons/md'
+import { LiaHomeSolid } from 'react-icons/lia';
+import { MdOutlineFactCheck } from 'react-icons/md';
+import { FiUsers } from 'react-icons/fi';
+import { GrWorkshop } from 'react-icons/gr';
+import { AiOutlineLogout } from 'react-icons/ai';
+import {LuNetwork} from 'react-icons/lu'
+import { MdReportGmailerrorred } from 'react-icons/md';
+import { Link, useLocation } from 'react-router-dom';
+import classNames from 'classnames';
+
+
+const itemStyle = '!mb-2 p-0 m-0 hover:bg-[#E9EFFB] hover:text-blue-600 rounded-lg'
+
 function Sidebar() {
-    return ( 
-        <aside className="fixed left-0 bottom-0 h-full w-80 pt-20 bg-white overflow-auto 
+    const {pathname} = useLocation();
+    return (
+        <aside className="fixed left-0 bottom-0 h-full w-80 pt-16 bg-white overflow-auto 
                             ease-in duration-300 border-solid border border-[#ecedf2] shadow-lg shadow-gray-300 z-10">
-           <div className="relative p-14">
-                <ul className="relative w-full l-0 m-0 p-0 list-none">
-                    <li className="!mb-2 list-none p-0 m-0 hover:bg-[#E9EFFB] active:bg-[#E9EFFB] rounded-lg">
-                        <a href="/user-management" className="relative text-base text-center p-3 flex items-center leading-7 font-normal text-sm text-left capitalize rounded-lg ">
+            <div className="relative p-14">
+                <div className="relative w-full l-0 m-0 p-0">
+                    <div className={classNames(pathname==='/Admin'?'bg-[#E9EFFB] text-blue-600': '', itemStyle)}>
+                        <Link to="/Admin" className="relative text-sm text-center p-3  flex items-center leading-7 font-normal  capitalize rounded-lg ">
                             <LiaHomeSolid className='relative mr-4 ml-4 text-2xl text-center '/>
                             Dashboard
-                        </a>
-                    </li>
-                    <li className="!mb-2 list-none p-0 m-0 hover:bg-[#E9EFFB] active:bg-[#E9EFFB] rounded-lg">
-                        <a href="/user-management" className="relative text-base text-center p-3 flex items-center leading-7 font-normal text-sm text-left capitalize rounded-lg ">
+                        </Link>
+                    </div>
+                    <div className={classNames(pathname==='/Admin/approval-project'?'bg-[#E9EFFB] text-blue-600': '', itemStyle)}>
+                        <Link to="/Admin/approval-project" className="relative text-sm text-center p-3 flex items-center leading-7 font-normal  capitalize rounded-lg ">
                             <MdOutlineFactCheck className='relative mr-4 ml-4 text-2xl text-center '/>
-                            Approval Project
-                        </a>
-                    </li>
-                    <li className="!mb-2 list-none p-0 m-0 hover:bg-[#E9EFFB] active:bg-[#E9EFFB] rounded-lg">
-                        <a href="/user-management" className="relative text-base text-center p-3 flex items-center leading-7 font-normal text-sm text-left capitalize rounded-lg ">
+                            Projects
+                        </Link>
+                    </div>
+                    <div className={classNames(pathname==='/Admin/user-management'?'bg-[#E9EFFB] text-blue-600': '', itemStyle)}>
+                        <Link to="/Admin/user-management" className="relative text-sm text-center p-3 flex items-center leading-7 font-normal  capitalize rounded-lg ">
                             <FiUsers className='relative mr-4 ml-4 text-2xl text-center '/>
-                            User Management
-                        </a>
-                    </li>
-                    <li className="!mb-2 list-none p-0 m-0 hover:bg-[#E9EFFB] active:bg-[#E9EFFB] rounded-lg">
-                        <a href="/user-management" className="relative text-base text-center p-3 flex items-center leading-7 font-normal text-sm text-left capitalize rounded-lg ">
+                            Originazer
+                        </Link>
+                    </div>
+                    <div className={classNames(pathname==='/Admin/skills-management'?'bg-[#E9EFFB] text-blue-600': '', itemStyle)}>
+                        <Link to="/Admin/skills-management" className="relative text-sm text-center p-3 flex items-center leading-7 font-normal  capitalize rounded-lg ">
                             <GrWorkshop className='relative mr-4 ml-4 text-2xl text-center '/>
-                            Skill Management
-                        </a>
-                    </li>
-                    <li className="!mb-2 list-none p-0 m-0 hover:bg-[#E9EFFB] active:bg-[#E9EFFB] rounded-lg">
-                        <a href="/user-management" className="relative text-base text-center p-3 flex items-center leading-7 font-normal text-sm text-left capitalize rounded-lg ">
+                            Skills
+                        </Link>
+                    </div>
+                    <div className={classNames(pathname==='/Admin/occupation-management'?'bg-[#E9EFFB] text-blue-600': '', itemStyle)}>
+                        <Link to="/Admin/occupation-management" className="relative text-sm text-center p-3 flex items-center leading-7 font-normal  capitalize rounded-lg ">
+                            <LuNetwork className='relative mr-4 ml-4 text-2xl text-center '/>
+                            Occupations
+                        </Link>
+                    </div>
+                    <div className={classNames(pathname==='/'?'bg-[#E9EFFB] text-blue-600': '', itemStyle)}>
+                        <Link to="/Admin/" className="relative text-sm text-center p-3 flex items-center leading-7 font-normal  capitalize rounded-lg ">
                             <MdReportGmailerrorred className='relative mr-4 ml-4 text-2xl text-center '/>
-                            Report
-                        </a>
-                    </li>
-                    <li className="!mb-2 list-none p-0 m-0 hover:bg-[#E9EFFB] active:bg-[#E9EFFB] rounded-lg">
-                        <a href="/user-management" className="relative text-base text-center p-3 flex items-center leading-7 font-normal text-sm text-left capitalize rounded-lg ">
+                            Reports
+                        </Link>
+                    </div>
+                    <div className={classNames(pathname==='/'?'bg-[#E9EFFB] text-blue-600': '', itemStyle)}>
+                        <Link to="/Admin/" className="relative text-sm text-center p-3 flex items-center leading-7 font-normal  capitalize rounded-lg ">
                             <AiOutlineLogout className='relative mr-4 ml-4 text-2xl text-center '/>
-                            Log out
-                        </a>
-                    </li>
-                </ul>
-           </div>
+                            Logout
+                        </Link>
+                    </div>
+                </div>
+            </div>
         </aside>
-        );
+    );
 }
+
 
 export default Sidebar;
