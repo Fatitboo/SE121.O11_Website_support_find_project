@@ -44,7 +44,7 @@ function AddOccupation() {
                                             <div className="mr-6 w-5/6 ">
                                                 <label for="name" className="block leading-6 text-gray-900 text-base">Occupation name:</label>
                                                 <div className="relative mt-2 rounded-md shadow-sm ">
-                                                    <input type="text" name="name" id="name" className="block text-base w-full rounded-md border-0 py-1.5 pl-5 pr-20 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 sm:text-sm sm:leading-6" placeholder="Ex: Communication" />
+                                                    <input type="text" name="name" id="name" className="block bg-[#f0f5f7] focus:bg-white  text-base w-full rounded-md border-0 py-1.5 pl-5 pr-20 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 sm:text-sm sm:leading-6" placeholder="Ex: Communication" />
                                                 </div>
                                             </div>
                                             <div>
@@ -57,7 +57,7 @@ function AddOccupation() {
                                                 {listMajor.map((item, index) => (
                                                     <div key={index} className="flex ml-20 w-8/12 my-1">
                                                         <div className="relative mt-2 rounded-md shadow-sm mr-3 ">
-                                                            <input type="text" onChange={e => handleChangeMajor(e, index)} name="detailMajor" id="detailMajor" value={item} className="block text-base w-full rounded-md border-0 py-1.5 pl-5 pr-20 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 sm:text-sm sm:leading-6" placeholder="Ex: Communication" />
+                                                            <input type="text" onChange={e => handleChangeMajor(e, index)} name="detailMajor" id="detailMajor" value={item} className="block bg-[#f0f5f7] focus:bg-white  text-base w-full rounded-md border-0 py-1.5 pl-5 pr-20 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 sm:text-sm sm:leading-6" placeholder="Ex: Communication" />
                                                         </div>
                                                         <div onClick={() => handleDeleteMajor(index)}>
                                                             <CustomButton title="Delete" containerStyles="text-red-600 py-1 mt-[9px] px-3 focus:outline-none hover:bg-red-700 hover:text-white rounded-md text-base border border-red-600" />

@@ -43,9 +43,9 @@ function Skills() {
                                     <div className=" grid grid-cols-2 w-full grid-flow-row gap-10">
                                         <div className="grid-flow-col ">
                                             <div className="mb-6">
-                                                <label for="name" className="block leading-6 text-gray-900 ">Skill name:</label>
+                                                <label for="name" className="block leading-8 text-gray-900 ">Skill name:</label>
                                                 <div className="relative mt-2 rounded-md shadow-sm ">
-                                                    <textarea rows={2} type="text" name="name" id="name" className="block text-base w-full rounded-md border-0 py-1.5 pl-5 pr-20 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400  sm:text-sm sm:leading-6" placeholder="Ex: Communication" />
+                                                    <textarea rows={1} type="text" name="name" id="name" className="block bg-[#f0f5f7] focus:bg-white text-base w-full rounded-md border-0 py-1.5 pl-5 pr-20 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400  sm:text-base sm:leading-8" placeholder="Ex: Communication" />
                                                 </div>
                                             </div>
                                             <div>
@@ -55,8 +55,8 @@ function Skills() {
                                         <div className="grid-flow-col ">
                                             <div >
                                                 <label for="des" className="block leading-6 text-gray-900 ">Description:</label>
-                                                <div className="relative mt-2 rounded-md shadow-sm ">
-                                                    <textarea rows={4} type="text" name="des" id="des" className="block text-base w-full rounded-md border-0 min-h-max whitespace-normal  py-1.5 pl-5 pr-20 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400  sm:text-sm sm:leading-6" placeholder="Ex: Communication" />
+                                                <div className="relative mt-3 rounded-md shadow-sm ">
+                                                    <textarea rows={4} type="text" name="des" id="des" className="block bg-[#f0f5f7] focus:bg-white text-base w-full rounded-md border-0 min-h-max whitespace-normal  py-1.5 pl-5 pr-20 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400  sm:text-base sm:leading-6" placeholder="Ex: Communication" />
                                                 </div>
                                             </div>
 
@@ -72,7 +72,7 @@ function Skills() {
                                         <form action="#" method="post"  >
                                             <div className="relative mb-0 leading-6">
                                                 <AiOutlineSearch fontSize={22} color="#a7a9ad" className="absolute l-3  h-11 justify-center ml-2 text-center z-10 " />
-                                                <input type='search' name="search-field" id="search-field" placeholder="Search" className=" relative mt-2 block w-72 border pt-1 pb-1 pl-10 h-10 pr-5 text-sm bg-[#f0f5f7] rounded-md" />
+                                                <input type='search' name="search-field" id="search-field" placeholder="Search" className="focus:bg-white relative mt-2 block w-72 border pt-1 pb-1 pl-10 h-10 pr-5 text-sm bg-[#f0f5f7] rounded-md" />
                                             </div>
                                         </form>
                                     </div>

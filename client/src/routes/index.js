@@ -14,7 +14,7 @@ const publicRoutes = [
     {path:'/seeker-profile', component: SeekerProfile, layout: LayoutNoSidebar},
     {path:'/Seeker/my-profile', component: MyProfile, layout: LayoutHasSidebar},
     //Company layout
-    {path:'/company-profile', component: CompanyProfile, layout: LayoutNoSidebar},
+    {path:'/Seeker/company-profile', component: CompanyProfile, layout: LayoutNoSidebar},
 
 
     //Admin Layout
