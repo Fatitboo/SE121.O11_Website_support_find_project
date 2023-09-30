@@ -13,6 +13,8 @@ import Skills from "../pages/Admin/Skills"
 import OccupationManagement from "../pages/Admin/OccupationMng"
 import AddOccupation from "../pages/Admin/OccupationMng/AddOccupation"
 import EditOccupation from "../pages/Admin/OccupationMng/EditOccupation"
+import ProjectInfo from "../pages/Seeker/ProjectInfo/ProjectInfo"
+
 
 
 const publicRoutes = [
@@ -21,6 +23,7 @@ const publicRoutes = [
     {path:'/user-auth', component: Login, layout: UserLayout},
     {path:'/projects', component: FindProjects, layout: UserLayout},
     {path:'/seeker-profile', component: SeekerProfile, layout: UserLayout},
+    {path:'/project-info', component: ProjectInfo, layout: UserLayout},
 
     //Company layout
     {path:'/company-profile', component: CompanyProfile, layout: UserLayout},

@@ -4,6 +4,7 @@ import "./style.css"
 import { RadioGroup } from "@headlessui/react";
 import {BsCheck} from "react-icons/bs";
 import {ComboBox} from "../../../components/index"
+import ProjectItem from "./ProjectItem";
 
 function onfilterValueSelected(){}
 function changeCheckBox(nextChild, isChecked){
@@ -16,6 +17,92 @@ function changeCheckBox(nextChild, isChecked){
         nextChild.style['color'] = '#696969';
     }
 }
+
+const project = [
+    {
+        projectId: "1",
+        projectName: "Build ứng dụng quản lý sinh viên",
+        description: "Without JobHunt i’d be homeless, they found me a job and got me sorted out quickly with everything! Can’t quite… The Mitech team works really hard to ensure high level of quality. Without JobHunt i’d be homeless, they found me a job and got me sorted out quickly with everything! Can’t quite… The Mitech team works really hard to ensure high level of quality. Without JobHunt i’d be homeless, they found me a job and got me sorted out quickly with everything! Can’t quite… The Mitech team works really hard to ensure high level of quality",
+        user: {
+            userId: "1",
+            organizerName: "Udemy Inc.",
+        },
+        maxParticipants: 4,
+        socialLink:[
+            {
+                socialName: "Facebook",
+                socialLink: "https://www.facebook.com/"
+            },
+            {
+                socialName: "Github",
+                socialLink: "https://github.com/"
+            }
+        ],
+        starDate: "22:28 29/09/2023",
+        duration: "3 months",
+        status: "Processing",
+        participants:[
+            {
+                userId: 1,
+                ref:'Seeker'
+            }
+        ],
+        favouriteUser:[
+            {
+                userId: 1,
+                ref:'Seeker'
+            }
+        ],
+        vacancies:[
+            {
+                userId: 1,
+                ref:'vacancy'
+            }
+        ]
+    },
+    {
+        projectId: "1",
+        projectName: "Build ứng dụng quản lý sinh viên",
+        description: "Without JobHunt i’d be homeless, they found me a job and got me sorted out quickly with everything! Can’t quite… The Mitech team works really hard to ensure high level of quality",
+        user: {
+            userId: "1",
+            organizerName: "Udemy Inc.",
+        },
+        maxParticipants: 4,
+        socialLink:[
+            {
+                socialName: "Facebook",
+                socialLink: "https://www.facebook.com/"
+            },
+            {
+                socialName: "Github",
+                socialLink: "https://github.com/"
+            }
+        ],
+        starDate: "22:09 29/09/2023",
+        duration: "3 months",
+        status: "Processing",
+        participants:[
+            {
+                userId: 1,
+                ref:'Seeker'
+            }
+        ],
+        favouriteUser:[
+            {
+                userId: 1,
+                ref:'Seeker'
+            }
+        ],
+        vacancies:[
+            {
+                userId: 1,
+                ref:'vacancy'
+            }
+        ]
+    }
+];
+
 function FindProjects() {
 let [plan, setPlan] = useState('startup')
 
@@ -38,7 +125,7 @@ let [plan, setPlan] = useState('startup')
                     <div className="mb-[30px]">
                         <h1 className="text-lg leading-[24px] text-[#202124] mb-4 font-medium">Location</h1>
                         <div className="relative">
-                            <input className="py-[14px] w-full leading-[30px] pr-5 pl-[54px] text-base rounded-lg focus:border-[#1967d2] focus:border outline-noneq" color="dimgray" type="text" name="listing-search" placeholder="City or postcode"/>
+                            <input className="py-[14px] w-full leading-[30px] pr-5 pl-[54px] text-base rounded-lg focus:border-[#1967d2] focus:border outline-none" color="dimgray" type="text" name="listing-search" placeholder="City or postcode"/>
                             <CiLocationOn className="absolute w-5 h-5 left-5 top-[50%] -mt-[10px]"/>
                         </div>
                     </div>
@@ -170,6 +257,13 @@ let [plan, setPlan] = useState('startup')
                             <ComboBox listItem={[{id: "0", name: "All"},{id: "1", name: "10 per page"}, {id: "2", name: "20 per page"}, {id: "3", name: "30 per page"}]} filterValueSelected={onfilterValueSelected}/>
                         </div>
                     </div>
+                </div>
+                <div className="mt-5">
+                    {
+                        project.map((item, index) => {
+                            return <ProjectItem key={index} projectName={item.projectName} companyName={item.user.organizerName} startDate={item.starDate} duration={item.duration} description={item.description} maxParticipant={item.maxParticipants}/>;
+                        })
+                    }
                 </div>
             </div>
         </div>
