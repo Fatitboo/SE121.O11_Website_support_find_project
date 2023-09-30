@@ -1,6 +1,6 @@
 import Navbar from "./Navbar/Navbar";
-import UserLayout from "./Layout/UserLayout";
-import AdminLayout from "./Layout/AdminLayout";
+import LayoutNoSidebar from "./Layout/LayoutNoSidebar";
+import LayoutHasSidebar from "./Layout/LayoutHasSidebar";
 import Footer from "./Footer";
 import Sidebar from "./Sidebar";
 import TextInput from "./TextInput";
@@ -9,8 +9,8 @@ import ComboBox from "./ComboBox";
 
 export {
     Navbar,
-    UserLayout,
-    AdminLayout,
+    LayoutNoSidebar,
+    LayoutHasSidebar,
     Footer,
     Sidebar,
     TextInput,

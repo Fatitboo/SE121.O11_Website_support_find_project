@@ -1,4 +1,4 @@
-import CustomButton from "../../../components/CustomButton";
+import {CustomButton} from "../../../components";
 import { AiOutlineSearch } from "react-icons/ai";
 import { LiaTrashAltSolid } from "react-icons/lia";
 import { CiEdit } from 'react-icons/ci'
@@ -23,7 +23,7 @@ const listSkills = [
 
 function OccupationManagement() {
     return (
-        <div className="px-16 pb-0">
+        <div className="px-10 pb-0">
 
             {/* Start title of page  */}
             <div className="mb-8">
@@ -44,7 +44,7 @@ function OccupationManagement() {
                                         <form action="#" method="post"  >
                                             <div className="relative mb-0 leading-6">
                                                 <AiOutlineSearch fontSize={22} color="#a7a9ad" className="absolute l-3  h-11 justify-center ml-2 text-center z-10 " />
-                                                <input type='search' name="search-field" id="search-field" placeholder="Search" className=" relative mt-2 block w-72 border pt-1 pb-1 pl-10 h-10 pr-5 text-sm bg-[#f0f5f7] rounded-md" />
+                                                <input type='search' name="search-field" id="search-field" placeholder="Search" className=" relative mt-2 block w-72 border pt-1 pb-1 pl-10 h-10 pr-5 text-sm bg-[#f0f5f7] focus:bg-white  rounded-md" />
                                             </div>
                                         </form>
                                     </div>

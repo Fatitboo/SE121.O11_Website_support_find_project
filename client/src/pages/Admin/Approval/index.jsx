@@ -1,7 +1,5 @@
-import { AiOutlineSearch, AiOutlineCheckCircle } from "react-icons/ai";
-import ComboBox from "../../../components/ComboBox";
-import { LiaEyeSolid, LiaTrashAltSolid } from "react-icons/lia";
-import { BiMap } from "react-icons/bi";
+import { AiOutlineSearch} from "react-icons/ai";
+import {ComboBox} from "../../../components";
 import ProjectItem from "./ProjectItem";
 import { useState } from "react";
 
@@ -68,7 +66,7 @@ function Approval() {
             
     }
     return (
-        <div className="px-16 pb-0">
+        <div className="px-10 pb-0">
             {/* Start title of page  */}
             <div className="mb-8">
                 <h3 className="font-medium text-3xl text-gray-900 mb-2 leading-10">All Projects!</h3>
@@ -88,11 +86,14 @@ function Approval() {
                                         <form action="#" method="post"  >
                                             <div className="relative mb-0">
                                                 <AiOutlineSearch fontSize={22} color="#a7a9ad" className="absolute l-3 t-0 h-10 justify-center ml-2 text-center z-10 " />
-                                                <input type='search' name="search-field" id="search-field" placeholder="Search" className="relative mt-2 block w-72 border pt-1 pb-1 pl-10 h-9 pr-5 text-sm bg-[#f0f5f7] rounded-md" />
+                                                <input type='search' name="search-field" id="search-field" placeholder="Search" className="relative mt-2 block w-72 border pt-1 pb-1 pl-10 h-9 pr-5 text-sm bg-[#f0f5f7] focus:bg-white  rounded-md" />
                                             </div>
                                         </form>
                                     </div>
-                                    <ComboBox listItem={listItemCbb} filterValueSelected={onFilterValueSelected} />
+                                   <div className="w-40">
+                                        <ComboBox listItem={listItemCbb} filterValueSelected={onFilterValueSelected} />
+                                   </div>
+                                    
                                 </div>
                                 <div className="flex ">
                                     <h4 className="mr-1">Pending projects: </h4> <span>  10</span>
