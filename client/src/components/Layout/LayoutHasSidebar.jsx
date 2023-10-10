@@ -1,7 +1,7 @@
 import {Sidebar, Navbar } from '../index'
 
 function LayoutHasSidebar({ children }) {
-    const isAdmin = true;
+    const isAdmin = false;
     return (
         <div className="flex flex-col">
             <Navbar isAdmin={isAdmin}/>

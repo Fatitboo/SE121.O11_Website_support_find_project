@@ -5,7 +5,8 @@ import Footer from "./Footer";
 import Sidebar from "./Sidebar";
 import TextInput from "./TextInput";
 import CustomButton from "./CustomButton";
-import ComboBox from './ComboBox'
+import ComboBox from './ComboBox';
+import Modal from "./Modal";
 
 export {
     Navbar,
@@ -15,5 +16,6 @@ export {
     Sidebar,
     TextInput,
     CustomButton,
-    ComboBox
+    ComboBox,
+    Modal
 }

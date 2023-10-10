@@ -4,6 +4,7 @@ import {LayoutNoSidebar , LayoutHasSidebar} from "../components/index"
 import {UserMng, Approval,Dashboard, Skills, OccupationMng, AddOccupation, EditOccupation } from "../pages/Admin"
 import {Home, SeekerProfile, FindProjects, MyProfile} from '../pages/Seeker'
 import { CompanyProfile,  } from "../pages/Company"
+import MyResume from "../pages/Seeker/Dashboard/MyResume"
 
 
 const publicRoutes = [
@@ -13,6 +14,7 @@ const publicRoutes = [
     {path:'/find-projects', component: FindProjects, layout: LayoutNoSidebar},
     {path:'/seeker-profile', component: SeekerProfile, layout: LayoutNoSidebar},
     {path:'/Seeker/my-profile', component: MyProfile, layout: LayoutHasSidebar},
+    {path:'/Seeker/my-resume', component: MyResume, layout: LayoutHasSidebar},
     //Company layout
     {path:'/Seeker/company-profile', component: CompanyProfile, layout: LayoutNoSidebar},
 
