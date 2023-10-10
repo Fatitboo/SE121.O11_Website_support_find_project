@@ -9,7 +9,7 @@ const ProjectItem = ({companyAvatar, companyName, projectName, location, startDa
     return (
         <>
             <div>
-                <div className="flex flex-row p-7 rounded-[10px] border border-[#ecedf2] hover:shadow-[0_7px_18px_rgba(64,79,104,.05)] mb-[30px]">
+                <div className="flex flex-row p-7 rounded-[10px] border border-[#ecedf2] hover:shadow-[0_7px_18px_rgba(64,79,104,.05)] hover:bg-[#f6faff] mb-[30px]">
                     <div>
                         <div className="w-[50px] h-[50px] rounded-lg bg-slate-400">
                             <img src={Candidate} className="w-full h-full" alt="Logo"/>

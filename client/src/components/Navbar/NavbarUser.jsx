@@ -111,10 +111,10 @@ function NavbarUser() {
                     </div>
                     <ul className="hidden lg:flex gap-10 text-base">
                         <li>
-                            <Link to='/projects' >Projects</Link>
+                            <Link to='/find-projects' >Projects</Link>
                         </li>
                         <li>
-                            <Link to='/' >Vacancies</Link>
+                            <Link to='/find-vacancies' >Vacancies</Link>
                         </li>
                         <li>
                             <Link to='/' >Organizer</Link>

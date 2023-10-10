@@ -2,7 +2,7 @@
 import Login from "../pages/Login"
 import {LayoutNoSidebar , LayoutHasSidebar} from "../components/index"
 import {UserMng, Approval,Dashboard, Skills, OccupationMng, AddOccupation, EditOccupation } from "../pages/Admin"
-import {Home, SeekerProfile, FindProjects, MyProfile} from '../pages/Seeker'
+import {Home, SeekerProfile, FindProjects, MyProfile, ProjectInfo, FindVacancies} from '../pages/Seeker'
 import { CompanyProfile,  } from "../pages/Company"
 
 
@@ -11,8 +11,11 @@ const publicRoutes = [
     {path:'/', component: Home, layout: LayoutNoSidebar},
     {path:'/user-auth', component: Login, layout: LayoutNoSidebar},
     {path:'/find-projects', component: FindProjects, layout: LayoutNoSidebar},
+    {path:'/find-vacancies', component: FindVacancies, layout: LayoutNoSidebar},
     {path:'/seeker-profile', component: SeekerProfile, layout: LayoutNoSidebar},
     {path:'/Seeker/my-profile', component: MyProfile, layout: LayoutHasSidebar},
+    {path:'/Seeker/project-info', component: ProjectInfo, layout: LayoutNoSidebar},
+    
     //Company layout
     {path:'/Seeker/company-profile', component: CompanyProfile, layout: LayoutNoSidebar},
 
