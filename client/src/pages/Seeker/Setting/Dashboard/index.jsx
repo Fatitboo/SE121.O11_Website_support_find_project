@@ -4,6 +4,7 @@ import { FiAlertCircle } from "react-icons/fi";
 import { LiaStar } from "react-icons/lia";
 import { ComboBox } from "../../../../components";
 import ProjectChart from "../../../Admin/Dashboard/ProjectChart";
+import VacancyItem from "./VacancyItem";
 
 const cbb = [
     {
@@ -46,6 +47,87 @@ const dataViews = [
     },
     
 ];
+
+const vacancies = [
+    {
+        vacancyId: 1,
+        vacancyName: "Technical Leader", 
+        description: "As a Product Designer, you will work within a Product Delivery Team fused with UX, engineering, product and data talent. You will help the team design beautiful interfaces that solve business challenges for our clients. We work with a number of Tier 1 banks on building web-based applications for AML, KYC and Sanctions List management workflows. This role is ideal if you are looking to segue your career into the FinTech or Big Data arenas.",
+        skillsRequired:[
+            {
+                skillName: "Manager",
+                level: "Advanced",
+            },
+            {
+                skillName: "Python",
+                level: "Medium",
+            },
+            {
+                skillName: "Bootstrap",
+                level: "Basic",
+            },
+            {
+                skillName: "Android",
+                level: "Basic",
+            },
+            {
+                skillName: "C++",
+                level: "Advanced",
+            },
+        ],
+        maxRequired: 1,
+        salary: "$45k-$100k",
+        registant:[
+            {
+                userId: 1,
+                firstName: "Le Quang",
+                surName: 'Nhan',
+                avatar: 'https://scontent.fsgn19-1.fna.fbcdn.net/v/t39.30808-6/305117982_819079809468330_6882772732131573332_n.jpg?_nc_cat=105&ccb=1-7&_nc_sid=a2f6c7&_nc_ohc=_tz73DXI83kAX8-wZsI&_nc_ht=scontent.fsgn19-1.fna&oh=00_AfCo2vH4GN6Tt7KXpVymIL9tEGH-MCebjb2VZfZjP_w6Xw&oe=651DF1E8'
+            },
+            {
+                userId: 2,
+                firstName: "Wade",
+                surName: 'Warren',
+                avatar: 'https://superio-nextjs.netlify.app/images/resource/candidate-2.png'
+            }
+        ]
+    },
+    {
+        vacancyId: 1,
+        vacancyName: "Software Engineering", 
+        description: "As a Product Designer, you will work within a Product Delivery Team fused with UX, engineering, product and data talent. You will help the team design beautiful interfaces that solve business challenges for our clients. We work with a number of Tier 1 banks on building web-based applications for AML, KYC and Sanctions List management workflows. This role is ideal if you are looking to segue your career into the FinTech or Big Data arenas.",
+        skillsRequired:[
+            {
+                skillName: "Javascript",
+                level: "Advanced",
+            },
+            {
+                skillName: "Python",
+                level: "Medium",
+            },
+            {
+                skillName: "Bootstrap",
+                level: "Basic",
+            },
+        ],
+        maxRequired: 3,
+        salary: "$45k-$100k",
+        registant:[
+            {
+                userId: 1,
+                firstName: "Le Quang",
+                surName: 'Nhan',
+                avatar: 'https://scontent.fsgn19-1.fna.fbcdn.net/v/t39.30808-6/305117982_819079809468330_6882772732131573332_n.jpg?_nc_cat=105&ccb=1-7&_nc_sid=a2f6c7&_nc_ohc=_tz73DXI83kAX8-wZsI&_nc_ht=scontent.fsgn19-1.fna&oh=00_AfCo2vH4GN6Tt7KXpVymIL9tEGH-MCebjb2VZfZjP_w6Xw&oe=651DF1E8'
+            },
+            {
+                userId: 2,
+                firstName: "Wade",
+                surName: 'Warren',
+                avatar: 'https://superio-nextjs.netlify.app/images/resource/candidate-2.png'
+            }
+        ]
+    }
+];
 function DashboardSeeker() {
     const onFilterValueSelected = (filterValue) => {
         console.log(filterValue)      
@@ -69,7 +151,7 @@ function DashboardSeeker() {
                     </div>
                     <div className='basis-2/3 flex flex-col justify-center items-end'>
                         <span className='font-medium text-4xl text-[#09276d44] '>30</span>
-                        <span className='text-sm'>Applied Jobs</span>
+                        <span className='text-sm'>Applied Vacancies</span>
                     </div>
                 </div>
                 <div className="bg-white h-[120px] rounded-lg shadow flex p-6">
@@ -80,7 +162,7 @@ function DashboardSeeker() {
                     </div>
                     <div className='basis-2/3 flex flex-col justify-center items-end'>
                         <span className='font-medium text-4xl  '>23</span>
-                        <span className='text-sm'>Job Alert</span>
+                        <span className='text-sm'>Vacancy Alerts</span>
                     </div>
                 </div>
                 <div className="bg-white h-[120px] rounded-lg shadow flex p-6">
@@ -91,7 +173,7 @@ function DashboardSeeker() {
                     </div>
                     <div className='basis-2/3 flex flex-col justify-center items-end'>
                         <span className='font-medium text-4xl  '>40</span>
-                        <span className='text-sm'>Total project</span>
+                        <span className='text-sm'>Total projects</span>
                     </div>
                 </div>
                 <div className="bg-white h-[120px] rounded-lg shadow flex p-6">
@@ -102,7 +184,7 @@ function DashboardSeeker() {
                     </div>
                     <div className='basis-2/3 flex flex-col justify-center items-end'>
                         <span className='font-medium text-4xl  '>40</span>
-                        <span className='text-sm'>Favourite Jobs</span>
+                        <span className='text-sm'>Favourite Projects</span>
                     </div>
                 </div>
             </div>
@@ -111,7 +193,7 @@ function DashboardSeeker() {
             <div className="flex flex-wrap mt-3">
                 <div className="max-w-full pt-3 shrink-0 w-full grid grid-cols-4 grid-flow-row gap-5 ">
                     <div className="relative rounded-lg mb-8 bg-white shadow max-w-full pt-1 shrink-0 col-span-3">
-                        <div className='mx-3 pt-3 font-bold'>Your profile View</div>
+                        <div className='mx-3 pt-3 font-bold'>Your profile Views</div>
                         <div className=' flex mb-4' >
                             <span className='mt-3 ml-3 mr-2'>Loc theo: </span>
                             <div className="w-52">
@@ -127,24 +209,11 @@ function DashboardSeeker() {
             </div>
             <div className="flex flex-wrap mt-3">
                 <div className="max-w-full  shrink-0 w-full grid grid-cols-4 grid-flow-row gap-5 ">
-                    <div className="relative rounded-lg mb-8 bg-white shadow max-w-full pt-1 shrink-0 col-span-4">
-                        <div className='pt-3 px-4'>Jobs Applied Recently: </div>
-                        <table className="relative overflow-y-hidden overflow-x-hidden rounded-md mb-8 bg-white border-0 text-sm h-fit">
-                            <thead className="bg-white color-white w-full border-b border-solid border-[#ecedf2]">
-                                <tr className='w-full'>
-                                    <th className="relative text-[#3a60bf] font-normal py-6 text-sm text-left w-4/12 pl-5 pr-0">Organizer Name</th>
-                                    <th className="relative text-[#3a60bf] font-normal py-6 text-sm px-0 text-left w-3/12">Project Name</th>
-                                    <th className="relative text-[#3a60bf] font-normal py-6 text-sm text-left px-5 w-1/12">Status</th>
-                                    <th className="relative text-[#3a60bf] font-normal py-6 text-sm text-left px-5 w-1/12">SocialLink</th>
-                                    <th className="relative text-[#3a60bf] font-normal py-6 text-sm  w-1/12 text-center px-3">Upload date</th>
-                                    <th className="relative text-[#3a60bf] font-normal py-6 text-sm text-left pl-6">Action</th>
-                                </tr>
-                            </thead>
-                            <tbody className='w-full'>
-                                
-
-                            </tbody>
-                        </table>
+                    <div className="relative rounded-lg mb-8 bg-white shadow max-w-full pt-1 shrink-0 col-span-4 w-full">
+                        <div className='pt-3 px-4 font-bold'>Vacancies Applied Recently: </div>
+                        <div className="relative overflow-y-hidden overflow-x-hidden rounded-md mb-8 pt-3 px-4 bg-white border-0 text-sm h-fit w-full grid grid-cols-2" >
+                            {vacancies.map((item, index)=> <VacancyItem key={index} item={item}/>)}
+                        </div>
                     </div>
                     
                 </div>
