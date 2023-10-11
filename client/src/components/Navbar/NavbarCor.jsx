@@ -88,7 +88,7 @@ function MenuList({ user, onClick }) {
         </div>
     );
 }
-function NavbarUser() {
+function NavbarCor() {
     const user = {
         token: null,
         firstName: 'Phat',
@@ -111,13 +111,13 @@ function NavbarUser() {
                     </div>
                     <ul className="hidden lg:flex gap-10 text-base">
                         <li>
-                            <Link to='/Seeker/find-projects' >Projects</Link>
+                            <Link to='/Seeker/find-projects' >Post Project</Link>
                         </li>
                         <li>
-                            <Link to='/Seeker/find-vacancies' >Vacancies</Link>
+                            <Link to='/Seeker/find-vacancies' >Post Job</Link>
                         </li>
                         <li>
-                            <Link to='/Seeker/find-organizer' >Organizer</Link>
+                            <Link to='/Seeker/find-organizer' >Seekers</Link>
                         </li>
                         <li>
                             <Link to='/' >About us</Link>
@@ -144,4 +144,4 @@ function NavbarUser() {
         </>);
 }
 
-export default NavbarUser;
+export default NavbarCor;

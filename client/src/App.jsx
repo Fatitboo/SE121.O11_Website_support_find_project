@@ -12,6 +12,7 @@ function Layout() {
 }
 
 function App() {
+const userType = "cor";
   return (
     <main>
       <Routes>
@@ -35,7 +36,7 @@ function App() {
           return (<Route key={index}
             path={route.path}
             element={
-              <Layout>
+              <Layout userType={userType}>
                 <Page />
               </Layout>
             } />)

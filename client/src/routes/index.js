@@ -12,13 +12,13 @@ const publicRoutes = [
     // User Layout
     {path:'/', component: Home, layout: LayoutNoSidebar},
     {path:'/user-auth', component: Login, layout: LayoutNoSidebar},
-    {path:'/find-projects', component: FindProjects, layout: LayoutNoSidebar},
-    {path:'/find-vacancies', component: FindVacancies, layout: LayoutNoSidebar},
-    {path:'/seeker-profile', component: SeekerProfile, layout: LayoutNoSidebar},
+    {path:'/Seeker/find-projects', component: FindProjects, layout: LayoutNoSidebar},
+    {path:'/Seeker/find-vacancies', component: FindVacancies, layout: LayoutNoSidebar},
+    {path:'/Seeker/profile', component: SeekerProfile, layout: LayoutNoSidebar},
     {path:'/Seeker/my-profile', component: MyProfile, layout: LayoutHasSidebar},
     {path:'/Seeker/my-resume', component: MyResume, layout: LayoutHasSidebar},
     {path:'/Seeker/project-info', component: ProjectInfo, layout: LayoutNoSidebar},
-    {path:'/find-organizer', component: FindOrganizer, layout: LayoutNoSidebar},
+    {path:'/Seeker/find-organizer', component: FindOrganizer, layout: LayoutNoSidebar},
     
     //Company layout
     {path:'/Seeker/company-profile', component: CompanyProfile, layout: LayoutNoSidebar},
