@@ -102,7 +102,7 @@ function NavbarUser() {
     } 
     return (
         <>
-            <div className='relative bg-[#f7fdfd] z-50 shadow'>
+            <div className=' fixed l-0 r-0 t-0 w-full  bg-[#f7fdfd] z-50 shadow'>
                 <nav className='container mx-auto flex items-center justify-between p-5'>
                     <div>
                         <Link to='/' className="text-blue-600 font-bold text-xl">

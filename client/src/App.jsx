@@ -23,19 +23,20 @@ function App() {
             return (<Route key={index}
               path={route.path}
               element={
-                <Layout>
+                <Layout >
                   <Page />
                 </Layout>
               } />)
           })}
         </Route>
         {publicRoutes.map((route, index) => {
+
           const Layout = route.layout;
           const Page = route.component
           return (<Route key={index}
             path={route.path}
             element={
-              <Layout>
+              <Layout >
                 <Page />
               </Layout>
             } />)

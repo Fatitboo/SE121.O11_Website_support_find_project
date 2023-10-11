@@ -92,7 +92,7 @@ function Sidebar({isAdmin}) {
                             <div className={classNames(pathname === '/Admin/occupation-management' ? 'bg-[#E9EFFB] text-blue-600' : '', itemStyle)}>
                                 <Link to="/" className="relative text-sm text-center p-3 flex items-center leading-7 font-normal  capitalize rounded-lg ">
                                     <LuNetwork className='relative mr-4 ml-4 text-2xl text-center ' />
-                                    Applied Jobs
+                                    Jobs Manager
                                 </Link>
                             </div>
                             <div className={classNames(pathname === '/' ? 'bg-[#E9EFFB] text-blue-600' : '', itemStyle)}>

@@ -112,10 +112,59 @@ const listOriginazers = [
         registedDate: '12/05/2023',
     }
 ]
+const dataProject = [
+    {
+        name: 'T 1',
+        pv: 2400,
+    },
+    {
+        name: 'T 2',
+        pv: 1398,
+    },
+    {
+        name: 'T 3',
+        pv: 9800,
+    },
+    {
+        name: 'T 4',
+        pv: 3908,
+    },
+    {
+        name: 'T 5',
+        pv: 4800,
+    },
+    {
+        name: 'T 6',
+        pv: 3800,
+    },
+    {
+        name: 'T 7',
+        pv: 4300,
+    },
+    {
+        name: 'T 8',
+        pv: 9800,
+    },
+    {
+        name: 'T 9',
+        pv: 3908,
+    },
+    {
+        name: 'T 10',
+        pv: 4800,
+    },
+    {
+        name: 'T 11',
+        pv: 3800,
+    },
+    {
+        name: 'T 12',
+        pv: 4300,
+    },
+];
 function Dashboard() {
     const onFilterValueSelected = (filterValue) => {
-        console.log(filterValue)
-         
+        console.log(filterValue)      
     }
     return (
         <div className="px-10 pb-0">
@@ -179,11 +228,13 @@ function Dashboard() {
                 <div className="max-w-full pt-3 shrink-0 w-full grid grid-cols-4 grid-flow-row gap-5 ">
                     <div className="relative rounded-lg mb-8 bg-white shadow max-w-full pt-1 shrink-0 col-span-3">
                         <div className='mx-3 pt-3 '>Project Chart</div>
-                        <div className='w-64 flex mb-4' >
+                        <div className=' flex mb-4' >
                             <span className='mt-3 ml-3 mr-2'>Loc theo: </span>
-                            <ComboBox listItem={cbb} filterValueSelected={onFilterValueSelected}/>
+                            <div className='w-52'>
+                                <ComboBox listItem={cbb} filterValueSelected={onFilterValueSelected}/>
+                            </div>
                         </div>
-                        <ProjectChart />
+                        <ProjectChart data={dataProject}/>
                     </div>
                     <div className="relative rounded-lg mb-8 bg-white shadow max-w-full pt-1 shrink-0 ">
                         <UserChart />

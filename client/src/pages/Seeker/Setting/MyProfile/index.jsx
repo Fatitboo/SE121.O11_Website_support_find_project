@@ -1,4 +1,4 @@
-import { CustomButton, TextInput } from "../../../components"
+import { CustomButton, TextInput } from "../../../../components"
 
 
 function MyProfile() {

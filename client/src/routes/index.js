@@ -2,9 +2,8 @@
 import Login from "../pages/Login"
 import {LayoutNoSidebar , LayoutHasSidebar} from "../components/index"
 import {UserMng, Approval,Dashboard, Skills, OccupationMng, AddOccupation, EditOccupation } from "../pages/Admin"
-import {Home, SeekerProfile, FindProjects, MyProfile, ProjectInfo, FindVacancies} from '../pages/Seeker'
+import {Home, SeekerProfile, FindProjects, MyProfile, ProjectInfo, FindVacancies, MyResume,DashboardSeeker} from '../pages/Seeker'
 import { CompanyProfile,  } from "../pages/Company"
-import MyResume from "../pages/Seeker/Dashboard/MyResume"
 
 
 const publicRoutes = [
@@ -17,6 +16,7 @@ const publicRoutes = [
     {path:'/Seeker/my-profile', component: MyProfile, layout: LayoutHasSidebar},
     {path:'/Seeker/my-resume', component: MyResume, layout: LayoutHasSidebar},
     {path:'/Seeker/project-info', component: ProjectInfo, layout: LayoutNoSidebar},
+    {path:'/Seeker/dashboard', component: DashboardSeeker, layout: LayoutHasSidebar},
     
     //Company layout
     {path:'/Seeker/company-profile', component: CompanyProfile, layout: LayoutNoSidebar},
