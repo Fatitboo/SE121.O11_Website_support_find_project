@@ -51,7 +51,7 @@ const listItemCbb = [
       
     },
     
-  ]
+]
 
 function UserMng() {
     const onFilterValueSelected = (filterValue)=>{

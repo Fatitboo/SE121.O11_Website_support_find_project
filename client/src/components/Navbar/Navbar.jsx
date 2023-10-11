@@ -1,13 +1,15 @@
 import React from "react";
 import NavbarAdmin from "./NavbarAdmin";
 import NavbarUser from "./NavbarUser";
+import NavbarCor from "./NavbarCor";
 
-function Navbar({isAdmin}) {
+function Navbar({userType}) {
     
 
     return (
         <>
-            {isAdmin ? <NavbarAdmin/> : <NavbarUser/>}
+            {userType === "admin" ? <NavbarAdmin/> : 
+            userType === "seeker" ? <NavbarUser/> : <NavbarCor/>}
         </>);
 }
 
