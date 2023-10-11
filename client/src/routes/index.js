@@ -4,6 +4,7 @@ import {LayoutNoSidebar , LayoutHasSidebar} from "../components/index"
 import {UserMng, Approval,Dashboard, Skills, OccupationMng, AddOccupation, EditOccupation } from "../pages/Admin"
 import {Home, SeekerProfile, FindProjects, MyProfile, ProjectInfo, FindVacancies} from '../pages/Seeker'
 import { CompanyProfile,  } from "../pages/Company"
+import FindOrganizer from "../pages/Seeker/FindOrganizer"
 
 
 const publicRoutes = [
@@ -15,6 +16,7 @@ const publicRoutes = [
     {path:'/seeker-profile', component: SeekerProfile, layout: LayoutNoSidebar},
     {path:'/Seeker/my-profile', component: MyProfile, layout: LayoutHasSidebar},
     {path:'/Seeker/project-info', component: ProjectInfo, layout: LayoutNoSidebar},
+    {path:'/find-organizer', component: FindOrganizer, layout: LayoutNoSidebar},
     
     //Company layout
     {path:'/Seeker/company-profile', component: CompanyProfile, layout: LayoutNoSidebar},

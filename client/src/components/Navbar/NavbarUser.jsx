@@ -117,7 +117,7 @@ function NavbarUser() {
                             <Link to='/find-vacancies' >Vacancies</Link>
                         </li>
                         <li>
-                            <Link to='/' >Organizer</Link>
+                            <Link to='/find-organizer' >Organizer</Link>
                         </li>
                         <li>
                             <Link to='/' >About us</Link>

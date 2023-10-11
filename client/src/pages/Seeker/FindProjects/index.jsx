@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import {CiSearch, CiLocationOn} from "react-icons/ci"
-import "./style.css"
 import { RadioGroup } from "@headlessui/react";
 import {BsCheck} from "react-icons/bs";
 import {ComboBox} from "../../../components/index"
