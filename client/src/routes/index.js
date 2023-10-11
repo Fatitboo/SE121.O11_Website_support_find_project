@@ -5,6 +5,7 @@ import {UserMng, Approval,Dashboard, Skills, OccupationMng, AddOccupation, EditO
 import {Home, SeekerProfile, FindProjects, MyProfile, ProjectInfo, FindVacancies} from '../pages/Seeker'
 import { CompanyProfile,  } from "../pages/Company"
 import FindOrganizer from "../pages/Seeker/FindOrganizer"
+import MyResume from "../pages/Seeker/Dashboard/MyResume"
 
 
 const publicRoutes = [
@@ -15,6 +16,7 @@ const publicRoutes = [
     {path:'/find-vacancies', component: FindVacancies, layout: LayoutNoSidebar},
     {path:'/seeker-profile', component: SeekerProfile, layout: LayoutNoSidebar},
     {path:'/Seeker/my-profile', component: MyProfile, layout: LayoutHasSidebar},
+    {path:'/Seeker/my-resume', component: MyResume, layout: LayoutHasSidebar},
     {path:'/Seeker/project-info', component: ProjectInfo, layout: LayoutNoSidebar},
     {path:'/find-organizer', component: FindOrganizer, layout: LayoutNoSidebar},
     

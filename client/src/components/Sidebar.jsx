@@ -78,27 +78,27 @@ function Sidebar({isAdmin}) {
                                 </Link>
                             </div>
                             <div className={classNames(pathname === '/Admin/user-management' ? 'bg-[#E9EFFB] text-blue-600' : '', itemStyle)}>
-                                <Link to="/Admin/user-management" className="relative text-sm text-center p-3 flex items-center leading-7 font-normal  capitalize rounded-lg ">
+                                <Link to="/Seeker/my-resume" className="relative text-sm text-center p-3 flex items-center leading-7 font-normal  capitalize rounded-lg ">
                                     <FiUsers className='relative mr-4 ml-4 text-2xl text-center ' />
-                                    My CV
+                                    My Resume
                                 </Link>
                             </div>
                             <div className={classNames(pathname === '/Admin/skills-management' ? 'bg-[#E9EFFB] text-blue-600' : '', itemStyle)}>
-                                <Link to="/Admin/skills-management" className="relative text-sm text-center p-3 flex items-center leading-7 font-normal  capitalize rounded-lg ">
+                                <Link to="/" className="relative text-sm text-center p-3 flex items-center leading-7 font-normal  capitalize rounded-lg ">
                                     <GrWorkshop className='relative mr-4 ml-4 text-2xl text-center ' />
-                                    Applied Vacancies
+                                    CV Manager
                                 </Link>
                             </div>
                             <div className={classNames(pathname === '/Admin/occupation-management' ? 'bg-[#E9EFFB] text-blue-600' : '', itemStyle)}>
-                                <Link to="/Admin/occupation-management" className="relative text-sm text-center p-3 flex items-center leading-7 font-normal  capitalize rounded-lg ">
+                                <Link to="/" className="relative text-sm text-center p-3 flex items-center leading-7 font-normal  capitalize rounded-lg ">
                                     <LuNetwork className='relative mr-4 ml-4 text-2xl text-center ' />
-                                    Change password
+                                    Applied Jobs
                                 </Link>
                             </div>
                             <div className={classNames(pathname === '/' ? 'bg-[#E9EFFB] text-blue-600' : '', itemStyle)}>
                                 <Link to="/Admin/" className="relative text-sm text-center p-3 flex items-center leading-7 font-normal  capitalize rounded-lg ">
                                     <MdReportGmailerrorred className='relative mr-4 ml-4 text-2xl text-center ' />
-                                    My resume
+                                    Change password
                                 </Link>
                             </div>
                             <div className={classNames(pathname === '/' ? 'bg-[#E9EFFB] text-blue-600' : '', itemStyle)}>
