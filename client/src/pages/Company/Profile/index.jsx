@@ -12,8 +12,8 @@ import "./style.css"
 
 function CompanyProfile() {
     return (<>
-          <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/uicons-regular-rounded/css/uicons-regular-rounded.css'></link>
-          <div className="mx-[8%] pt-[50px]">
+        <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/uicons-regular-rounded/css/uicons-regular-rounded.css'></link>
+        <div className="mx-[8%] pt-[50px]">
             <div className="static grid grid-cols-12 gap-4 m-auto box-border">
                 {/* left infomation */}
                 <div className="col-span-8 pr-[30px]">

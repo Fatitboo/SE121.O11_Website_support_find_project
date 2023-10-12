@@ -1,6 +1,6 @@
 import CompanyProfile from "./Profile";
-import PostProject from "./PostProject";
+import PostJob from "./PostJob";
 export {
     CompanyProfile,
-    PostProject
+    PostJob
 }

@@ -3,8 +3,9 @@ import Login from "../pages/Login"
 import {LayoutNoSidebar , LayoutHasSidebar} from "../components/index"
 import {UserMng, Approval,Dashboard, Skills, OccupationMng, AddOccupation, EditOccupation } from "../pages/Admin"
 import {Home, SeekerProfile, FindProjects, MyProfile, ProjectInfo, FindVacancies, MyResume,DashboardSeeker} from '../pages/Seeker'
-import { CompanyProfile, PostProject } from "../pages/Company"
+import { CompanyProfile } from "../pages/Company"
 import FindOrganizer from "../pages/Seeker/FindOrganizer"
+import PostJob from "../pages/Company/PostJob"
 
 
 const publicRoutes = [
@@ -22,7 +23,7 @@ const publicRoutes = [
     {path:'/Seeker/company-profile', component: CompanyProfile, layout: LayoutNoSidebar},
     
     //Company layout
-    {path:'/Organizer/post-project', component: PostProject, layout: LayoutNoSidebar},
+    {path:'/Organizer/post-project', component: PostJob, layout: LayoutNoSidebar},
     
 
     //Admin Layout
