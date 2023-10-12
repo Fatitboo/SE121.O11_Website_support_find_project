@@ -16,7 +16,7 @@ function NavbarAdmin() {
     } 
     return (
         <>
-            <div className='fixed l-0 r-0 t-0 w-full h-16 bg-[#f7fdfd] z-50 shadow'>
+            <div className='sticky top-0 l-0 r-0 t-0 w-full h-16 bg-[#f7fdfd] z-50 shadow'>
                 <nav className='container mx-auto flex items-center justify-between p-5'>
                     <div>
                         <div className="text-blue-600 font-bold text-xl">

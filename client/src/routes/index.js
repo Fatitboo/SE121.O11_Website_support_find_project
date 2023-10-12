@@ -30,6 +30,7 @@ import {
     ManageVacancy,  
 } from "../pages/Company"
 import FindOrganizer from "../pages/Seeker/FindOrganizer"
+import PostJob from "../pages/Company/PostJob"
 
 
 const publicRoutes = [
@@ -44,10 +45,11 @@ const publicRoutes = [
     {path:'/Seeker/project-info', component: ProjectInfo, layout: LayoutNoSidebar},
     {path:'/Seeker/dashboard', component: DashboardSeeker, layout: LayoutHasSidebar},
     {path:'/Seeker/find-organizer', component: FindOrganizer, layout: LayoutNoSidebar},
+    {path:'/Seeker/company-profile', component: CompanyProfile, layout: LayoutNoSidebar},
     {path:'/Seeker/applied-jobs', component: AppliedJob, layout: LayoutHasSidebar},
     {path:'/Seeker/cv-manager', component: CVManager, layout: LayoutHasSidebar},
     //Company layout
-    {path:'/Seeker/company-profile', component: CompanyProfile, layout: LayoutNoSidebar},
+    {path:'/Organizer/post-project', component: PostJob, layout: LayoutNoSidebar},
     {path:'/Organizer/dashboard', component: DashboardCompany, layout: LayoutHasSidebar},
     {path:'/Organizer/company-profile-edit', component: CompanyProfileEdit, layout: LayoutHasSidebar},
     {path:'/Organizer/manage-vacancy', component: ManageVacancy, layout: LayoutHasSidebar},

@@ -2,8 +2,9 @@ import React, { Fragment, useState } from "react";
 import { Menu, Transition } from "@headlessui/react";
 import { BiChevronDown } from "react-icons/bi";
 import { CgProfile } from "react-icons/cg";
-import { HiMenuAlt3 } from "react-icons/hi";
+import { HiMenuAlt3, HiPlus } from "react-icons/hi";
 import { AiOutlineClose, AiOutlineLogout } from "react-icons/ai";
+import {IoIosNotifications, IoMdMail} from "react-icons/io";
 import { Link } from "react-router-dom";
 import CustomButton from "../CustomButton";
 function MenuList({ user, onClick }) {
@@ -102,31 +103,28 @@ function NavbarCor() {
     } 
     return (
         <>
-            <div className='fixed l-0 r-0 t-0 w-full  bg-[#f7fdfd] z-50 shadow'>
+            <div className='bg-[#f7fdfd] z-50 shadow sticky top-0 w-full'>
                 <nav className='container mx-auto flex items-center justify-between p-5'>
                     <div>
                         <Link to='/' className="text-blue-600 font-bold text-xl">
                             Project<span className="text-[#1677cccb]">Finder</span>
                         </Link>
                     </div>
-                    <ul className="hidden lg:flex gap-10 text-base">
-                        <li>
-                            <Link to='/Seeker/find-projects' >Post Project</Link>
-                        </li>
-                        <li>
-                            <Link to='/Seeker/find-vacancies' >Post Job</Link>
-                        </li>
-                        <li>
-                            <Link to='/Seeker/find-organizer' >Seekers</Link>
-                        </li>
-                        <li>
-                            <Link to='/' >About us</Link>
-                        </li>
-                        <li>
-                            <Link to='/' >Contract</Link>
-                        </li>
-                    </ul>
-                    <div className="hidden lg:block">
+                    
+                    <div className="flex">
+                        <div className="flex flex-row items-center gap-4">
+                            <div className="flex flex-row items-center mr-1 text-base cursor-pointer">
+                                <IoIosNotifications className="w-6 h-5"/>
+                                <h3 className="leading-none mb-[2px] ml-[2px]">Notifications</h3>
+                            </div>
+                            <div className="flex flex-row items-center mr-1 text-base cursor-pointer">
+                                <IoMdMail className="w-6 h-5"/>
+                                <h3 className="leading-none mb-[2px] ml-[2px]">Messages</h3>
+                            </div>
+                            <div className="w-[1px] h-[30px] bg-[#c3c3c3] mr-4">
+                            </div>
+
+                        </div>
                         {
                             !user?.token ? (
                                 <Link to='user-auth' >

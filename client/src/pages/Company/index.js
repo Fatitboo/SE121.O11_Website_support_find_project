@@ -1,4 +1,5 @@
 import CompanyProfile from "./Profile";
+import PostJob from "./PostJob";
 import DashboardCompany from "./Dashboard";
 import CompanyProfileEdit from "./Setting/CompanyProfile";
 import ManageVacancy from "./ManageVacancy";
@@ -8,6 +9,6 @@ export {
     DashboardCompany,
     CompanyProfileEdit,
     ManageVacancy,
-    ManageProject
-
+    ManageProject,
+    PostJob
 }
