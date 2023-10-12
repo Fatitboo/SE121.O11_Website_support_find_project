@@ -1,9 +1,34 @@
 
 import Login from "../pages/Login"
 import {LayoutNoSidebar , LayoutHasSidebar} from "../components/index"
-import {UserMng, Approval,Dashboard, Skills, OccupationMng, AddOccupation, EditOccupation } from "../pages/Admin"
-import {Home, SeekerProfile, FindProjects, MyProfile, ProjectInfo, FindVacancies, MyResume,DashboardSeeker} from '../pages/Seeker'
-import { CompanyProfile,  } from "../pages/Company"
+import {
+    UserMng, 
+    Approval,
+    Dashboard, 
+    Skills, 
+    OccupationMng, 
+    AddOccupation, 
+    EditOccupation 
+} from "../pages/Admin"
+import {
+    Home, 
+    SeekerProfile, 
+    FindProjects, 
+    MyProfile, 
+    ProjectInfo, 
+    FindVacancies, 
+    MyResume,
+    DashboardSeeker, 
+    AppliedJob,
+    CVManager
+} from '../pages/Seeker'
+import { 
+    CompanyProfile, 
+    CompanyProfileEdit, 
+    DashboardCompany, 
+    ManageProject, 
+    ManageVacancy,  
+} from "../pages/Company"
 import FindOrganizer from "../pages/Seeker/FindOrganizer"
 
 
@@ -19,14 +44,23 @@ const publicRoutes = [
     {path:'/Seeker/project-info', component: ProjectInfo, layout: LayoutNoSidebar},
     {path:'/Seeker/dashboard', component: DashboardSeeker, layout: LayoutHasSidebar},
     {path:'/Seeker/find-organizer', component: FindOrganizer, layout: LayoutNoSidebar},
-    
+    {path:'/Seeker/applied-jobs', component: AppliedJob, layout: LayoutHasSidebar},
+    {path:'/Seeker/cv-manager', component: CVManager, layout: LayoutHasSidebar},
     //Company layout
     {path:'/Seeker/company-profile', component: CompanyProfile, layout: LayoutNoSidebar},
+    {path:'/Organizer/dashboard', component: DashboardCompany, layout: LayoutHasSidebar},
+    {path:'/Organizer/company-profile-edit', component: CompanyProfileEdit, layout: LayoutHasSidebar},
+    {path:'/Organizer/manage-vacancy', component: ManageVacancy, layout: LayoutHasSidebar},
+    {path:'/Organizer/manage-project', component: ManageProject, layout: LayoutHasSidebar},
+    {path:'/project-detail/:id', component: ProjectInfo, layout: LayoutHasSidebar},
+
 
 
     //Admin Layout
     {path:'/Admin/user-management', component: UserMng, layout: LayoutHasSidebar},
+    {path:'/Admin/user-management/:id', component: CompanyProfile, layout: LayoutHasSidebar},
     {path:'/Admin/approval-project', component: Approval, layout: LayoutHasSidebar},
+    {path:'/Admin/approval-project/:id', component: ProjectInfo, layout: LayoutHasSidebar},
     {path:'/Admin', component: Dashboard, layout: LayoutHasSidebar},
     {path:'/Admin/skills-management', component: Skills, layout: LayoutHasSidebar},
     {path:'/Admin/occupation-management', component: OccupationMng, layout: LayoutHasSidebar},

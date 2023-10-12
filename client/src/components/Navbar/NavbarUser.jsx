@@ -49,8 +49,7 @@ function MenuList({ user, onClick }) {
                             <Menu.Item>
                                 {({ active }) => (
                                     <Link
-                                        to={`${user?.accountType ? "user-profile" : "company-profile"
-                                            }`}
+                                        to={`${user?.accountType ? "user-profile" : "company-profile"}`}
                                         className={`${active ? "bg-blue-500 text-white" : "text-gray-900"
                                             } group flex w-full items-center rounded-md p-2 text-sm`}
                                         onClick={onClick}

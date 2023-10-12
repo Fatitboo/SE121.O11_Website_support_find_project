@@ -4,7 +4,7 @@ import { FiAlertCircle } from "react-icons/fi";
 import { LiaStar } from "react-icons/lia";
 import { ComboBox } from "../../../../components";
 import ProjectChart from "../../../Admin/Dashboard/ProjectChart";
-import VacancyItem from "./VacancyItem";
+import VacancyItem from "../../ProjectInfo/VacancyItem";
 
 const cbb = [
     {
@@ -126,6 +126,84 @@ const vacancies = [
                 avatar: 'https://superio-nextjs.netlify.app/images/resource/candidate-2.png'
             }
         ]
+    },
+    {
+        vacancyId: 3,
+        vacancyName: "Technical Leader", 
+        description: "As a Product Designer, you will work within a Product Delivery Team fused with UX, engineering, product and data talent. You will help the team design beautiful interfaces that solve business challenges for our clients. We work with a number of Tier 1 banks on building web-based applications for AML, KYC and Sanctions List management workflows. This role is ideal if you are looking to segue your career into the FinTech or Big Data arenas.",
+        skillsRequired:[
+            {
+                skillName: "Manager",
+                level: "Advanced",
+            },
+            {
+                skillName: "Python",
+                level: "Medium",
+            },
+            {
+                skillName: "Bootstrap",
+                level: "Basic",
+            },
+            {
+                skillName: "Android",
+                level: "Basic",
+            },
+            {
+                skillName: "C++",
+                level: "Advanced",
+            },
+        ],
+        maxRequired: 1,
+        salary: "$45k-$100k",
+        registant:[
+            {
+                userId: 1,
+                firstName: "Le Quang",
+                surName: 'Nhan',
+                avatar: 'https://scontent.fsgn19-1.fna.fbcdn.net/v/t39.30808-6/305117982_819079809468330_6882772732131573332_n.jpg?_nc_cat=105&ccb=1-7&_nc_sid=a2f6c7&_nc_ohc=_tz73DXI83kAX8-wZsI&_nc_ht=scontent.fsgn19-1.fna&oh=00_AfCo2vH4GN6Tt7KXpVymIL9tEGH-MCebjb2VZfZjP_w6Xw&oe=651DF1E8'
+            },
+            {
+                userId: 2,
+                firstName: "Wade",
+                surName: 'Warren',
+                avatar: 'https://superio-nextjs.netlify.app/images/resource/candidate-2.png'
+            }
+        ]
+    },
+    {
+        vacancyId: 4,
+        vacancyName: "Software Engineering", 
+        description: "As a Product Designer, you will work within a Product Delivery Team fused with UX, engineering, product and data talent. You will help the team design beautiful interfaces that solve business challenges for our clients. We work with a number of Tier 1 banks on building web-based applications for AML, KYC and Sanctions List management workflows. This role is ideal if you are looking to segue your career into the FinTech or Big Data arenas.",
+        skillsRequired:[
+            {
+                skillName: "Javascript",
+                level: "Advanced",
+            },
+            {
+                skillName: "Python",
+                level: "Medium",
+            },
+            {
+                skillName: "Bootstrap",
+                level: "Basic",
+            },
+        ],
+        maxRequired: 3,
+        salary: "$45k-$100k",
+        registant:[
+            {
+                userId: 1,
+                firstName: "Le Quang",
+                surName: 'Nhan',
+                avatar: 'https://scontent.fsgn19-1.fna.fbcdn.net/v/t39.30808-6/305117982_819079809468330_6882772732131573332_n.jpg?_nc_cat=105&ccb=1-7&_nc_sid=a2f6c7&_nc_ohc=_tz73DXI83kAX8-wZsI&_nc_ht=scontent.fsgn19-1.fna&oh=00_AfCo2vH4GN6Tt7KXpVymIL9tEGH-MCebjb2VZfZjP_w6Xw&oe=651DF1E8'
+            },
+            {
+                userId: 2,
+                firstName: "Wade",
+                surName: 'Warren',
+                avatar: 'https://superio-nextjs.netlify.app/images/resource/candidate-2.png'
+            }
+        ]
     }
 ];
 function DashboardSeeker() {
@@ -209,10 +287,14 @@ function DashboardSeeker() {
             </div>
             <div className="flex flex-wrap mt-3">
                 <div className="max-w-full  shrink-0 w-full grid grid-cols-4 grid-flow-row gap-5 ">
-                    <div className="relative rounded-lg mb-8 bg-white shadow max-w-full pt-1 shrink-0 col-span-4 w-full">
+                    <div className="relative rounded-lg mb-8 bg-white shadow max-w-full pt-1 shrink-0 col-span-4 w-full px-8">
                         <div className='pt-3 px-4 font-bold'>Vacancies Applied Recently: </div>
-                        <div className="relative overflow-y-hidden overflow-x-hidden rounded-md mb-8 pt-3 px-4 bg-white border-0 text-sm h-fit w-full grid grid-cols-2" >
-                            {vacancies.map((item, index)=> <VacancyItem key={index} item={item}/>)}
+                        <div className="relative overflow-y-hidden overflow-x-hidden rounded-md mb-8 pt-8 px-4 bg-white border-0 text-sm h-fit w-full grid grid-cols-2 gap-x-8" >
+                        {
+                            vacancies.map((item, index) => {
+                                return <VacancyItem key={index} vacancyName={item.vacancyName} salary={item.salary} skillsRequired={item.skillsRequired}  maxRequired={item.maxRequired} isAvatar={true} companyName={"VNG Inc."} companyAvatar={"https://scontent.fsgn19-1.fna.fbcdn.net/v/t39.30808-6/305117982_819079809468330_6882772732131573332_n.jpg?_nc_cat=105&ccb=1-7&_nc_sid=a2f6c7&_nc_ohc=_tz73DXI83kAX8-wZsI&_nc_ht=scontent.fsgn19-1.fna&oh=00_AfCo2vH4GN6Tt7KXpVymIL9tEGH-MCebjb2VZfZjP_w6Xw&oe=651DF1E8"}/>;                            
+                            })
+                        }
                         </div>
                     </div>
                     

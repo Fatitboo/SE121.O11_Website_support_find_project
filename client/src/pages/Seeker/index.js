@@ -6,6 +6,8 @@ import ProjectInfo from "./ProjectInfo/ProjectInfo";
 import FindVacancies from "./FindVacancies";
 import DashboardSeeker from "./Setting/Dashboard";
 import MyResume from "./Setting/MyResume";
+import AppliedJob from "./Setting/AppliedJobs";
+import CVManager from "./Setting/CvManager";
 export {
     FindProjects, 
     Home, 
@@ -14,6 +16,7 @@ export {
     ProjectInfo,
     FindVacancies,
     DashboardSeeker,
-    MyResume
-
+    MyResume,
+    AppliedJob,
+    CVManager
 }
