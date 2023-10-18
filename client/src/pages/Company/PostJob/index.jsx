@@ -71,11 +71,11 @@ function PostJob() {
                                                 <MdRemoveRedEye className="w-6 h-6"/>
                                             </div> : null
                         }
-                        <div className="flex items-center justify-center h-[53px] box-border bg-[#1967d3] px-[18px] py-[8px] rounded-[8px] text-[#fff] hover:bg-[#0146a6] cursor-pointer"
+                        <button type="submit" className="flex items-center justify-center h-[53px] box-border bg-[#1967d3] px-[18px] py-[8px] rounded-[8px] text-[#fff] hover:bg-[#0146a6] cursor-pointer"
                             onClick={nextJobRef}>
                             <span className="text-[15px] leading-none font-bold mr-2">Continue</span>
                             <TbArrowRight className="w-6 h-6"/>
-                        </div>
+                        </button>
                     </div>
                 </div>
             </div>
