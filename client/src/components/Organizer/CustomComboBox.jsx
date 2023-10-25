@@ -9,8 +9,8 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
 
-export default function CustomComboBox({label, listItem, filterValueSelected, error, name, type, onblur, rules, placeHolder}) {
-  const [selected, setSelected] = useState({id: -1, name: ''})
+export default function CustomComboBox({label, listItem, filterValueSelected, error, name, type, onblur, rules, placeHolder, selectItem}) {
+  const [selected, setSelected] = useState(selectItem ? selectItem: {id: -1, name: ''})
   const [visible, setVisible] = useState("none")
   const [outline, setOutline] = useState(false)
   
@@ -40,13 +40,13 @@ export default function CustomComboBox({label, listItem, filterValueSelected, er
                         <ChevronUpDownIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
                     </span>
                 </div>
-                <ul ref={dropDownTag} style={{display: `${visible}` }} className='absolute mt-2 z-10 w-full overflow-y-scroll max-h-56 ring-1 ring-black ring-opacity-5 rounded-md'>
+                <ul ref={dropDownTag} style={{display: `${visible}` }} className='absolute mt-2 z-10 w-full overflow-y-auto max-h-56 ring-1 ring-black ring-opacity-5 rounded-md'>
                     {
                         listItem.map((item, index) => {
                             return (
                                 <li key={index} value={index} onClick={() => {setSelected(item);}} className='flex flex-row items-center justify-between bg-white py-3 px-5 shadow-lg focus:outline-none text-base hover:bg-[#f3f9ff] text-[#636363]'>
                                     {
-                                        item === selected ? <>
+                                        item.id === selected.id ? <>
                                             <div>
                                                 <span className='font-bold'>{item.name}</span>
                                                 <p className='!text-[#636363] !font-normal'>{item.des}</p>

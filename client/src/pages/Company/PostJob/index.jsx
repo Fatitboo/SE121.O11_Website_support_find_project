@@ -18,19 +18,23 @@ import { JobBasic, JobBenefit, JobDes, JobDetail, JobPreferences, JobPreScreen, 
 // review
 
 function PostJob() {
-    const jobRef = [<JobBasic key={0}/>, <JobDetail key={1}/>, <JobBenefit key={2}/>, <JobDes key={3}/>,<JobPreferences key={4}/>,<JobPreScreen key={5}/>,<JobReview key={6}/>]
-    var [jobProgress, setJobProgress] = useState('0%')
-    var [jobRefKey, setJobRefKey] = useState(0)
-    var [isPreview, setIsPreview] = useState(false)
-    function nextJobRef(){
+    const nextJobRef = () => {
         if(jobRefKey < jobRef.length){
+            console.log(jobRefKey)
             setJobRefKey(++jobRefKey)
             setJobProgress(jobRefKey / jobRef.length * 100 + '%')
         }
         else {
             alert("filled, go to payment")
-        }
+        } 
     }
+    const formId = ["form-job-basic", "form-job-detail"]
+    const jobRef = [<JobBasic formSubmit={nextJobRef} formId={formId[0]} key={0}/>, <JobDetail formSubmit={nextJobRef} formId={formId[1]} key={1}/>, <JobBenefit key={2}/>, <JobDes key={3}/>,<JobPreferences key={4}/>,<JobPreScreen key={5}/>,<JobReview key={6}/>]
+        
+    var [jobProgress, setJobProgress] = useState('0%')
+    var [jobRefKey, setJobRefKey] = useState(0)
+    var [isPreview, setIsPreview] = useState(false)
+
     function backJobRef(){
         if(jobRefKey > 0){
             setJobRefKey(--jobRefKey)
@@ -65,14 +69,13 @@ function PostJob() {
                     
                     <div className="flex flex-row items-center">
                         {
-                            isPreview ?<div className="flex items-center mr-5 justify-center h-[53px] box-border bg-[#fff] px-[18px] py-[8px] rounded-[8px] text-[#1967d3] hover:bg-[#eef1fe] cursor-pointer"
+                            isPreview ? <div className="flex items-center mr-5 justify-center h-[53px] box-border bg-[#fff] px-[18px] py-[8px] rounded-[8px] text-[#1967d3] hover:bg-[#eef1fe] cursor-pointer"
                                                 onClick={nextJobRef}>
                                                 <span className="text-[15px] leading-none font-bold mr-2">Preview</span>
                                                 <MdRemoveRedEye className="w-6 h-6"/>
                                             </div> : null
                         }
-                        <button type="submit" className="flex items-center justify-center h-[53px] box-border bg-[#1967d3] px-[18px] py-[8px] rounded-[8px] text-[#fff] hover:bg-[#0146a6] cursor-pointer"
-                            onClick={nextJobRef}>
+                        <button type="submit" form={formId[jobRefKey]} className="flex items-center justify-center h-[53px] box-border bg-[#1967d3] px-[18px] py-[8px] rounded-[8px] text-[#fff] hover:bg-[#0146a6] cursor-pointer">
                             <span className="text-[15px] leading-none font-bold mr-2">Continue</span>
                             <TbArrowRight className="w-6 h-6"/>
                         </button>
