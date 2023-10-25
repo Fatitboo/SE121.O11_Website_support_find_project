@@ -1,5 +1,6 @@
 import { BiMap } from 'react-icons/bi'
 import { LiaEyeSolid, LiaTrashAltSolid } from 'react-icons/lia'
+import { Link } from 'react-router-dom';
 
 function OrganizerItem({ item }) {
     return (
@@ -27,9 +28,9 @@ function OrganizerItem({ item }) {
             <td>
                 <div>
                     <ul className="list-none flex relative item-center">
-                        <li className="list-none relative mr-3 bg-[#f5f7fc] border rounded-md border-[#e9ecf9] px-1 pt-1 hover:bg-[#5f86e9] hover:text-white">
+                        <Link to={'/Admin/user-management/12'} className="list-none relative mr-3 bg-[#f5f7fc] border rounded-md border-[#e9ecf9] px-1 pt-1 hover:bg-[#5f86e9] hover:text-white">
                             <button> <LiaEyeSolid fontSize={20} /> </button>
-                        </li>
+                        </Link>
                         <li className="list-none relative bg-[#f5f7fc] border rounded-md border-[#e9ecf9] px-1 pt-1 hover:bg-[#ce3e37] hover:text-white">
                             <button > <LiaTrashAltSolid fontSize={20} /> </button>
                         </li>

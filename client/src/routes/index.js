@@ -1,5 +1,4 @@
 
-import Login from "../pages/Login"
 import {LayoutNoSidebar , LayoutHasSidebar} from "../components/index"
 import {
     UserMng, 
@@ -31,12 +30,14 @@ import {
 } from "../pages/Company"
 import FindOrganizer from "../pages/Seeker/FindOrganizer"
 import PostJob from "../pages/Company/PostJob"
-
+import {Login, Register, ResetPassword} from '../pages/Auth'
 
 const publicRoutes = [
     // User Layout
     {path:'/', component: Home, layout: LayoutNoSidebar},
-    {path:'/user-auth', component: Login, layout: LayoutNoSidebar},
+    {path:'/user-auth/login', component: Login, layout: LayoutNoSidebar},
+    {path:'/user-auth/register', component: Register, layout: LayoutNoSidebar},
+    {path:'/user-auth/reset-pass', component: ResetPassword, layout: LayoutNoSidebar},
     {path:'/Seeker/find-projects', component: FindProjects, layout: LayoutNoSidebar},
     {path:'/Seeker/find-vacancies', component: FindVacancies, layout: LayoutNoSidebar},
     {path:'/Seeker/profile', component: SeekerProfile, layout: LayoutNoSidebar},

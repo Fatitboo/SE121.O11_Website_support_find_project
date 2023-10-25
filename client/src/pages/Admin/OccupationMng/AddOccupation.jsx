@@ -1,5 +1,7 @@
 import { useState } from "react";
 import {CustomButton} from "../../../components";
+import { CgArrowLeft } from "react-icons/cg";
+import { Link } from "react-router-dom";
 
 function AddOccupation() {
     const handleAddMajor = () => {
@@ -23,11 +25,10 @@ function AddOccupation() {
         <div className="px-10 pb-0">
 
             {/* Start title of page  */}
-            <div className="mb-8">
-                <h3 className="font-medium text-3xl text-gray-900 mb-2 leading-10">Add Occupation!</h3>
-                <div className="text-sm leading-6 font-normal m-0 right-0 flex justify-between items-center ">You want to add new occupation, don't you?</div>
-
-            </div>
+            <Link to='/Admin/occupation-management' className="mb-8 flex items-center ">
+                <CgArrowLeft fontSize={30}/>
+                <h3 className="font-normal text-2xl text-gray-900 ml-2 leading-10">Back</h3>
+            </Link>
 
             <div className="flex flex-wrap mx-3 mt-3 ">
                 <div className="max-w-full px-3 pt-3 shrink-0 w-full">
@@ -36,7 +37,7 @@ function AddOccupation() {
 
                             {/* Input form create/ update skill information */}
                             <div className="relative flex text-left flex-col bg-transparent px-16 py-8">
-                                <div className="text-lg font-medium mb-5">Occupation informations:</div>
+                                <div className=" font-medium mb-5 text-xl text-gray-700">Add Occupation:</div>
 
                                 <form action="#" method="post" className="w-full " >
                                     <div className="w-full flex flex-col">
@@ -44,7 +45,7 @@ function AddOccupation() {
                                             <div className="mr-6 w-5/6 ">
                                                 <label for="name" className="block leading-6 text-gray-900 text-base">Occupation name:</label>
                                                 <div className="relative mt-2 rounded-md shadow-sm ">
-                                                    <input type="text" name="name" id="name" className="block bg-[#f0f5f7] focus:bg-white  text-base w-full rounded-md border-0 py-2.5 pl-5 pr-20 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 sm:text-sm sm:leading-6" placeholder="Ex: Communication" />
+                                                    <input type="text" name="name" id="name" className="block bg-[#f0f5f7] focus:bg-white  text-base w-full rounded-md border-0 py-2 pl-5 pr-20 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 sm:text-sm sm:leading-6" placeholder="Ex: Communication" />
                                                 </div>
                                             </div>
                                             <div>
@@ -57,7 +58,7 @@ function AddOccupation() {
                                                 {listMajor.map((item, index) => (
                                                     <div key={index} className="flex ml-20 w-8/12 my-1">
                                                         <div className="relative mt-2 rounded-md shadow-sm mr-3 ">
-                                                            <input type="text" onChange={e => handleChangeMajor(e, index)} name="detailMajor" id="detailMajor" value={item} className="block bg-[#f0f5f7] focus:bg-white  text-base w-full rounded-md border-0 py-2.5 pl-5 pr-20 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 sm:text-sm sm:leading-6" placeholder="Ex: Communication" />
+                                                            <input type="text" onChange={e => handleChangeMajor(e, index)} name="detailMajor" id="detailMajor" value={item} className="block bg-[#f0f5f7] focus:bg-white  text-base w-full rounded-md border-0 py-1.5 pl-5 pr-20 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 sm:text-sm sm:leading-6" placeholder="Ex: Communication" />
                                                         </div>
                                                         <div onClick={() => handleDeleteMajor(index)}>
                                                             <CustomButton title="Delete" containerStyles="text-red-600 py-1 mt-[9px] px-3 focus:outline-none hover:bg-red-700 hover:text-white rounded-md text-base border border-red-600" />

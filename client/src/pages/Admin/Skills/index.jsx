@@ -45,7 +45,7 @@ function Skills() {
                                             <div className="mb-6">
                                                 <label for="name" className="block leading-8 text-gray-900 ">Skill name:</label>
                                                 <div className="relative mt-2 rounded-md shadow-sm ">
-                                                    <textarea rows={1} type="text" name="name" id="name" className="block bg-[#f0f5f7] focus:bg-white text-base w-full rounded-md border-0 py-2.5 pl-5 pr-20 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400  sm:text-base sm:leading-8" placeholder="Ex: Communication" />
+                                                    <textarea rows={1} type="text" name="name" id="name" className="block bg-[#f0f5f7] focus:bg-white text-base w-full rounded-md border-0 py-2 pl-5 pr-20 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400  sm:text-base sm:leading-8" placeholder="Ex: Communication" />
                                                 </div>
                                             </div>
                                             <div>

@@ -29,16 +29,16 @@ function MyProfile() {
                             <div  className="relative">
                                 <div className="grid grid-cols-2 pb-4">
                                     <div className="px-4 mb-6">
-                                        <TextInput name='firstname' type='text' label='First Name' placeholder='Phat'/>
+                                        <TextInput name='fullname' type='text' label='Full Name' placeholder='Nguyen Van Phat' styles='bg-[#f0f5f7]'/>
                                     </div>
                                     <div className="px-4 mb-6">
-                                        <TextInput name='surname' type='text' label='Sur Name' placeholder='Nguyen Van'/>
+                                        <TextInput name='expectSalary' type='text' label='Expect Salary' placeholder='100k/hour' styles='bg-[#f0f5f7]'/>
                                     </div>
                                     <div className="px-4 mb-6">
-                                        <TextInput name='phone' type='text' label='Phone' placeholder='0367625416'/>   
+                                        <TextInput name='phone' type='text' label='Phone' placeholder='0367625416' styles='bg-[#f0f5f7]'/>   
                                     </div>
                                     <div className="px-4 mb-6">
-                                        <TextInput name='email' type='email' label='Email' placeholder='vanphat@gmail.com'/>
+                                        <TextInput name='email' type='email' label='Email' placeholder='vanphat@gmail.com' styles='bg-[#f0f5f7]'/>
                                     </div>
                                     <div className="px-4 mb-6">
                                         <label for="dob" className="block leading-8 text-gray-900 font-medium">Date of birth</label>
@@ -47,7 +47,7 @@ function MyProfile() {
                                         </div>
                                     </div>
                                     <div className="px-4 mb-6">
-                                        <TextInput name='website' type='text' label='Website' placeholder='www.vanan.com'/>
+                                        <TextInput name='website' type='text' label='Website' placeholder='www.vanan.com' styles='bg-[#f0f5f7]'/>
                                     </div>
                                     <div className="col-span-2 px-4 mb-6">
                                         <label for="description" className="block leading-8 text-gray-900 font-medium ">Description</label>
@@ -66,16 +66,16 @@ function MyProfile() {
                             <form action="#" className="relative">
                                 <div className="grid grid-cols-2">
                                     <div className="px-4 mb-6">
-                                        <TextInput name='facebook' type='text' label='Facebook' placeholder='www.facebook.com/Nguyenvana'/> 
+                                        <TextInput name='facebook' type='text' label='Facebook' placeholder='www.facebook.com/Nguyenvana'styles='bg-[#f0f5f7]'/> 
                                     </div>
                                     <div className="px-4 mb-6">
-                                        <TextInput name='twitter' type='text' label='Twitter' placeholder='www.twitter.com/@Nguyenvana'/> 
+                                        <TextInput name='twitter' type='text' label='Twitter' placeholder='www.twitter.com/@Nguyenvana'styles='bg-[#f0f5f7]'/> 
                                     </div>
                                     <div className="px-4 mb-6">
-                                        <TextInput name='linkedin' type='text' label='Linkedin' placeholder='www.linkedin.com/Nguyenvana'/>
+                                        <TextInput name='linkedin' type='text' label='Linkedin' placeholder='www.linkedin.com/Nguyenvana'styles='bg-[#f0f5f7]'/>
                                     </div>
                                     <div className="px-4 mb-6">
-                                        <TextInput name='ggPlus' type='text' label='Google Plus' placeholder='www.google.com/Nguyenvana'/>   
+                                        <TextInput name='instagram' type='text' label='Instagram' placeholder='www.instagram.com/Nguyenvana'styles='bg-[#f0f5f7]'/>   
                                     </div>
                                     <CustomButton title={'Save'} containerStyles="text-blue-600 justify-center w-[20%] flex py-2 ml-3 px-4 mb-6 focus:outline-none hover:bg-blue-700 hover:text-white rounded-md text-base border border-blue-600"/>
 
@@ -89,13 +89,13 @@ function MyProfile() {
                             <form action="#" className="relative">
                                 <div className="grid grid-cols-2">
                                     <div className="px-4 mb-6">
-                                        <TextInput name='country' type='text' label='Country' placeholder='Australia'/>
+                                        <TextInput name='country' type='text' label='Country' placeholder='Australia' styles='bg-[#f0f5f7]'/>
                                     </div>
                                     <div className="px-4 mb-6">
-                                        <TextInput name='city' type='text' label='City' placeholder='Ho Chi Minh'/>
+                                        <TextInput name='city' type='text' label='City' placeholder='Ho Chi Minh' styles='bg-[#f0f5f7]'/>
                                     </div>
                                     <div className="px-4 mb-6 col-span-2">
-                                        <TextInput name='cplAddress' type='text' label='Complete Address' placeholder='...'/>   
+                                        <TextInput name='cplAddress' type='text' label='Complete Address' placeholder='...' styles='bg-[#f0f5f7]'/>   
                                     </div>
                                     
                                     <CustomButton title={'Save'} containerStyles="text-blue-600 justify-center w-[20%] flex py-2 ml-3 px-4 mb-6 focus:outline-none hover:bg-blue-700 hover:text-white rounded-md text-base border border-blue-600"/>

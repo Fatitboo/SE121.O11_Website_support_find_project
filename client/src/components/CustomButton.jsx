@@ -1,6 +1,6 @@
 import React from "react";
 
-const CustomButton = ({ title, containerStyles, iconRight, type, onClick, isLeft }) => {
+const CustomButton = ({ title, containerStyles, iconRight, type, onClick, isLeft , children}) => {
     if(isLeft){
         return (
             <button
@@ -8,6 +8,7 @@ const CustomButton = ({ title, containerStyles, iconRight, type, onClick, isLeft
               type={type || "button"}
               className={`inline-flex items-center ${containerStyles}`}
             >
+              {children}
               {iconRight && <div className="mr-2">{iconRight}</div>}
               {title}
             </button>
@@ -19,6 +20,7 @@ const CustomButton = ({ title, containerStyles, iconRight, type, onClick, isLeft
           type={type || "button"}
           className={`inline-flex items-center ${containerStyles}`}
         >
+          {children}
           {title}
           {iconRight && <div className="ml-2">{iconRight}</div>}
         </button>

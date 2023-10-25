@@ -110,6 +110,7 @@ const Skills = [
 
 ]
 function getEducateList(Educations) {
+    
     const EducationItems = {}
     const EduName = []
     Educations.sort((a, b) => a.endDate < b.endDate ? 1 : -1).map((item) => {
@@ -237,6 +238,7 @@ function getSkillList (Skills){
     })
 }
 function MyResume() {
+    const [addEducation, setAddEducation] = useState(true)
     const [showAddSkill, setShowAddSkill] = useState(false);
     const handleClose=()=>{
         setShowAddSkill(prev=>!prev)
@@ -282,6 +284,10 @@ function MyResume() {
                                     Add Education
                                 </div>
                             </div>
+                            { addEducation && 
+                                <div >
+                                    
+                                </div>}
                             {/* get education list */}
                             <div>{getEducateList(Educations)}</div>
                         </div>

@@ -5,14 +5,14 @@ import { publicRoutes, privateRoutes } from './routes/index.js'
 
 
 function Layout() {
-  const user = true;
+  const user = false;
 
   const location = useLocation();
-  return user ? (<Outlet />) : (<Navigate to='user-auth' state={{ from: location }} replace />);
+  return user ? (<Outlet />) : (<Navigate to='/user-auth/login' state={{ from: location }} replace />);
 }
 
 function App() {
-const userType = "cor";
+const userType = "organizer";
   return (
     <main>
       <Routes>

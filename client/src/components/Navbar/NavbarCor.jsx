@@ -103,7 +103,7 @@ function NavbarCor() {
     } 
     return (
         <>
-            <div className='bg-[#f7fdfd] z-50 shadow sticky top-0 w-full'>
+            <div className='fixed top-0 l-0 r-0 t-0 w-full bg-[#f7fdfd] z-50 shadow'>
                 <nav className='container mx-auto flex items-center justify-between p-5'>
                     <div>
                         <Link to='/' className="text-blue-600 font-bold text-xl">

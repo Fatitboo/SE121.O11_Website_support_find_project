@@ -101,7 +101,7 @@ function NavbarUser() {
     } 
     return (
         <>
-            <div className=' sticky top-0 l-0 r-0 t-0 w-full  bg-[#f7fdfd] z-50 shadow'>
+            <div className=' fixed top-0 l-0 r-0 t-0 w-full bg-[#f7fdfd] z-50 shadow'>
                 <nav className='container mx-auto flex items-center justify-between p-5'>
                     <div>
                         <Link to='/' className="text-blue-600 font-bold text-xl">
@@ -128,7 +128,7 @@ function NavbarUser() {
                     <div className="hidden lg:block">
                         {
                             !user?.token ? (
-                                <Link to='user-auth' >
+                                <Link to='/user-auth/Login' >
                                     <CustomButton title="Sign In" containerStyles="text-blue-600 py-1.5 px-5 focus:outline-none hover:bg-blue-700 hover:text-white rounded-full text-base border border-blue-600" />
                                 </Link>
                             ) : (
