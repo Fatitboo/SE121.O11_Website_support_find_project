@@ -1,8 +1,13 @@
 import { CgAdd } from "react-icons/cg";
 import BackgroundItem from "../../../../components/Seeker/BackgroundItem";
-import { Modal, TextInput } from "../../../../components";
+import { CustomButton, CustomComboBox, Modal, TextInput } from "../../../../components";
 import { useState } from "react";
 import SkillItem from "./SkilItem";
+import { BsTrash3 } from 'react-icons/bs'
+import AddExperience from "./AddExperience";
+import AddEducation from "./AddEducation";
+import AddSkill from "./AddSkill";
+import AddAward from "./AddAward";
 const Educations = [
     {
         universityName: "Harvard University",
@@ -47,21 +52,24 @@ const Educations = [
 ];
 const Experience = [
     {
-        occupationName: "Software Engineering",                
+        occupationName: "Software Engineering",
+        detailMajors: ['AI Application', "Blockchain & Cryptocurrency", 'Chatbots Development', 'AI Application', "Blockchain & Cryptocurrency", 'Chatbots Development', 'AI Application', "Blockchain & Cryptocurrency", 'Chatbots Development'],
         startDate: "2008",
         endDate: "2012",
         company: "VNG Inc.",
         description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin a ipsum tellus. Interdum et malesuada fames ac ante ipsum primis in faucibus.",
     },
     {
-        occupationName: "Software Engineering",                
+        occupationName: "Software Engineering",
+        detailMajors: ['AI Application', "Blockchain & Cryptocurrency", 'Chatbots Development'],
         startDate: "2012",
-        endDate: "2014",            
-        company:"Spotify Inc.",
+        endDate: "2014",
+        company: "Spotify Inc.",
         description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin a ipsum tellus. Interdum et malesuada fames ac ante ipsum primis in faucibus.",
     },
     {
-        occupationName: "Software Engineering",                
+        occupationName: "Software Engineering",
+        detailMajors: ['AI Application', "Blockchain & Cryptocurrency", 'Chatbots Development'],
         startDate: "2014",
         endDate: "2016",
         company: "Dropbox Inc.",
@@ -84,33 +92,55 @@ const Awards = [
 ];
 const Skills = [
     {
-        skillName:'C#',
+        skillName: 'C#',
         skillLv: 'Beginner'
     },
     {
-        skillName:'Java',
+        skillName: 'Java',
         skillLv: 'Expert'
     },
     {
-        skillName:'Spring',
+        skillName: 'Spring',
         skillLv: 'Intermediate'
     },
     {
-        skillName:'XCode',
+        skillName: 'XCode',
         skillLv: 'Intermediate'
     },
     {
-        skillName:'VSCode',
+        skillName: 'VSCode',
         skillLv: 'Expert'
     },
     {
-        skillName:'ReactJs',
+        skillName: 'ReactJs',
         skillLv: 'Beginner'
     }
-
+]
+const levelCbb = [
+    { id: 1, name: 'Beginner' }, { id: 2, name: 'Intermediate' }, { id: 3, name: 'Expert' },
+]
+const DegreesCbb = [
+    { id: 1, name: 'B.A' }, { id: 2, name: 'B.S' }, { id: 3, name: 'M.A' }, { id: 4, name: 'M.S' }, { id: 5, name: 'Ph.D' }, { id: 6, name: 'Ed.D' }, { id: 7, name: 'Assoc.Prof' },
+]
+const OccupationCbb = [
+    {
+        id: 1,
+        name: 'Digital Marketing',
+        detailMajors: ['Affiliate Marketing', 'Book & eBook Marketing', 'Community Management', 'E-Commerce Marketing']
+    },
+    {
+        id: 2,
+        name: 'Graphics & Design',
+        detailMajors: ['AI Artists', 'Architecture & Interior Design', 'Brochure Design', 'E-Commerce Marketing']
+    },
+    {
+        id: 3,
+        name: 'Business',
+        detailMajors: ['Affiliate Marketing', 'Book & eBook Marketing', 'Community Management', 'E-Commerce Marketing']
+    }
 ]
 function getEducateList(Educations) {
-    
+
     const EducationItems = {}
     const EduName = []
     Educations.sort((a, b) => a.endDate < b.endDate ? 1 : -1).map((item) => {
@@ -144,22 +174,23 @@ function getEducateList(Educations) {
         return <BackgroundItem key={index} isLast={false} title={item.major} subtitle={item.universityName} description={item.description} textColor={"#d93025"} bgColor={"rgba(217,48,37,.15)"} />;
     })
 }
-function getExperienceList (Experience){
+function getExperienceList(Experience) {
     const ExperienceItems = {}
     const IncName = []
     Experience.sort((a, b) => a.endDate < b.endDate ? 1 : -1).map((item) => {
         const incName = item.company
-        if(IncName.includes(incName)){
+        if (IncName.includes(incName)) {
             ExperienceItems[incName].field.push({
                 titleName: item.occupationName,
                 dateInfo: item.startDate + " - " + item.endDate
             })
         }
-        else{
+        else {
             IncName.push(incName)
             ExperienceItems[incName] = {
                 company: incName,
                 description: item.description,
+                detailMajors: item.detailMajors,
                 field: [
                     {
                         titleName: item.occupationName,
@@ -172,24 +203,24 @@ function getExperienceList (Experience){
     const ExperientArray = Object.values(ExperienceItems);
     const length = ExperientArray.length - 1
     return ExperientArray.map((item, index) => {
-        if(index == length){
-            return <BackgroundItem key={index} isLast={true} title={item.field} subtitle={item.company} description={item.description} textColor={"#1967d2"} bgColor={"#eff4fc"}/>;
+        if (index == length) {
+            return <BackgroundItem detailMajors={item.detailMajors} key={index} isLast={true} title={item.field} subtitle={item.company} description={item.description} textColor={"#1967d2"} bgColor={"#eff4fc"} />;
         }
-        return <BackgroundItem key={index} isLast={false} title={item.field} subtitle={item.company} description={item.description} textColor={"#1967d2"} bgColor={"#eff4fc"}/>;
+        return <BackgroundItem detailMajors={item.detailMajors} key={index} isLast={false} title={item.field} subtitle={item.company} description={item.description} textColor={"#1967d2"} bgColor={"#eff4fc"} />;
     })
 }
-function getAwardList (Awards){
+function getAwardList(Awards) {
     const AwardItems = {}
     const AwardField = []
     Awards.sort((a, b) => a.year < b.year ? 1 : -1).map((item) => {
         const awardField = item.occupationName
-        if(AwardField.includes(awardField)){
+        if (AwardField.includes(awardField)) {
             AwardItems[awardField].award.push({
                 titleName: item.awardName,
                 dateInfo: item.dateInfo
             })
         }
-        else{
+        else {
             AwardField.push(awardField)
             AwardItems[awardField] = {
                 occupationName: awardField,
@@ -206,44 +237,63 @@ function getAwardList (Awards){
     const AwardArray = Object.values(AwardItems);
     const length = AwardArray.length - 1
     return AwardArray.map((item, index) => {
-        if(index == length){
-            return <BackgroundItem key={index} isLast={true} title={item.award} subtitle={item.occupationName} description={item.description} textColor={"#f9ab00"} bgColor={"#fef2d9"}/>;
+        if (index == length) {
+            return <BackgroundItem key={index} isLast={true} title={item.award} subtitle={item.occupationName} description={item.description} textColor={"#f9ab00"} bgColor={"#fef2d9"} />;
         }
-        return <BackgroundItem key={index} isLast={false} title={item.award} subtitle={item.occupationName} description={item.description} textColor={"#f9ab00"} bgColor={"#fef2d9"}/>;
+        return <BackgroundItem key={index} isLast={false} title={item.award} subtitle={item.occupationName} description={item.description} textColor={"#f9ab00"} bgColor={"#fef2d9"} />;
     })
 }
-function getSkillList (Skills){
+function getSkillList(Skills) {
     const skillItems = {}
     const skillLevel = []
-    Skills.map( (item) => {
+    Skills.map((item) => {
         const skillLv = item.skillLv
-        if(skillLevel.includes(skillLv)){
+        if (skillLevel.includes(skillLv)) {
             skillItems[skillLv].skills.push({
-                skillName:item.skillName
+                skillName: item.skillName
             })
-        }else{
+        } else {
             skillLevel.push(skillLv)
-            skillItems[skillLv]={
+            skillItems[skillLv] = {
                 skillLevel: skillLv,
-                skills:[
-                    { skillName: item.skillName}
+                skills: [
+                    { skillName: item.skillName }
                 ]
             }
         }
     })
     const skillArray = Object.values(skillItems)
-    console.log(skillArray);
-    return skillArray.map((item,index)=>{
-        return <SkillItem key={index} listSkills={item.skills} level={item.skillLevel}/>
+    return skillArray.map((item, index) => {
+        return <SkillItem key={index} listSkills={item.skills} level={item.skillLevel} />
     })
 }
-function MyResume() {
-    const [addEducation, setAddEducation] = useState(true)
-    const [showAddSkill, setShowAddSkill] = useState(false);
-    const handleClose=()=>{
-        setShowAddSkill(prev=>!prev)
-    }
 
+function MyResume() {
+    // Manage state of components
+    const [educations, setEducations] = useState(null)
+    const [skill, setSkill] = useState(null)
+    const [experience, setExperience] = useState(null)
+    const [cbbMajorDetail, setcbbMajorDetail] = useState([])
+    const [award, setAward] = useState(null)
+
+    // function of hanlder filter combobox 
+    
+    const handleSelect = (e, name, setFunction) => {
+        setFunction(prev => {
+            const obj = prev
+            obj[name] = e.id === -1 ? { id: -1, name: '', detailMajors: [] } : e
+            if (name === 'occupation') {
+                const cbb = []
+                obj.occupation.detailMajors.map((item, index) => {
+                    cbb.push({ id: index + 1, name: item })
+                })
+                setcbbMajorDetail(cbb)
+                obj.majors = []
+            }
+            return obj
+        })
+    }
+    
     return (
         <div className="px-10 pb-0">
             {/* Start title of page  */}
@@ -260,13 +310,13 @@ function MyResume() {
                             <div className="relative">
                                 <div className="grid grid-cols-2 pb-4">
                                     <div className="px-4 mb-6">
-                                        <TextInput placeholder="My CV" label="Select Your CV" name="cv" type='text'/>
-                                        
+                                        <TextInput placeholder="My CV" label="Select Your CV" name="cv" type='text' />
+
                                     </div>
 
                                     <div className="col-span-2 px-4 mb-6">
 
-                                        <label for="description" className="block leading-8 text-gray-900 font-medium ">Description</label>
+                                        <label htmlFor="description" className="block leading-8 text-gray-900 font-medium ">Description</label>
                                         <div className="relative mt-2 rounded-md shadow-sm ">
                                             <textarea rows={8} type="text" name="description" id="description" className="block bg-[#f0f5f7] focus:bg-white text-base w-full rounded-md border-0 py-2.5 pl-5 pr-5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400  sm:text-base sm:leading-8" placeholder="Spent several years working on sheep on Wall Street. Had moderate success investing in Yugo's on Wall Street. Managed a small team buying and selling Pogo sticks for farmers. Spent several years licensing licorice in West Palm Beach, FL. Developed several new methods for working it banjos in the aftermarket. Spent a weekend importing banjos in West Palm Beach, FL.In this position, the Software Engineer collaborates with Evention's Development team to continuously enhance our current software solutions as well as create new solutions to eliminate the back-office operations and management challenges present" />
                                         </div>
@@ -276,18 +326,16 @@ function MyResume() {
                         </div>
 
                         {/*Education */}
-                        <div className="px-10 py-6">
+                        <div className="px-10 py-6 w-full">
                             <div className=" flex align-middle justify-between mb-4 cursor-pointer">
                                 <div className=" font-medium text-base mr-8">Education </div>
-                                <div className="flex align-middle text-red-400 text-sm">
+                                <div onClick={() => setEducations([{ degree: { id: -1, name: '' }, major: '', startYear: '', endYear: '' }])} className="flex align-middle text-red-400 text-sm">
                                     <div ><CgAdd fontSize={20} className="" /></div>
                                     Add Education
                                 </div>
                             </div>
-                            { addEducation && 
-                                <div >
-                                    
-                                </div>}
+                            {educations !== null ?
+                                <AddEducation DegreesCbb={DegreesCbb} educations={educations} setEducations={setEducations} /> : <></>}
                             {/* get education list */}
                             <div>{getEducateList(Educations)}</div>
                         </div>
@@ -295,13 +343,15 @@ function MyResume() {
 
                         {/*Work and experience */}
                         <div className="px-10 py-6">
-                            <div className=" flex align-middle justify-between mb-4 cursor-pointer">
+                            <div className=" flex align-middle justify-between mb-4 ">
                                 <div className=" font-medium text-base mr-8">Work and experience </div>
-                                <div className="flex align-middle text-red-400 text-sm">
+                                <div onClick={() => setExperience({ occupation: { id: -1, name: '', detailMajors: [] }, from: '', to: '', majors: [] })} className="flex align-middle text-red-400 text-sm cursor-pointer">
                                     <div ><CgAdd fontSize={20} className="" /></div>
                                     Add Work
                                 </div>
                             </div>
+                            {experience !== null ? <AddExperience experience={experience} handleSelect={handleSelect} setExperience={setExperience} OccupationCbb={OccupationCbb}  cbbMajorDetail={cbbMajorDetail} setCbbMajorDetail={setcbbMajorDetail}/>
+                                 :  <></>}
                             {/* get Work and experience list */}
                             <div>{getExperienceList(Experience)}</div>
                         </div>
@@ -311,11 +361,14 @@ function MyResume() {
                         <div className="px-10 py-6">
                             <div className=" flex align-middle justify-between mb-4 cursor-pointer">
                                 <div className=" font-medium text-base mr-8">Awards </div>
-                                <div className="flex align-middle text-red-400 text-sm">
+                                <div onClick={() => setAward({ award: '', cetifiedBy:'', year:'' })} className="flex align-middle text-red-400 text-sm cursor-pointer" >
                                     <div ><CgAdd fontSize={20} className="" /></div>
                                     Add Awards
                                 </div>
                             </div>
+                            {award != null ?
+                                <AddAward award={award} setAward={setAward}/>: <></>
+                            }
                             {/* get Awards list */}
                             <div>{getAwardList(Awards)}</div>
                         </div>
@@ -324,23 +377,18 @@ function MyResume() {
                         <div className="px-10 py-6">
                             <div className=" flex align-middle justify-between mb-4 cursor-pointer">
                                 <div className=" font-medium text-base mr-8">Skills </div>
-                                <div onClick={()=>setShowAddSkill(true)} className="flex align-middle text-red-400 text-sm cursor-pointer">
+                                <div onClick={() => setSkill({ skillName: '', level: { id: -1, name: '' } })} className="flex align-middle text-red-400 text-sm cursor-pointer">
                                     <div ><CgAdd fontSize={20} className="" /></div>
                                     Add Skills
                                 </div>
                             </div>
+                            {skill != null ?
+                                <AddSkill skill={skill} handleSelect={handleSelect} setSkill={setSkill} levelCbb={levelCbb}/>: <></>
+                            }
                             <div>{getSkillList(Skills)}</div>
-                            {/* get Awards list */}
-                            {/* <Modal onClose={handleClose} visible={showAddSkill} title={"Add skill"}>
-                                <div className="w-[600px] ">
-                                    <label for="firstname" className="block leading-8 text-gray-900 font-medium">First Name</label>
-                                    <div className="relative mt-2 rounded-md shadow-sm ">
-                                        <input type="text" name="firstname" id="firstname" className="block bg-[#f0f5f7] focus:bg-white text-base w-full rounded-md border-0 py-2.5 pl-5 pr-5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400  sm:text-base sm:leading-8" placeholder="Phat" />
-                                    </div>
-                                </div>
-                            </Modal> */}
+
                         </div>
-                        
+
                     </form>
                 </div>
             </div>

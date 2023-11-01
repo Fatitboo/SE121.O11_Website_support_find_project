@@ -1,6 +1,6 @@
 import React from "react";
 
-const BackgroundItem = ({title, subtitle, description, textColor, bgColor, isLast}) => {
+const BackgroundItem = ({title, subtitle, description, textColor, bgColor, isLast, detailMajors }) => {
     return (
         <>
             <div className="flex flex-row">
@@ -31,7 +31,16 @@ const BackgroundItem = ({title, subtitle, description, textColor, bgColor, isLas
                                               </div>)
                                 })
                             }
-                           
+                            <div className="flex flex-wrap w-3/4 my-3">
+                                {detailMajors && detailMajors.map((item, index) => {
+                                    return (
+                                        <div key={index} className={`mr-3 mb-2 bg-[rgba(25,103,210,.15)] text-[#1967d2] rounded-3xl flex`}>
+                                            <span className="text-[13px] px-[20px] py-[5px] leading-none">{item}</span>
+                                        </div>
+                                    )
+                                })}
+
+                            </div>
                             <span className="text-base leading-[22px]" style={{color: textColor}}>{subtitle}</span>
                         </div>
                     </div>
