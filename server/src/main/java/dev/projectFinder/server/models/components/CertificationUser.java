@@ -10,6 +10,7 @@ import lombok.*;
 @Setter
 public class CertificationUser {
     private String certificationName;
-    private String certificedBy;
+    private String certifiedBy;
     private String year;
+    private String description;
 }

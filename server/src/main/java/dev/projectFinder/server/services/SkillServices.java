@@ -37,7 +37,7 @@ public class SkillServices {
     public Skill updateSkillById(String id, SkillDTO skillDTO){
         Skill existsSkill = getSkillById(id);
         Optional<Skill> uptSkill = skillRepository.findSkillBySkillName(skillDTO.getSkillName());
-        if (!uptSkill.isEmpty() && !skillDTO.getSkillName().equals(existsSkill.getSkillName())){
+        if (uptSkill.isPresent() && !skillDTO.getSkillName().equals(existsSkill.getSkillName())){
            throw new DataIntegrityViolationException("Skill name already exists");
         }
         existsSkill.setSkillName(skillDTO.getSkillName());

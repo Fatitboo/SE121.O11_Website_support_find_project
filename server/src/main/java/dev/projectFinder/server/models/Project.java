@@ -9,26 +9,35 @@ import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.time.LocalDateTime;
+
 @Data
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Document(collection = "vacancies")
-public class Vacancy {
+@Document(collection = "projects")
+public class Project {
     @Id
     @JsonSerialize(using = ToStringSerializer.class)
-    private ObjectId vacancyId;
-    private String vacancyName;
-    private SkillUser[] skillsRequired;
-    private ObjectId responsibilitySeekerId;
-    private ExperienceUser[] experienceRequired;
-    private int maxRequired;
-    private String salary;
-    private String salaryUnit;
-    private ObjectId[] registrants;
-    private String String;
+    private ObjectId projectId;
+    private String projectName;
+    private String description;
+    private ObjectId ownerId;
+    private int maxParticipants;
+    private String fbLink;
+    private String twLink;
+    private String lkLink;
+    private String insLink;
+    private LocalDateTime starDate;
+    private String duration;
+    private String status;
+    private String budget;
+    private ObjectId[] participants;
+    private ObjectId[] favouriteUsers;
+    private ObjectId[] vacancies;
+
 
 
 }

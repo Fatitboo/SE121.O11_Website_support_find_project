@@ -8,8 +8,8 @@ import lombok.*;
 @NoArgsConstructor
 @Getter
 @Setter
-public class BackgroundUser {
+public class EducationUser {
     private String universityName;
-    private String major;
-    private String degree;
+    private DetailMajorSeeker[] detailMajorSeekers;
+    private String description;
 }

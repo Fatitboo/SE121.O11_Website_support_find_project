@@ -12,6 +12,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @Getter
@@ -47,14 +48,18 @@ public class User {
     // Seeker
     private String expectSalary;
     private SkillUser[] skillUsers;
-    private String[] cvLinks;
+    private List<CVLink> cvLinks;
     private CertificationUser[] certificationUsers;
-    private BackgroundUser[] backgroundUsers;
+    private EducationUser[] educationUsers;
     private ExperienceUser[] experienceUsers;
+
 
     // Organizer
     private String teamSize;
     private String[] fields;
+    private ObjectId[] vacancies;
+    private ObjectId[] projects;
+
 
     // date create and update
     @CreatedDate

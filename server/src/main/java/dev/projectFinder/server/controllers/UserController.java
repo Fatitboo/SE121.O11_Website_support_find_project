@@ -1,12 +1,10 @@
 package dev.projectFinder.server.controllers;
 
-import dev.projectFinder.server.dtos.SocialLinkDTO;
+import dev.projectFinder.server.dtos.SeekerResumeDTO;
 import dev.projectFinder.server.dtos.UserInforDTO;
 import dev.projectFinder.server.dtos.UserLoginDTO;
 import dev.projectFinder.server.dtos.UserDTO;
 import dev.projectFinder.server.models.User;
-import dev.projectFinder.server.models.components.Address;
-import dev.projectFinder.server.repositories.UserRepository;
 import dev.projectFinder.server.responses.RegisterResponse;
 import dev.projectFinder.server.services.UserServices;
 import dev.projectFinder.server.utils.MessageKeys;
@@ -17,9 +15,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 // localhost:8088/api/v1/users
@@ -28,7 +28,6 @@ import java.util.List;
 public class UserController {
 
     private final UserServices userServices;
-    private final UserRepository accountRepository;
 
     //  localhost:8088/api/v1/users/register/page=5&record=10
     @PostMapping("/register")
@@ -44,11 +43,6 @@ public class UserController {
             registerResponse.setMessage(errMsgs.toString());
             return ResponseEntity.badRequest().body(registerResponse);
         }
-        if (!userDTO.getPassword().equals(userDTO.getCPassword())){
-            registerResponse.setMessage(MessageKeys.PASSWORD_NOT_MATCH);
-            return ResponseEntity.badRequest().body(registerResponse);
-         }
-
         try {
             User newUser = userServices.createUser(userDTO);
             registerResponse.setMessage(MessageKeys.REGISTER_SUCCESSFULLY);
@@ -85,43 +79,87 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(loginResponse);
         }
     }
-    @PutMapping("/upd-social-link/{id}")
-    public ResponseEntity<?> updateSocialLink( @PathVariable String id, @RequestBody SocialLinkDTO socialLinkDTO){
-        HashMap<String, Object> response = new HashMap<>();
-        try{
-            User user = userServices.updateSocialLink(id, socialLinkDTO);
-            response.put("message",MessageKeys.UPDATE_SOCIAL_LINK_SUCCESSFULLY);
-            response.put("user", user);
-            return ResponseEntity.ok(response);
-        }catch (Exception e) {
-            response.put("message", e.getMessage());
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
-        }
-    }
-    @PutMapping("/upd-address/{id}")
-    public ResponseEntity<?> updateAddress( @PathVariable String id, @RequestBody Address address){
-        HashMap<String, Object> response = new HashMap<>();
-        try{
-            User user = userServices.updateAddress(id, address);
-            response.put("message",MessageKeys.UPDATE_ADDRESS_SUCCESSFULLY);
-            response.put("user", user);
-            return ResponseEntity.ok(response);
-        }catch (Exception e) {
-            response.put("message", e.getMessage());
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
-        }
-    }
-    @PutMapping("/upd-user-information/{id}")
+
+    @PutMapping("/update-user-information/{id}")
     public ResponseEntity<?> updateUserInformation( @PathVariable String id, @RequestBody UserInforDTO userInforDTO){
         HashMap<String, Object> response = new HashMap<>();
         try{
-            User user =  userServices.updateUserInformation(id, userInforDTO);
+            if(userInforDTO.getActions()==1){
+                userServices.updateSocialLink(id, userInforDTO);
+                response.put("message",MessageKeys.UPDATE_SOCIAL_LINK_SUCCESSFULLY);
+                return ResponseEntity.ok(response);
+            }
+            if(userInforDTO.getActions()==2){
+                userServices.updateAddress(id, userInforDTO);
+                response.put("message",MessageKeys.UPDATE_ADDRESS_SUCCESSFULLY);
+                return ResponseEntity.ok(response);
+            }
+            if(userInforDTO.getActions()==3){
+                userServices.updateUserInformation(id, userInforDTO);
+                response.put("message",MessageKeys.UPDATE_INFORMATION_SUCCESSFULLY);
+                return ResponseEntity.ok(response);
+            }
+
+        }catch (Exception e) {
+            response.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+        response.put("message","Action is not null");
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+
+    }
+
+    @PutMapping("/update-seeker-information/{id}")
+    public ResponseEntity<?> updateSeekerInformation( @PathVariable String id, @RequestBody SeekerResumeDTO seekerResumeDTO){
+        HashMap<String, Object> response = new HashMap<>();
+        try{
+            userServices.updateSeekerInformation(id, seekerResumeDTO);
             response.put("message",MessageKeys.UPDATE_INFORMATION_SUCCESSFULLY);
-            response.put("user", user);
             return ResponseEntity.ok(response);
         }catch (Exception e) {
             response.put("message", e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
     }
+    @PostMapping("/update-seeker-cv/{id}")
+    public ResponseEntity<?> updateCVLinks(@PathVariable String id, @RequestParam("file") MultipartFile file){
+        HashMap<String, Object> response = new HashMap<>();
+        try{
+            userServices.updateSeekerCV(id, file);
+            response.put("message","Update Cv successfully" );
+
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        }catch (Exception e) {
+            response.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+    }
+    @DeleteMapping("/delete-seeker-cv/{id}")
+    public ResponseEntity<?> deleteCVLink(@PathVariable String id, @RequestParam("publicId") String publicId){
+        HashMap<String, Object> response = new HashMap<>();
+        try{
+            userServices.deleteSeekerCV(id, publicId);
+            response.put("message","Delete Cv successfully" );
+
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        }catch (Exception e) {
+            response.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+    }
+    @GetMapping("/get-all-cv/{id}")
+    public ResponseEntity<?> getAllCVs(@PathVariable String id){
+        HashMap<String, Object> response = new HashMap<>();
+        try{
+           User user = userServices.getUserDetail(id);
+            response.put("message","Get all Cv successfully" );
+            response.put("cvLinks",user.getCvLinks() );
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        }catch (Exception e) {
+            response.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+    }
+
+
 }

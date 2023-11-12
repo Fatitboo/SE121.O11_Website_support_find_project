@@ -1,35 +1,79 @@
-import FileCV from "./fileCv";
-
+import { useEffect, useState } from "react";
+import FileCV from "./FileCv";
 const cvList = [
     {
-        nameFile:'Cv nguyen van a 1.docx'
+        nameFile: 'Cv nguyen van a 1.docx'
     },
     {
-        nameFile:'Cv nguyen van a 2.docx'
+        nameFile: 'Cv nguyen van a 2.docx'
     },
     {
-        nameFile:'Cv nguyen van a 3.docx'
+        nameFile: 'Cv nguyen van a 3.docx'
     },
     {
-        nameFile:'Cv nguyen van a 1.docx'
+        nameFile: 'Cv nguyen van a 1.docx'
     },
     {
-        nameFile:'Cv nguyen van a 2.docx'
+        nameFile: 'Cv nguyen van a 2.docx'
     },
     {
-        nameFile:'Cv nguyen van a 3.docx'
+        nameFile: 'Cv nguyen van a 3.docx'
     },
     {
-        nameFile:'Cv nguyen van a 1.docx'
+        nameFile: 'Cv nguyen van a 1.docx'
     },
     {
-        nameFile:'Cv nguyen van a 2.docx'
+        nameFile: 'Cv nguyen van a 2.docx'
     },
     {
-        nameFile:'Cv nguyen van a 3.docx'
+        nameFile: 'Cv nguyen van a 3.docx'
     },
 ]
 function CVManager() {
+
+    const [err, setErr] = useState(null)
+
+    const onFileChange = (event) => {
+        const file = event.target.files[0];
+        const maxSize = 5 * 1024 * 1024;
+        if (file.size > maxSize) {
+            setErr('File size exceeds the maximum allowed size (5 MB).')
+            event.target.value = null;
+            return;
+        }
+        const allowedFileTypes = ['.doc', '.docx', '.pdf'];
+        const fileType = `.${file.name.split('.').pop()}`;
+        if (!allowedFileTypes.includes(fileType)) {
+            setErr('Invalid file type. Allowed file types are .doc, .docx, .pdf.')
+            event.target.value = null;
+            return;
+        }
+        setErr(null)
+        const formData = new FormData();
+        formData.append('file', file);
+        // axios.post('http://your-backend-url/upload', formData)
+        //     .then(response => {
+        //         console.log(response.data);
+
+        //         fetchFileList();
+        //     })
+        //     .catch(error => {
+        //         console.error('Error uploading file: ', error);
+        //     });
+    }
+    const fetchFileList = () => {
+        // axios.get('')
+        //   .then(response => {
+
+        //   })
+        //   .catch(error => {
+        //     console.error('Error fetching file list: ', error);
+        //   });
+    };
+
+    useEffect(() => {
+        fetchFileList();
+    }, []);
     return (
         <div className="px-10 pb-0">
             {/* Start title of page  */}
@@ -49,20 +93,21 @@ function CVManager() {
                             {/* start input cv file*/}
                             <div className="relative px-8 pt-5 pb-10">
                                 <div className="relative flex items-center justify-center w-full flex-col">
-                                    <input name="attachments[]" accept=".doc,.docx,.xml,application/msword,application/pdf, image/*" id="upload" multiple type="file" 
-                                        className="opacity-0 absolute overflow-hidden pointer-events-none h-0 w-0 z-[-1] hidden"/>
+                                    <input name="attachments[]" accept=".doc,.docx,.xml,application/msword,application/pdf, image/*" id="upload" multiple type="file"
+                                        className="opacity-0 absolute overflow-hidden pointer-events-none h-0 w-0 z-[-1] hidden" onChange={onFileChange} />
                                     <label htmlFor="upload" className="flex flex-col ease-linear hover:border-black justify-center items-center cursor-pointer text-center h-[300px] w-full rounded m-0 text-[#1b2032] leading-4 border-[2px] border-[#ced4e1] border-dashed px-8 py-5">
                                         <span className="block font-medium text-base leading-5 text-[#1967d2] mb-4">Drop files here to upload</span>
                                         <span className="text-sm font-light leading-5 mb-8 text-gray-500">To upload file size is (Max 5Mb) and allowed file types are (.doc, .docx, .pdf)</span>
-                                        <div  className="text-white py-4 px-6 focus:outline-none ease bg-blue-700 hover:bg-blue-800 rounded-md text-sm font-light border border-blue-600" >Upload Resume</div>
+                                        <div className="text-white py-4 px-6 focus:outline-none ease bg-blue-700 hover:bg-blue-800 rounded-md text-sm font-light border border-blue-600" >Upload Resume</div>
                                     </label>
                                 </div>
+                                {err && <p className="pt-4 text-red-700 text-sm">* {err}</p>}
                             </div>
 
                             {/* Start list CV */}
                             <div className="relative w-full px-12  grid grid-cols-5">
                                 {
-                                    cvList.map((item, index)=> <FileCV key={index} item={item}/>)
+                                    cvList.map((item, index) => <FileCV key={index} item={item} />)
                                 }
                             </div>
                         </div>

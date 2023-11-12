@@ -8,12 +8,9 @@ import lombok.*;
 @NoArgsConstructor
 @Getter
 @Setter
-public class ExperienceUser {
-    private String occupationName;
-    private String[] detailMajor;
+public class DetailMajorSeeker {
+    private String majorName;
+    private String degree;
     private int startYear;
     private int endYear;
-    private String organizerName;
-    private String description;
-
 }
