@@ -20,7 +20,7 @@ import { JobBasic, JobBenefit, JobDes, JobDetail, JobPreferences, JobPreScreen, 
 function PostJob() {
     const nextJobRef = () => {
         if(jobRefKey < jobRef.length){
-            console.log(jobRefKey)
+            jobRefKey > 1 ? setIsPreview(true) : setIsPreview(false)
             setJobRefKey(++jobRefKey)
             setJobProgress(jobRefKey / jobRef.length * 100 + '%')
         }
@@ -28,8 +28,8 @@ function PostJob() {
             alert("filled, go to payment")
         } 
     }
-    const formId = ["form-job-basic", "form-job-detail"]
-    const jobRef = [<JobBasic formSubmit={nextJobRef} formId={formId[0]} key={0}/>, <JobDetail formSubmit={nextJobRef} formId={formId[1]} key={1}/>, <JobBenefit key={2}/>, <JobDes key={3}/>,<JobPreferences key={4}/>,<JobPreScreen key={5}/>,<JobReview key={6}/>]
+    const formId = ["form-job-basic", "form-job-detail", "form-job-benefit", "form-job-des", "form-job-ref"]
+    const jobRef = [<JobBasic formSubmit={nextJobRef} formId={formId[0]} key={0}/>, <JobDetail formSubmit={nextJobRef} formId={formId[1]} key={1}/>, <JobBenefit formSubmit={nextJobRef} formId={formId[2]} key={2}/>, <JobDes  formSubmit={nextJobRef} formId={formId[3]} key={3}/>,<JobPreferences formSubmit={nextJobRef} formId={formId[4]} key={4}/>,<JobPreScreen key={5}/>,<JobReview key={6}/>]
         
     var [jobProgress, setJobProgress] = useState('0%')
     var [jobRefKey, setJobRefKey] = useState(0)
@@ -37,6 +37,7 @@ function PostJob() {
 
     function backJobRef(){
         if(jobRefKey > 0){
+            jobRefKey > 3 ? setIsPreview(true) : setIsPreview(false)
             setJobRefKey(--jobRefKey)
             setJobProgress(jobRefKey / jobRef.length * 100 + '%')
         }
