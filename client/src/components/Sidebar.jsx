@@ -9,18 +9,24 @@ import { Link } from 'react-router-dom';
 import classNames from 'classnames';
 import { HiPlus } from 'react-icons/hi';
 import { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { logoutUserAction } from '../redux/slices/users/usersSlices';
 
 
-const itemStyle = '!mb-2 pr-6 m-0 hover:bg-[#E9EFFB] hover:text-blue-600 rounded-lg'
-const postJobStyle = '!mb-2 pr-6 m-0 bg-[#1967d3] hover:bg-[#0146a6] text-[white] rounded-lg'
 
-function Sidebar({userType}) {
-    const [isActive, setActive] = useState('');
+function Sidebar({user}) {
+    const itemStyle = '!mb-2 pr-6 m-0 hover:bg-[#E9EFFB] hover:text-blue-600 rounded-lg';
+    const postJobStyle = '!mb-2 pr-6 m-0 bg-[#1967d3] hover:bg-[#0146a6] text-[white] rounded-lg';
+    const dispatch = useDispatch();
+    const handleLogout = ()=>{
+        dispatch(logoutUserAction())
+    }
+    const [isActive, setActive] = useState('Dashboard');
     return (
         <aside className="flex justify-center h-full pt-10 bg-white overflow-auto 
                             ease-in duration-300 border-solid border border-[#ecedf2] shadow-lg shadow-gray-300 z-10">
             <div className="fixed">
-                {userType === "admin" ?
+                {user?.userType === "admin" ?
                     (
                         <div className="relative w-full l-0 m-0 p-0">
                             <div className={classNames(isActive === 'Dashboard' ? 'bg-[#E9EFFB] text-blue-600' : '', itemStyle)}>
@@ -60,14 +66,14 @@ function Sidebar({userType}) {
                                 </Link>
                             </div>
                             <div className={ itemStyle}>
-                                <Link  to="/Admin/" className="relative text-sm text-center p-3 flex items-center leading-7 font-normal  capitalize rounded-lg ">
+                                <Link onClick={handleLogout} to="/" className="relative text-sm text-center p-3 flex items-center leading-7 font-normal  capitalize rounded-lg ">
                                     <AiOutlineLogout className='relative mr-4 ml-4 text-2xl text-center ' />
                                     Logout
                                 </Link>
                             </div>
                         </div>
-                    ) : 
-                userType === "seeker" ? 
+                    ) 
+                    : user?.userType === "seeker" ? 
                     (
                         <div className="relative w-full l-0 m-0 p-0">
                             <div className={classNames(isActive === 'Dashboard' ? 'bg-[#E9EFFB] text-blue-600' : '', itemStyle)}>
@@ -107,13 +113,14 @@ function Sidebar({userType}) {
                                 </Link>
                             </div>
                             <div className={itemStyle}>
-                                <Link  to="/Admin/" className="relative text-sm text-center p-3 flex items-center leading-7 font-normal  capitalize rounded-lg ">
+                                <Link onClick={handleLogout} to="/" className="relative text-sm text-center p-3 flex items-center leading-7 font-normal  capitalize rounded-lg ">
                                     <AiOutlineLogout className='relative mr-4 ml-4 text-2xl text-center ' />
                                     Logout
                                 </Link>
                             </div>
                         </div>
-                    ): 
+                    )
+                    : 
                     (
                         <div className="relative w-full l-0 m-0 p-0">
                             <div className={classNames(isActive === 'Post a job' ? 'bg-[#E9EFFB] text-blue-600' : '', postJobStyle)}>
@@ -159,7 +166,7 @@ function Sidebar({userType}) {
                                 </Link>
                             </div>
                             <div className={itemStyle}>
-                                <Link  to="/Admin/" className="relative text-sm text-center p-3 flex items-center leading-7 font-normal  capitalize rounded-lg ">
+                                <Link onClick={handleLogout} to="/" className="relative text-sm text-center p-3 flex items-center leading-7 font-normal  capitalize rounded-lg ">
                                     <AiOutlineLogout className='relative mr-4 ml-4 text-2xl text-center ' />
                                     Logout
                                 </Link>

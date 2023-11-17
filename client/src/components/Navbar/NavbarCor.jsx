@@ -2,36 +2,39 @@ import React, { Fragment, useState } from "react";
 import { Menu, Transition } from "@headlessui/react";
 import { BiChevronDown } from "react-icons/bi";
 import { CgProfile } from "react-icons/cg";
-import { HiMenuAlt3, HiPlus } from "react-icons/hi";
-import { AiOutlineClose, AiOutlineLogout } from "react-icons/ai";
-import {IoIosNotifications, IoMdMail} from "react-icons/io";
+import {  AiOutlineLogout } from "react-icons/ai";
+import { IoIosNotifications, IoMdMail } from "react-icons/io";
 import { Link } from "react-router-dom";
 import CustomButton from "../CustomButton";
+import { useDispatch } from "react-redux";
+import { logoutUserAction } from "../../redux/slices/users/usersSlices";
 function MenuList({ user, onClick }) {
+    const dispatch = useDispatch()
     const handlerLogOut = () => {
-
+        dispatch(logoutUserAction())
+    }
+    const getName = (fullname) => {
+        const parts = fullname.split(" ");
+        const lastName = parts[parts.length - 1];
+        return lastName
     }
     return (
         <div>
             <Menu as="div" className='inline-block text-left'>
                 <div className="flex ">
-                    <Menu.Button className='inline-flex gap-2 w-full rounded-md bg-white md:px-4 py-2 text-sm font-medium text-slate-700 hover:bg-opacity-20 '>
+                    <Menu.Button className='flex flex-row items-center  align-middle gap-2 w-full h-8 rounded-md bg-[#f7fdfd] md:px-2  text-sm font-medium text-slate-700 hover:bg-opacity-20 '>
+                        <img
+                            src={user?.avatar?.fileUrl??"https://i.pinimg.com/564x/16/3e/39/163e39beaa36d1f9a061b0f0c5669750.jpg"}
+                            alt='user profile'
+                            className='w-8 h-8 rounded-full object-cover '
+                        />
                         <div className='leading[80px] flex flex-col items-start'>
                             <p className='text-sm font-semibold '>
-                                {user?.firstName ?? user?.name}
+                                {getName(user?.fullName)}
                             </p>
-                            <span className='text-sm text-blue-600 '>
-                                {user?.jobTitle ?? user?.email}
-                            </span>
                         </div>
-
-                        {/* <img
-                            src={user?.profileUrl}
-                            alt='user profile'
-                            className='w-10 h-10 rounded-full object-cover '
-                        /> */}
                         <BiChevronDown
-                            className='h-8 w-8 text-slate-600'
+                            className='h-6 w-6 text-slate-600'
                             aria-hidden='true'
                         />
                     </Menu.Button>
@@ -45,31 +48,28 @@ function MenuList({ user, onClick }) {
                     leaveFrom='transform opacity-100 scale-100'
                     leaveTo='transform opacity-0 scale-95'
                 >
-                    <Menu.Items className='absolute z-50 right-2 mt-2 w-56 origin-top-right divide-y dividfe-gray-100 rounded-md bg-white shadow-lg focus:outline-none '>
+                    <Menu.Items className='absolute z-50 right-24 mt-2 w-30 origin-top-right divide-y dividfe-gray-100 rounded-md bg-white shadow-lg focus:outline-none '>
                         <div className='p-1 '>
                             <Menu.Item>
                                 {({ active }) => (
                                     <Link
-                                        to={`${user?.accountType ? "user-profile" : "company-profile"
-                                            }`}
+                                        to={'/Organizer/dashboard'}
                                         className={`${active ? "bg-blue-500 text-white" : "text-gray-900"
                                             } group flex w-full items-center rounded-md p-2 text-sm`}
                                         onClick={onClick}
                                     >
                                         <CgProfile
-                                            className={`${active ? "text-white" : "text-gray-600"
-                                                } mr-2 h-5 w-5  `}
-                                            aria-hidden='true'
-                                        />
-                                        {user?.accountType ? "User Profile" : "Company Profile"}
+                                            className={`${active ? "text-white" : "text-gray-600"} mr-2 h-5 w-5`}
+                                            aria-hidden='true'/>
+                                        {"Organizer Profile"}
                                     </Link>
                                 )}
                             </Menu.Item>
 
                             <Menu.Item>
                                 {({ active }) => (
-                                    <button
-                                        onClick={() => handleLogout()}
+                                    <Link to={'/'}
+                                        onClick={() => handlerLogOut()}
                                         className={`${active ? "bg-blue-500 text-white" : "text-gray-900"
                                             } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
                                     >
@@ -79,7 +79,7 @@ function MenuList({ user, onClick }) {
                                             aria-hidden='true'
                                         />
                                         Log Out
-                                    </button>
+                                    </Link>
                                 )}
                             </Menu.Item>
                         </div>
@@ -89,18 +89,12 @@ function MenuList({ user, onClick }) {
         </div>
     );
 }
-function NavbarCor() {
-    const user = {
-        token: null,
-        firstName: 'Phat',
-        jobTitle: 'Web dev',
-        profileUrl: 'ddd',
-        accountType: "User-profile"
-    };
+function NavbarCor({ user }) {
+
     const [isOpen, setIsOpen] = useState(false);
     const handlerCloseNavbar = () => {
         setIsOpen(prev => !prev)
-    } 
+    }
     return (
         <>
             <div className='fixed top-0 l-0 r-0 t-0 w-full bg-[#f7fdfd] z-50 shadow'>
@@ -110,15 +104,31 @@ function NavbarCor() {
                             Project<span className="text-[#1677cccb]">Finder</span>
                         </Link>
                     </div>
-                    
+                    <ul className="hidden lg:flex gap-10 text-base">
+                        <li>
+                            <Link to='/Seeker/find-projects' >Projects</Link>
+                        </li>
+                        <li>
+                            <Link to='/Seeker/find-vacancies' >Vacancies</Link>
+                        </li>
+                        <li>
+                            <Link to='/Seeker/find-organizer' >Organizer</Link>
+                        </li>
+                        <li>
+                            <Link to='/' >About us</Link>
+                        </li>
+                        <li>
+                            <Link to='/' >Contract</Link>
+                        </li>
+                    </ul>
                     <div className="flex">
                         <div className="flex flex-row items-center gap-4">
                             <div className="flex flex-row items-center mr-1 text-base cursor-pointer">
-                                <IoIosNotifications className="w-6 h-5"/>
+                                <IoIosNotifications className="w-6 h-5" />
                                 <h3 className="leading-none mb-[2px] ml-[2px]">Notifications</h3>
                             </div>
                             <div className="flex flex-row items-center mr-1 text-base cursor-pointer">
-                                <IoMdMail className="w-6 h-5"/>
+                                <IoMdMail className="w-6 h-5" />
                                 <h3 className="leading-none mb-[2px] ml-[2px]">Messages</h3>
                             </div>
                             <div className="w-[1px] h-[30px] bg-[#c3c3c3] mr-4">
@@ -127,7 +137,7 @@ function NavbarCor() {
                         </div>
                         {
                             !user?.token ? (
-                                <Link to='user-auth' >
+                                <Link to='/user-auth/login' >
                                     <CustomButton title="Sign In" containerStyles="text-blue-600 py-1.5 px-5 focus:outline-none hover:bg-blue-700 hover:text-white rounded-full text-base border border-blue-600" />
                                 </Link>
                             ) : (

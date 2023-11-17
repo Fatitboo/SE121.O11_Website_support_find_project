@@ -315,12 +315,13 @@ function MyResume() {
                                     </div>
 
                                     <div className="col-span-2 px-4 mb-6">
-
                                         <label htmlFor="description" className="block leading-8 text-gray-900 font-medium ">Description</label>
                                         <div className="relative mt-2 rounded-md shadow-sm ">
                                             <textarea rows={8} type="text" name="description" id="description" className="block bg-[#f0f5f7] focus:bg-white text-base w-full rounded-md border-0 py-2.5 pl-5 pr-5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400  sm:text-base sm:leading-8" placeholder="Spent several years working on sheep on Wall Street. Had moderate success investing in Yugo's on Wall Street. Managed a small team buying and selling Pogo sticks for farmers. Spent several years licensing licorice in West Palm Beach, FL. Developed several new methods for working it banjos in the aftermarket. Spent a weekend importing banjos in West Palm Beach, FL.In this position, the Software Engineer collaborates with Evention's Development team to continuously enhance our current software solutions as well as create new solutions to eliminate the back-office operations and management challenges present" />
                                         </div>
                                     </div>
+                                    <CustomButton title={'Save'} containerStyles="text-blue-600 justify-center w-[20%] flex py-2 ml-3 px-4 mb-6 focus:outline-none hover:bg-blue-700 hover:text-white rounded-md text-base border border-blue-600"/>
+
                                 </div>
                             </div>
                         </div>

@@ -1,27 +1,25 @@
-import {CustomButton} from "../../../components";
-import { AiOutlineSearch } from "react-icons/ai";
+import { CustomButton } from "../../../components";
+import { AiFillExclamationCircle, AiOutlineSearch } from "react-icons/ai";
 import { LiaTrashAltSolid } from "react-icons/lia";
 import { CiEdit } from 'react-icons/ci'
 import { BiPlus } from "react-icons/bi";
-import { Link } from "react-router-dom";
-
-
-const listSkills = [
-    {
-        name: 'Communication skill',
-        listMajor: ['abn', 'accc', 'asdafdf']
-    },
-    {
-        name: 'C#',
-        listMajor: ['abn', 'accc', 'asdafdf']
-    },
-    {
-        name: 'Spring Boot',
-        listMajor: ['abn', 'accc', 'asdafdf']
-    }
-]
+import { Link, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from "react";
+import { deleteOccupationAction, getAllOccupationsAction } from "../../../redux/slices/occupations/occupationsSlices";
 
 function OccupationManagement() {
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+    useEffect(() => {
+        dispatch(getAllOccupationsAction())
+    }, []);
+
+    const handleDeleteOccupation = (id)=>{
+        dispatch(deleteOccupationAction(id));
+    }
+    const storeData = useSelector(store => store?.occupations);
+    const { appErr, occupationsList } = storeData;
     return (
         <div className="px-10 pb-0">
 
@@ -55,47 +53,50 @@ function OccupationManagement() {
                                     </div>
                                 </div>
                                 <div className="flex ">
-                                    <h4 className="mr-1">Occupations: </h4> <span>  10</span>
+                                    <h4 className="mr-1">Occupations: </h4> <span>  {occupationsList.length}</span>
                                 </div>
                             </div>
+                            {appErr && <span className='flex flex-row items-center text-base text-[#a9252b] mt-2 ml-8'><AiFillExclamationCircle className="mr-1" />{appErr}</span>}
+
                             {/* table list skill information */}
                             <div className="px-6 relative">
                                 <div className="overflow-y-hidden overflow-x-auto">
                                     <table className="relative w-full overflow-y-hidden overflow-x-hidden rounded-md mb-8 bg-white border-0">
                                         <thead className="bg-[#f5f7fc] color-white border-transparent border-0 w-full">
                                             <tr className="w-full">
-                                                <th className="relative text-[#3a60bf] font-normal py-6 text-base text-left pl-6 w-4/12">Occupation Name</th>
-                                                <th className="relative text-[#3a60bf] font-normal py-6 text-base text-left  w-1/2">Detail Major</th>
-                                                <th className="relative text-[#3a60bf] font-normal py-6 text-base text-left w-2/12">Action</th>
+                                                <th className="relative text-[#3a60bf] font-normal py-6 text-base text-left pl-6 w-2/12">Occupation Name</th>
+                                                <th className="relative text-[#3a60bf] font-normal py-6 text-base text-left  w-8/12">Detail Major</th>
+                                                <th className="relative text-[#3a60bf] font-normal py-6 text-base text-left pl-8 w-2/12 ">Action</th>
                                             </tr>
                                         </thead>
-                                        <tbody>
+                                        <tbody className="w-full">
                                             {
-                                                listSkills.map((item, index) => (
-                                                    <tr key={index} className="relative border-b border-solid border-[#ecedf2] w-full text-base min-h-[64px] hover:bg-[#f4f2f2] ">
-                                                        <td className="w-4/12">
-                                                            <h4 className="text-ellipsis w-full line-clamp-1 text-left pl-6 py-3">{item.name}</h4>
+                                                occupationsList.map((item, index) => (
+                                                    <tr key={item.occupationId} className="relative border-b border-solid border-[#ecedf2] w-full text-base min-h-max hover:bg-[#f4f2f2] ">
+                                                        <td className="w-2/12">
+                                                            <div className="text-ellipsis w-full line-clamp-1 text-left pl-6 py-3">{item.occupationName}</div>
                                                         </td>
-                                                        <td className="w-1/2">
-                                                            <div className="flex text-ellipsis w-full line-clamp-2 text-left"> <span>[ </span>
-                                                                {item.listMajor.map((i, index) => {
-                                                                    if (index === item.listMajor.length - 1)
-                                                                        return <div key={index} className="px-2">{i}</div>
-                                                                    return <div key={index} className="px-2">{i}, </div>
-
-                                                                }
-                                                                )}
-                                                                <span> ]</span>
+                                                        <td className="w-8/12">
+                                                            <div className="flex  w-full  text-left">
+                                                                <span className="text-blue-700 mr-2 mt-2">[ </span>
+                                                                <div className="line-clamp-3 text-ellipsis w-full my-3">
+                                                                    {item.listMajor.map((it, index)=>{
+                                                                        if (index === item.listMajor.length - 1) return it+''
+                                                                        return it+',  '
+                                                                    })}
+                                                                    
+                                                                </div>
+                                                                <span className="text-blue-700 flex items-end mb-2">]</span>
                                                             </div>
                                                         </td>
                                                         <td className="w-2/12">
-                                                            <div className="py-3">
+                                                            <div className="py-3 pl-8">
                                                                 <ul className="list-none flex relative item-center ">
 
-                                                                    <li className="list-none relative mr-3 bg-[#f5f7fc] border rounded-md border-[#e9ecf9] px-1 pt-1 hover:bg-[#278646] hover:text-white">
-                                                                        <Link to={`/Admin/occupation-management/edit-occupation/${index}`}> <CiEdit fontSize={20} /> </Link>
+                                                                    <li onClick={()=> navigate(`/Admin/occupation-management/edit-occupation/${index}`, {state:{ occupation: item}})} className="list-none relative mr-3 bg-[#f5f7fc] border rounded-md border-[#e9ecf9] px-1 pt-1 hover:bg-[#278646] hover:text-white">
+                                                                        <div > <CiEdit fontSize={20} /> </div>
                                                                     </li>
-                                                                    <li className="list-none relative bg-[#f5f7fc] border rounded-md border-[#e9ecf9] px-1 pt-1 hover:bg-[#ce3e37] hover:text-white">
+                                                                    <li onClick={()=>handleDeleteOccupation(item.occupationId)} className="list-none relative bg-[#f5f7fc] border rounded-md border-[#e9ecf9] px-1 pt-1 hover:bg-[#ce3e37] hover:text-white">
                                                                         <button > <LiaTrashAltSolid fontSize={20} /> </button>
                                                                     </li>
                                                                 </ul>

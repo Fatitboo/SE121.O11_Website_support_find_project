@@ -1,23 +1,43 @@
-import { Link } from "react-router-dom";
+import { Link, Navigate, useLocation } from "react-router-dom";
 import { CustomButton, TextInput } from "../../../components";
-import classNames from "classnames";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { useDispatch, useSelector } from "react-redux";
+import { registerUserAction } from "../../../redux/slices/users/usersSlices";
+import { AiFillExclamationCircle } from "react-icons/ai";
 
 function Register() {
-    const [accountType , setAccountType] = useState('Seeker');
+    const [accountType, setAccountType] = useState('seeker');
+    const location = useLocation();
+    const dispatch = useDispatch();
     const {
-        register, 
-        handleSubmit, 
-        getValues, 
-        formState:{errors}
-    }= useForm({mode:'onChange'});
-    const onSubmit = () => {};
-
+        register,
+        handleSubmit,
+        getValues,
+        reset,
+        formState: { errors }
+    } = useForm({ mode: 'onChange' });
+    const onSubmit = (data) => {
+        const dataRegister = {
+            username: data.username,
+            fullname: data.fullname,
+            password: data.password,
+            confirm_password: data.cPassword,
+            is_verify: false,
+            userType: accountType,
+            google_account_id: 0
+        }
+        dispatch(registerUserAction(dataRegister))
+        
+    };
+    const storeData = useSelector(store => store.users)
+    const { loading, appErr, registered } = storeData
+  
+    
     return (<>
         <div className="w-full  flex pt-24 items-center flex-col ">
-            <img src="https://jobbox-nextjs-v3.vercel.app/assets/imgs/page/login-register/img-1.svg" alt="img" className="absolute top-[20%] right-[20%] transition-all duration-[4000] ease-linear delay-[3000] animate-pulse "/>
-            <img src="https://jobbox-nextjs-v3.vercel.app/assets/imgs/page/login-register/img-2.svg" alt="img" className="absolute bottom-0 left-40 "/>
+            <img src="https://jobbox-nextjs-v3.vercel.app/assets/imgs/page/login-register/img-1.svg" alt="img" className="absolute top-[20%] right-[20%] transition-all duration-[4000] ease-linear delay-[3000] animate-pulse z-[-100]" />
+            <img src="https://jobbox-nextjs-v3.vercel.app/assets/imgs/page/login-register/img-2.svg" alt="img" className="absolute bottom-0 left-40 z-[-100]" />
             <div className="w-[418px] flex items-center flex-col">
                 <div className="text-sm text-blue-700">Register!</div>
                 <div className="text-4xl font-bold mt-3 mb-2">Start for free Today</div>
@@ -32,44 +52,45 @@ function Register() {
                 </div>
                 <form className="mt-2 w-full" onSubmit={handleSubmit(onSubmit)}>
                     <div className="w-full flex items-center justify-center py-4">
-                        <div onClick={()=>setAccountType('Seeker')} className={`flex cursor-pointer mr-1 px-4 py-3 rounded outline-none ${accountType==='Seeker'?'bg-[#1d4fd862] text-blue-900 font-semibold':'bg-white border border-blue-400'}`}>Seeker Account</div>
-                        <div onClick={()=>setAccountType('Organizer')} className={`flex cursor-pointer px-4 py-3 rounded outline-none ${accountType!=='Seeker'?'bg-[#1d4fd862] text-blue-900 font-semibold':'bg-white border border-blue-400'}`}>Organizer Account</div>
+                        <div onClick={() => setAccountType('seeker')} className={`flex cursor-pointer mr-1 px-4 py-3 rounded outline-none ${accountType === 'seeker' ? 'bg-[#1d4fd862] text-blue-900 font-semibold' : 'bg-white border border-blue-400'}`}>Seeker Account</div>
+                        <div onClick={() => setAccountType('organizer')} className={`flex cursor-pointer px-4 py-3 rounded outline-none ${accountType !== 'seeker' ? 'bg-[#1d4fd862] text-blue-900 font-semibold' : 'bg-white border border-blue-400'}`}>Organizer Account</div>
                     </div>
                     <div className="mb-5 w-full">
                         <TextInput type={'text'} register={register("fullname", {
-                        required: accountType==='Seeker'?'Full Name is required':'Organizer Name is required',
-                      })}
-                      error={errors.fullname ? errors.fullname.message : ""} placeholder={`${accountType==='Seeker'?'Nguyen Van A':'Organizer Information Technology'}`} label={`${accountType==='Seeker'?'Full Name *':'Organizer Name*'}`} name='fullname' containerStyles='text-[#05264e] text-base w-full tw-bg-white' labelStyle='text-[#05264e] text-sm'/>
+                            required: accountType === 'seeker' ? 'Full Name is required' : 'Organizer Name is required',
+                        })}
+                            error={errors.fullname ? errors.fullname.message : ""} placeholder={`${accountType === 'seeker' ? 'Nguyen Van A' : 'Organizer Information Technology'}`} label={`${accountType === 'seeker' ? 'Full Name *' : 'Organizer Name*'}`} name='fullname' containerStyles='text-[#05264e] text-base w-full tw-bg-white' labelStyle='text-[#05264e] text-sm' />
                     </div>
 
                     <div className="mb-5 w-full">
                         <TextInput type={'text'} register={register("username", {
-                        required: "Username is required!",
-                      })}
-                      error={errors.username ? errors.username.message : ""} placeholder='vananguyen' label='Username *' name='username' containerStyles='text-[#05264e] text-base w-full tw-bg-white' labelStyle='text-[#05264e] text-sm'/>
+                            required: "Username is required!",
+                        })}
+                            error={errors.username ? errors.username.message : ""} placeholder='vananguyen' label='Username *' name='username' containerStyles='text-[#05264e] text-base w-full tw-bg-white' labelStyle='text-[#05264e] text-sm' />
                     </div>
                     <div className="mb-3 w-full">
                         <TextInput type={'password'} register={register("password", {
-                        required: 'Password is required',})} error={errors.password ? errors.password.message : ""} label='Password *' name='password' placeholder='***********' containerStyles='text-[#05264e] text-base w-full tw-bg-white' labelStyle='text-[#05264e] text-sm'/>
+                            required: 'Password is required',
+                        })} error={errors.password ? errors.password.message : ""} label='Password *' name='password' placeholder='***********' containerStyles='text-[#05264e] text-base w-full tw-bg-white' labelStyle='text-[#05264e] text-sm' />
                     </div>
                     <div className="mb-3 w-full">
                         <TextInput label='Confirm Password'
                             placeholder='Password'
                             type='password'
                             register={register("cPassword", {
-                              validate: (value) => {
-                                const { password } = getValues();
+                                validate: (value) => {
+                                    const { password } = getValues();
 
-                                if (password != value) {
-                                  return "Passwords do no match";
-                                }
-                              },
+                                    if (password != value) {
+                                        return "Passwords do no match";
+                                    }
+                                },
                             })}
                             error={
-                              errors.cPassword 
-                                ? errors.cPassword?.message
-                                : ""
-                            } name='cPassword' containerStyles='text-[#05264e] text-base w-full tw-bg-white' labelStyle='text-[#05264e] text-sm'/>
+                                errors.cPassword
+                                    ? errors.cPassword?.message
+                                    : ""
+                            } name='cPassword' containerStyles='text-[#05264e] text-base w-full tw-bg-white' labelStyle='text-[#05264e] text-sm' />
                     </div>
 
                     <div className="flex justify-between items-center mb-5 ">
@@ -81,7 +102,15 @@ function Register() {
                             <div className="text-[#6c757d] text-sm">Learn more</div>
                         </Link>
                     </div>
-                    <CustomButton type={'submit'} title={'Submit & Register'}  containerStyles={'bg-[#3c65f5] focus:bg-[#05264e] w-full py-4 pl-5 pr-5 rounded flex justify-center items-center text-white mb-3'}/>
+                    {registered?.message && <span className='flex flex-row items-center text-sm text-[#2537a9] mt-2 mb-3'><AiFillExclamationCircle className="mr-1" />{registered?.message}</span>}
+
+                    {appErr && <span className='flex flex-row items-center text-sm text-[#a9252b] mt-2 mb-3'><AiFillExclamationCircle className="mr-1" />{appErr}</span>}
+                    {
+                        loading ?
+                            <CustomButton isDisable={loading} title={'Loading...'} containerStyles={'bg-[#ccc] focus:bg-[#05264e] w-full py-4 pl-5 pr-5 rounded flex justify-center items-center text-white mb-3'} />
+                            :
+                            <CustomButton isDisable={loading} type={'submit'} title={'Submit & Register'} containerStyles={'bg-[#3c65f5] focus:bg-[#05264e] w-full py-4 pl-5 pr-5 rounded flex justify-center items-center text-white mb-3'} />
+                    }
                 </form>
                 <div className="flex items-center ">
                     <div className="text-[#05264e] text-sm mr-1">Already have an account?</div>

@@ -22,7 +22,7 @@ function MyProfile() {
                             <div className="flex items-center mb-8 pb-8 border-b border-solid border-[#f1f3f7]">
                                 <div className="relative flex items-center ">
                                     <input type="file" name="attachment" accept='image/*' id="upload" required className="opacity-0 absolute hidden overflow-hidden h-0 w-0 z-[-1]" />
-                                    <label for='upload' className="flex items-center justify-center flex-col cursor-pointer h-[120px] w-[200px] border-dashed m-0 border-[2px] border-[#ced4e1] rounded-sm ">Browse Logo</label>
+                                    <label for='upload' className="flex items-center justify-center flex-col cursor-pointer h-[250px] w-[200px] border-dashed m-0 border-[2px] border-[#ced4e1] rounded-sm ">Browse Image</label>
                                 </div>
                                 <div className="text-sm font-normal text-[#696969] ml-10" >Max file size is 1MB, Minimum dimension: 330x300 And Suitable files are .jpg & .png</div>
                             </div>
@@ -43,7 +43,7 @@ function MyProfile() {
                                     <div className="px-4 mb-6">
                                         <label for="dob" className="block leading-8 text-gray-900 font-medium">Date of birth</label>
                                         <div className="relative mt-2 rounded-md shadow-sm ">
-                                            <input type="date" name="dob" id="dob" className="block bg-[#f0f5f7] focus:bg-white text-base w-full rounded-md border-0 pt-2 pl-5 pr-5 text-gray-900 ring-1 ring-inset focus:ring-4 focus:ring-[#8DB3FB] ring-gray-300 placeholder:text-gray-400  sm:text-base sm:leading-8"  />
+                                            <input type="date" name="dob" id="dob" className="block bg-[#f0f5f7] focus:bg-white text-base w-full rounded-md border-0 pt-2 pb-1.5 pl-5 pr-5 text-gray-900 ring-1 ring-inset focus:ring-4 focus:ring-[#8DB3FB] ring-gray-300 placeholder:text-gray-400  sm:text-base sm:leading-8"  />
                                         </div>
                                     </div>
                                     <div className="px-4 mb-6">

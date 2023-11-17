@@ -18,7 +18,7 @@ function ResetPassword() {
                     </div>
                     
                    
-                    <CustomButton title={'Continue'} containerStyles={'bg-[#3c65f5] focus:bg-[#05264e] w-full py-4 pl-5 pr-5 rounded flex justify-center items-center text-white mb-3'}/>
+                    <CustomButton title={'Continue'}  containerStyles={'bg-[#3c65f5] focus:bg-[#05264e]  w-full py-4 pl-5 pr-5 rounded flex justify-center items-center text-white mb-3'}/>
                 </form>
                 <div className="flex items-center">
                     <div className="text-[#05264e] text-sm mr-1">Don't have an Account? </div>

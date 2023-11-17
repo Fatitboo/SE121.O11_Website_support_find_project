@@ -23,7 +23,7 @@ const TextInput = React.forwardRef(
             onBlur={onblur}
             ref={ref}
             defaultValue={value}
-            className={`block bg-[#f9fbfc] focus:bg-white text-base outline-1 shadow-sm w-full rounded-md py-2.5 pl-5 pr-5 text-gray-900 border-[1px] border-gray-300 placeholder:text-gray-400 sm:text-base sm:leading-8 ${styles}`}
+            className={`block bg-[#f9fbfc] focus:bg-white text-base outline-1 shadow-sm w-full rounded-md py-2 pl-5 pr-5 text-gray-900 border-[1px] border-gray-300 placeholder:text-gray-400 sm:text-base sm:leading-8 ${styles}`}
             {...register}
             style={{borderColor: `${error ? "#a9252b": ""}`, outlineColor: `${error ? "#a9252b": ""}`}}
             aria-invalid={error ? "true" : "false"}

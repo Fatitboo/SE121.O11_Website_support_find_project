@@ -1,11 +1,12 @@
 import React from "react";
 
-const CustomButton = ({ title, containerStyles, iconRight, type, onClick, isLeft , children}) => {
+const CustomButton = ({ title, containerStyles, iconRight, type, onClick, isLeft , children, isDisable}) => {
     if(isLeft){
         return (
             <button
               onClick={onClick}
               type={type || "button"}
+              disabled={isDisable}
               className={`inline-flex items-center ${containerStyles}`}
             >
               {children}
@@ -18,6 +19,7 @@ const CustomButton = ({ title, containerStyles, iconRight, type, onClick, isLeft
         <button
           onClick={onClick}
           type={type || "button"}
+          disabled={isDisable}
           className={`inline-flex items-center ${containerStyles}`}
         >
           {children}

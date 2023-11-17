@@ -1,8 +1,8 @@
 import {Footer, Navbar} from '../index'
-function LayoutNoSidebar({userType, children}) {
+function LayoutNoSidebar({user, children}) {
     return ( 
         <div >
-            <Navbar userType={userType}/>
+            <Navbar user={user}/>
             <div className="mt-16">{children} </div>
             <Footer/>
         </div>
