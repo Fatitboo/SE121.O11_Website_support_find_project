@@ -28,11 +28,11 @@ function NavbarAdmin() {
                         <div className="flex flex-row items-center gap-4">
                             <div className="flex flex-row items-center mr-1 text-base cursor-pointer">
                                 <IoIosNotifications className="w-6 h-5"/>
-                                <h3 className="leading-none mb-[2px] ml-[2px]">Notifications</h3>
+                                <div className="leading-none mb-[2px] ml-[2px]">Notifications</div>
                             </div>
                             <div className="flex flex-row items-center mr-1 text-base cursor-pointer">
                                 <IoMdMail className="w-6 h-5"/>
-                                <h3 className="leading-none mb-[2px] ml-[2px]">Messages</h3>
+                                <div className="leading-none mb-[2px] ml-[2px]">Messages</div>
                             </div>
                             <div className="w-[1px] h-[30px] bg-[#c3c3c3] mr-4">
                             </div>

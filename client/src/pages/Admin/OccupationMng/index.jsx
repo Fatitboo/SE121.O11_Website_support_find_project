@@ -53,7 +53,7 @@ function OccupationManagement() {
                                     </div>
                                 </div>
                                 <div className="flex ">
-                                    <h4 className="mr-1">Occupations: </h4> <span>  {occupationsList.length}</span>
+                                    <div className="mr-1">Occupations: </div> <span>  {occupationsList.length}</span>
                                 </div>
                             </div>
                             {appErr && <span className='flex flex-row items-center text-base text-[#a9252b] mt-2 ml-8'><AiFillExclamationCircle className="mr-1" />{appErr}</span>}

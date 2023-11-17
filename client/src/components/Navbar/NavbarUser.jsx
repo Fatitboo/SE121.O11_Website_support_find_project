@@ -106,7 +106,7 @@ function NavbarUser({ user }) {
                             Project<span className="text-[#1677cccb]">Finder</span>
                         </Link>
                     </div>
-                    <ul className="hidden lg:flex gap-10 text-base">
+                    <ul className="hidden lg:flex gap-10 text-base list-none">
                         <li>
                             <Link to='/Seeker/find-projects' >Projects</Link>
                         </li>
