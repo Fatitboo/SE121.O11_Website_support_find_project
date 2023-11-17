@@ -166,7 +166,7 @@ function Skills() {
                                     </div>
                                 </div>
                                 <div className="flex ">
-                                    <h4 className="mr-1">Skill: </h4> <span>  {skillsList.length}</span>
+                                    <div className="mr-1">Skill: </div> <span>  {skillsList.length}</span>
                                 </div>
                             </div>
                             {/* table list skill information */}
@@ -185,10 +185,10 @@ function Skills() {
                                                 (skillsList.filter(item => item)).map((item, index) => (
                                                     <tr key={item.skillId} className="relative border-b border-solid border-[#ecedf2] w-full text-base min-h-[64px] hover:bg-[#f4f2f2] ">
                                                         <td >
-                                                            <h4 className="text-left pl-6 py-3">{item.skillName}</h4>
+                                                            <div className="text-left pl-6 py-3">{item.skillName}</div>
                                                         </td>
                                                         <td >
-                                                            <h4 className="text-left py-3 text-ellipsis w-64 line-clamp-2">{item.description}</h4>
+                                                            <div className="text-left py-3 text-ellipsis w-64 line-clamp-2">{item.description}</div>
                                                         </td>
                                                         <td>
                                                             <div className="py-3">
