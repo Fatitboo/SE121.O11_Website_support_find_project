@@ -1,18 +1,24 @@
 package dev.projectFinder.server.services;
 
 
+import dev.projectFinder.server.components.JwtTokenUtils;
 import dev.projectFinder.server.dtos.SeekerResumeDTO;
 import dev.projectFinder.server.dtos.UserDTO;
 import dev.projectFinder.server.dtos.UserInforDTO;
 import dev.projectFinder.server.dtos.UserLoginDTO;
 import dev.projectFinder.server.models.User;
-import dev.projectFinder.server.models.components.Address;
-import dev.projectFinder.server.models.components.CVLink;
+import dev.projectFinder.server.components.Address;
+import dev.projectFinder.server.components.CVLink;
 import dev.projectFinder.server.repositories.UserRepository;
+import dev.projectFinder.server.responses.UserResponse;
 import dev.projectFinder.server.utils.MessageKeys;
 import lombok.RequiredArgsConstructor;
 import org.bson.types.ObjectId;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -22,11 +28,13 @@ import java.util.*;
 @Service
 @RequiredArgsConstructor
 public class UserServices {
+    private final AuthenticationManager authenticationManager;
     private final UserRepository userRepository;
     private final UploadServices uploadServices;
+    private final PasswordEncoder passwordEncoder;
+    private final JwtTokenUtils jwtTokenUtil;
 
-
-    public User createUser(UserDTO userDTO) throws Exception {
+    public UserResponse createUser(UserDTO userDTO) throws Exception {
         if (!userDTO.getPassword().equals(userDTO.getCPassword())){
             throw new Exception("Confirm password have to match password");
         }
@@ -40,20 +48,59 @@ public class UserServices {
                 .password(userDTO.getPassword())
                 .fullName(userDTO.getFullName())
                 .googleAccountId(userDTO.getGoogleAccountId())
-                .isVerify(userDTO.getIsVerify())
+                .isVerify(false)
+                .isActive(true)
                 .build();
-        return userRepository.save(newAcc);
+        if ( userDTO.getGoogleAccountId() == 0) {
+            String password = userDTO.getPassword();
+            String encodedPassword = passwordEncoder.encode(password);
+            newAcc.setPassword(encodedPassword);
+        }
+        User  user = userRepository.save(newAcc);
+        UserResponse userResponse = UserResponse.builder()
+                .userId(user.getUserId())
+                .fullName(user.getFullName())
+                .avatar(user.getAvatar())
+                .userType(user.getUserType())
+                .isActive(user.getIsActive())
+                .isVerify(user.getIsVerify())
+                .token(null)
+                .build();
+        return userResponse;
+
     }
-    public User login(UserLoginDTO userLoginDTO) {
+    public UserResponse login(UserLoginDTO userLoginDTO) throws Exception {
         Optional<User> optionalUser= userRepository.findByUsername(userLoginDTO.getUsername());
         if (optionalUser.isEmpty()){
             throw new DataIntegrityViolationException(MessageKeys.WRONG_USERNAME_PASSWORD);
         }
         User user = optionalUser.get();
-        if(!((userLoginDTO.getPassword()).equals(user.getPassword()))){
-            throw new DataIntegrityViolationException(MessageKeys.WRONG_USERNAME_PASSWORD);
+        //check password
+        if (user.getGoogleAccountId() == 0) {
+            if(!passwordEncoder.matches(userLoginDTO.getPassword(), user.getPassword())) {
+                throw new BadCredentialsException(MessageKeys.WRONG_USERNAME_PASSWORD);
+            }
         }
-        return user;
+        if(!userLoginDTO.getUserType().equals(user.getUserType())){
+            throw new BadCredentialsException(MessageKeys.WRONG_USERNAME_PASSWORD);
+        }
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
+                userLoginDTO.getUsername(), userLoginDTO.getPassword(),
+                user.getAuthorities()
+        );
+
+        //authenticate with Java Spring security
+        authenticationManager.authenticate(authenticationToken);
+        String token = jwtTokenUtil.generateToken(user);
+        return UserResponse.builder()
+                .userId(user.getUserId())
+                .fullName(user.getFullName())
+                .avatar(user.getAvatar())
+                .userType(user.getUserType())
+                .isActive(user.getIsActive())
+                .isVerify(user.getIsVerify())
+                .token(token)
+                .build();
     }
     public void updateSocialLink(String id, UserInforDTO socialLinkDTO){
         Optional<User> foundUser = userRepository.findById(new ObjectId(id));
@@ -82,7 +129,6 @@ public class UserServices {
             throw new DataIntegrityViolationException(MessageKeys.USER_NOT_FOUND);
         }
         User user = foundUser.get();
-        user.setAvatar(userInforDTO.getAvatar());
         user.setFullName(userInforDTO.getFullName());
         user.setPhoneNumber(userInforDTO.getPhoneNumber());
         user.setEmail(userInforDTO.getEmail());
@@ -128,7 +174,20 @@ public class UserServices {
         }
         cvLinks.add(new CVLink(file.getOriginalFilename(), (String) uploadResult.get("url"), (String) uploadResult.get("public_id"), false));
         user.setCvLinks(cvLinks);
-         userRepository.save(user);
+        userRepository.save(user);
+    }
+    public User updateImages(String id, MultipartFile file, String publicId) throws Exception {
+        Optional<User> foundUser = userRepository.findById(new ObjectId(id));
+        if(foundUser.isEmpty()){
+            throw new DataIntegrityViolationException(MessageKeys.USER_NOT_FOUND);
+        }
+        User user = foundUser.get();
+        Map<?,?> uploadResult = uploadServices.uploadFile(file);
+        if(publicId.isEmpty()){
+            uploadServices.deleteFile(publicId);
+        }
+        user.setAvatar(new CVLink(file.getOriginalFilename(), (String) uploadResult.get("url"), (String) uploadResult.get("public_id"), false));
+        return userRepository.save(user);
     }
     public void deleteSeekerCV(String id, String publicId) throws Exception {
         Optional<User> foundUser = userRepository.findById(new ObjectId(id));

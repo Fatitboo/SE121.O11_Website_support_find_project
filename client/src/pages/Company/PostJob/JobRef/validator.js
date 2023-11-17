@@ -9,14 +9,23 @@ var ValidatorRules = {
         return values ? (values.split(',').length != 0 ? undefined : messageError) : messageError
     },
     number: function(value){
-        return value ? (isNumeric(value) ? undefined : "Vui lòng nhập chữ số") : "Vui lòng nhập chữ số"
+        return value ? (isNumeric(value) ? undefined : "Please fill a number.") : "Please fill a number."
     },
     positiveNumber: function(value){
-        return value ? (value > 0 ? undefined : "Vui lòng nhập chữ số") : "Vui lòng nhập chữ số"
+        return value ? (value > 0 ? undefined : "Please fill a positive number.") : "Please fill a positive number."
     },
     maxHourWeek: function(value){
-        return value ? (value <= 168 ? undefined : "Số giờ vượt quá số giờ trong tuần") : "Số giờ vượt quá số giờ trong tuần"
-    }
+        return value ? (value <= 168 ? undefined : "Exceeded weekly hours.") : "Exceeded weekly hours."
+    },
+    max: function(value, number){
+        return value ? (value <= number ? undefined : "Please do not enter more than the maximum number") : "Please do not enter more than the maximum number"
+    },
+    min: function(value, number){
+        return value ? (value >= number ? undefined : "Please do not enter less than the minimum number") : "Please do not enter less than the minimum number"
+    },
+    email: function(value){
+        return value ? (value.match(/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/) ? undefined : "Add a valid email address.") : "Add a valid email address."
+    },
 };
 function isNumeric(str) {
     if (typeof str != "string") return false // we only process strings!  
@@ -31,15 +40,29 @@ export function Validate(Element, ErrorMessages){
     var {value} = Element
     value = value || value === "" ? value : Element.getAttribute('value')
     var ruleInfos = rules.split('|');
-
     for(var rule of ruleInfos){
-        var ruleFunc = ValidatorRules[rule];
-        if(ruleFunc){
-            ruleFunc = ruleFunc(value, ErrorMessages[name])
-            console.log(ruleFunc , "a"); 
-            if(ruleFunc) {
-                validationErrors[name] = ruleFunc
-                return validationErrors
+        var ruleFunc;
+        if(rule.includes(':')) {
+            rule = rule.split(':')
+            if(rule[1].trim()) {
+                ruleFunc = ValidatorRules[rule[0]] 
+                if(ruleFunc){
+                    ruleFunc = ruleFunc(value, rule[1])
+                    if(ruleFunc) {
+                        validationErrors[name] = ruleFunc
+                        return validationErrors
+                    }
+                }
+            }
+        }
+        else {
+            ruleFunc = ValidatorRules[rule];
+            if(ruleFunc){
+                ruleFunc = ruleFunc(value, ErrorMessages[name])
+                if(ruleFunc) {
+                    validationErrors[name] = ruleFunc
+                    return validationErrors
+                }
             }
         }
     }
@@ -58,10 +81,23 @@ export function FormErrors(formElement, ErrorMessages){
             var ruleInfos = rules.split('|');
 
             for(var rule of ruleInfos){
-                var ruleFunc = ValidatorRules[rule];
-                if(ruleFunc){
-                    ruleFunc = ruleFunc(value, ErrorMessages[name])
-                    ruleFunc ? validationErrors[name] = ErrorMessages[name] : delete validationErrors[name]
+                var ruleFunc;
+                if(rule.includes(':')) {
+                    rule = rule.split(':')
+                    if(rule[1].trim()) {
+                        ruleFunc = ValidatorRules[rule[0]] 
+                        if(ruleFunc){
+                            ruleFunc = ruleFunc(value, rule[1])
+                            ruleFunc ? validationErrors[name] = ruleFunc : delete validationErrors[name]
+                        }
+                    }
+                }
+                else {
+                    ruleFunc = ValidatorRules[rule];
+                    if(ruleFunc){
+                        ruleFunc = ruleFunc(value, ErrorMessages[name])
+                        ruleFunc ? validationErrors[name] = ruleFunc : delete validationErrors[name]
+                    }
                 }
             }
         }

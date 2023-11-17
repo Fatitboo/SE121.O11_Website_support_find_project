@@ -2,8 +2,8 @@ package dev.projectFinder.server.models;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
-import dev.projectFinder.server.models.components.ExperienceUser;
-import dev.projectFinder.server.models.components.SkillUser;
+import dev.projectFinder.server.components.ExperienceUser;
+import dev.projectFinder.server.components.SkillUser;
 import lombok.*;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;

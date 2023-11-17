@@ -2,7 +2,7 @@ package dev.projectFinder.server.models;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
-import dev.projectFinder.server.models.components.*;
+import dev.projectFinder.server.components.*;
 import jakarta.validation.constraints.Email;
 import lombok.*;
 import org.bson.types.ObjectId;
@@ -10,8 +10,13 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 @Data
@@ -21,7 +26,7 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 @Document(collection = "users")
-public class User {
+public class User implements UserDetails {
     // general information
     @Id
     @JsonSerialize(using = ToStringSerializer.class)
@@ -33,7 +38,7 @@ public class User {
     private Boolean isVerify;
     private int googleAccountId;
     private String phoneNumber;
-    private String avatar;
+    private CVLink avatar;
     @Email
     private String email;
     private LocalDateTime dayOfBirth;
@@ -44,6 +49,7 @@ public class User {
     private String twLink;
     private String lkLink;
     private String insLink;
+    private Boolean isActive;
 
     // Seeker
     private String expectSalary;
@@ -52,7 +58,7 @@ public class User {
     private CertificationUser[] certificationUsers;
     private EducationUser[] educationUsers;
     private ExperienceUser[] experienceUsers;
-
+    private String jobDes;
 
     // Organizer
     private String teamSize;
@@ -68,4 +74,32 @@ public class User {
     @LastModifiedDate
     private LocalDateTime updatedAt;
 
+    // role_seeker , role_organizer, role_admin
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        List<SimpleGrantedAuthority> authorityList = new ArrayList<>();
+        authorityList.add(new SimpleGrantedAuthority("ROLE_"+ getUserType().toUpperCase()));
+
+        return authorityList;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
 }

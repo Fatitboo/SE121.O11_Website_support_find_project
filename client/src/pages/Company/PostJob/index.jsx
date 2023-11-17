@@ -20,7 +20,8 @@ import { JobBasic, JobBenefit, JobDes, JobDetail, JobPreferences, JobPreScreen, 
 function PostJob() {
     const nextJobRef = () => {
         if(jobRefKey < jobRef.length){
-            console.log(jobRefKey)
+            window.scrollTo({top: 0, behavior: 'smooth'});
+            jobRefKey > 1 ? setIsPreview(true) : setIsPreview(false)
             setJobRefKey(++jobRefKey)
             setJobProgress(jobRefKey / jobRef.length * 100 + '%')
         }
@@ -28,8 +29,8 @@ function PostJob() {
             alert("filled, go to payment")
         } 
     }
-    const formId = ["form-job-basic", "form-job-detail"]
-    const jobRef = [<JobBasic formSubmit={nextJobRef} formId={formId[0]} key={0}/>, <JobDetail formSubmit={nextJobRef} formId={formId[1]} key={1}/>, <JobBenefit key={2}/>, <JobDes key={3}/>,<JobPreferences key={4}/>,<JobPreScreen key={5}/>,<JobReview key={6}/>]
+    const formId = ["form-job-basic", "form-job-detail", "form-job-benefit", "form-job-des", "form-job-ref"]
+    const jobRef = [<JobBasic formSubmit={nextJobRef} formId={formId[0]} key={0}/>, <JobDetail formSubmit={nextJobRef} formId={formId[1]} key={1}/>, <JobBenefit formSubmit={nextJobRef} formId={formId[2]} key={2}/>, <JobDes  formSubmit={nextJobRef} formId={formId[3]} key={3}/>,<JobPreferences formSubmit={nextJobRef} formId={formId[4]} key={4}/>,<JobPreScreen key={5}/>,<JobReview key={6}/>]
         
     var [jobProgress, setJobProgress] = useState('0%')
     var [jobRefKey, setJobRefKey] = useState(0)
@@ -37,6 +38,8 @@ function PostJob() {
 
     function backJobRef(){
         if(jobRefKey > 0){
+            window.scrollTo({top: 0, behavior: 'smooth'});
+            jobRefKey > 3 ? setIsPreview(true) : setIsPreview(false)
             setJobRefKey(--jobRefKey)
             setJobProgress(jobRefKey / jobRef.length * 100 + '%')
         }
@@ -48,7 +51,7 @@ function PostJob() {
                 <div className="text-[12px] font-semibold leading-5">
                     <h3>Job post progress</h3>
                     <div className="border h-2 flex rounded-[4px]">
-                        <div className="h-2 bg-gradient-to-r from-[#c74289] to-[#3f73d3] rounded-[4px]" style={{width: jobProgress, transition: 'width 400ms cubic-bezier(0, 0, 1, 1) 0s'}}>
+                        <div className="h-2 bg-gradient-to-r from-[#c74289] to-[#3f73d3] rounded-[4px]" style={{width: jobProgress, transition: 'width 800ms cubic-bezier(0, 0, 1, 1) 0s'}}>
 
                         </div>
                     </div>

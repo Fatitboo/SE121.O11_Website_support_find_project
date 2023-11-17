@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.List;
-
+@CrossOrigin("*")
 @RestController
 // localhost:8088/api/v1/occupations
 @RequestMapping("api/v1/occupations")
@@ -40,7 +40,7 @@ public class OccupationController {
         try{
             Occupation occupation = occupationServices.createNewOccupation(occupationDTO);
             response.put("message", MessageKeys.CREATE_OCCUPATION_SUCCESSFULLY);
-            response.put("Occupation",occupation);
+            response.put("occupation",occupation);
             return ResponseEntity.ok(response);
         }catch (Exception e){
             response.put("message",e.getMessage() );
@@ -74,6 +74,7 @@ public class OccupationController {
         try{
             occupationServices.deleteOccupation(id);
             response.put("message", MessageKeys.DELETE_OCCUPATION_SUCCESSFULLY);
+            response.put("deleteId", id);
             return  ResponseEntity.ok(response);
         }catch (Exception e){
             response.put("message",e.getMessage() );

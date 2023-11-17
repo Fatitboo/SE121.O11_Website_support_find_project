@@ -12,7 +12,7 @@ export default function CustomCheckBox({label, listItem, filterValueChecked, err
     const setSelectedValue = (item) => {
         if(selected.includes(item)){
             selected.splice(selected.indexOf(item), 1)
-            setSelected([...selected]) 
+            setSelected([...selected])
         }else
             setSelected([...selected, item])
     }
@@ -20,7 +20,7 @@ export default function CustomCheckBox({label, listItem, filterValueChecked, err
     return (
         <>
             <p className='block leading-8 text-gray-900 text-base font-semibold' style={{color: `${error ? "#a9252b": ""}`}}>{label}</p>
-            <div name={name} type={type} rules={rules} value={selected.map((item) => item.name)} onBlur={onBlur} tabIndex={0} className='relative cursor-default'>
+            <div name={name} type={type} rules={rules} value={selected.map((item) => item.id)} onBlur={onBlur} tabIndex={0} className='relative cursor-default'>
                 <ul className='mt-2 z-10 rounded-md'>
                     {
                         listItem.map((item, index) => {
@@ -30,7 +30,7 @@ export default function CustomCheckBox({label, listItem, filterValueChecked, err
                                         <div className='ml-1'>
                                             <div className="relative h-7 flex items-center">
                                                 <div className="absolute bg-[#FFF] border border-[#808082] w-[24px] h-[24px] rounded-[5px] group-hover:bg-[#e1ebff]" style={{borderColor: `${error ? "#a9252b" : "#808082"}`}} color="#FFF"></div>
-                                                <div style={{visibility: `${selected.includes(item) ? 'visible' : 'hidden' }`}} className={`flex items-center justify-center absolute bg-[#2557a7] w-[24px] h-[24px] rounded-[5px]`} color="#FFF"><BsCheck color="#FFF" size={'21px'}/></div>
+                                                <div style={{visibility: `${selected.find((i) => i.id === item.id) ? 'visible' : 'hidden' }`}} className={`flex items-center justify-center absolute bg-[#2557a7] w-[24px] h-[24px] rounded-[5px]`} color="#FFF"><BsCheck color="#FFF" size={'21px'}/></div>
                                             </div>
                                         </div>
                                         <span className="pl-9 text-[17px] select-none text-[#696969]">{item.name}</span>

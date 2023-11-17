@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.List;
-
+@CrossOrigin("*")
 @RestController
 // localhost:8088/api/v1/skills
 @RequestMapping("api/v1/skills")
@@ -75,6 +75,7 @@ public class SkillController {
         try{
            skillServices.deleteSkill(id);
             response.put("message", MessageKeys.DELETE_SKILL_SUCCESSFULLY);
+            response.put("deleteId", id);
             return  ResponseEntity.ok(response);
         }catch (Exception e){
             response.put("message",e.getMessage() );

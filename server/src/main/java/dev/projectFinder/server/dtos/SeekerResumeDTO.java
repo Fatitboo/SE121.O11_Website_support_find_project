@@ -1,6 +1,9 @@
 package dev.projectFinder.server.dtos;
 
-import dev.projectFinder.server.models.components.*;
+import dev.projectFinder.server.components.CertificationUser;
+import dev.projectFinder.server.components.EducationUser;
+import dev.projectFinder.server.components.ExperienceUser;
+import dev.projectFinder.server.components.SkillUser;
 import lombok.*;
 
 @Data

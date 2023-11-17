@@ -1,6 +1,6 @@
 import { CustomCheckBox, CustomComboBox } from "../../../../components";
 import { JobDetailImage } from "../../../../assets/images";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { AiFillExclamationCircle } from "react-icons/ai";
 import { Validate, FormErrors } from "./validator";
 
@@ -12,13 +12,13 @@ function JobDetail({formSubmit, formId}) {
     let [isPartTime, setIsPartTime] = useState(false);
     let [isTemporary, setIsTemporary] = useState(false);
     let [textShowBy, setTextShowBy] = useState('Fixed at');
-    let [textToVisible, setTextToVisible] = useState(false);
+    let [textToVisible, setTextToVisible] = useState(localData ? (localData.showBy_2 ? true : false) : false);
     let [jobDetailData, setJobDetailData] = useState(
         {
             jobTypes: [],
             partTime: {
-                showBy: '',
-                hoursPerWeek: ''
+                showBy_1: '',
+                showBy_2: ''
             },
             temporary: {
                 length: '',
@@ -29,20 +29,24 @@ function JobDetail({formSubmit, formId}) {
     let [inputsValues, setInputValues] = useState(
         localData ? localData : {
             jobTypes: [],
-        }
+            showBy: showBy[0],
+            showBy_1: '',
+            showBy_2: '',
+            length: '',
+            period: period[0]
+        }   
     )
     let [errors, setErrors] = useState({})
 
     let [ErrorMessages, setErrorMessages] = useState({
         jobTypes: 'Please choose some type.',
-        showBy_1: 'Please fill start hour',
+        showBy_1: 'Please fill a fixed hours.',
         showBy_2: 'Please fill finish hour',
         duration: 'Add a duration',
     })
 
     function handleSubmit(e) {
         e.preventDefault();
-
         const validationErrors = FormErrors(e.target, ErrorMessages)
 
         setErrors(validationErrors);
@@ -62,6 +66,26 @@ function JobDetail({formSubmit, formId}) {
         const name = e.target.getAttribute('name');
         if(errors[name]) delete errors[name]
         setErrors({...errors, ...validationErrors})
+        console.log(inputsValues)
+    }
+
+    const handleChange = (e) => {
+        const Element = e.target;
+        const validationErrors = Validate(Element, ErrorMessages)
+        const name = Element.getAttribute('name');
+        var {value} = Element
+        value = value || value === "" ? value : Element.getAttribute('value')
+
+        if(errors[name]) delete errors[name]
+        setErrors({...errors, ...validationErrors})
+
+        setJobDetailData({
+            ...jobDetailData, [name] : value
+        })
+
+        setInputValues({
+            ...inputsValues, [name] : value
+        })
     }
 
     function filterValueChecked(e) {
@@ -83,6 +107,21 @@ function JobDetail({formSubmit, formId}) {
         setInputValues({
             ...inputsValues, ["jobTypes"] : e
         })
+        if(!e.includes(jobTypes[1])){
+            setInputValues({
+                ...inputsValues,
+                ["showBy_1"] : '',
+                ["showBy_2"] : '',
+                ['showBy'] : showBy[0],
+            })
+        }  
+        if(!e.includes(jobTypes[2])){
+            setInputValues({
+                ...inputsValues,
+                ["length"] : '',
+                ['period'] : period[0],
+            })
+        } 
     }
 
     const filterValueShowBy = (e) => {
@@ -117,12 +156,34 @@ function JobDetail({formSubmit, formId}) {
                 break;
         }
         setErrors({})
+        if(e.id != (localData ? localData.showBy.id : -1))
+            setInputValues({
+                ...inputsValues,
+                ["showBy_1"] : '',
+                ["showBy_2"] : '',
+                ['showBy'] : e,
+            })
+        else 
+            setInputValues({
+                ...inputsValues,
+                ['showBy'] : e,
+            })    
+
     }
 
-    const filterValuePeriod = () => {
-
+    const filterValuePeriod = (e) => {
+        setInputValues({
+            ...inputsValues,
+            ['period'] : e,
+        })
     }
 
+    const getSelectedItemCheckBox = (values) => {
+        return jobTypes.filter((item) => {
+            return values.find((i) => i.id === item.id)
+        })
+    }
+    
     return (  
         <>
             <div>
@@ -136,8 +197,7 @@ function JobDetail({formSubmit, formId}) {
                 </div>
                 <div className="p-8">
                     <form id={formId} onSubmit={handleSubmit}>
-                        <CustomCheckBox listItem={jobTypes} name="jobTypes" rules="requiredCb" selectedItem={inputsValues.jobTypes} error={errors.jobTypes} filterValueChecked={filterValueChecked} onBlur={blurElement} label="What type of job is it?*"/>
-                        
+                        <CustomCheckBox listItem={jobTypes} name="jobTypes" rules="requiredCb" selectedItem={() => getSelectedItemCheckBox(inputsValues.jobTypes)} error={errors.jobTypes} filterValueChecked={filterValueChecked} onBlur={blurElement} label="What type of job is it?*"/> 
                         {
                             isPartTime ? 
                             (
@@ -147,18 +207,22 @@ function JobDetail({formSubmit, formId}) {
                                         <div className="grid grid-cols-2 items-center justify-between gap-2">
                                             <div className="grid grid-cols-2 gap-2 items-center">
                                                 <div>
-                                                    <CustomComboBox listItem={showBy} name="showBy" filterValueSelected={filterValueShowBy} selectItem={showBy[0]} label="Show by" placeHolder={'Select an options.'}/>
+                                                    <CustomComboBox listItem={showBy} name="showBy" filterValueSelected={filterValueShowBy} selectItem={inputsValues.showBy} label="Show by" placeHolder={'Select an options.'}/>
                                                 </div>
                                                 <div>
                                                     <p className='block leading-8 text-gray-900 text-base font-semibold' style={{color: `${errors.showBy_1 ? "#a9252b": ""}`}}>{textShowBy}</p>
-                                                    <input
-                                                        type="text"
-                                                        name="showBy_1"
-                                                        rules="requiredText|number|maxHourWeek"
-                                                        onBlur={blurElement}
-                                                        style={{borderColor: `${errors.showBy_1 ? "#a9252b": ""}`, outlineColor: `${errors.showBy_1 ? "#a9252b": ""}`}}
-                                                        className={`w-full block bg-[#f9fbfc] focus:bg-white text-base shadow-sm rounded-md py-2.5 pl-5 pr-5 text-gray-900 border border-gray-300 placeholder:text-gray-400 sm:text-base sm:leading-8`}
-                                                    />
+                                                    <div>
+                                                        <input
+                                                            type="text"
+                                                            name="showBy_1"
+                                                            rules={`requiredText|number|positiveNumber|maxHourWeek|max:${inputsValues.showBy_2}`}
+                                                            value={inputsValues.showBy_1}
+                                                            onBlur={blurElement}
+                                                            onChange={handleChange}
+                                                            style={{borderColor: `${errors.showBy_1 ? "#a9252b": ""}`, outlineColor: `${errors.showBy_1 ? "#a9252b": ""}`}}
+                                                            className={`w-full block bg-[#f9fbfc] focus:bg-white text-base shadow-sm rounded-md py-2.5 pl-5 pr-5 text-gray-900 border border-gray-300 placeholder:text-gray-400 sm:text-base sm:leading-8`}
+                                                        />                                                        
+                                                    </div>
                                                 </div>
                                             </div>
                                             <div className="grid grid-cols-2 gap-2 items-center">
@@ -168,8 +232,10 @@ function JobDetail({formSubmit, formId}) {
                                                         <input
                                                             type="text"
                                                             name="showBy_2"
-                                                            rules="requiredText|number"
+                                                            rules={`requiredText|number|positiveNumber|maxHourWeek|min:${inputsValues.showBy_1}`}
                                                             onBlur={blurElement}
+                                                            value={inputsValues.showBy_2}
+                                                            onChange={handleChange}
                                                             style={{borderColor: `${errors.showBy_2 ? "#a9252b": ""}`, outlineColor: `${errors.showBy_2 ? "#a9252b": ""}`}}
                                                             className={`w-full bg-[#f9fbfc] focus:bg-white text-base shadow-sm rounded-md py-2.5 pl-5 pr-5 text-gray-900 border border-gray-300 placeholder:text-gray-400 sm:text-base sm:leading-8`}
                                                         />
@@ -193,30 +259,32 @@ function JobDetail({formSubmit, formId}) {
                         {
                              isTemporary ? (
                                 <div className="mt-6">
-                                    <p className='block leading-8 text-gray-900 text-base font-semibold' style={{color: `${errors.duration ? "#a9252b": ""}`}}>How long is the contract?</p>
+                                    <p className='block leading-8 text-gray-900 text-base font-semibold' style={{color: `${errors.length ? "#a9252b": ""}`}}>How long is the contract?</p>
                                     <div className="flex flex-row items-center justify-between gap-2 w-full">
                                         <div className="grid grid-cols-4 items-center gap-2 w-full">
                                             <div>
-                                                <p className='block leading-8 text-gray-900 text-base font-semibold' style={{color: `${errors.duration ? "#a9252b": ""}`}}>Length</p>
+                                                <p className='block leading-8 text-gray-900 text-base font-semibold' style={{color: `${errors.length ? "#a9252b": ""}`}}>Length</p>
                                                 <input
                                                     type="text"
-                                                    name="duration"
+                                                    name="length"
                                                     onBlur={blurElement}
-                                                    style={{borderColor: `${errors.duration ? "#a9252b": ""}`, outlineColor: `${errors.duration ? "#a9252b": ""}`}}
-                                                    rules="requiredText"
+                                                    onChange={handleChange}
+                                                    value={inputsValues.length}
+                                                    style={{borderColor: `${errors.length ? "#a9252b": ""}`, outlineColor: `${errors.length ? "#a9252b": ""}`}}
+                                                    rules="requiredText|number|positiveNumber"
                                                     className={`w-full bg-[#f9fbfc] focus:bg-white text-base shadow-sm rounded-md py-2.5 pl-5 pr-5 text-gray-900 border border-gray-300 placeholder:text-gray-400 sm:text-base sm:leading-8`}
                                                 />
                                             </div>
                                             <div>
-                                                <CustomComboBox listItem={period} name="Period" filterValueSelected={filterValuePeriod} selectItem={period[0]} label="Period" placeHolder={'Select an options.'}/>
+                                                <CustomComboBox listItem={period} name="Period" filterValueSelected={filterValuePeriod} selectItem={inputsValues.period} label="Period" placeHolder={'Select an options.'}/>
                                             </div>
                                             <div/>
                                             <div/>
                                         </div>
                                     </div>
                                     {
-                                        errors.duration ? 
-                                        <span className='flex flex-row items-center text-sm text-[#a9252b] mt-2'><AiFillExclamationCircle className="mr-1"/>{errors.duration}</span>
+                                        errors.length ? 
+                                        <span className='flex flex-row items-center text-sm text-[#a9252b] mt-2'><AiFillExclamationCircle className="mr-1"/>{errors.length}</span>
                                         : null
                                     }
                                 </div>

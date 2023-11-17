@@ -1,4 +1,4 @@
-package dev.projectFinder.server.models.components;
+package dev.projectFinder.server.components;
 
 import lombok.*;
 import org.bson.types.ObjectId;
