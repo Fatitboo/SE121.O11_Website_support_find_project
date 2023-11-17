@@ -20,6 +20,7 @@ import { JobBasic, JobBenefit, JobDes, JobDetail, JobPreferences, JobPreScreen, 
 function PostJob() {
     const nextJobRef = () => {
         if(jobRefKey < jobRef.length){
+            window.scrollTo({top: 0, behavior: 'smooth'});
             jobRefKey > 1 ? setIsPreview(true) : setIsPreview(false)
             setJobRefKey(++jobRefKey)
             setJobProgress(jobRefKey / jobRef.length * 100 + '%')
@@ -37,6 +38,7 @@ function PostJob() {
 
     function backJobRef(){
         if(jobRefKey > 0){
+            window.scrollTo({top: 0, behavior: 'smooth'});
             jobRefKey > 3 ? setIsPreview(true) : setIsPreview(false)
             setJobRefKey(--jobRefKey)
             setJobProgress(jobRefKey / jobRef.length * 100 + '%')
@@ -49,7 +51,7 @@ function PostJob() {
                 <div className="text-[12px] font-semibold leading-5">
                     <h3>Job post progress</h3>
                     <div className="border h-2 flex rounded-[4px]">
-                        <div className="h-2 bg-gradient-to-r from-[#c74289] to-[#3f73d3] rounded-[4px]" style={{width: jobProgress, transition: 'width 400ms cubic-bezier(0, 0, 1, 1) 0s'}}>
+                        <div className="h-2 bg-gradient-to-r from-[#c74289] to-[#3f73d3] rounded-[4px]" style={{width: jobProgress, transition: 'width 800ms cubic-bezier(0, 0, 1, 1) 0s'}}>
 
                         </div>
                     </div>

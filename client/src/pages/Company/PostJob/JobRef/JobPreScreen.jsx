@@ -3,7 +3,135 @@ import { useState } from "react";
 import { JobPreScreenImage } from "../../../../assets/images";
 import QuestionItem from "./JobComponents/QuestionItem";
 import { IoChevronDownOutline  } from "react-icons/io5";
+import QuestionTag from "./JobComponents/QuestionTag";
 function JobPreScreen({formId, formSubmit}) {
+    const questionPatterns = [
+        {
+            tagId: 1,
+            tagName: 'Ability to Commute',
+            type: 'info',
+            boxType: 'Application question',
+            question: 'Will you be able to reliably commute to Beaufort, SC 29902 for this job?',
+            answerRequire: 'Applicant should be able to reliably commute.',
+            isDealBreakerBox: false,
+            isRequired: false,
+            isMulti: false,
+        },
+        {
+            tagId: 2,
+            tagName: 'Education',
+            type: 'radio',
+            boxType: 'Application question',
+            question: 'What is the highest level of education you have completed?',
+            preAnswer: 'Minimum education level:',
+            selectList: [{id: 1, name: 'High school or equivalent'}, {id: 2, name: 'Associate'}, {id: 3, name: "Bachelor's"}, {id: 4, name: "Master's"}, {id: 5, name: "Doctorate"}],
+            selectedItem: {id: 1, name: 'High school or equivalent'},
+            isRequired: false,
+            isDealBreakerBox: true,
+            isMulti: false
+        },
+        {
+            tagId: 3,
+            tagName: 'Ability to Relocate',
+            type: 'radio',
+            boxType: 'Application question',
+            question: 'Will you be able to relocate to be within reasonable commuting distance from Beaufort, SC 29902?',
+            preAnswer: 'Applicant should be able to',
+            selectList: [{id: 1, name: 'Relocate before starting work'}, {id: 2, name: 'Relocate with an employer provided relocation package'}],
+            selectedItem: {id: 1, name: 'Relocate before starting work'},
+            isRequired: false,
+            isDealBreakerBox: true,
+            isMulti: false
+        },
+        {
+            tagId: 4,
+            tagName: 'Experience',
+            type: 'select-text',
+            boxType: 'Application question',
+            question: 'How many years of ... experience do you have?',
+            preAnswer: 'At least',
+            selectList: [{id: 1, name: '1 year'}, {id: 2, name: '2 years'}, {id: 3, name: '3 years'}, {id: 4, name: '4 years'}, {id: 5, name: '5 years'}, {id: 6, name: '6 years'}, {id: 7, name: '7 years'}, {id: 8, name: '8 years'}, {id: 9, name: '9 years'}, {id: 10, name: '10 years'}],
+            textIndent: '|of|experience',
+            selectedItem: {id: 1, name: '1 year'},
+            isRequired: false,
+            isDealBreakerBox: true,
+            isMulti: true
+        },
+        {
+            tagId: 5,
+            tagName: 'Interview availability',
+            type: 'info',
+            boxType: 'Application question',
+            question: 'Please list 2-3 dates and time ranges that you could do an interview.',
+            answerRequire: 'Ask applicants to list some dates and times they could do an interview',
+            isDealBreakerBox: true,
+            isRequired: false,
+            isMulti: false
+        },
+        {
+            tagId: 6,
+            tagName: 'Language',
+            type: 'text',
+            boxType: 'Application question',
+            question: 'Do you speak ... ?',
+            preAnswer: 'Speaks',
+            isRequired: false,
+            isDealBreakerBox: true,
+            isMulti: true
+        },
+        {
+            tagId: 7,
+            tagName: 'License/Certification',
+            type: 'text',
+            boxType: 'Application question',
+            question: 'Do you have a valid ... ?',
+            preAnswer: 'Valid',
+            isRequired: false,
+            isDealBreakerBox: true,
+            isMulti: true
+        },
+        {
+            tagId: 8,
+            tagName: 'Shift availability',
+            type: 'select',
+            boxType: 'Application question',
+            question: 'Which shift(s) are you available to work?',
+            preAnswer: 'Available to work the following shift(s):',
+            selectList: [{id: 1, name: 'Day Shift', isRequired: false, isDealBreakerBox: true}, {id: 2, name: 'Night Shift', isRequired: false, isDealBreakerBox: true}, {id: 3, name: 'Overnight Shift', isRequired: false, isDealBreakerBox: true}],
+            selectedItem: [{id: 1, name: 'Day Shift', isRequired: false, isDealBreakerBox: true}],
+            isMulti: false
+        },
+        {
+            tagId: 10,
+            tagName: 'Willingness to travel',
+            type: 'radio',
+            boxType: 'Application question',
+            question: 'What percentage of the time are you willing to travel for work?',
+            preAnswer: 'Willing to travel up to ... of the time',
+            selectList: [{id: 1, name: '25%'}, {id: 2, name: '50%'}, {id: 3, name: '75%'}, {id: 4, name: '100%'}],
+            selectedItem: {id: 1, name: '25%'},
+            isRequired: false,
+            isDealBreakerBox: true,
+            isMulti: false
+        },
+        {
+            tagId: 11,
+            tagName: 'Create custom question',
+            type: 'long-text',
+            boxType: 'Application question',
+            question: 'This is an employer-written question. You can report inappropriate questions to Indeed through the "Report Job" link at the bottom of the job description. " ... "',
+            preAnswer: 'Write your own question to ask applicants. Do not ask questions that are discriminatory, illegal, or otherwise violate the Indeed site rules.',
+            maxCharacters: 900,
+            isRequired: false,
+            isDealBreakerBox: true,
+            isMulti: true
+        }
+    ]
+
+    let [questionForms, setQuestionForms] = useState([
+        questionPatterns[0], questionPatterns[2], questionPatterns[4]
+    ]);
+
     const localData = JSON.parse(localStorage.getItem("jobPreScreen"))
     const [value, setValue] = useState(localData ? localData : '');
     let [errors, setErrors] = useState({})
@@ -28,6 +156,21 @@ function JobPreScreen({formId, formSubmit}) {
     }
 
     //
+    function setListQuestionForm(item){
+        if(item.isMulti)
+            questionForms.push(item);
+        else
+            if(!questionForms.find(i => i.tagId === item.tagId))
+                questionForms.push(item);
+
+        setQuestionForms([...questionForms])
+    }
+
+    function removeQuestion(item){
+        if(questionForms.includes(item))
+            questionForms.splice(questionForms.indexOf(item), 1)
+        setQuestionForms([...questionForms])
+    }
     
     return (  
         <>
@@ -55,76 +198,39 @@ function JobPreScreen({formId, formSubmit}) {
                         </div>
                     </div>
                     <form id={formId} onSubmit={handleSubmit}>
-                        <QuestionItem props={
-                            {
-                                type: 'info',
-                                boxType: 'Application question',
-                                question: 'Please list 2-3 dates and time ranges that you could do an interview.',
-                                answerRequire: 'Ask applicants to list some dates and times they could do an interview',
-                                isDealBreakerBox: true,
-                                isRequired: true,
-                            }
-                        }/>
-                        <QuestionItem props={
-                            {
-                                type: 'text',
-                                boxType: 'Application question',
-                                question: 'Do you speak ... ?',
-                                preAnswer: 'Speaks',
-                                isRequired: true,
-                                isDealBreakerBox: true,
-                            }
-                        }/>
-                        <QuestionItem props={
-                            {
-                                type: 'radio',
-                                boxType: 'Application question',
-                                question: 'What percentage of the time are you willing to travel for work?',
-                                preAnswer: 'Willing to travel up to ... of the time',
-                                selectList: [{id: 1, name: '25%'}, {id: 2, name: '50%'}, {id: 3, name: '75%'}, {id: 4, name: '100%'}],
-                                selectedItem: {id: 1, name: '25%'},
-                                isRequired: true,
-                                isDealBreakerBox: true,
-                            }
-                        }/>
-                        <QuestionItem props={
-                           {
-                                type: 'select',
-                                boxType: 'Application question',
-                                question: 'Which shift(s) are you available to work?',
-                                preAnswer: 'Available to work the following shift(s):',
-                                selectList: [{id: 1, name: 'Day Shift', isRequired: false, isDealBreakerBox: true}, {id: 2, name: 'Night Shift', isRequired: false, isDealBreakerBox: true}, {id: 3, name: 'Overnight Shift', isRequired: false, isDealBreakerBox: true}],
-                                selectedItem: [{id: 1, name: 'Day Shift', isRequired: false, isDealBreakerBox: true}],
-                            }
-                        }/>
-                        <QuestionItem props={
-                           {
-                                type: 'select-text',
-                                boxType: 'Application question',
-                                question: 'How many years of ... experience do you have?',
-                                preAnswer: 'At least',
-                                selectList: [{id: 1, name: '1 year'}, {id: 2, name: '2 years'}, {id: 3, name: '3 years'}, {id: 4, name: '4 years'}, {id: 5, name: '5 years'}, {id: 6, name: '6 years'}, {id: 7, name: '7 years'}, {id: 8, name: '8 years'}, {id: 9, name: '9 years'}, {id: 10, name: '10 years'}],
-                                textIndent: '|of|experience',
-                                selectedItem: {id: 1, name: '1 year'},
-                                isRequired: true,
-                                isDealBreakerBox: true,
-                            }
-                        }/>
-
+                        {
+                            questionForms.map((item, index) => {
+                                return (
+                                    <QuestionItem key={index} props={item} onClose={() => {removeQuestion(item)}}/>
+                                )
+                            })
+                        }
                         <div>
-                            <div className="flex flex-col my-6 ">
-                                <div className="flex flex-row border rounded-lg border-gray-400  items-center justify-between p-3 cursor-pointer bg-[#F3F2F1] hover:bg-[#f3f9ff] hover:border-[#3f73d3]">
+                            <div className="flex flex-col my-6">
+                                <input type="checkbox" className="peer" checked={dropDownTags} hidden/>
+                                <div className="flex flex-row border rounded-lg border-gray-400  items-center justify-between p-3 transition-all duration-500 cursor-pointer bg-[#F3F2F1] hover:bg-[#f3f9ff] hover:border-[#3f73d3] rounded-es-lg rounded-ee-lg peer-checked:rounded-es-none peer-checked:rounded-ee-none"  onClick={() => {setDropDownTags(!dropDownTags)}}>
                                     <div className="flex flex-row items-top mr-3">
                                         <div className="text-base text-[#2d2d2d] font-bold whitespace-nowrap">
                                             Browse more questions
                                         </div>
                                     </div>
                                     <div className="h-full self-start mt-[2px] cursor-pointer">
-                                        <IoChevronDownOutline size={22}/>
+                                        <input type="checkbox" className="peer" hidden checked={dropDownTags}/>
+                                        <IoChevronDownOutline size={22} className='transition-transform duration-500 rotate-0 peer-checked:rotate-180'/>
                                     </div>
                                 </div>
-                                <div>
-
+                                <div className={`overflow-auto no-scrollbar border rounded-ee-lg rounded-es-lg border-gray-400 border-t-0 gap-y-2 transition-all duration-500 ease-in-out max-h-0 opacity-0 peer-checked:max-h-56 peer-checked:opacity-100`}>
+                                    <div className="m-4 grid grid-cols-3">
+                                        {
+                                            questionPatterns.map((item, index) => {
+                                                return (
+                                                    <div key={index} className={questionForms.find(i => i.tagId === item.tagId) && !item.isMulti ? 'opacity-40 select-none cursor-none' : ''}>
+                                                        <QuestionTag name={item.tagName} onClick={() => {setListQuestionForm(item)}}/>
+                                                    </div>
+                                                )
+                                            })
+                                        }
+                                    </div>
                                 </div>
                             </div>
                         </div>

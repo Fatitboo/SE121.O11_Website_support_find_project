@@ -2,12 +2,19 @@ import { useEffect, useState } from "react";
 import { BsCheck } from "react-icons/bs";
 import { IoMdClose } from "react-icons/io";
 import CustomComboBox from "../../../../../components/Organizer/CustomComboBox";
-function QuestionItem({props}) {
+function QuestionItem({props, onClose}) {
     let [question, setQuestion] = useState(props);
     let [selected, setSelected] = useState(props.type === "radio" ? {} : []);
 
     useEffect(() => {
-        setSelected(props.selectedItem ? props.selectedItem : {})
+        // if(props.type === "radio"){
+        //     const item = props.selectedItem ? props.selectList.find((i) => i.id === props.selectedItem.id) : {}
+        //     console.log(item)
+        //     setSelected([...selected, item ? item : {}])
+        // }
+        // else if(props.type === "select"){
+        //     console.log("a")
+        // }
     }, [props.selectedItem])
 
     // Select Box
@@ -18,6 +25,7 @@ function QuestionItem({props}) {
             selected.splice(selected.indexOf(sI), 1)
             sI.isRequired = false
             setSelected([...selected])
+            setQuestion({...question, selectList: [...question.selectList ]})
         }else
             setSelected([...selected, question.selectList.find((i) => i.id === item.id)])
     }
@@ -52,7 +60,7 @@ function QuestionItem({props}) {
                                     {question.question}
                                 </div>
                             </div>
-                            <div className="h-full self-start mt-[2px] cursor-pointer">
+                            <div className="h-full self-start mt-[2px] cursor-pointer" onClick={onClose}>
                                 <IoMdClose size={22}/>
                             </div>
                         </div>
@@ -106,7 +114,7 @@ function QuestionItem({props}) {
                                     {question.question.replace("...", "_________")}
                                 </div>
                             </div>
-                            <div className="h-full self-start mt-[2px] cursor-pointer">
+                            <div className="h-full self-start mt-[2px] cursor-pointer" onClick={onClose}>
                                 <IoMdClose size={22}/>
                             </div>
                         </div>
@@ -157,7 +165,6 @@ function QuestionItem({props}) {
             // }
             return ( 
                 <>
-                <div onClick={()=>{console.log(selected)}}>clickme</div>
                 <div className="flex flex-col border border-gray-400 rounded-lg overflow-hidden my-6">
                         <div className="flex flex-row items-center justify-between p-3 bg-[#F3F2F1]">
                             <div className="flex flex-row items-top mr-3">
@@ -171,7 +178,7 @@ function QuestionItem({props}) {
                                     {question.question}
                                 </div>
                             </div>
-                            <div className="h-full self-start mt-[2px] cursor-pointer">
+                            <div className="h-full self-start mt-[2px] cursor-pointer" onClick={onClose}>
                                 <IoMdClose size={22}/>
                             </div>
                         </div>
@@ -247,7 +254,7 @@ function QuestionItem({props}) {
                                     {question.question}
                                 </div>
                             </div>
-                            <div className="h-full self-start mt-[2px] cursor-pointer">
+                            <div className="h-full self-start mt-[2px] cursor-pointer" onClick={onClose}>
                                 <IoMdClose size={22}/>
                             </div>
                         </div>
@@ -321,7 +328,7 @@ function QuestionItem({props}) {
                                     {question.question.replace("...", "_________")}
                                 </div>
                             </div>
-                            <div className="h-full self-start mt-[2px] cursor-pointer">
+                            <div className="h-full self-start mt-[2px] cursor-pointer" onClick={onClose}>
                                 <IoMdClose size={22}/>
                             </div>
                         </div>
@@ -368,6 +375,59 @@ function QuestionItem({props}) {
                                 ) : null
                             }
                             
+                        </div>
+                    </div>
+                </>
+            );
+        case 'long-text':
+            // type: 'long-text',
+            // boxType: 'Application question',
+            // question: 'This is an employer-written question. You can report inappropriate questions to Indeed through the "Report Job" link at the bottom of the job description. " ... "',
+            // preAnswer: 'Write your own question to ask applicants. Do not ask questions that are discriminatory, illegal, or otherwise violate the Indeed site rules.',
+            // maxCharacters: 900,
+            // isRequired: false,
+            // isDealBreakerBox: true,
+            return (
+                <>
+                    <div className="flex flex-col border border-gray-400 rounded-lg overflow-hidden my-6">
+                        <div className="flex flex-row items-center justify-between p-3 bg-[#F3F2F1]">
+                            <div className="flex flex-row items-top mr-3">
+                                <div className="text-base text-[#2d2d2d] font-bold whitespace-nowrap">
+                                    {question.boxType}
+                                </div>
+                                <div className="text-base text-[#2d2d2d] font-bold whitespace-nowrap mr-1">
+                                    : 
+                                </div>
+                                <div>
+                                    {question.question.replace("...", "_________")}
+                                </div>
+                            </div>
+                            <div className="h-full self-start mt-[2px] cursor-pointer" onClick={onClose}>
+                                <IoMdClose size={22}/>
+                            </div>
+                        </div>
+                        <div className="flex-nowrap flex box-border items-center justify-between p-3">
+                            <div className="flex flex-col items-center w-auto">
+                                <div className="text-base font-semibold text-[#595959] mr-2 mb-2">
+                                    {question.preAnswer}
+                                </div>
+                                <div className="w-full">
+                                    <textarea
+                                        type="text"
+                                        style={{lineHeight: 1.5}}
+                                        className={`w-full block bg-[#fdfeff] focus:bg-white outline-none hover:border-[#3f73d3] focus:border-[#3f73d3] text-base shadow-sm rounded-md py-1.5 pl-2 pr-5 text-gray-900 border border-gray-300 placeholder:text-gray-400 sm:text-base sm:leading-8`}
+                                    />                                                        
+                                </div>
+                                {/* {index !== 0 ? <div className="bg-white hover:bg-[#e8f0fe] rounded-md h-full p-3 cursor-pointer" onClick={() => setAddEmail("delete", index)}><AiOutlineClose className="px-1 w-7 h-7" /></div> : null} */}
+                            </div>
+                        </div>
+                        <div className="flex flex-row mx-3 mb-2">
+                            <div className="text-[14px] font-semibold text-[#595959] mr-1">
+                                Characters remaining: 
+                            </div>
+                            <div className="text-[14px] font-semibold text-[#595959]">
+                                {question.maxCharacters}
+                            </div>
                         </div>
                     </div>
                 </>
