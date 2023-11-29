@@ -110,6 +110,21 @@ public class UserServices {
                 .token(token)
                 .build();
     }
+    public void updatePassword(String id, String oldPass, String newPass){
+        Optional<User> foundUser = userRepository.findById(new ObjectId(id));
+        if(foundUser.isEmpty()){
+            throw new DataIntegrityViolationException(MessageKeys.USER_NOT_FOUND);
+        }
+        User user = foundUser.get();
+        if (user.getGoogleAccountId() == 0) {
+            if(!passwordEncoder.matches(oldPass, user.getPassword())) {
+                throw new BadCredentialsException("Password not correct!");
+            }
+        }
+        String encodedPassword = passwordEncoder.encode(newPass);
+        user.setPassword(encodedPassword);
+        userRepository.save(user);
+    }
     public void updateSocialLink(String id, UserInforDTO socialLinkDTO){
         Optional<User> foundUser = userRepository.findById(new ObjectId(id));
         if(foundUser.isEmpty()){

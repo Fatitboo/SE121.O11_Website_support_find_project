@@ -309,4 +309,16 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
     }
+    @PutMapping("/update-password/{id}")
+    public ResponseEntity<?> updatePassword(@RequestParam("oldPassword") String oldPass,@RequestParam("newPassword") String newPass, @PathVariable String id){
+        HashMap<String, Object> response = new HashMap<>();
+        try{
+           userServices.updatePassword(id, oldPass, newPass);
+            response.put("message","Change password user successfully" );
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        }catch (Exception e) {
+            response.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+    }
 }
