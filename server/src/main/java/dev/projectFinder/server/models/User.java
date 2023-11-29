@@ -17,6 +17,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 @Data
@@ -41,7 +42,7 @@ public class User implements UserDetails {
     private CVLink avatar;
     @Email
     private String email;
-    private LocalDateTime dayOfBirth;
+    private Date dayOfBirth;
     private String website;
     private String description;
     private Address address;
@@ -51,6 +52,12 @@ public class User implements UserDetails {
     private String insLink;
     private Boolean isActive;
 
+    // token + expired
+    private String tokenResetPassword;
+    private LocalDateTime expiredDateTokenResetPassword;
+
+    private String tokenVerify;
+    private LocalDateTime expiredDateTokenVerify;
     // Seeker
     private String expectSalary;
     private SkillUser[] skillUsers;

@@ -5,6 +5,7 @@ import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 
 @Data
 @Builder
@@ -17,9 +18,9 @@ public class UserInforDTO {
     private String fullName;
     private String phoneNumber;
     private String email;
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
-    private LocalDateTime dob;
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private Date dob;
     private String website;
     private String description;
     private String expectSalary;
@@ -30,6 +31,7 @@ public class UserInforDTO {
     private String lkLink;
     private String insLink;
     // dto address
+    private String country;
     private String province;
     private String district;
     private String ward;

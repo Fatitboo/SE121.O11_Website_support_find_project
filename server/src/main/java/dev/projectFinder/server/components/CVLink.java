@@ -10,6 +10,7 @@ import org.bson.types.ObjectId;
 @Getter
 @Setter
 public class CVLink {
+    private String cvId;
     private String filename;
     private String fileUrl;
     private String publicId;

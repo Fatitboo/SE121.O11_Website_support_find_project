@@ -1,5 +1,6 @@
 package dev.projectFinder.server.controllers;
 
+import dev.projectFinder.server.components.CVLink;
 import dev.projectFinder.server.dtos.SeekerResumeDTO;
 import dev.projectFinder.server.dtos.UserInforDTO;
 import dev.projectFinder.server.dtos.UserLoginDTO;
@@ -8,6 +9,7 @@ import dev.projectFinder.server.models.User;
 import dev.projectFinder.server.responses.UserProfileResponse;
 import dev.projectFinder.server.responses.UserResponse;
 import dev.projectFinder.server.responses.UserResumeResponse;
+import dev.projectFinder.server.services.EmailService;
 import dev.projectFinder.server.services.UserServices;
 import dev.projectFinder.server.utils.MessageKeys;
 import jakarta.validation.Valid;
@@ -28,9 +30,7 @@ import java.util.List;
 @RequestMapping("api/v1/users")
 @RequiredArgsConstructor
 public class UserController {
-
     private final UserServices userServices;
-
     //  localhost:8088/api/v1/users/register/page=5&record=10
     @PostMapping("/register")
     public ResponseEntity<?> createUser(@Valid @RequestBody UserDTO userDTO,
@@ -111,7 +111,7 @@ public class UserController {
 
     }
 
-    @PutMapping("/update-seeker-information/{id}")
+    @PutMapping("/update-seeker-resume/{id}")
     public ResponseEntity<?> updateSeekerInformation( @PathVariable String id, @RequestBody SeekerResumeDTO seekerResumeDTO){
         HashMap<String, Object> response = new HashMap<>();
         try{
@@ -127,9 +127,9 @@ public class UserController {
     public ResponseEntity<?> updateCVLinks(@PathVariable String id, @RequestParam("file") MultipartFile file){
         HashMap<String, Object> response = new HashMap<>();
         try{
-            userServices.updateSeekerCV(id, file);
+            CVLink cv =   userServices.updateSeekerCV(id, file);
             response.put("message","Update Cv successfully" );
-
+            response.put("cv",cv);
             return ResponseEntity.status(HttpStatus.OK).body(response);
         }catch (Exception e) {
             response.put("message", e.getMessage());
@@ -149,12 +149,13 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
     }
-    @DeleteMapping("/delete-seeker-cv/{id}")
+    @PostMapping("/delete-seeker-cv/{id}")
     public ResponseEntity<?> deleteCVLink(@PathVariable String id, @RequestParam("publicId") String publicId){
         HashMap<String, Object> response = new HashMap<>();
         try{
             userServices.deleteSeekerCV(id, publicId);
             response.put("message","Delete Cv successfully" );
+            response.put("deleteId",publicId );
 
             return ResponseEntity.status(HttpStatus.OK).body(response);
         }catch (Exception e) {
@@ -182,6 +183,7 @@ public class UserController {
             User user = userServices.getUserDetail(id);
             UserProfileResponse userProfileResponse = UserProfileResponse.builder()
                     .avatar(user.getAvatar())
+                    .fullName(user.getFullName())
                     .phoneNumber(user.getPhoneNumber())
                     .email(user.getEmail())
                     .dayOfBirth(user.getDayOfBirth())
@@ -228,5 +230,83 @@ public class UserController {
         }
     }
 
-
+    @GetMapping("/get-all-users")
+    public ResponseEntity<?> getAllUser(){
+        HashMap<String, Object> response = new HashMap<>();
+        try{
+            List<User> users = userServices.getAllUser();
+            response.put("message","Get all users successfully" );
+            response.put("users",users);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        }catch (Exception e) {
+            response.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+    }
+    @GetMapping("/get-user-by-id/{id}")
+    public ResponseEntity<?> getUserById(@PathVariable String id){
+        HashMap<String, Object> response = new HashMap<>();
+        try{
+            User user = userServices.getUserDetail(id);
+            response.put("message","Get detail user successfully" );
+            response.put("userDetail",user);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        }catch (Exception e) {
+            response.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+    }
+    @PostMapping("/send-token-verify-by-email/{id}")
+    public ResponseEntity<?> sendTokenVerifyByEmail(@PathVariable String id){
+        HashMap<String, Object> response = new HashMap<>();
+        try{
+            String token = userServices.generateTokenVerifyAccount(id);
+            response.put("message","Send email verify user successfully" );
+            response.put("token",token);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        }catch (Exception e) {
+            response.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+    }
+    @PostMapping("/send-token-reset-by-email")
+    public ResponseEntity<?> sendTokenResetByEmail(@RequestParam("username") String username){
+        HashMap<String, Object> response = new HashMap<>();
+        try{
+            System.out.println("cc");
+            String token = userServices.generateTokenResetPassword(username);
+            response.put("message","Send email reset password user successfully" );
+            response.put("token",token);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        }catch (Exception e) {
+            response.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+    }
+    @PutMapping("/update-token-verify")
+    public ResponseEntity<?> updateVerifyAccount(@RequestParam("token") String token){
+        HashMap<String, Object> response = new HashMap<>();
+        try{
+            User user = userServices.updateVerifyAccount(token);
+            response.put("message","Verify account user successfully" );
+            response.put("userVerify",user);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        }catch (Exception e) {
+            response.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+    }
+    @PutMapping("/update-token-reset")
+    public ResponseEntity<?> updateResetPassword(@RequestParam("token") String token,@RequestParam("newPassword") String password){
+        HashMap<String, Object> response = new HashMap<>();
+        try{
+            User user = userServices.updateResetPassword(token, password);
+            response.put("message","Reset password user successfully" );
+            response.put("userVerify",user);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        }catch (Exception e) {
+            response.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+    }
 }

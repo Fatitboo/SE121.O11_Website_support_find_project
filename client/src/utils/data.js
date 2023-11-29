@@ -147,3 +147,10 @@ export const popularSearch = [
     "Sales",
     "Office Assistant",
   ];
+export const DegreesCbb = [
+    { id: 1, name: 'B.A' }, { id: 2, name: 'B.S' }, { id: 3, name: 'M.A' }, { id: 4, name: 'M.S' }, { id: 5, name: 'Ph.D' }, { id: 6, name: 'Ed.D' }, { id: 7, name: 'Assoc.Prof' },
+];
+
+export const levelCbb = [
+  { id: 1, name: 'Beginner' }, { id: 2, name: 'Intermediate' }, { id: 3, name: 'Expert' },
+]

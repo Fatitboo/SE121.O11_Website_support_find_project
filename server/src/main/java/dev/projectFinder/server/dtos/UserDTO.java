@@ -24,6 +24,8 @@ public class UserDTO {
     @NotNull(message = "Full name is required")
     private String fullName;
 
+    private String email;
+
     @NotBlank(message = "Password cannot blank")
     @NotNull(message = "Password cannot null")
     private String password;

@@ -15,7 +15,7 @@ import java.util.Map;
 public class UploadServices {
     private final Cloudinary cloudinary;
     public Map<?,?> uploadFile(MultipartFile file) throws IOException {
-        return cloudinary.uploader().upload(file.getBytes(), ObjectUtils.emptyMap());
+        return cloudinary.uploader().upload(file.getBytes(), ObjectUtils.asMap("resource_type", "raw"));
     }
     public void deleteFile(String publicId) throws Exception {
         cloudinary.api().deleteResources(Arrays.asList(publicId),

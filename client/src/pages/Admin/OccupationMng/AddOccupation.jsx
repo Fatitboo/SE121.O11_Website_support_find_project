@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { CustomButton, TextInput } from "../../../components";
+import { CustomButton, TextInput,LoadingComponent } from "../../../components";
 import { CgArrowLeft } from "react-icons/cg";
 import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
@@ -7,31 +7,53 @@ import { AiFillExclamationCircle } from "react-icons/ai";
 import { useDispatch, useSelector } from "react-redux";
 import { createNewOccupationAction } from "../../../redux/slices/occupations/occupationsSlices";
 import { v4 as uuidv4 } from 'uuid';
+import Swal from 'sweetalert2'
 
 function AddOccupation() {
     const dispatch = useDispatch();
     const nav = useNavigate();
     const [listMajor, setListMajor] = useState([{ id: '', name: '' }]);
-    const { register, handleSubmit, setValue, unregister, reset, formState: { errors } } = useForm({ mode: 'onChange' });
+    const { register, handleSubmit, unregister, reset, formState: { errors } } = useForm({ mode: 'onChange' });
     const onSubmit = (data) => {
-        const resultArray = [];
-        Object.keys(data).forEach(key => {
-            if (key.includes('field')) {
-                resultArray.push(data[key]);
+        Swal.fire({
+            title: "Confirm Add",
+            text: "Do you want to add this item?",
+            icon: "info",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                const resultArray = [];
+                Object.keys(data).forEach(key => {
+                    if (key.includes('field')) {
+                        resultArray.push(data[key]);
+                    }
+                });
+                const occupation = {
+                    occupationName: data.occupationName,
+                    listMajor: [...resultArray]
+                };
+                console.log(occupation);
+                dispatch(createNewOccupationAction(occupation));
             }
         });
-        const occupation = {
-            occupationName: data.occupationName,
-            listMajor: [...resultArray]
-        };
-        console.log(occupation);
-        dispatch(createNewOccupationAction(occupation));
+
     }
     const occupations = useSelector(store => store?.occupations);
     const { loading, appErr, isSuccess = false } = occupations
     useEffect(() => {
         if (isSuccess) {
-            nav('/Admin/occupation-management');
+            Swal.fire({
+                title: "Added!",
+                text: "This item has been added.",
+                icon: "success",
+                confirmButtonColor: '#3085d6'
+            }).then(result => {
+                if (result.isConfirmed) nav('/Admin/occupation-management');
+            });
+
         }
     }, [isSuccess])
     const handleAddMajor = () => {
@@ -47,10 +69,11 @@ function AddOccupation() {
 
     return (
         <div className="px-10 pb-0">
+            {loading && <LoadingComponent/>}
             {/* Start title of page  */}
             <Link to='/Admin/occupation-management' className="mb-8 flex items-center ">
                 <CgArrowLeft fontSize={30} />
-                <h3 className="font-normal text-2xl text-gray-900 ml-2 leading-10">Back</h3>
+                {/* <h3 className="font-normal text-2xl text-gray-900 ml-2 leading-10">Back</h3> */}
             </Link>
             <div className="flex flex-wrap mx-3 mt-3 ">
                 <div className="max-w-full px-3 pt-3 shrink-0 w-full">
@@ -83,14 +106,14 @@ function AddOccupation() {
                                             </div>
                                             <div className="grid grid-cols-2 gap-2">
                                                 {listMajor.map((item, index) => (
-                                                    <div key={index} className="flex ml-20 w-8/12 my-1">
+                                                    <div key={item.id} className="flex ml-20 w-8/12 my-1">
                                                         <div className="relative mt-2 mr-3 ">
-                                                            <input type="text" {...register(`field${index}`, {
+                                                            <input type="text" {...register(`field${item.id}`, {
                                                                 required: "This field is required!",
-                                                            })} name={`field${index}`} className="block bg-[#f0f5f7] focus:bg-white  text-base w-full rounded-md border-0 py-1.5 pl-5 pr-20 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 sm:text-sm sm:leading-6" style={{ borderColor: `${errors[`field${index}`] ? "#a9252b" : ""}`, outlineColor: `${errors[`field${index}`] ? "#a9252b" : ""}` }} placeholder="Ex: Communication" />
-                                                            {errors[`field${index}`] && <span className='flex flex-row items-center text-sm text-[#a9252b] mt-2'><AiFillExclamationCircle className="mr-1" />{"This field is required!"}</span>}
+                                                            })} name={`field${item.id}`} className="block bg-[#f0f5f7] focus:bg-white  text-base w-full rounded-md border-0 py-1.5 pl-5 pr-20 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 sm:text-sm sm:leading-6" style={{ borderColor: `${errors[`field${index}`] ? "#a9252b" : ""}`, outlineColor: `${errors[`field${index}`] ? "#a9252b" : ""}` }} placeholder="Ex: Communication" />
+                                                            {errors[`field${item.id}`] && <span className='flex flex-row items-center text-sm text-[#a9252b] mt-2'><AiFillExclamationCircle className="mr-1" />{"This field is required!"}</span>}
                                                         </div>
-                                                        <div onClick={() => handleDeleteMajor(index)}>
+                                                        <div onClick={() => handleDeleteMajor(item.id)}>
                                                             <CustomButton title="Delete" containerStyles="text-red-600 py-1 mt-[9px] px-3 focus:outline-none hover:bg-red-700 hover:text-white rounded-md text-base border border-red-600" />
                                                         </div>
                                                     </div>

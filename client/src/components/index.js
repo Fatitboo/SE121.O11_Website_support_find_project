@@ -9,7 +9,10 @@ import CustomComboBox from "./Organizer/CustomComboBox";
 import CustomCheckBox from "./Organizer/CustomCheckBox";
 import CustomRadioButton from "./Organizer/CustomRadioButton";
 import ComboBox from './ComboBox';
+import CustomCbbResume from "./Organizer/CustomCbbResume";
+import CustomeCbbCV from "./Organizer/CustomeCbbCV";
 import Modal from "./Modal";
+import LoadingComponent from "./Loading";
 
 export {
     Navbar,
@@ -23,5 +26,8 @@ export {
     CustomComboBox,
     CustomRadioButton,
     CustomCheckBox,
-    Modal
+    Modal,
+    CustomCbbResume,
+    CustomeCbbCV,
+    LoadingComponent
 }

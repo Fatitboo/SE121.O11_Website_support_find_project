@@ -1,5 +1,5 @@
 import { CustomButton, TextInput } from "../../../components";
-import { AiFillExclamationCircle, AiOutlineSearch } from "react-icons/ai";
+import { AiFillExclamationCircle, AiOutlineSearch , LoadingComponent} from "react-icons/ai";
 import { LiaTrashAltSolid } from "react-icons/lia";
 import { CiEdit } from 'react-icons/ci';
 import { useDispatch, useSelector } from "react-redux";
@@ -60,7 +60,7 @@ function Skills() {
     }
     return (
         <div className="px-10 pb-0">
-            
+            {loading && <LoadingComponent />}
             {/* Start title of page  */}
             <div className="mb-8">
                 <h3 className="font-medium text-3xl text-gray-900 mb-2 leading-10">Skills Management!</h3>

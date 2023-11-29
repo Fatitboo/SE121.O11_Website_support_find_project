@@ -1,6 +1,6 @@
 import { Link, Navigate, useLocation } from "react-router-dom";
-import { CustomButton, TextInput } from "../../../components";
-import { useState } from "react";
+import { CustomButton, TextInput, LoadingComponent } from "../../../components";
+import {  useState } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { loginUserAction } from "../../../redux/slices/users/usersSlices";
@@ -38,14 +38,19 @@ function Login() {
     const { loading, appErr, userAuth } = storeData
 
     if (userAuth) {
-        if (userAuth?.user?.userType  === 'admin'){
+        if (userAuth?.user?.userType === 'admin') {
             return (<Navigate to='/Admin' state={{ from: location }} replace />);
         }
-        else {
+        if (userAuth?.user?.userType === 'seeker') {
             return (<Navigate to='/' state={{ from: location }} replace />);
         }
+        else {
+            return (<Navigate to='/Organizer/dashboard' state={{ from: location }} replace />);
+        }
     }
+    
     return (<>
+        {loading && <LoadingComponent />}
         <div className="w-full  flex pt-24 items-center flex-col ">
             <img src="https://jobbox-nextjs-v3.vercel.app/assets/imgs/page/login-register/img-4.svg" alt="img" className="absolute top-[20%] right-[20%] transition-all duration-[4000] ease-linear delay-[3000] animate-pulse " />
             <img src="https://jobbox-nextjs-v3.vercel.app/assets/imgs/page/login-register/img-3.svg" alt="img" className="absolute bottom-0 left-40 " />
@@ -80,11 +85,11 @@ function Login() {
 
                     <div className="flex justify-between items-center mb-5">
                         <div className="flex items-center ">
-                            <input type="checkbox" checked={accountType==='admin'} name="isAdmin" id="isAdmin" className="h-5 w-5 mr-1 " onChange={handleChangeCheckbox} />
+                            <input type="checkbox" checked={accountType === 'admin'} name="isAdmin" id="isAdmin" className="h-5 w-5 mr-1 " onChange={handleChangeCheckbox} />
                             <label htmlFor="isAdmin" className="mb-1">Login as a Admin?</label>
                         </div>
-                        <Link to={'/user-auth/reset-pass'}>
-                            <div className="text-[#6c757d] text-sm">Forgot Password</div>
+                        <Link to={'/user-auth/confirm-username'}>
+                            <div className="text-[#6c757d] text-sm cursor-pointer">Forgot Password</div>
                         </Link>
                     </div>
                     {appErr && <span className='flex flex-row items-center text-sm text-[#a9252b] mt-2 mb-3'><AiFillExclamationCircle className="mr-1" />{appErr}</span>}

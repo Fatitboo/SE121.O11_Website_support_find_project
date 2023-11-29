@@ -17,3 +17,7 @@ export { default as JobBenefitImage } from './jobBenefit.png'
 export { default as JobDesImage } from './jobDes.png'
 export { default as JobRefImage } from './jobRef.png'
 export { default as JobPreScreenImage } from './jobPreScreen.png'
+export { default as emailVerifyImage } from './emailVerifyImage.png'
+export { default as verifiedSuccessfulImage } from './success_8006888.png'
+export { default as pleaseWaiting } from './preload_waiting_1.gif'
+
