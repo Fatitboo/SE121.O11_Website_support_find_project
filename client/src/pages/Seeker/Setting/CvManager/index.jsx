@@ -1,41 +1,27 @@
 import { useEffect, useState } from "react";
 import FileCV from "./FileCv";
-const cvList = [
-    {
-        nameFile: 'Cv nguyen van a 1.docx'
-    },
-    {
-        nameFile: 'Cv nguyen van a 2.docx'
-    },
-    {
-        nameFile: 'Cv nguyen van a 3.docx'
-    },
-    {
-        nameFile: 'Cv nguyen van a 1.docx'
-    },
-    {
-        nameFile: 'Cv nguyen van a 2.docx'
-    },
-    {
-        nameFile: 'Cv nguyen van a 3.docx'
-    },
-    {
-        nameFile: 'Cv nguyen van a 1.docx'
-    },
-    {
-        nameFile: 'Cv nguyen van a 2.docx'
-    },
-    {
-        nameFile: 'Cv nguyen van a 3.docx'
-    },
-]
+import { useDispatch, useSelector } from "react-redux";
+import { getAllUserCvAction, updateUserCvAction } from "../../../../redux/slices/users/usersSlices";
+import LoadingComponent from "../../../../components";
+
 function CVManager() {
-
+    const dispatch = useDispatch()
     const [err, setErr] = useState(null)
-
+    useEffect(() => {
+        dispatch(getAllUserCvAction())
+    }, [dispatch])
+    const storeData = useSelector(store => store?.users);
+    const { cvUser, loading, appErr, isSuccess } = storeData;
+    
+    useEffect(() => {
+        if (isSuccess) {
+            dispatch(getAllUserCvAction())
+        }
+    }, [isSuccess])
     const onFileChange = (event) => {
         const file = event.target.files[0];
         const maxSize = 5 * 1024 * 1024;
+        setErr(null)
         if (file.size > maxSize) {
             setErr('File size exceeds the maximum allowed size (5 MB).')
             event.target.value = null;
@@ -48,42 +34,23 @@ function CVManager() {
             event.target.value = null;
             return;
         }
-        setErr(null)
-        const formData = new FormData();
-        formData.append('file', file);
-        // axios.post('http://your-backend-url/upload', formData)
-        //     .then(response => {
-        //         console.log(response.data);
-
-        //         fetchFileList();
-        //     })
-        //     .catch(error => {
-        //         console.error('Error uploading file: ', error);
-        //     });
+        
+        
+        console.log(file)
+        dispatch(updateUserCvAction(file))
     }
-    const fetchFileList = () => {
-        // axios.get('')
-        //   .then(response => {
-
-        //   })
-        //   .catch(error => {
-        //     console.error('Error fetching file list: ', error);
-        //   });
-    };
-
-    useEffect(() => {
-        fetchFileList();
-    }, []);
+    
     return (
         <div className="px-10 pb-0">
             {/* Start title of page  */}
+            {loading && <LoadingComponent />}
             <div className="mb-8">
                 <h3 className="font-medium text-3xl text-gray-900 mb-2 leading-10">CV Manager!</h3>
                 <div className="text-sm leading-6 font-normal m-0 right-0 flex justify-between items-center ">Ready to jump back in?</div>
             </div>
             {/* Start main content  to display something*/}
             <div className="flex flex-wrap mx-3 mt-3">
-                <div className="max-w-full px-3 pt-3 shrink-0 w-full">
+                <form encType="multipart/form-data" className="max-w-full px-3 pt-3 shrink-0 w-full">
                     <div className="relative rounded-lg mb-8 bg-white shadow max-w-full px-3 pt-1 shrink-0 w-full">
                         <div className="relative w-full">
                             {/* Start header of content */}
@@ -102,17 +69,19 @@ function CVManager() {
                                     </label>
                                 </div>
                                 {err && <p className="pt-4 text-red-700 text-sm">* {err}</p>}
+                                {appErr && <p className="pt-4 text-red-700 text-sm">* {appErr}</p>}
+
                             </div>
 
                             {/* Start list CV */}
                             <div className="relative w-full px-12  grid grid-cols-5">
                                 {
-                                    cvList.map((item, index) => <FileCV key={index} item={item} />)
+                                    cvUser.map((item, index) => <FileCV key={index} item={item} />)
                                 }
                             </div>
                         </div>
                     </div>
-                </div>
+                </form>
             </div>
         </div>
     );

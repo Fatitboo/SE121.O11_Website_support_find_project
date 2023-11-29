@@ -13,8 +13,12 @@ spring:
     mongodb:
       database: ${MONGO_DATABSE}
       uri: mongodb+srv://${MONGO_USER}:${MONGO_PASSWORD}@${MONGO_CLUSTER}
-
-
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 5MB
+  sendgrid:
+    api-key: ${API_KEY_SEND_GRID}
 # Set level log default
 logging:
   level:

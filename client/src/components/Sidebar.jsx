@@ -25,6 +25,7 @@ function Sidebar({user}) {
     const {vacancyId, isSuccess} = useSelector(store => store.vacancies)
     const handleLogout = ()=>{
         dispatch(logoutUserAction())
+        window.location.href = '/user-auth/login';
     }
 
     useEffect(() => {
@@ -60,12 +61,12 @@ function Sidebar({user}) {
                                     Originazer
                                 </Link>
                             </div>
-                            <div className={classNames(isActive === 'Skills' ? 'bg-[#E9EFFB] text-blue-600' : '', itemStyle)}>
+                            {/* <div className={classNames(isActive === 'Skills' ? 'bg-[#E9EFFB] text-blue-600' : '', itemStyle)}>
                                 <Link onClick={()=>setActive('Skills')} to="/Admin/skills-management"  className="relative text-sm text-center p-3 flex items-center leading-7 font-normal  capitalize rounded-lg ">
                                     <GrWorkshop className='relative mr-4 ml-4 text-2xl text-center ' />
                                     Skills
                                 </Link>
-                            </div>
+                            </div> */}
                             <div className={classNames(isActive === 'Occupations' ? 'bg-[#E9EFFB] text-blue-600' : '', itemStyle)}>
                                 <Link onClick={()=>setActive('Occupations')} to="/Admin/occupation-management" className="relative text-sm text-center p-3 flex items-center leading-7 font-normal  capitalize rounded-lg ">
                                     <LuNetwork className='relative mr-4 ml-4 text-2xl text-center ' />
@@ -79,10 +80,10 @@ function Sidebar({user}) {
                                 </Link>
                             </div>
                             <div className={ itemStyle}>
-                                <Link onClick={handleLogout} to="/" className="relative text-sm text-center p-3 flex items-center leading-7 font-normal  capitalize rounded-lg ">
+                                <div onClick={handleLogout}  className="cursor-pointer relative text-sm text-center p-3 flex items-center leading-7 font-normal  capitalize rounded-lg ">
                                     <AiOutlineLogout className='relative mr-4 ml-4 text-2xl text-center ' />
                                     Logout
-                                </Link>
+                                </div>
                             </div>
                         </div>
                     ) 
@@ -126,10 +127,10 @@ function Sidebar({user}) {
                                 </Link>
                             </div>
                             <div className={itemStyle}>
-                                <Link onClick={handleLogout} to="/" className="relative text-sm text-center p-3 flex items-center leading-7 font-normal  capitalize rounded-lg ">
+                                <div onClick={handleLogout}  className="cursor-pointer relative text-sm text-center p-3 flex items-center leading-7 font-normal  capitalize rounded-lg ">
                                     <AiOutlineLogout className='relative mr-4 ml-4 text-2xl text-center ' />
                                     Logout
-                                </Link>
+                                </div>
                             </div>
                         </div>
                     )
@@ -179,10 +180,10 @@ function Sidebar({user}) {
                                 </Link>
                             </div>
                             <div className={itemStyle}>
-                                <Link onClick={handleLogout} to="/" className="relative text-sm text-center p-3 flex items-center leading-7 font-normal  capitalize rounded-lg ">
+                                <div onClick={handleLogout}  className="cursor-pointer relative text-sm text-center p-3 flex items-center leading-7 font-normal  capitalize rounded-lg ">
                                     <AiOutlineLogout className='relative mr-4 ml-4 text-2xl text-center ' />
                                     Logout
-                                </Link>
+                                </div>
                             </div>
                         </div>
                     )

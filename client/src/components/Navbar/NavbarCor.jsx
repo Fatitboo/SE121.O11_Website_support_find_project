@@ -1,17 +1,19 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import { Menu, Transition } from "@headlessui/react";
 import { BiChevronDown } from "react-icons/bi";
 import { CgProfile } from "react-icons/cg";
-import {  AiOutlineLogout } from "react-icons/ai";
-import { IoIosNotifications, IoMdMail } from "react-icons/io";
-import { Link } from "react-router-dom";
+import { AiOutlineLogout } from "react-icons/ai";
+import { IoIosNotifications, IoMdMail, IoMdWarning } from "react-icons/io";
+import { Link, useNavigate } from "react-router-dom";
 import CustomButton from "../CustomButton";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { logoutUserAction } from "../../redux/slices/users/usersSlices";
+import LoadingComponent from "../Loading";
 function MenuList({ user, onClick }) {
     const dispatch = useDispatch()
     const handlerLogOut = () => {
         dispatch(logoutUserAction())
+        window.location.href = '/user-auth/login';
     }
     const getName = (fullname) => {
         const parts = fullname.split(" ");
@@ -24,7 +26,7 @@ function MenuList({ user, onClick }) {
                 <div className="flex ">
                     <Menu.Button className='flex flex-row items-center  align-middle gap-2 w-full h-8 rounded-md bg-[#f7fdfd] md:px-2  text-sm font-medium text-slate-700 hover:bg-opacity-20 '>
                         <img
-                            src={user?.avatar?.fileUrl??"https://i.pinimg.com/564x/16/3e/39/163e39beaa36d1f9a061b0f0c5669750.jpg"}
+                            src={user?.avatar?.fileUrl ?? "https://i.pinimg.com/564x/16/3e/39/163e39beaa36d1f9a061b0f0c5669750.jpg"}
                             alt='user profile'
                             className='w-8 h-8 rounded-full object-cover '
                         />
@@ -60,7 +62,7 @@ function MenuList({ user, onClick }) {
                                     >
                                         <CgProfile
                                             className={`${active ? "text-white" : "text-gray-600"} mr-2 h-5 w-5`}
-                                            aria-hidden='true'/>
+                                            aria-hidden='true' />
                                         {"Organizer Profile"}
                                     </Link>
                                 )}
@@ -68,10 +70,10 @@ function MenuList({ user, onClick }) {
 
                             <Menu.Item>
                                 {({ active }) => (
-                                    <Link to={'/'}
+                                    <div 
                                         onClick={() => handlerLogOut()}
                                         className={`${active ? "bg-blue-500 text-white" : "text-gray-900"
-                                            } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
+                                            } group flex w-full items-center rounded-md px-2 py-2 text-sm cursor-pointer`}
                                     >
                                         <AiOutlineLogout
                                             className={`${active ? "text-white" : "text-gray-600"
@@ -79,7 +81,7 @@ function MenuList({ user, onClick }) {
                                             aria-hidden='true'
                                         />
                                         Log Out
-                                    </Link>
+                                    </div>
                                 )}
                             </Menu.Item>
                         </div>
@@ -91,12 +93,23 @@ function MenuList({ user, onClick }) {
 }
 function NavbarCor({ user }) {
 
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
     const [isOpen, setIsOpen] = useState(false);
     const handlerCloseNavbar = () => {
         setIsOpen(prev => !prev)
     }
+    const account = useSelector(store => store?.account)
+    const { loading, token, appErr } = account;
+
+    useEffect(() => {
+        if (token) {
+            navigate('/user-auth/noti-send-mail')
+        }
+    }, [token])
     return (
         <>
+            {loading && <LoadingComponent />}
             <div className='fixed top-0 l-0 r-0 t-0 w-full bg-[#f7fdfd] z-50 shadow'>
                 <nav className='container mx-auto flex items-center justify-between p-5'>
                     <div>
@@ -104,7 +117,7 @@ function NavbarCor({ user }) {
                             Project<span className="text-[#1677cccb]">Finder</span>
                         </Link>
                     </div>
-                    
+
                     <div className="flex">
                         <div className="flex flex-row items-center gap-4">
                             <div className="flex flex-row items-center mr-1 text-base cursor-pointer">
@@ -132,7 +145,44 @@ function NavbarCor({ user }) {
                         }
                     </div>
                 </nav>
+                {user && !user.isVerify && <div className="bg-red-500 border-l-4 border-yellow-400 p-1">
+                    <div className="flex">
+                        <div className="flex-shrink-0">
+                            <IoMdWarning
+                                className="h-5 w-5 text-yellow-500"
+                                aria-hidden="true"
+                            />
+                        </div>
+                        <div className="ml-3">
+                            <p className="text-sm text-yellow-200">
+                                Your account is not verified.{" "}
+                                <button
+                                    // onClick={() => dispatch(accVerificationSendTokenAction())}
+                                    className="font-medium underline text-green-200 hover:text-yellow-600"
+                                >
+                                    Click this link to verify
+                                </button>
+                            </p>
+                        </div>
+                    </div>
+                </div>}
+                {appErr && <div className="bg-red-500 border-l-4 border-yellow-400 p-1">
+                    <div className="flex">
+                        <div className="flex-shrink-0">
+                            <IoMdWarning
+                                className="h-5 w-5 text-yellow-500"
+                                aria-hidden="true"
+                            />
+                        </div>
+                        <div className="ml-3">
+                            <p className="text-sm text-yellow-200">
+                                {appErr}
+                            </p>
+                        </div>
+                    </div>
+                </div>}
             </div>
+
         </>);
 }
 

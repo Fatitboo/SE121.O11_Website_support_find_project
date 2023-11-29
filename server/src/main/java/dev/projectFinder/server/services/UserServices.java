@@ -23,6 +23,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 @Service
@@ -33,6 +38,8 @@ public class UserServices {
     private final UploadServices uploadServices;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenUtils jwtTokenUtil;
+    private final EmailService emailService;
+
 
     public UserResponse createUser(UserDTO userDTO) throws Exception {
         if (!userDTO.getPassword().equals(userDTO.getCPassword())){
@@ -45,6 +52,7 @@ public class UserServices {
         User newAcc = User.builder()
                 .username(userDTO.getUsername())
                 .userType(userDTO.getUserType())
+                .email(userDTO.getEmail())
                 .password(userDTO.getPassword())
                 .fullName(userDTO.getFullName())
                 .googleAccountId(userDTO.getGoogleAccountId())
@@ -102,6 +110,21 @@ public class UserServices {
                 .token(token)
                 .build();
     }
+    public void updatePassword(String id, String oldPass, String newPass){
+        Optional<User> foundUser = userRepository.findById(new ObjectId(id));
+        if(foundUser.isEmpty()){
+            throw new DataIntegrityViolationException(MessageKeys.USER_NOT_FOUND);
+        }
+        User user = foundUser.get();
+        if (user.getGoogleAccountId() == 0) {
+            if(!passwordEncoder.matches(oldPass, user.getPassword())) {
+                throw new BadCredentialsException("Password not correct!");
+            }
+        }
+        String encodedPassword = passwordEncoder.encode(newPass);
+        user.setPassword(encodedPassword);
+        userRepository.save(user);
+    }
     public void updateSocialLink(String id, UserInforDTO socialLinkDTO){
         Optional<User> foundUser = userRepository.findById(new ObjectId(id));
         if(foundUser.isEmpty()){
@@ -120,7 +143,7 @@ public class UserServices {
             throw new DataIntegrityViolationException(MessageKeys.USER_NOT_FOUND);
         }
         User user = foundUser.get();
-        user.setAddress(new Address(address.getProvince(), address.getDistrict(), address.getWard(), address.getAddressDetail()));
+        user.setAddress(new Address(address.getCountry(),address.getProvince(), address.getDistrict(), address.getWard(), address.getAddressDetail()));
         userRepository.save(user);
     }
     public void updateUserInformation(String id, UserInforDTO userInforDTO){
@@ -158,10 +181,14 @@ public class UserServices {
         if(seekerResumeDTO.getActions()==4){
             user.setSkillUsers(seekerResumeDTO.getSkillUsers());
         }
+        if(seekerResumeDTO.getActions()==5){
+            user.setCvLinks(List.of(seekerResumeDTO.getCvLinks()));
+            user.setJobDes(seekerResumeDTO.getDescriptionJob());
+        }
         userRepository.save(user);
     }
 
-    public void updateSeekerCV(String id, MultipartFile file) throws IOException {
+    public CVLink updateSeekerCV(String id, MultipartFile file) throws IOException {
         Optional<User> foundUser = userRepository.findById(new ObjectId(id));
         if(foundUser.isEmpty()){
             throw new DataIntegrityViolationException(MessageKeys.USER_NOT_FOUND);
@@ -172,9 +199,11 @@ public class UserServices {
         if(cvLinks==null){
             cvLinks= new ArrayList<>();
         }
-        cvLinks.add(new CVLink(file.getOriginalFilename(), (String) uploadResult.get("url"), (String) uploadResult.get("public_id"), false));
+        CVLink cv = new CVLink(UUID.randomUUID().toString(),file.getOriginalFilename(), (String) uploadResult.get("url"), (String) uploadResult.get("public_id"), false);
+        cvLinks.add(cv);
         user.setCvLinks(cvLinks);
-        userRepository.save(user);
+          userRepository.save(user);
+          return cv;
     }
     public User updateImages(String id, MultipartFile file, String publicId) throws Exception {
         Optional<User> foundUser = userRepository.findById(new ObjectId(id));
@@ -186,7 +215,7 @@ public class UserServices {
         if(publicId.isEmpty()){
             uploadServices.deleteFile(publicId);
         }
-        user.setAvatar(new CVLink(file.getOriginalFilename(), (String) uploadResult.get("url"), (String) uploadResult.get("public_id"), false));
+        user.setAvatar(new CVLink(UUID.randomUUID().toString(), file.getOriginalFilename(), (String) uploadResult.get("url"), (String) uploadResult.get("public_id"), false));
         return userRepository.save(user);
     }
     public void deleteSeekerCV(String id, String publicId) throws Exception {
@@ -211,6 +240,97 @@ public class UserServices {
 
         return foundUser.get();
     }
+    public List<User> getAllUser(){
+        return userRepository.findAll();
+    }
+    public String generateTokenVerifyAccount(String id) throws IOException {
+        Optional<User> foundUser = userRepository.findById(new ObjectId(id));
+        if(foundUser.isEmpty()){
+            throw new DataIntegrityViolationException(MessageKeys.USER_NOT_FOUND);
+        }
+        User  user = foundUser.get();
+        String verifyToken = generateRandomToken();
+        String hashedToken = hashToken(verifyToken);
+        user.setTokenVerify(hashedToken);
+        LocalDateTime now = LocalDateTime.now();
+        // Thêm 10 phút
+        LocalDateTime newDateTime = now.plusMinutes(10);
+        user.setExpiredDateTokenVerify(newDateTime );
+        userRepository.save(user);
+        emailService.sendSingleEmail(user.getEmail(), "Verify account", hashedToken);
 
+        return hashedToken;
+    }
+    public String generateTokenResetPassword(String username) throws IOException {
+        Optional<User> foundUser = userRepository.findByUsername(username);
+        if(foundUser.isEmpty()){
+            throw new DataIntegrityViolationException(MessageKeys.USER_NOT_FOUND);
+        }
+        User  user = foundUser.get();
+        String verifyToken = generateRandomToken();
+        String hashedToken = hashToken(verifyToken);
+        user.setTokenResetPassword(hashedToken);
+        LocalDateTime now = LocalDateTime.now();
+        // Thêm 10 phút
+        LocalDateTime newDateTime = now.plusMinutes(10);
+        user.setExpiredDateTokenResetPassword(newDateTime);
+        userRepository.save(user);
+        emailService.sendSingleResetPasswordEmail(user.getEmail(), "Reset password", hashedToken);
 
+        return hashedToken;
+    }
+    private String generateRandomToken() {
+        byte[] randomBytes = new byte[32];
+        new SecureRandom().nextBytes(randomBytes);
+        return Base64.getEncoder().encodeToString(randomBytes);
+    }
+
+    private String hashToken(String token) {
+        try {
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            byte[] hashedBytes = digest.digest(token.getBytes());
+            return bytesToHex(hashedBytes);
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException("Error hashing token", e);
+        }
+    }
+    private String bytesToHex(byte[] bytes) {
+        StringBuilder hexStringBuilder = new StringBuilder();
+        for (byte aByte : bytes) {
+            hexStringBuilder.append(String.format("%02x", aByte));
+        }
+        return hexStringBuilder.toString();
+    }
+    public User updateVerifyAccount(String token){
+        Optional<User> foundUser = userRepository.findByTokenVerify(token);
+        if(foundUser.isEmpty()){
+            throw new DataIntegrityViolationException("Token expires, try again later");
+        }
+        User user = foundUser.get();
+        LocalDateTime now = LocalDateTime.now();
+        if(now.isAfter(user.getExpiredDateTokenVerify())){
+            throw new DataIntegrityViolationException("Token expires, try again later");
+        }
+        user.setTokenVerify(null);
+        user.setExpiredDateTokenVerify(null);
+        user.setIsVerify(true);
+        return userRepository.save(user);
+    }
+    public User updateResetPassword(String token, String password){
+        Optional<User> foundUser = userRepository.findByTokenResetPassword(token);
+        if(foundUser.isEmpty()){
+            throw new DataIntegrityViolationException("Token expires, try again later");
+        }
+        User user = foundUser.get();
+        LocalDateTime now = LocalDateTime.now();
+        if(now.isAfter(user.getExpiredDateTokenResetPassword())){
+            throw new DataIntegrityViolationException("Token expires, try again later");
+        }
+        user.setTokenResetPassword(null);
+        user.setExpiredDateTokenResetPassword(null);
+        
+        String encodedPassword = passwordEncoder.encode(password);
+        user.setPassword(encodedPassword);
+        return userRepository.save(user);
+    }
 }

@@ -7,7 +7,8 @@ import {
     Skills, 
     OccupationMng, 
     AddOccupation, 
-    EditOccupation 
+    EditOccupation ,
+    CompanyProfileAdmin
 } from "../pages/Admin"
 import {
     Home, 
@@ -30,14 +31,25 @@ import {
 } from "../pages/Company"
 import FindOrganizer from "../pages/Seeker/FindOrganizer"
 import PostJob from "../pages/Company/PostJob"
-import {Login, Register, ResetPassword} from '../pages/Auth'
+import {
+    Login, 
+    Register, 
+    ResetPassword,
+    NotiSendEmail,
+    VerifyAccount,
+    ConfirmUsername
+} from '../pages/Auth'
+
 
 const publicRoutes = [
     // User Layout
-    {path:'/', component: Home, layout: LayoutNoSidebar},
     {path:'/user-auth/login', component: Login, layout: LayoutNoSidebar},
     {path:'/user-auth/register', component: Register, layout: LayoutNoSidebar},
-    {path:'/user-auth/reset-pass', component: ResetPassword, layout: LayoutNoSidebar},
+    {path:'/user-auth/reset-password/:token', component: ResetPassword, layout: LayoutNoSidebar},
+    {path:'/user-auth/noti-send-mail', component: NotiSendEmail, layout: LayoutNoSidebar},
+    {path:'/user-auth/confirm-username', component: ConfirmUsername, layout: LayoutNoSidebar},
+    {path:'/user-auth/verify-account/:token', component: VerifyAccount, layout: LayoutNoSidebar},
+    {path:'/', component: Home, layout: LayoutNoSidebar},
     {path:'/Seeker/find-projects', component: FindProjects, layout: LayoutNoSidebar},
     {path:'/Seeker/find-vacancies', component: FindVacancies, layout: LayoutNoSidebar},
     {path:'/Seeker/profile', component: SeekerProfile, layout: LayoutNoSidebar},

@@ -5,6 +5,7 @@ import Skills from './Skills'
 import UserMng from './UserMng'
 import AddOccupation from "./OccupationMng/AddOccupation";
 import EditOccupation from "./OccupationMng/EditOccupation";
+import CompanyProfileAdmin from "./UserMng/CompanyProfileAdmin";
 export {
     Approval,
     Dashboard,
@@ -12,5 +13,6 @@ export {
     Skills,
     UserMng,
     AddOccupation,
-    EditOccupation
+    EditOccupation,
+    CompanyProfileAdmin
 }

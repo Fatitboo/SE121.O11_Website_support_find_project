@@ -1,14 +1,15 @@
-import { Link, Navigate, useLocation } from "react-router-dom";
-import { CustomButton, TextInput } from "../../../components";
-import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { CustomButton, TextInput, LoadingComponent } from "../../../components";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { registerUserAction } from "../../../redux/slices/users/usersSlices";
 import { AiFillExclamationCircle } from "react-icons/ai";
+import Swal from "sweetalert2";
 
 function Register() {
     const [accountType, setAccountType] = useState('seeker');
-    const location = useLocation();
+    const navigate = useNavigate();
     const dispatch = useDispatch();
     const {
         register,
@@ -21,6 +22,7 @@ function Register() {
         const dataRegister = {
             username: data.username,
             fullname: data.fullname,
+            email:data.email,
             password: data.password,
             confirm_password: data.cPassword,
             is_verify: false,
@@ -28,13 +30,30 @@ function Register() {
             google_account_id: 0
         }
         dispatch(registerUserAction(dataRegister))
-        
+
     };
     const storeData = useSelector(store => store.users)
     const { loading, appErr, registered } = storeData
-  
-    
+    useEffect(()=>{
+        if(registered){
+            Swal.fire({
+                title: "Registed Successfuly!",
+                text: "Please login to use functions of web!",
+                confirmButtonText:'Login',
+                icon: "success",
+                allowOutsideClick:false,
+                confirmButtonColor:'#3085d6'
+            }).then(result =>{
+               if(result.isConfirmed){
+                    navigate('/user-auth/login')
+               }
+            })
+        }
+    },[registered])
+
     return (<>
+        {loading && <LoadingComponent />}
+       
         <div className="w-full  flex pt-24 items-center flex-col ">
             <img src="https://jobbox-nextjs-v3.vercel.app/assets/imgs/page/login-register/img-1.svg" alt="img" className="absolute top-[20%] right-[20%] transition-all duration-[4000] ease-linear delay-[3000] animate-pulse z-[-100]" />
             <img src="https://jobbox-nextjs-v3.vercel.app/assets/imgs/page/login-register/img-2.svg" alt="img" className="absolute bottom-0 left-40 z-[-100]" />
@@ -67,6 +86,12 @@ function Register() {
                             required: "Username is required!",
                         })}
                             error={errors.username ? errors.username.message : ""} placeholder='vananguyen' label='Username *' name='username' containerStyles='text-[#05264e] text-base w-full tw-bg-white' labelStyle='text-[#05264e] text-sm' />
+                    </div>
+                    <div className="mb-5 w-full">
+                        <TextInput type={'email'} register={register("email", {
+                            required: "Email is required!",
+                        })}
+                            error={errors.email ? errors.email.message : ""} placeholder='vananguyen@gmail.com' label='Email *' name='email' containerStyles='text-[#05264e] text-base w-full tw-bg-white' labelStyle='text-[#05264e] text-sm' />
                     </div>
                     <div className="mb-3 w-full">
                         <TextInput type={'password'} register={register("password", {

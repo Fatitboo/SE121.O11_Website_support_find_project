@@ -5,6 +5,7 @@ import dev.projectFinder.server.components.CVLink;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 
 @Getter
 @Setter
@@ -16,7 +17,7 @@ public class UserProfileResponse {
     private String fullName;
     private String phoneNumber;
     private String email;
-    private LocalDateTime dayOfBirth;
+    private Date dayOfBirth;
     private String website;
     private String description;
     private String fbLink;

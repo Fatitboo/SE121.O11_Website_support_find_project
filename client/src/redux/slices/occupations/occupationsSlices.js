@@ -117,10 +117,10 @@ const occupationsSlices = createSlice({
     initialState:{
         loading:false,
         occupationsList:[],
-        appErr:null
+        appErr:null,
     },
     reducers:{
-
+        
     },
     extraReducers:(builder)=>{
         // get all skills
@@ -185,5 +185,5 @@ const occupationsSlices = createSlice({
     }
     
 });
-
+export const {reSetOpenEx} = occupationsSlices.actions;
 export default occupationsSlices;

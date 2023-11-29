@@ -1,4 +1,4 @@
-import { CustomButton } from "../../../components";
+import { CustomButton, LoadingComponent } from "../../../components";
 import { AiFillExclamationCircle, AiOutlineSearch } from "react-icons/ai";
 import { LiaTrashAltSolid } from "react-icons/lia";
 import { CiEdit } from 'react-icons/ci'
@@ -6,7 +6,10 @@ import { BiPlus } from "react-icons/bi";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
-import { deleteOccupationAction, getAllOccupationsAction } from "../../../redux/slices/occupations/occupationsSlices";
+import { getAllOccupationsAction } from "../../../redux/slices/occupations/occupationsSlices";
+import Swal from 'sweetalert2'
+import axios from "axios";
+import baseUrl from "../../../utils/baseUrl";
 
 function OccupationManagement() {
     const dispatch = useDispatch();
@@ -14,15 +17,50 @@ function OccupationManagement() {
     useEffect(() => {
         dispatch(getAllOccupationsAction())
     }, []);
+    const users = useSelector(store => store?.users);
 
-    const handleDeleteOccupation = (id)=>{
-        dispatch(deleteOccupationAction(id));
+    const handleDeleteOccupation = async (id) => {
+        // dispatch(deleteOccupationAction(id));
+        Swal.fire({
+            title: "Confirm Delete",
+            text: "Are you sure you want to delete this item?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Delete"
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                const { userAuth } = users;
+                // http call 
+                const config = {
+                    headers: {
+                        Authorization: `Bearer ${userAuth?.user?.token}`,
+                        'Content-Type': 'application/json',
+                    },
+                };
+                try {
+                    await axios.delete(`${baseUrl}/api/v1/occupations/${id}`, config);
+                } catch (error) {
+                }
+                Swal.fire({
+                    title: "Deleted!",
+                    text: "This item has been deleted.",
+                    icon: "success",
+                    confirmButtonColor: '#3085d6'
+                }).then(result => {
+                    if (result.isConfirmed) dispatch(getAllOccupationsAction());
+                });
+            }
+        });
     }
-    const storeData = useSelector(store => store?.occupations);
-    const { appErr, occupationsList } = storeData;
-    return (
-        <div className="px-10 pb-0">
 
+    const storeData = useSelector(store => store?.occupations);
+    const { appErr, occupationsList, loading } = storeData;
+    
+    return (
+        <div className="px-10 pb-0 text-sm">
+            {loading && <LoadingComponent />}
             {/* Start title of page  */}
             <div className="mb-8">
                 <h3 className="font-medium text-3xl text-gray-900 mb-2 leading-10">Occupation Management!</h3>
@@ -61,44 +99,46 @@ function OccupationManagement() {
                             {/* table list skill information */}
                             <div className="px-6 relative">
                                 <div className="overflow-y-hidden overflow-x-auto">
-                                    <table className="relative w-full overflow-y-hidden overflow-x-hidden rounded-md mb-8 bg-white border-0">
+                                    <table className="relative w-full overflow-y-hidden overflow-x-hidden rounded-md mb-8 bg-white border-0 text-[15px]">
                                         <thead className="bg-[#f5f7fc] color-white border-transparent border-0 w-full">
-                                            <tr className="w-full">
-                                                <th className="relative text-[#3a60bf] font-normal py-6 text-base text-left pl-6 w-2/12">Occupation Name</th>
-                                                <th className="relative text-[#3a60bf] font-normal py-6 text-base text-left  w-8/12">Detail Major</th>
-                                                <th className="relative text-[#3a60bf] font-normal py-6 text-base text-left pl-8 w-2/12 ">Action</th>
+                                            <tr className="w-full ">
+                                                <th className="relative text-[#3a60bf] font-medium py-6 text-base text-left pl-6 w-2/12">Occupation Name</th>
+                                                <th className="relative text-[#3a60bf] font-medium py-6 text-base text-left  w-9/12 pl-4">Detail Major</th>
+                                                <th className="relative text-[#3a60bf] font-medium py-6 text-base text-left pl-8 w-1/12 ">Action</th>
                                             </tr>
                                         </thead>
                                         <tbody className="w-full">
                                             {
                                                 occupationsList.map((item, index) => (
-                                                    <tr key={item.occupationId} className="relative border-b border-solid border-[#ecedf2] w-full text-base min-h-max hover:bg-[#f4f2f2] ">
+                                                    <tr key={item.occupationId} className="cursor-pointer relative border-b border-l border-r border-solid border-[#ecedf2] w-full text-[15px] min-h-max hover:bg-[#f5f5f5] ">
                                                         <td className="w-2/12">
-                                                            <div className="text-ellipsis w-full line-clamp-1 text-left pl-6 py-3">{item.occupationName}</div>
+                                                            <div className="text-ellipsis flex items-start font-medium w-full line-clamp-1 text-left pl-6 py-3">{item.occupationName}</div>
                                                         </td>
-                                                        <td className="w-8/12">
-                                                            <div className="flex  w-full  text-left">
-                                                                <span className="text-blue-700 mr-2 mt-2">[ </span>
-                                                                <div className="line-clamp-3 text-ellipsis w-full my-3">
-                                                                    {item.listMajor.map((it, index)=>{
-                                                                        if (index === item.listMajor.length - 1) return it+''
-                                                                        return it+',  '
+                                                        <td className="w-9/12">
+                                                            <div className="flex  w-full  text-left border-l border-r ">
+                                                                {/* <span className="text-blue-700 mr-2 mt-2">[ </span> */}
+                                                                <div className="line-clamp-3 text-ellipsis w-full my-3 flex flex-wrap">
+                                                                    {item.listMajor.map((it, index) => {
+                                                                        // if (index === item.listMajor.length - 1) return it+''
+                                                                        // return it+',  '
+                                                                        return <div key={index} className="w-fit px-2 py-1 rounded-lg bg-blue-100 m-2">{it}</div>
                                                                     })}
-                                                                    
+
                                                                 </div>
-                                                                <span className="text-blue-700 flex items-end mb-2">]</span>
+                                                                {/* <span className="text-blue-700 flex items-end mb-2">]</span> */}
                                                             </div>
                                                         </td>
-                                                        <td className="w-2/12">
-                                                            <div className="py-3 pl-8">
+                                                        <td className="w-1/12">
+                                                            <div className="py-3 pl-4">
                                                                 <ul className="list-none flex relative item-center ">
 
-                                                                    <li onClick={()=> navigate(`/Admin/occupation-management/edit-occupation/${index}`, {state:{ occupation: item}})} className="list-none relative mr-3 bg-[#f5f7fc] border rounded-md border-[#e9ecf9] px-1 pt-1 hover:bg-[#278646] hover:text-white">
+                                                                    <li onClick={() => navigate(`/Admin/occupation-management/edit-occupation/${index}`, { state: { occupation: item } })} className="list-none relative mr-3 bg-[#f5f7fc] border rounded-md border-[#e9ecf9] px-1 pt-1 hover:bg-[#278646] hover:text-white">
                                                                         <div > <CiEdit fontSize={20} /> </div>
                                                                     </li>
-                                                                    <li onClick={()=>handleDeleteOccupation(item.occupationId)} className="list-none relative bg-[#f5f7fc] border rounded-md border-[#e9ecf9] px-1 pt-1 hover:bg-[#ce3e37] hover:text-white">
+                                                                    <li onClick={() => handleDeleteOccupation(item.occupationId)} className="list-none relative bg-[#f5f7fc] border rounded-md border-[#e9ecf9] px-1 pt-1 hover:bg-[#ce3e37] hover:text-white">
                                                                         <button > <LiaTrashAltSolid fontSize={20} /> </button>
                                                                     </li>
+
                                                                 </ul>
                                                             </div>
                                                         </td>
@@ -116,6 +156,27 @@ function OccupationManagement() {
                     </div>
                 </div>
             </div>
+
+            {/* <Modal open={open} onClose={() => setOpen(false)} >
+                <div className="text-center w-96">
+                    <BiTrash size={52} className="mx-auto text-red-500" />
+                    <div className="mx-auto mt-4 mb-8 w-96">
+                        <h3 className="text-lg font-medium text-gray-800 mb-2">Confirm Delete</h3>
+                        <p className="text-sm text-gray-500">
+                            Are you sure you want to delete this item?
+                        </p>
+                    </div>
+                    <div className="flex gap-4  ">
+                        <button onClick={()=>dispatch(deleteOccupationAction(deleteId))} className="border rounded w-full py-1 bg-red-500 text-white">Delete</button>
+                        <button
+                            className="border rounded w-full py-1 "
+                            onClick={() => setOpen(false)}>
+                            Cancel
+                        </button>
+                    </div>
+                </div>
+            </Modal> */}
+
         </div >
     );
 }
