@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import FileCV from "./FileCv";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllUserCvAction, updateUserCvAction } from "../../../../redux/slices/users/usersSlices";
-import LoadingComponent from "../../../../components";
+import {LoadingComponent} from "../../../../components";
 
 function CVManager() {
     const dispatch = useDispatch()

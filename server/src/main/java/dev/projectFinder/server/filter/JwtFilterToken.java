@@ -65,7 +65,7 @@ public class JwtFilterToken extends OncePerRequestFilter {
                 Pair.of("api/v1/users/register", "POST"),
                 Pair.of("api/v1/users/login", "POST"),
                 Pair.of("api/v1/users/send-token-reset-by-email", "POST"),
-                Pair.of("api/v1/users/update-token-reset", "PUT")
+                Pair.of("api/v1/users/update-token-reset", "PUT"),
                 Pair.of("api/v1/projects", "GET"),
                 Pair.of("api/v1/vacancies", "GET")
 

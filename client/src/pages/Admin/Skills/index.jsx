@@ -1,10 +1,11 @@
 import { CustomButton, TextInput } from "../../../components";
-import { AiFillExclamationCircle, AiOutlineSearch , LoadingComponent} from "react-icons/ai";
+import { AiFillExclamationCircle, AiOutlineSearch} from "react-icons/ai";
 import { LiaTrashAltSolid } from "react-icons/lia";
 import { CiEdit } from 'react-icons/ci';
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { createNewSkillAction, deleteSkillAction, getAllSkillsAction, updateSkillAction } from '../../../redux/slices/skills/skillsSlices';
+import {LoadingComponent} from "../../../components";
 import { useForm } from "react-hook-form";
 
 function Skills() {

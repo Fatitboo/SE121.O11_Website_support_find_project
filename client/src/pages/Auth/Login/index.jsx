@@ -51,9 +51,9 @@ function Login() {
     
     return (<>
         {loading && <LoadingComponent />}
-        <div className="w-full  flex pt-24 items-center flex-col ">
+        <div className="w-full  flex pt-24 items-center flex-col">
             <img src="https://jobbox-nextjs-v3.vercel.app/assets/imgs/page/login-register/img-4.svg" alt="img" className="absolute top-[20%] right-[20%] transition-all duration-[4000] ease-linear delay-[3000] animate-pulse " />
-            <img src="https://jobbox-nextjs-v3.vercel.app/assets/imgs/page/login-register/img-3.svg" alt="img" className="absolute bottom-0 left-40 " />
+            <img src="https://jobbox-nextjs-v3.vercel.app/assets/imgs/page/login-register/img-3.svg" alt="img" className="absolute -z-10 bottom-0 left-40 " />
             <div className="w-[418px] flex items-center flex-col">
                 <div className="text-sm text-blue-700">Welcome back!</div>
                 <div className="text-4xl font-bold mt-3 mb-2">Member Login</div>
