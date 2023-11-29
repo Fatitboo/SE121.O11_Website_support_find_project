@@ -18,7 +18,7 @@ spring:
       max-file-size: 5MB
       max-request-size: 5MB
   sendgrid:
-    api-key: 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
+    api-key: ${API_KEY_SEND_GRID}
 # Set level log default
 logging:
   level:
