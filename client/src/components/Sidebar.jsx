@@ -5,22 +5,35 @@ import { GrWorkshop } from 'react-icons/gr';
 import { AiOutlineLogout } from 'react-icons/ai';
 import { LuNetwork } from 'react-icons/lu'
 import { MdReportGmailerrorred } from 'react-icons/md';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import classNames from 'classnames';
 import { HiPlus } from 'react-icons/hi';
-import { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { logoutUserAction } from '../redux/slices/users/usersSlices';
-
+import {createVacancyId, setValueSuccess} from '../redux/slices/vacancies/vacanciesSlices';
+import store from '../redux/store/store';
 
 
 function Sidebar({user}) {
+    const storeData = useSelector(store => store.users)
+    const userAuth = storeData?.userAuth?.user
     const itemStyle = '!mb-2 pr-6 m-0 hover:bg-[#E9EFFB] hover:text-blue-600 rounded-lg';
     const postJobStyle = '!mb-2 pr-6 m-0 bg-[#1967d3] hover:bg-[#0146a6] text-[white] rounded-lg';
     const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const {vacancyId, isSuccess} = useSelector(store => store.vacancies)
     const handleLogout = ()=>{
         dispatch(logoutUserAction())
     }
+
+    useEffect(() => {
+        if(isSuccess) {
+            dispatch(setValueSuccess(false))
+            navigate("/Organizer/post-project/jobId=" + vacancyId)
+        }
+    }, [isSuccess])
+
     const [isActive, setActive] = useState('Dashboard');
     return (
         <aside className="flex justify-center h-full pt-10 bg-white overflow-auto 
@@ -124,7 +137,7 @@ function Sidebar({user}) {
                     (
                         <div className="relative w-full l-0 m-0 p-0">
                             <div className={classNames(isActive === 'Post a job' ? 'bg-[#E9EFFB] text-blue-600' : '', postJobStyle)}>
-                                <Link onClick={()=>setActive('Post a job')} to="/Organizer/post-project" className="relative text-sm text-center p-3  flex items-center leading-7 font-normal rounded-lg ">
+                                <Link onClick={()=>{setActive('Post a job'); dispatch(createVacancyId({"userId": userAuth?.userId, "avatar": userAuth?.avatar?.fileUrl, "fullName": userAuth?.fullName}))}} className="relative text-sm text-center p-3  flex items-center leading-7 font-normal rounded-lg ">
                                     <HiPlus className='relative mr-4 ml-4 text-2xl text-center ' />
                                     Post a job
                                 </Link>

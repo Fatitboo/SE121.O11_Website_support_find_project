@@ -63,8 +63,9 @@ public class User implements UserDetails {
     // Organizer
     private String teamSize;
     private String[] fields;
-    private ObjectId[] vacancies;
-    private ObjectId[] projects;
+    private List<String> vacancies;
+    private List<String> projects;
+    private List<String> unCompletedVacancies;
 
 
     // date create and update

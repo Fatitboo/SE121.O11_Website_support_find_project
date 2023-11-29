@@ -10,7 +10,7 @@ function classNames(...classes) {
 }
 
 export default function CustomComboBox({label, listItem, filterValueSelected, error, name, type, onblur, rules, placeHolder, selectItem, styleOuter}) {
-  const [selected, setSelected] = useState(selectItem ? selectItem: {id: -1, name: ''})
+  const [selected, setSelected] = useState(selectItem ? selectItem : {id: -1, name: ''})
   const [visible, setVisible] = useState("none")
   const [outline, setOutline] = useState(false)
   
@@ -20,19 +20,26 @@ export default function CustomComboBox({label, listItem, filterValueSelected, er
   }
   useEffect(()=>{
     filterValueSelected(selected)
+    console.log(["Selected"], selected)
 
   },[selected])
+
+  useEffect(()=>{
+    if(selectItem) setSelected(selectItem)
+    console.log(["SelectedItem"],selectItem)
+  },[selectItem])
+
   const dropDownTag = useRef();
   
   return (
     <>
         <p className='block leading-8 text-gray-900 text-base font-semibold' style={{color: `${error ? "#a9252b": ""}`}}>{label}</p>
         <div onBlur={onblur} tabIndex={0}>
-            <div name={name} type={type} rules={rules} value={selected.id} onClick={toggleStateDropdown} onBlur={() => {setVisible('none'); setOutline(false);}} tabIndex={-1} className='relative cursor-default'>
+            <div name={name} type={type} rules={rules} value={selected?.id} onClick={toggleStateDropdown} onBlur={() => {setVisible('none'); setOutline(false);}} tabIndex={-1} className='relative cursor-default'>
                 <div className='relative w-full cursor-default rounded-md bg-[#f9fbfc] py-3 px-5 text-left text-gray-900 shadow-sm border border-gray-300 focus:bg-white sm:text-base sm:leading-6' style={{borderColor: `${error ? "#a9252b" : outline ? "#2D2D2D" : "rgb(209 213 219)"}`, backgroundColor: `${outline ? 'white': '#f9fbfc'}`}}>
-                    <span>{selected.name}</span>
+                    <span>{selected?.name}</span>
                     {
-                        selected.id === -1 ?
+                        selected?.id === -1 ?
                         <span>{placeHolder}</span>
                         : null
                     }
@@ -46,7 +53,7 @@ export default function CustomComboBox({label, listItem, filterValueSelected, er
                             return (
                                 <li key={index} value={index} onClick={() => {setSelected(item);}} className='flex flex-row items-center justify-between bg-white py-3 px-5 shadow-lg focus:outline-none text-base hover:bg-[#f3f9ff] text-[#636363]'>
                                     {
-                                        item.id === selected.id ? <>
+                                        item.id === selected?.id ? <>
                                             <div>
                                                 <span className='font-bold'>{item.name}</span>
                                                 <p className='!text-[#636363] !font-normal'>{item.des}</p>

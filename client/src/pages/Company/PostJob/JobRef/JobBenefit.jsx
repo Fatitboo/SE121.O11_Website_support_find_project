@@ -1,19 +1,21 @@
 import { AiFillExclamationCircle } from "react-icons/ai";
 import { JobBenefitImage } from "../../../../assets/images";
 import { CustomComboBox } from "../../../../components";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FormErrors, Validate } from "./validator";
+import { useDispatch, useSelector } from "react-redux";
+import { getVacancyComponent, setValueSuccess, updateVacancyComponent } from "../../../../redux/slices/vacancies/vacanciesSlices";
 
-function JobBenefit({formId, formSubmit}) {
-    const localData = JSON.parse(localStorage.getItem("jobBenefit"))
+function JobBenefit({formId, formSubmit, flag}) {
+    const dispatch = useDispatch();
+    const {currentJobComponent, vacancyId, isSuccess} = useSelector(store => store.vacancies)
     const showPayBy = [{ id: 1, name:"Range"}, { id: 2, name: "Starting amount"}, { id: 3, name: "Maximum amount"}, { id: 4, name: "Exact amount"}]
     const rates = [{ id: 1, name:"per hour"}, { id: 2, name: "per day"}, { id: 3, name: "per week"}, { id: 4, name: "per month"}, { id: 5, name: "per year"}]
 
-    let [visibleMax, setVisibleMax] = useState(localData ? (localData.pay_2 ? true : false) : false)
-    let [textValue_1, setTextValue_1] = useState(localData ? (localData.pay_2 ? 'Minimum' : 'Amount') : 'Amount');
+    let [visibleMax, setVisibleMax] = useState(currentJobComponent ? (currentJobComponent.pay_2 ? true : false) : false)
+    let [textValue_1, setTextValue_1] = useState(currentJobComponent ? (currentJobComponent.pay_2 ? 'Minimum' : 'Amount') : 'Amount');
 
-    let [inputsValues, setInputValues] = useState(
-        localData ? localData : {
+    let [inputsValues, setInputValues] = useState({
             showPayBy: showPayBy[0],
             pay_1: '',
             pay_2: '',
@@ -29,10 +31,16 @@ function JobBenefit({formId, formSubmit}) {
         duration: 'Add a duration',
     })
 
-    const setValueLocal = () => {
-        localStorage.setItem("jobBenefit", JSON.stringify(inputsValues));
-    }
-    
+    useEffect(() => {
+        if(vacancyId) 
+            dispatch(getVacancyComponent({"id":vacancyId, "flag": flag}))
+     }, [vacancyId]);
+ 
+     useEffect(() => {
+         if(currentJobComponent)
+             setInputValues({...currentJobComponent})
+     }, [currentJobComponent]);
+
     function handleSubmit(e) {
         e.preventDefault();
         const validationErrors = FormErrors(e.target, ErrorMessages)
@@ -40,10 +48,17 @@ function JobBenefit({formId, formSubmit}) {
         setErrors(validationErrors);
 
         if(Object.keys(validationErrors).length === 0){
-            setValueLocal()
-            formSubmit(true)
+            dispatch(updateVacancyComponent({"id":vacancyId, "value": {"jobBenefit": inputsValues, "flag": flag}}))
         }
     }
+
+    useEffect(() => {
+        if(isSuccess ) {
+            dispatch(setValueSuccess(false))
+            formSubmit()
+        }
+        
+    }, [isSuccess])
 
     function blurElement(e){
         const validationErrors = Validate(e.target, ErrorMessages)
@@ -68,19 +83,19 @@ function JobBenefit({formId, formSubmit}) {
     }
 
     function filterValueShowPayBy(e){
-        switch(e){
-            case showPayBy[0]:
+        switch(e?.id){
+            case showPayBy[0].id:
                 setTextValue_1('Minimum')
                 setVisibleMax(true)
                 break;
-            case showPayBy[1]:
-            case showPayBy[2]:
-            case showPayBy[3]:
+            case showPayBy[1].id:
+            case showPayBy[2].id:
+            case showPayBy[3].id:
                 setTextValue_1('Amount')
                 setVisibleMax(false)
                 break;
         }
-        if(e.id != (localData ? localData.showPayBy.id : -1))
+        if(e?.id != (currentJobComponent ? currentJobComponent.showPayBy?.id : -1))
             setInputValues({
                 ...inputsValues,
                 ["pay_1"] : '',
@@ -118,7 +133,7 @@ function JobBenefit({formId, formSubmit}) {
                             <div className="flex flex-row items-center gap-2">
                                 <div className="flex flex-row items-center gap-2 w-full">
                                     <div className="w-[30%]">
-                                        <CustomComboBox listItem={showPayBy} name="showPayBy" filterValueSelected={filterValueShowPayBy} selectItem={inputsValues.showPayBy} label="Show pay by" placeHolder={'Select an options.'}/>
+                                        <CustomComboBox listItem={showPayBy} name="showPayBy" filterValueSelected={filterValueShowPayBy} selectItem={currentJobComponent?.showPayBy} label="Show pay by" placeHolder={'Select an options.'}/>
                                     </div>
                                     <div className="w-[50%] flex flex-row gap-2 items-center">
                                         <div className="w-full">
@@ -156,7 +171,7 @@ function JobBenefit({formId, formSubmit}) {
                                         }
                                     </div>
                                     <div className="w-[20%]">
-                                        <CustomComboBox listItem={rates} name="rate" filterValueSelected={filterValueByRate} selectItem={inputsValues.rate} label="Rate" placeHolder={'Select an options.'}/>
+                                        <CustomComboBox listItem={rates} name="rate" filterValueSelected={filterValueByRate} selectItem={currentJobComponent?.rate} label="Rate" placeHolder={'Select times.'}/>
                                     </div>
                                 </div>
                             </div>

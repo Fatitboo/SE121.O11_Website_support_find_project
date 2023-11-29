@@ -1,8 +1,15 @@
 
-function JobReview() {
+function JobReview({formId, formSubmit, flag}) {
+    function handleSubmit(e) {
+        e.preventDefault();
+        formSubmit();
+    }
     return (  
         <>
-            <div>JobReview</div>     
+            <div>JobReview</div>   
+            <form id={formId} onSubmit={handleSubmit}>
+
+            </form>
         </>
     );
 }

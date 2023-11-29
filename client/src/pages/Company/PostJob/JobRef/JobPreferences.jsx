@@ -1,18 +1,21 @@
 import { AiFillExclamationCircle, AiOutlineClose} from "react-icons/ai";
 import { JobRefImage } from "../../../../assets/images";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { CustomComboBox, TextInput } from "../../../../components";
 import { IoMdAdd } from "react-icons/io";
 import { BsCheck } from "react-icons/bs";
 import { FormErrors, Validate } from './validator'
+import { useDispatch, useSelector } from "react-redux";
+import { getVacancyComponent, setValueSuccess, updateVacancyComponent } from "../../../../redux/slices/vacancies/vacanciesSlices";
 
-function JobReferences({formId, formSubmit}) {
-    const resumeRequestType = [{ id: 0, name: "Yes, require a resume"}, { id: 1, name: "No, don't ask for a resume"}, { id: 2, name: "Give the opinion to include a resume"},]
+// eslint-disable-next-line react/prop-types
+function JobReferences({formId, formSubmit, flag}) {
+    const dispatch = useDispatch();
+    const {currentJobComponent, vacancyId, isSuccess} = useSelector(store => store.vacancies)
+    const resumeRequestType = [{ id: 0, name: "Yes, require a resume", value: true}, { id: 1, name: "No, don't ask for a resume", value: false}, { id: 2, name: "Give the opinion to include a resume", value: false},]
     const hiringTimeline = [{ id: 0, name: "1 to 3 days"}, { id: 1, name: "3 to 7 days"}, { id: 2, name: "1 to 2 weeks"}, { id: 3, name: "2 to 4 weeks"}, { id: 4, name: "More than 4 weeks"},]
     let [errors, setErrors] = useState  ({})
-    const localData = JSON.parse(localStorage.getItem("jobRef"))
-    let [inputsValues, setInputValues] = useState(
-        localData ? localData : {
+    let [inputsValues, setInputValues] = useState({
             emails: [
                 ""
             ],
@@ -36,14 +39,25 @@ function JobReferences({formId, formSubmit}) {
         setErrors(validationErrors);
 
         if(Object.keys(validationErrors).length === 0){
-            setValueLocal()
-            formSubmit(true)
+            dispatch(updateVacancyComponent({"id":vacancyId, "value": {"jobRef": inputsValues, "flag" : flag}}))
         }
     }
 
-    const setValueLocal = () => {
-        localStorage.setItem("jobRef", JSON.stringify(inputsValues));
-    }
+    useEffect(() => {
+        if(vacancyId) dispatch(getVacancyComponent({"id":vacancyId, "flag": flag}))
+     }, [vacancyId]);
+
+    useEffect(() => {
+        if(isSuccess){
+            dispatch(setValueSuccess(false))
+            formSubmit()
+        }
+    }, [isSuccess])
+
+    useEffect(() => {
+        if(currentJobComponent)
+            setInputValues({...currentJobComponent})
+    }, [currentJobComponent]);
 
     const handleChange = (e, index) => {
         const Element = e.target;
@@ -75,10 +89,11 @@ function JobReferences({formId, formSubmit}) {
             setErrorMessages({...ErrorMessages, [`emails_${inputsValues.emails.length - 1}`]: "Please enter your email address."})
         }
         else{
-            inputsValues.emails.splice(index, 1); 
-            setInputValues({...inputsValues})
-            delete ErrorMessages[`emails_${inputsValues.emails.length}`]
-            delete errors[`emails_${inputsValues.emails.length}`]
+            const newArr = [...inputsValues.emails]
+            newArr.splice(index, 1); 
+            setInputValues({...inputsValues, emails: newArr})
+            delete ErrorMessages[`emails_${newArr.length}`]
+            delete errors[`emails_${newArr.length}`]
             setErrorMessages({...ErrorMessages})
 
         }
@@ -107,7 +122,7 @@ function JobReferences({formId, formSubmit}) {
                 </div>
             </div>
             <div className="p-8">
-                <button onClick={() => console.log()}>Click me</button>
+                <button onClick={() => console.log(currentJobComponent, inputsValues)}>click me</button>
                 <form id={formId} onSubmit={handleSubmit}>
                     <div>
                         <></>
@@ -115,7 +130,7 @@ function JobReferences({formId, formSubmit}) {
                             <p className='block leading-8 text-gray-900 text-base font-semibold' style={{color: `${errors[getFirstErrorEmail()] ? "#a9252b": ""}`}}>Send daily updates to*</p>
                             {
 
-                                inputsValues ? inputsValues.emails.map((item, index) => {
+                                inputsValues ? inputsValues.emails?.map((item, index) => {
                                     return (
                                         <div key={index} className="flex flex-row items-center gap-1 w-full justify-between mt-2">
                                             <div className="w-full">
@@ -173,13 +188,13 @@ function JobReferences({formId, formSubmit}) {
                         <hr className="block h-1 bg-[rgb(212, 210, 208)] my-6"/>
                         <></>
                             <p className='block leading-8 text-gray-900 text-xl font-bold mb-6'>Application preferences</p>
-                            <CustomComboBox label="Ask potential candidates for a resume?" selectItem={inputsValues.resume} type="select" rules="requiredCbb" placeHolder="Select an option" name="resume" listItem={resumeRequestType} filterValueSelected={(e) => onSelectedChange(e, "resume")} error={errors.resume} onblur={blurElement}></CustomComboBox>
+                            <CustomComboBox label="Ask potential candidates for a resume?" selectItem={currentJobComponent?.resume} type="select" rules="requiredCbb" placeHolder="Select an option" name="resume" listItem={resumeRequestType} filterValueSelected={(e) => onSelectedChange(e, "resume")} error={errors.resume} onblur={blurElement}></CustomComboBox>
                         <></>
 
                         <hr className="block h-1 bg-[rgb(212, 210, 208)] my-6"/>
                         <></>
                             <p className='block leading-8 text-gray-900 text-xl font-bold mb-6'>Hire Settings</p>
-                            <CustomComboBox label="Hiring timeline for this job*" selectItem={inputsValues.hiringTimeline} type="select" rules="requiredCbb" placeHolder="Select an option" name="hiringTimeline" listItem={hiringTimeline} filterValueSelected={(e) => onSelectedChange(e, "hiringTimeline")} error={errors.hiringTimeline} onblur={blurElement}></CustomComboBox>
+                            <CustomComboBox label="Hiring timeline for this job*" selectItem={currentJobComponent?.hiringTimeline} type="select" rules="requiredCbb" placeHolder="Select an option" name="hiringTimeline" listItem={hiringTimeline} filterValueSelected={(e) => onSelectedChange(e, "hiringTimeline")} error={errors.hiringTimeline} onblur={blurElement}></CustomComboBox>
                         <></>
                         
                     </div>

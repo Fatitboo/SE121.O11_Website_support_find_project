@@ -50,7 +50,7 @@ const publicRoutes = [
     {path:'/Seeker/applied-jobs', component: AppliedJob, layout: LayoutHasSidebar},
     {path:'/Seeker/cv-manager', component: CVManager, layout: LayoutHasSidebar},
     //Company layout
-    {path:'/Organizer/post-project', component: PostJob, layout: LayoutNoSidebar},
+    {path:'/Organizer/post-project/:id', component: PostJob, layout: LayoutNoSidebar},
     {path:'/Organizer/dashboard', component: DashboardCompany, layout: LayoutHasSidebar},
     {path:'/Organizer/company-profile-edit', component: CompanyProfileEdit, layout: LayoutHasSidebar},
     {path:'/Organizer/manage-vacancy', component: ManageVacancy, layout: LayoutHasSidebar},
@@ -61,7 +61,7 @@ const publicRoutes = [
 
     //Admin Layout
     {path:'/Admin/user-management', component: UserMng, layout: LayoutHasSidebar},
-    {path:'/Admin/user-management/:id', component: CompanyProfile, layout: LayoutHasSidebar},
+    {path:'/Admin/user-management/jobId=:id', component: CompanyProfile, layout: LayoutHasSidebar},
     {path:'/Admin/approval-project', component: Approval, layout: LayoutHasSidebar},
     {path:'/Admin/approval-project/:id', component: ProjectInfo, layout: LayoutHasSidebar},
     {path:'/Admin', component: Dashboard, layout: LayoutHasSidebar},

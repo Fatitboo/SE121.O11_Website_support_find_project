@@ -1,10 +1,14 @@
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { JobPreScreenImage } from "../../../../assets/images";
 import QuestionItem from "./JobComponents/QuestionItem";
 import { IoChevronDownOutline  } from "react-icons/io5";
 import QuestionTag from "./JobComponents/QuestionTag";
-function JobPreScreen({formId, formSubmit}) {
+import { setValueSuccess, updateVacancyComponent } from "../../../../redux/slices/vacancies/vacanciesSlices";
+import { useDispatch, useSelector } from "react-redux";
+function JobPreScreen({formId, formSubmit, flag}) {
+    const dispatch = useDispatch();
+    const {currentJobComponent, vacancyId, isSuccess} = useSelector(store => store.vacancies)
     const questionPatterns = [
         {
             tagId: 1,
@@ -25,7 +29,7 @@ function JobPreScreen({formId, formSubmit}) {
             question: 'What is the highest level of education you have completed?',
             preAnswer: 'Minimum education level:',
             selectList: [{id: 1, name: 'High school or equivalent'}, {id: 2, name: 'Associate'}, {id: 3, name: "Bachelor's"}, {id: 4, name: "Master's"}, {id: 5, name: "Doctorate"}],
-            selectedItem: {id: 1, name: 'High school or equivalent'},
+            selectedItem: [{id: 1, name: 'High school or equivalent'}],
             isRequired: false,
             isDealBreakerBox: true,
             isMulti: false
@@ -38,7 +42,7 @@ function JobPreScreen({formId, formSubmit}) {
             question: 'Will you be able to relocate to be within reasonable commuting distance from Beaufort, SC 29902?',
             preAnswer: 'Applicant should be able to',
             selectList: [{id: 1, name: 'Relocate before starting work'}, {id: 2, name: 'Relocate with an employer provided relocation package'}],
-            selectedItem: {id: 1, name: 'Relocate before starting work'},
+            selectedItem: [{id: 1, name: 'Relocate before starting work'}],
             isRequired: false,
             isDealBreakerBox: true,
             isMulti: false
@@ -52,7 +56,7 @@ function JobPreScreen({formId, formSubmit}) {
             preAnswer: 'At least',
             selectList: [{id: 1, name: '1 year'}, {id: 2, name: '2 years'}, {id: 3, name: '3 years'}, {id: 4, name: '4 years'}, {id: 5, name: '5 years'}, {id: 6, name: '6 years'}, {id: 7, name: '7 years'}, {id: 8, name: '8 years'}, {id: 9, name: '9 years'}, {id: 10, name: '10 years'}],
             textIndent: '|of|experience',
-            selectedItem: {id: 1, name: '1 year'},
+            selectedItem: [{id: 1, name: '1 year'}],
             isRequired: false,
             isDealBreakerBox: true,
             isMulti: true
@@ -109,7 +113,7 @@ function JobPreScreen({formId, formSubmit}) {
             question: 'What percentage of the time are you willing to travel for work?',
             preAnswer: 'Willing to travel up to ... of the time',
             selectList: [{id: 1, name: '25%'}, {id: 2, name: '50%'}, {id: 3, name: '75%'}, {id: 4, name: '100%'}],
-            selectedItem: {id: 1, name: '25%'},
+            selectedItem: [{id: 1, name: '25%'}],
             isRequired: false,
             isDealBreakerBox: true,
             isMulti: false
@@ -132,22 +136,24 @@ function JobPreScreen({formId, formSubmit}) {
         questionPatterns[0], questionPatterns[2], questionPatterns[4]
     ]);
 
-    const localData = JSON.parse(localStorage.getItem("jobPreScreen"))
-    const [value, setValue] = useState(localData ? localData : '');
     let [errors, setErrors] = useState({})
     let [dropDownTags, setDropDownTags] = useState(false)
-    const setValueLocal = () => {
-        localStorage.setItem("jobDes", JSON.stringify(value));
-    }
 
     let [ErrorMessages, setErrorMessages] = useState({
     })
 
+
     function handleSubmit(e) {
         e.preventDefault();
-        setValueLocal();
-        formSubmit(true);
+        dispatch(updateVacancyComponent({"id": vacancyId, "value": {"jobPreScreen": questionForms, "flag" : flag}}))
     }
+
+    useEffect(() => {
+        if(isSuccess){
+            dispatch(setValueSuccess(false))
+            formSubmit(true)
+        }
+    }, [isSuccess])
 
     function blurElement(e){
     }
@@ -235,7 +241,6 @@ function JobPreScreen({formId, formSubmit}) {
                             </div>
                         </div>
                     </form>
-
                 </div>
             </div>    
         </>

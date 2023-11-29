@@ -8,13 +8,17 @@ export default function CustomCheckBox({label, listItem, filterValueChecked, err
         filterValueChecked(selected)
     
       },[selected])
+
+    useEffect(()=>{
+        if(selectedItem)
+            setSelected(selectedItem)
+      }, [selectedItem])
     
     const setSelectedValue = (item) => {
-        if(selected.includes(item)){
-            selected.splice(selected.indexOf(item), 1)
-            setSelected([...selected])
-        }else
-            setSelected([...selected, item])
+        const list = [...selected.filter((i) => i.id !== item.id)]
+        if(selected.length === list.length) 
+            list.push(listItem.find((i) => i.id === item.id))
+        setSelected(list)
     }
 
     return (

@@ -4,36 +4,24 @@ import { IoMdClose } from "react-icons/io";
 import CustomComboBox from "../../../../../components/Organizer/CustomComboBox";
 function QuestionItem({props, onClose}) {
     let [question, setQuestion] = useState(props);
-    let [selected, setSelected] = useState(props.type === "radio" ? {} : []);
+    let [selected, setSelected] = useState([]);
 
     useEffect(() => {
-        // if(props.type === "radio"){
-        //     const item = props.selectedItem ? props.selectList.find((i) => i.id === props.selectedItem.id) : {}
-        //     console.log(item)
-        //     setSelected([...selected, item ? item : {}])
-        // }
-        // else if(props.type === "select"){
-        //     console.log("a")
-        // }
+        if(props.selectedItem) setSelected(props.selectedItem);
     }, [props.selectedItem])
 
     // Select Box
 
     const setSelectedValue = (item) => {
-        const sI = selected.find((i) => i.id === item.id)
-        if(sI){
-            selected.splice(selected.indexOf(sI), 1)
-            sI.isRequired = false
-            setSelected([...selected])
-            setQuestion({...question, selectList: [...question.selectList ]})
-        }else
-            setSelected([...selected, question.selectList.find((i) => i.id === item.id)])
+        const list = [...selected.filter((i) => i.id !== item.id)]
+        if(selected.length === list.length) 
+            list.push(props.selectList.find((i) => i.id === item.id))
+        setSelected(list)
     }
 
     const setRequireValue = (item) => {
-        const sI = selected.find((i) => i.id === item.id)
-        sI.isRequired = !sI.isRequired;
-        setSelected([...selected, sI])
+        const k = selected.map((i) => i.id === item.id ? {...i, isRequired: !i.isRequired} : {...i})
+        setSelected(k)
     }
     switch (question.type) {
         case 'info':
@@ -165,6 +153,7 @@ function QuestionItem({props, onClose}) {
             // }
             return ( 
                 <>
+                <div onClick={() => {console.log(selected)}}>clickme</div>
                 <div className="flex flex-col border border-gray-400 rounded-lg overflow-hidden my-6">
                         <div className="flex flex-row items-center justify-between p-3 bg-[#F3F2F1]">
                             <div className="flex flex-row items-top mr-3">
@@ -211,7 +200,7 @@ function QuestionItem({props, onClose}) {
                                                                 <div>
                                                                     <div className="relative h-7 flex items-center">
                                                                         <div className="absolute bg-[#FFF] border border-[#808082] w-[24px] h-[24px] rounded-[5px] group-hover:bg-[#e1ebff]" color="#FFF"></div>
-                                                                        <div style={{visibility: item.isRequired ? 'visible' : 'hidden' }} className={`flex items-center justify-center absolute bg-[#2557a7] w-[24px] h-[24px] rounded-[5px]`} color="#FFF"><BsCheck color="#FFF" size={'21px'}/></div>
+                                                                        <div style={{visibility: selected.find((i) => i.id === item.id)?.isRequired ? 'visible' : 'hidden' }} className={`flex items-center justify-center absolute bg-[#2557a7] w-[24px] h-[24px] rounded-[5px]`} color="#FFF"><BsCheck color="#FFF" size={'21px'}/></div>
                                                                     </div>
                                                                 </div>
                                                                 <span className="pl-9 text-base mb-[1px] select-none text-[#696969] whitespace-nowrap font-semibold" style={{color: `${item.isRequired ? '#2557a7' : 'gray'}`}}>Deal breaker</span>
@@ -235,12 +224,13 @@ function QuestionItem({props, onClose}) {
             //     question: 'What percentage of the time are you willing to travel for work?',
             //     preAnswer: 'Willing to travel up to ... of the time',
             //     selectList: [{id: 1, name: '25%'}, {id: 2, name: '50%'}, {id: 3, name: '75%'}, {id: 4, name: '100%'}]4
-            //     selectedItem: {id: 1, name: '25%'}
+            //     selectedItem: [{id: 1, name: '25%'}]
             //     isRequired: true,
             //     isDealBreakerBox: true,
             // }
             return ( 
                 <>
+                <div onClick={() => console.log(selected)}>click me</div>
                     <div className="flex flex-col border border-gray-400 rounded-lg overflow-hidden my-6">
                         <div className="flex flex-row items-center justify-between p-3 bg-[#F3F2F1]">
                             <div className="flex flex-row items-top mr-3">
@@ -284,12 +274,12 @@ function QuestionItem({props, onClose}) {
                             {
                                 question.selectList.map((item, index) => {
                                     return (
-                                        <li key={index} value={index} onClick={() => {setSelected(item);}} className='flex cursor-pointer items-center justify-between bg-white py-1 px-5 focus:outline-none text-base text-gray-900 hover:font-normal border hover:opacity-90 rounded-md hover:border-[#3f73d3] group'>
+                                        <li key={index} value={index} onClick={() => {setSelected([item]);}} className='flex cursor-pointer items-center justify-between bg-white py-1 px-5 focus:outline-none text-base text-gray-900 hover:font-normal border hover:opacity-90 rounded-md hover:border-[#3f73d3] group'>
                                             <div className="flex flex-row items-center cursor-pointer mt-1">
                                                 <div>
                                                     <div className="relative h-7 flex items-center justify-center">
                                                         <div className="absolute bg-[#FFF] border border-[#808082] w-[20px] h-[20px] rounded-[10px] group-hover:bg-[#e1ebff]" color="#FFF"></div>
-                                                        <div className={`${selected.id === item.id ? "": "hidden"} flex items-center justify-center absolute bg-[#2557a7] w-[12px] h-[12px] rounded-[10px]`} color="#FFF"></div>
+                                                        <div className={`${selected[0]?.id === item.id ? "": "hidden"} flex items-center justify-center absolute bg-[#2557a7] w-[12px] h-[12px] rounded-[10px]`} color="#FFF"></div>
                                                     </div>
                                                 </div>
                                                 <span className="pl-5 text-base select-none text-[#696969]">{item.name}</span>
@@ -341,7 +331,7 @@ function QuestionItem({props, onClose}) {
                             <div className="flex flex-grow items-center w-auto">
                                 <div className="w-full flex flex-nowrap items-center" >
                                     <div className="w-9!" style={{width: '120px'}}>
-                                        <CustomComboBox filterValueSelected={()=>{}} listItem={question.selectList} selectedItem={question.selectList.find(item=>item.id===question.selectedItem.id)} placeHolder={"1 year"}/>
+                                        <CustomComboBox filterValueSelected={()=>{}} listItem={question.selectList} selectedItem={question.selectList.find(item=>item.id===question.selectedItem[0].id)} placeHolder={"1 year"}/>
                                     </div>
                                     <div className="text-base font-semibold text-[#595959] ml-2 mr-2">
                                         {question.textIndent.split('|')[1]}

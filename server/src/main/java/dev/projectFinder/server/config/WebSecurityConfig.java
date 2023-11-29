@@ -45,6 +45,7 @@ public class WebSecurityConfig {
                             ).permitAll()
                             .requestMatchers("api/v1/skills**").permitAll()
                             .requestMatchers("api/v1/occupations**").hasAnyRole(ADMIN, SEEKER)
+                            .requestMatchers("api/v1/vacancies**").permitAll()
                             .anyRequest().permitAll();
                 });
         httpSecurity.cors(new Customizer<CorsConfigurer<HttpSecurity>>() {
