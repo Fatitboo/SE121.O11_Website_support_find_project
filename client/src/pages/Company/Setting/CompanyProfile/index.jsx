@@ -1,12 +1,18 @@
 import { useDispatch, useSelector } from "react-redux";
-import { CustomButton, TextInput,LoadingComponent } from "../../../../components"
+import { CustomButton, TextInput, LoadingComponent } from "../../../../components"
 import { useForm } from "react-hook-form";
 import { getUserProfileAction, updateAvatarAction, updateUserProfileAction } from "../../../../redux/slices/users/usersSlices";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { IoIosClose } from "react-icons/io";
+import fetchSkillApikey from "../../../../utils/fetchSkillApiKey";
 
 
 function CompanyProfile() {
     const dispatch = useDispatch();
+    const [listSkillApi, setListSkillApi] = useState([]);
+    const inputBox = useRef();
+    const [spin, setSpin] = useState(false);
+    const [skills, setSkills] = useState([]);
     const { register, handleSubmit, setValue, formState: { errors } } = useForm({ mode: 'onChange' });
     const onSubmitInfo = (data) => {
         const dt = {
@@ -19,7 +25,6 @@ function CompanyProfile() {
             teamSize: data.teamSize,
             actions: 3
         }
-        console.log(data)
         dispatch(updateUserProfileAction(dt));
     };
     const onSubmitAddress = (data) => {
@@ -31,7 +36,6 @@ function CompanyProfile() {
             ward: data.ward,
             actions: 2
         }
-        console.log(data)
         dispatch(updateUserProfileAction(dt));
     };
     const onSubmitSocialLink = (data) => {
@@ -42,7 +46,13 @@ function CompanyProfile() {
             insLink: data.instagram,
             actions: 1
         }
-        console.log(data)
+        dispatch(updateUserProfileAction(dt));
+    };
+    const onSubmitCompanyField = (data) => {
+        const dt = {
+            actions: 4,
+            fields:[...skills]
+        }
         dispatch(updateUserProfileAction(dt));
     };
     const [errImg, setErrImg] = useState(null);
@@ -74,6 +84,7 @@ function CompanyProfile() {
         setValue('twitter', userProfile?.twLink);
         setValue('linkedin', userProfile?.lkLink);
         setValue('instagram', userProfile?.insLink);
+        setSkills([...userProfile?.fields??[]])
     }, [userProfile])
 
     const handleUpdateAvatar = (e) => {
@@ -110,7 +121,25 @@ function CompanyProfile() {
         const formattedDate = `${year}-${month}-${day}`;
         return formattedDate
     }
-
+    var myHeaders = new Headers();
+    myHeaders.append("apikey", fetchSkillApikey);
+    var requestOptions = {
+        method: 'GET',
+        redirect: 'follow',
+        headers: myHeaders
+    };
+    const fetchDataSkill = (value) => {
+        if (value === '') {
+            setListSkillApi([])
+        }
+        else {
+            setSpin(true)
+            fetch("https://api.apilayer.com/skills?q=" + value, requestOptions)
+                .then(response => response.json())
+                .then(result => {console.log(result);  setListSkillApi([...result]); setSpin(false) })
+                .catch(error => console.log('error', error));
+        }
+    }
     return (
         <div className="px-10 pb-0">
             {/* Start title of page  */}
@@ -173,14 +202,62 @@ function CompanyProfile() {
                                             :
                                             <CustomButton isDisable={loading} type={'Submit'} title={'Save'} containerStyles="text-blue-600 justify-center w-[20%] flex py-2 ml-3 px-4 mb-6 focus:outline-none hover:bg-blue-700 hover:text-white rounded-md text-base border border-blue-600" />
                                     }
-                                    </div>
+                                </div>
                             </div>
+                        </div>
+                    </form>
+                    <form onSubmit={handleSubmit(onSubmitCompanyField)} className="relative rounded-lg mb-8 bg-white shadow max-w-full px-3 pt-1 shrink-0 w-full">
+                        <div className="p-6 font-medium text-base mr-8">Company Field </div>
+                        <div className="relative px-10 pb-6 ">
+                            <div tabIndex={0} onBlur={() => setListSkillApi([])} className={`relative flex flex-row gap-1 flex-wrap items-center w-full bg-white focus:bg-white focus:border-gray-900 text-base shadow-sm rounded-md pl-5 py-2 text-gray-900 border border-gray-300 placeholder:text-gray-400 sm:text-base sm:leading-8`}>
+                                {
+                                    skills?.map((item, index) => {
+                                        return <div key={index} className='flex flex-row items-center rounded-[4px] gap-1 bg-[#1967d3] text-white p-1 h-8'>
+                                            <div className='whitespace-nowrap'>{item}</div>
+                                            <div className='cursor-pointer' onClick={() => setSkills(skills.filter(i => i != item))}>
+                                                <IoIosClose />
+                                            </div>
+                                        </div>
+                                    })
+                                }
+                                <div className='flex-1 '>
+                                    <input
+                                        type="text"
+                                        ref={inputBox}
+                                        onBlur={(e) => e.stopPropagation()}
+                                        onChange={(e) => fetchDataSkill(e.target.value)}
+                                        className={`min-w-5 w-full block focus:outline-none bg-white  focus:bg-white text-base  rounded-md pr-5 text-gray-900 border-gray-300 placeholder:text-gray-400 sm:text-base sm:leading-8`}
+                                    />
+                                </div>
+
+                                {spin ? <svg className="absolute right-1 animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 24 24">
+                                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="white" strokeWidth="4"></circle>
+                                    <path className="opacity-75" fill="#cccccc" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                </svg> : null}
+                            </div>
+                            <div className='relative' style={{ visibility: listSkillApi.length === 0 ? 'collapse' : 'visible' }}>
+                                <div className='border mt-1 rounded overflow-auto absolute z-10 w-full max-h-56'>
+                                    {
+                                        listSkillApi.map((item, index) => {
+                                            return <div onClick={() => { !skills.includes(item) && setSkills([...skills, item]); inputBox.current.value = ""; setListSkillApi([]) }} key={index} className={`hover:bg-[#eef1f2]  block focus:outline-none bg-white focus:bg-white text-base shadow-sm py-2.5 pl-5 pr-5 text-gray-90 placeholder:text-gray-400 sm:text-base sm:leading-8 cursor-pointer`}>{item}</div>
+                                        })
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                        <div className="ml-8">
+                            {
+                                loading ?
+                                    <CustomButton isDisable={loading} title={'Loading...'} containerStyles="text-blue-600 justify-center w-[10%] flex py-2 ml-3 px-4 mb-6 focus:outline-none hover:bg-blue-700 hover:text-white rounded-md text-base border border-blue-600" />
+                                    :
+                                    <CustomButton isDisable={loading} type={'Submit'} title={'Save'} containerStyles="text-blue-600 justify-center w-[10%] flex py-2 ml-3 px-4 mb-6 focus:outline-none hover:bg-blue-700 hover:text-white rounded-md text-base border border-blue-600" />
+                            }
                         </div>
                     </form>
                     <div className="relative rounded-lg mb-8 bg-white shadow max-w-full px-3 pt-1 shrink-0 w-full">
                         <div className="p-6 font-medium text-base mr-8">Social Network </div>
                         <div className="relative px-6 pt-3">
-                        <form onSubmit={handleSubmit(onSubmitSocialLink)} className="relative">
+                            <form onSubmit={handleSubmit(onSubmitSocialLink)} className="relative">
                                 <div className="grid grid-cols-2">
                                     <div className="px-4 mb-6">
                                         <TextInput name='facebook' value={userProfile?.facebook} register={register("facebook")} type='text' label='Facebook' placeholder='www.facebook.com/Nguyenvana' styles='bg-[#f0f5f7]' />
@@ -207,7 +284,7 @@ function CompanyProfile() {
                     <div className="relative rounded-lg mb-8 bg-white shadow max-w-full px-3 pt-1 shrink-0 w-full">
                         <div className="p-6 font-medium text-base mr-8">Contact Information </div>
                         <div className="relative px-6 pt-3">
-                        <form onSubmit={handleSubmit(onSubmitAddress)} className="relative">
+                            <form onSubmit={handleSubmit(onSubmitAddress)} className="relative">
                                 <div className="grid grid-cols-2">
                                     <div className="px-4 mb-6">
                                         <TextInput name='country' value={userProfile?.address?.country} register={register("country")} type='text' label='Country' placeholder='Australia' styles='bg-[#f0f5f7]' />

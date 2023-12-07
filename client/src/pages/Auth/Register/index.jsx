@@ -3,7 +3,7 @@ import { CustomButton, TextInput, LoadingComponent } from "../../../components";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
-import { registerUserAction } from "../../../redux/slices/users/usersSlices";
+import { registerUserAction, resetSuccessAction } from "../../../redux/slices/users/usersSlices";
 import { AiFillExclamationCircle } from "react-icons/ai";
 import Swal from "sweetalert2";
 
@@ -33,9 +33,10 @@ function Register() {
 
     };
     const storeData = useSelector(store => store.users)
-    const { loading, appErr, registered } = storeData
+    const { loading, appErr, isSuccess,registered } = storeData
     useEffect(()=>{
-        if(registered){
+        if(isSuccess){
+            dispatch(resetSuccessAction())
             Swal.fire({
                 title: "Registed Successfuly!",
                 text: "Please login to use functions of web!",
@@ -49,7 +50,7 @@ function Register() {
                }
             })
         }
-    },[registered])
+    },[isSuccess])
 
     return (<>
         {loading && <LoadingComponent />}
@@ -134,7 +135,7 @@ function Register() {
                         loading ?
                             <CustomButton isDisable={loading} title={'Loading...'} containerStyles={'bg-[#ccc] focus:bg-[#05264e] w-full py-4 pl-5 pr-5 rounded flex justify-center items-center text-white mb-3'} />
                             :
-                            <CustomButton isDisable={loading} type={'submit'} title={'Submit & Register'} containerStyles={'bg-[#3c65f5] focus:bg-[#05264e] w-full py-4 pl-5 pr-5 rounded flex justify-center items-center text-white mb-3'} />
+                            <CustomButton isDisable={loading} type={'Submit'} title={'Submit & Register'} containerStyles={'bg-[#3c65f5] focus:bg-[#05264e] w-full py-4 pl-5 pr-5 rounded flex justify-center items-center text-white mb-3'} />
                     }
                 </form>
                 <div className="flex items-center ">

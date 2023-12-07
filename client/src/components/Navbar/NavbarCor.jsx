@@ -100,13 +100,14 @@ function NavbarCor({ user }) {
         setIsOpen(prev => !prev)
     }
     const account = useSelector(store => store?.account)
-    const { loading, token, appErr } = account;
+    const { loading, token, appErr,isSuccess } = account;
 
     useEffect(() => {
-        if (token) {
+        if (isSuccess) {
+            dispatch(resetSuccessAction())
             navigate('/user-auth/noti-send-mail')
         }
-    }, [token])
+    }, [isSuccess])
     return (
         <>
             {loading && <LoadingComponent />}
@@ -176,7 +177,7 @@ function NavbarCor({ user }) {
                         </div>
                         <div className="ml-3">
                             <p className="text-sm text-yellow-200">
-                                {appErr}
+                                {"Something wrong. Please try again!"}
                             </p>
                         </div>
                     </div>

@@ -13,7 +13,7 @@ import CustomCbbResume from "./Organizer/CustomCbbResume";
 import CustomeCbbCV from "./Organizer/CustomeCbbCV";
 import Modal from "./Modal";
 import LoadingComponent from "./Loading";
-
+import PaginationButtons from "./PaginationButtons";
 export {
     Navbar,
     LayoutNoSidebar,
@@ -29,5 +29,6 @@ export {
     Modal,
     CustomCbbResume,
     CustomeCbbCV,
-    LoadingComponent
+    LoadingComponent,
+    PaginationButtons
 }

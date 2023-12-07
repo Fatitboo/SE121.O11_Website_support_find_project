@@ -25,7 +25,7 @@ function MyProfile() {
     };
     const onSubmitAddress = (data) => {
         const dt = {
-            country:data.country,
+            country: data.country,
             province: data.province,
             district: data.district,
             addressDetail: data.addressDetail,
@@ -145,7 +145,7 @@ function MyProfile() {
                                         <TextInput value={userProfile?.fullName} name='fullname' register={register("fullname")} type='text' label='Full Name' placeholder='Nguyen Van Phat' styles='bg-[#f0f5f7]' />
                                     </div>
                                     <div className="px-4 mb-6">
-                                        <TextInput value={userProfile?.expectSalary} name='expectSalary' register={register("expectSalary")} type='text' label='Expect Salary' placeholder='100k/hour' styles='bg-[#f0f5f7]' />
+                                        <TextInput value={userProfile?.expectSalary} name='expectSalary' register={register("expectSalary")} type='text' label='Expect Salary ($/hour)' placeholder='100' styles='bg-[#f0f5f7]' />
                                     </div>
                                     <div className="px-4 mb-6">
                                         <TextInput value={userProfile?.phoneNumber} name='phone' register={register("phone")} type='text' label='Phone' placeholder='0367625416' styles='bg-[#f0f5f7]' />

@@ -8,6 +8,7 @@ import { Combobox, Transition } from "@headlessui/react";
 import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/20/solid";
 import { updateUserResumeAction } from "../../../../../redux/slices/users/usersSlices";
 import CustomCbbResume from "../../../../../components/Organizer/CustomCbbResume";
+import fetchSkillApikey from "../../../../../utils/fetchSkillApiKey";
 function AddSkill({ setSkill, handleSelect, skill, initList }) {
     const [selected, setSelected] = useState('')
     const [query, setQuery] = useState('')
@@ -16,12 +17,14 @@ function AddSkill({ setSkill, handleSelect, skill, initList }) {
     const { handleSubmit, formState: { errors } } = useForm({ mode: 'onChange' });
     const [err, setErr] = useState(null);
     var myHeaders = new Headers();
-    myHeaders.append("apikey", "X3EvclArNMWz79voKu3x747kY62elNZ3");
-
+    myHeaders.append("apikey", fetchSkillApikey);
+    myHeaders.append('Content-Type', 'multipart/form-data')
     var requestOptions = {
         method: 'GET',
         redirect: 'follow',
-        headers: myHeaders
+        headers: myHeaders,
+        credentials: 'include',
+        
     };
     const fetchDataSkill = (value) => {
         console.log(value)

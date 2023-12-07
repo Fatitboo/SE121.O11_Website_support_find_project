@@ -50,6 +50,7 @@ public class User implements UserDetails {
     private String twLink;
     private String lkLink;
     private String insLink;
+    private List<User> shortListedUser;
     private Boolean isActive;
 
     // token + expired
@@ -66,6 +67,7 @@ public class User implements UserDetails {
     private EducationUser[] educationUsers;
     private ExperienceUser[] experienceUsers;
     private String jobDes;
+    private String jobTitle;
 
     // Organizer
     private String teamSize;

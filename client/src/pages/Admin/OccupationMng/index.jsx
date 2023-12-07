@@ -57,7 +57,6 @@ function OccupationManagement() {
 
     const storeData = useSelector(store => store?.occupations);
     const { appErr, occupationsList, loading } = storeData;
-    
     return (
         <div className="px-10 pb-0 text-sm">
             {loading && <LoadingComponent />}
@@ -65,9 +64,7 @@ function OccupationManagement() {
             <div className="mb-8">
                 <h3 className="font-medium text-3xl text-gray-900 mb-2 leading-10">Occupation Management!</h3>
                 <div className="text-sm leading-6 font-normal m-0 right-0 flex justify-between items-center ">Ready to jump back in?</div>
-
             </div>
-
             <div className="flex flex-wrap mx-3 mt-3">
                 <div className="max-w-full px-3 pt-3 shrink-0 w-full">
                     <div className="relative rounded-lg mb-8 bg-white shadow max-w-full px-3 pt-1 shrink-0 w-full">
@@ -95,7 +92,6 @@ function OccupationManagement() {
                                 </div>
                             </div>
                             {appErr && <span className='flex flex-row items-center text-base text-[#a9252b] mt-2 ml-8'><AiFillExclamationCircle className="mr-1" />{appErr}</span>}
-
                             {/* table list skill information */}
                             <div className="px-6 relative">
                                 <div className="overflow-y-hidden overflow-x-auto">
@@ -123,7 +119,6 @@ function OccupationManagement() {
                                                                         // return it+',  '
                                                                         return <div key={index} className="w-fit px-2 py-1 rounded-lg bg-blue-100 m-2">{it}</div>
                                                                     })}
-
                                                                 </div>
                                                                 {/* <span className="text-blue-700 flex items-end mb-2">]</span> */}
                                                             </div>
@@ -149,34 +144,10 @@ function OccupationManagement() {
                                     </table>
                                 </div>
                             </div>
-
-
-
                         </div>
                     </div>
                 </div>
             </div>
-
-            {/* <Modal open={open} onClose={() => setOpen(false)} >
-                <div className="text-center w-96">
-                    <BiTrash size={52} className="mx-auto text-red-500" />
-                    <div className="mx-auto mt-4 mb-8 w-96">
-                        <h3 className="text-lg font-medium text-gray-800 mb-2">Confirm Delete</h3>
-                        <p className="text-sm text-gray-500">
-                            Are you sure you want to delete this item?
-                        </p>
-                    </div>
-                    <div className="flex gap-4  ">
-                        <button onClick={()=>dispatch(deleteOccupationAction(deleteId))} className="border rounded w-full py-1 bg-red-500 text-white">Delete</button>
-                        <button
-                            className="border rounded w-full py-1 "
-                            onClick={() => setOpen(false)}>
-                            Cancel
-                        </button>
-                    </div>
-                </div>
-            </Modal> */}
-
         </div >
     );
 }

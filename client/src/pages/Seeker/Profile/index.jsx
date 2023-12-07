@@ -1,299 +1,246 @@
-import React from "react";
-import { Candidate } from "../../../assets/images";
+import React, { useEffect, useState } from "react";
 import { PiMapPin } from "react-icons/pi";
 import { MoneyIcon, CalendarIcon, ExpiryIcon, RateIcon, SalaryIcon, UserIcon, DegreeIcon } from "../../../assets/icons";
-import {AiOutlineClockCircle} from "react-icons/ai";
+import { AiOutlineClockCircle } from "react-icons/ai";
 import BackgroundItem from "../../../components/Seeker/BackgroundItem";
-import {BiBookmark, BiLogoFacebook, BiLogoInstagram, BiLogoTwitter} from "react-icons/bi";
-import "./style.css";
+import { BiBookmark, BiLogoFacebook, BiLogoInstagram, BiLogoTwitter } from "react-icons/bi";
+import { useDispatch, useSelector } from "react-redux";
+import { useParams } from "react-router-dom";
+import { getDetailUserAction, resetSuccessAction, updateShortlistedUsersAction } from "../../../redux/slices/users/usersSlices";
+import { LoadingComponent } from "../../../components";
+import { DegreesCbb } from "../../../utils/data";
+import { BsBookmarkCheckFill } from "react-icons/bs";
+import { ToastContainer, toast } from "react-toastify";
 
-import CustomButton from '../../../components/CustomButton';
-
-const Educations = [
-    {
-        universityName: "Harvard University",
-        degree: "Bachelor",
-        majorName: "Software Engineering",
-        startDate: "2008",
-        endDate: "2012",
-        description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin a ipsum tellus. Interdum et malesuada fames ac ante ipsum primis in faucibus.",
-    },
-    {
-        universityName: "Harvard University",
-        degree: "Master",
-        majorName: "Computer Science",
-        startDate: "2012",
-        endDate: "2013",
-        description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin a ipsum tellus. Interdum et malesuada fames ac ante ipsum primis in faucibus.",
-    },
-    {
-        universityName: "Aarvard University",
-        degree: "Master",
-        majorName: "Computer Science",
-        startDate: "2012",
-        endDate: "2013",
-        description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin a ipsum tellus. Interdum et malesuada fames ac ante ipsum primis in faucibus.",
-    },
-    {
-        universityName: "Modern College",
-        degree: "Business Analytics",
-        majorName: "Software Engineering",
-        startDate: "2013",
-        endDate: "2014",
-        description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin a ipsum tellus. Interdum et malesuada fames ac ante ipsum primis in faucibus.",
-    },
-    {
-        universityName: "Aodern College",
-        degree: "PhD",
-        majorName: "Sale Reporters",
-        startDate: "2014",
-        endDate: "2016",
-        description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin a ipsum tellus. Interdum et malesuada fames ac ante ipsum primis in faucibus.",
-    },
-];
-
-const Experience = [
-    {
-        occupationName: "Software Engineering",                
-        startDate: "2008",
-        endDate: "2012",
-        company: "VNG Inc.",
-        description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin a ipsum tellus. Interdum et malesuada fames ac ante ipsum primis in faucibus.",
-    },
-    {
-        occupationName: "Software Engineering",                
-        startDate: "2012",
-        endDate: "2014",            
-        company:"Spotify Inc.",
-        description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin a ipsum tellus. Interdum et malesuada fames ac ante ipsum primis in faucibus.",
-    },
-    {
-        occupationName: "Software Engineering",                
-        startDate: "2014",
-        endDate: "2016",
-        company: "Dropbox Inc.",
-        description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin a ipsum tellus. Interdum et malesuada fames ac ante ipsum primis in faucibus.",
-    }
-];
-
-const Awards = [
-    {
-        awardName: "Top Performer Recognition",
-        dateInfo: 2017,
-        occupationName: "Web Application",
-        description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin a ipsum tellus. Interdum et malesuada fames ac ante ipsum primis in faucibus.",
-    },
-    {
-        awardName: "Perfect Attendance Programs",
-        dateInfo: 2015,
-        occupationName: "Software Algorithm",
-        description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin a ipsum tellus. Interdum et malesuada fames ac ante ipsum primis in faucibus.",
-    }
-];
-
-function getEducateList (Educations){
-    const EducationItems = {}
-    const EduName = []
-    Educations.sort((a, b) => a.endDate < b.endDate ? 1 : -1).map((item) => {
-        const uniName = item.universityName
-        if(EduName.includes(uniName)){
-            EducationItems[uniName].major.push({
-                titleName: item.degree + " in " + item.majorName,
-                dateInfo: item.startDate + " - " + item.endDate
-            })
-        }
-        else{
-            EduName.push(uniName)
-            EducationItems[uniName] = {
-                universityName: uniName,
-                description: item.description,
-                major: [
-                    {
-                        titleName: item.degree + " in " + item.majorName,
-                        dateInfo: item.startDate + " - " + item.endDate
-                    }
-                ],
-            }
-        }
-    })
-    const EducationArray = Object.values(EducationItems);
-    const length = EducationArray.length - 1
-    return EducationArray.map((item, index) => {
-        if(index == length){
-            return <BackgroundItem key={index} isLast={true} title={item.major} subtitle={item.universityName} description={item.description} textColor={"#d93025"} bgColor={"rgba(217,48,37,.15)"}/>;
-        }
-        return <BackgroundItem key={index} isLast={false} title={item.major} subtitle={item.universityName} description={item.description} textColor={"#d93025"} bgColor={"rgba(217,48,37,.15)"}/>;
-    })
-}
-function getAwardList (Awards){
-    const AwardItems = {}
-    const AwardField = []
-    Awards.sort((a, b) => a.year < b.year ? 1 : -1).map((item) => {
-        const awardField = item.occupationName
-        if(AwardField.includes(awardField)){
-            AwardItems[awardField].award.push({
-                titleName: item.awardName,
-                dateInfo: item.dateInfo
-            })
-        }
-        else{
-            AwardField.push(awardField)
-            AwardItems[awardField] = {
-                occupationName: awardField,
-                description: item.description,
-                award: [
-                    {
-                        titleName: item.awardName,
-                        dateInfo: item.dateInfo
-                    }
-                ],
-            }
-        }
-    })
-    const AwardArray = Object.values(AwardItems);
-    const length = AwardArray.length - 1
-    return AwardArray.map((item, index) => {
-        if(index == length){
-            return <BackgroundItem key={index} isLast={true} title={item.award} subtitle={item.occupationName} description={item.description} textColor={"#f9ab00"} bgColor={"#fef2d9"}/>;
-        }
-        return <BackgroundItem key={index} isLast={false} title={item.award} subtitle={item.occupationName} description={item.description} textColor={"#f9ab00"} bgColor={"#fef2d9"}/>;
-    })
-}
-function getExperienceList (Experience){
-    const ExperienceItems = {}
-    const IncName = []
-    Experience.sort((a, b) => a.endDate < b.endDate ? 1 : -1).map((item) => {
-        const incName = item.company
-        if(IncName.includes(incName)){
-            ExperienceItems[incName].field.push({
-                titleName: item.occupationName,
-                dateInfo: item.startDate + " - " + item.endDate
-            })
-        }
-        else{
-            IncName.push(incName)
-            ExperienceItems[incName] = {
-                company: incName,
-                description: item.description,
-                field: [
-                    {
-                        titleName: item.occupationName,
-                        dateInfo: item.startDate + " - " + item.endDate
-                    }
-                ],
-            }
-        }
-    })
-    const ExperientArray = Object.values(ExperienceItems);
-    const length = ExperientArray.length - 1
-    return ExperientArray.map((item, index) => {
-        if(index == length){
-            return <BackgroundItem key={index} isLast={true} title={item.field} subtitle={item.company} description={item.description} textColor={"#1967d2"} bgColor={"#eff4fc"}/>;
-        }
-        return <BackgroundItem key={index} isLast={false} title={item.field} subtitle={item.company} description={item.description} textColor={"#1967d2"} bgColor={"#eff4fc"}/>;
-    })
-}
 function SeekerProfile() {
+    const { id } = useParams();
+    const dispatch = useDispatch();
+    const notify = (type, message) => toast(message, { type: type });
+    useEffect(() => {
+        dispatch(getDetailUserAction(id))
+    }, [dispatch])
+    const storeData = useSelector(store => store?.users);
+    const { loading, appErr, seletedUser, isSuccess, isShorted } = storeData;
+    const [sltSeeker, setSltSeeker] = useState({ ...seletedUser })
+
+    useEffect(() => {
+        setSltSeeker({ ...seletedUser })
+    }, [seletedUser])
+    useEffect(() => {
+        if (isSuccess) {
+            dispatch(resetSuccessAction());
+            notify('success', 'Update shorted list users successfully!')
+        }
+    }, [isSuccess])
+    function getEducateList(Educations) {
+        if (!Educations) return;
+        const reversedArray = [...Educations].reverse();
+        const length = Educations.length - 1
+        return reversedArray.map((item, index) => {
+            const detailMajors = [];
+            item.detailMajorSeekers.map((item, index) => {
+                detailMajors.push({
+                    titleName: item.degree + " in " + item.majorName,
+                    dateInfo: item.startYear + " - " + item.endYear
+                })
+            })
+
+            if (index == length) {
+                return <BackgroundItem key={index} index={index} isLast={true} type={'education'} title={detailMajors} subtitle={item.universityName} description={item.description} textColor={"#d93025"} bgColor={"rgba(217,48,37,.15)"} initList={reversedArray} />;
+            }
+            return <BackgroundItem key={index} index={index} isLast={false} type={'education'} title={detailMajors} subtitle={item.universityName} description={item.description} textColor={"#d93025"} bgColor={"rgba(217,48,37,.15)"} initList={reversedArray} />;
+        })
+    }
+    function getExperienceList(Experience) {
+        if (!Experience) return;
+        const cc = [...Experience]
+        return cc.map((item, index) => {
+            const title = [{
+                titleName: item.occupationName,
+                dateInfo: item.startYear + ' - ' + item.endYear
+            }]
+            if (index == cc.length - 1) {
+                return <BackgroundItem index={index} type={'experience'} initList={Experience} detailMajors={item.detailMajor} key={index} isLast={true} title={title} subtitle={item.organizerName} description={item.description} textColor={"#1967d2"} bgColor={"rgba(25,103,210,.15)"} />;
+            }
+            return <BackgroundItem index={index} type={'experience'} initList={Experience} detailMajors={item.detailMajor} key={index} isLast={false} title={title} subtitle={item.organizerName} description={item.description} textColor={"#1967d2"} bgColor={"rgba(25,103,210,.15)"} />;
+        })
+    }
+    function getAwardList(Awards) {
+        if (!Awards) return;
+
+        return Awards.map((item, index) => {
+            const title = [{
+                titleName: item.certificationName,
+                dateInfo: item.year
+            }]
+            if (index == Awards.length - 1) {
+                return <BackgroundItem key={index} index={index} type={'award'} initList={Awards} isLast={true} title={title} subtitle={item.certifiedBy} description={item.description} textColor={"#f9ab00"} bgColor={"#fef2d1"} />;
+            }
+            return <BackgroundItem key={index} index={index} type={'award'} initList={Awards} isLast={false} title={title} subtitle={item.certifiedBy} description={item.description} textColor={"#f9ab00"} bgColor={"#fef2d1"} />;
+        })
+    }
+
+    const getYearOld = (dob) => {
+        const date = new Date(dob);
+        const yearBirth = date.getFullYear();
+        const now = new Date();
+        const yearNow = now.getFullYear();
+        return yearNow - yearBirth
+    }
+    const getMaxLevel = (educationUsers) => {
+        if (!educationUsers) return 'Not information';
+        let maxDegree = 0;
+        educationUsers.forEach(item => {
+            item.detailMajorSeekers.forEach(i => {
+                if (i.degree === 'Doctoral degree') maxDegree = 3;
+                if (i.degree === 'Master degree' && maxDegree < 2) maxDegree = 2;
+                if (i.degree === 'Bachelor degree' && maxDegree < 1) maxDegree = 1;
+            })
+        })
+        return DegreesCbb[maxDegree].name
+    }
+    const getMaxExperience = (experienceUsers) => {
+        if (!experienceUsers) return 'Not information'
+        let maxYear = 0;
+        let minYear = 2100;
+        experienceUsers.forEach(item => {
+            if (item.endYear > maxYear) maxYear = item.endYear;
+            if (item.startYear < minYear) minYear = item.startYear;
+        })
+        const yearEx = maxYear - minYear;
+        return (yearEx - 1) + ' - ' + (yearEx + 1) + ' Years'
+    }
+    const linkCV = () => {
+        var publicId = '';
+        var name = ''
+        sltSeeker?.cvLinks.forEach(item => {
+            if (item.isDefault) { publicId = item.publicId; }
+        })
+        return { publicId, name: 'CV_Seeker' + sltSeeker?.userId.slice(12) }
+    }
+    const handleUpdateShortListed = () => {
+        dispatch(updateShortlistedUsersAction(id));
+    }
+
     return (<>
-          <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/uicons-regular-rounded/css/uicons-regular-rounded.css'></link>
-          <link rel="stylesheet" href="./style.css" />
-          <div className="mx-[8%] pt-[50px]">
+        {loading && <LoadingComponent />}
+        <ToastContainer />
+        <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/uicons-regular-rounded/css/uicons-regular-rounded.css'></link>
+        <div className="px-10 pt-[50px] mx-14  bg-white py-10 rounded-xl shadow">
             <div className="static grid grid-cols-12 gap-4 m-auto box-border">
                 {/* left infomation */}
                 <div className="col-span-8 pr-[30px]">
                     {/* quick info  */}
                     <></>
-                        <div className="flex text-[#696969] mb-12">
-                            <div>
-                                <img src={Candidate} alt="" />
-                            </div>
-                            <div className="ml-5">
-                                <div>
-                                    <h2 className="text-[26px] leading-[35px] text-[#202124] font-medium">Wade Warren</h2>
-                                </div>
-                                <div className="flex flex-row text-[14px] font-thin my-[8px]">
-                                    <span className="mr-7 text-[#1967d2]">Developer</span>
-                                    <span className="flex flex-row items-center mr-7"><PiMapPin className="w-[18px] h-[18px] mr-1"/>London, UK</span>
-                                    <span className="flex flex-row items-center mr-7"><img src={MoneyIcon} alt="" className="w-[18px] h-[18px] mr-1"/>$94 / hour</span>
-                                    <span className="flex flex-row items-center mr-7"><AiOutlineClockCircle strokeWidth={0.01} className="w-[22px] h-[22px] mr-1"/>Member Since,Aug 19, 2020</span>
-                                </div>
-                                {/* skills */}
-                                <div className="flex flex-row">
-                                    <div className="py-[5px] px-5 rounded-[20px] bg-[#d3e1f5] text-sm text-[#1967d2] mr-[10px]"><span>App</span></div>
-                                    <div className="py-[5px] px-5 rounded-[20px] bg-[#d3e1f5] text-sm text-[#1967d2] mr-[10px]"><span>Digital</span></div>
-                                    <div className="py-[5px] px-5 rounded-[20px] bg-[#d3e1f5] text-sm text-[#1967d2] mr-[10px]"><span>Design</span></div>
-                                </div>
-                            </div>  
+                    <div className="flex text-[#696969] mb-12">
+                        <div>
+                            <img src={sltSeeker?.avatar?.fileUrl ?? 'https://superio-appdir.vercel.app/_next/image?url=%2Fimages%2Fresource%2Fcompany-logo%2F1-1.png&w=128&q=75'} alt="" className="w-20 h-20 rounded-full" />
                         </div>
+                        <div className="ml-5">
+                            <div>
+                                <div className="text-[26px] leading-[35px] text-[#202124] font-medium">{sltSeeker?.fullName}</div>
+                            </div>
+                            <div className="flex flex-row text-[14px] font-thin my-[8px]">
+                                <span className="mr-7 text-[#1967d2]">{sltSeeker?.jobTitle}</span>
+                                <span className="flex flex-row items-center mr-7"><PiMapPin className="w-[18px] h-[18px] mr-1" />{sltSeeker?.address?.province ?? 'Not infor'}, {sltSeeker?.address?.country ?? 'not infor'}</span>
+                                <span className="flex flex-row items-center mr-7"><img src={MoneyIcon} alt="" className="w-[18px] h-[18px] mr-1" />{sltSeeker?.expectSalary ? sltSeeker?.expectSalary + '$/ hour' : 'Not infor'}</span>
+                                <span className="flex flex-row items-center mr-7"><AiOutlineClockCircle strokeWidth={0.01} className="w-[22px] h-[22px] mr-1" />Member Since {sltSeeker?.createdAt ? sltSeeker?.createdAt[2] : ''}/{sltSeeker?.createdAt ? sltSeeker?.createdAt[1] : ''}/{sltSeeker?.createdAt ? sltSeeker?.createdAt[0] : ''}</span>
+                            </div>
+                            {/* skills */}
+                            <div className="flex flex-row flex-wrap">
+                                {
+                                    (!sltSeeker.skillUsers ? [{ skillName: 'Not information' }] : [...sltSeeker.skillUsers]).map((item, index) => {
+                                        return <div key={index} className="py-[5px] px-5 rounded-[20px] bg-[#d3e1f5] text-sm text-[#1967d2] mr-[10px] my-1"><span>{item.skillName}</span></div>
+                                    })
+                                }
+                            </div>
+                        </div>
+                    </div>
                     <></>
 
                     {/* Description  */}
                     <></>
-                        <div>
-                            <p className="text-[#696969] text-[15px] mb-6">
-                                Hello my name is Nicole Wells and web developer from Portland. In pharetra orci dignissim, blandit mi semper, ultricies diam. Suspendisse malesuada suscipit nunc non volutpat. Sed porta nulla id orci laoreet tempor non consequat enim. Sed vitae aliquam velit. Aliquam ante erat, blandit at pretium et, accumsan ac est. Integer vehicula rhoncus molestie. Morbi ornare ipsum sed sem condimentum, et pulvinar tortor luctus. Suspendisse condimentum lorem ut elementum aliquam. <br /><br />
-
-                                Mauris nec erat ut libero vulputate pulvinar. Aliquam ante erat, blandit at pretium et, accumsan ac est. Integer vehicula rhoncus molestie. Morbi ornare ipsum sed sem condimentum, et pulvinar tortor luctus. Suspendisse condimentum lorem ut elementum aliquam. Mauris nec erat ut libero vulputate pulvinar.
-                            </p>
-                        </div>
+                    <div>
+                        <div className="text-lg leading-6 text-[#202124] mb-5 font-semibold">About me</div>
+                        <p className="text-[#696969] text-[15px] mb-6">
+                            {sltSeeker?.description}
+                        </p>
+                    </div>
                     <></>
 
                     {/* Video description */}
                     <></>
-                        <div>
-                            <h4 className="text-lg leading-6 text-[#202124] mb-5 font-semibold">Candidates About</h4>
-                        </div>
+                    <div>
+                        <div className="text-lg leading-6 text-[#202124] mb-5 font-semibold">Candidates About</div>
+                        <p className="text-[#696969] text-[15px] mb-6">
+                            {sltSeeker?.jobDes}
+                        </p>
+                    </div>
                     <></>
 
                     {/* Education */}
                     <></>
-                        <div>
-                            <h4 className="text-lg leading-6 text-[#202124] mb-5 font-semibold">Education</h4>
-                            <div>{getEducateList(Educations)}</div>
-                        </div>
+                    <div>
+                        <div className="text-lg leading-6 text-[#202124] mb-5 font-semibold">Education</div>
+                        <div>{getEducateList(sltSeeker?.educationUsers)}</div>
+                    </div>
                     <></>
 
                     {/* Work and experience */}
                     <></>
-                        <div>
-                            <h4 className="text-lg leading-6 text-[#202124] mb-5 font-semibold">Work & experience</h4>
-                            <div>{getExperienceList(Experience)}</div>
-                        </div>
+                    <div>
+                        <div className="text-lg leading-6 text-[#202124] mb-5 font-semibold">Work & experience</div>
+                        <div>{getExperienceList(sltSeeker?.experienceUsers)}</div>
+                    </div>
                     <></>
 
                     {/* Awards */}
                     <></>
-                        <div>
-                            <h4 className="text-lg leading-6 text-[#202124] mb-5 font-semibold">Awards</h4>
-                            <div>{getAwardList(Awards)}</div>
-                        </div>
+                    <div>
+                        <div className="text-lg leading-6 text-[#202124] mb-5 font-semibold">Awards</div>
+                        <div>{getAwardList(sltSeeker?.certificationUsers)}</div>
+                    </div>
                     <></>
 
                     {/* Images info */}
                     <></>
-                        <div>
+                    <div>
 
-                        </div>
+                    </div>
                     <></>
                 </div>
                 {/* category */}
                 <div className="col-span-4">
+
+                    {/* save and download cv  */}
                     <div className="flex flex-row mb-5">
-                        <div className="flex items-center justify-center h-[53px] box-border bg-[#1967d3] px-[18px] py-[8px] w-full rounded-[8px] text-[#fff] hover:bg-[#0146a6] cursor-pointer">
-                            <span className="text-[15px] leading-none font-[400]">Download CV</span>
-                        </div>
-                        <div className="item flex items-center justify-center w-[60px] h-[52px] rounded-[7px] bg-[rgba(25,103,210,.07)] ml-5 cursor-pointer opacity-80" color="#1967d3">
-                            <BiBookmark className="w-full h-full p-[14px] rounded-[7px]" color="#1967d3"/>
+                        {
+                            sltSeeker?.cvLinks ?
+                                <a href={`https://res.cloudinary.com/dvnxdtrzn/raw/upload/f_auto/fl_attachment:${linkCV().name}/v1700816040/${linkCV().publicId}`} target="_blank" className="flex items-center justify-center h-[53px] box-border bg-[#1967d3] px-[18px] py-[8px] w-full rounded-[8px] text-[#fff] hover:bg-[#0146a6] cursor-pointer">
+                                    <span className="text-[15px] leading-none font-[400]">Download CV</span>
+                                </a>
+                                : <div className="flex items-center justify-center h-[53px] box-border bg-[#85878a] px-[18px] py-[8px] w-full rounded-[8px] text-[#fff] hover:bg-[#0146a6] cursor-pointer">
+                                    <span className="text-[15px] leading-none font-[400]">Not have any CV</span>
+                                </div>
+                        }
+                        <div onClick={handleUpdateShortListed} className="item flex items-center justify-center w-[60px] h-[52px] rounded-[7px] bg-[rgba(25,103,210,.07)] ml-5 cursor-pointer opacity-80" color="#1967d3">
+                            {
+                                isShorted
+                                    ? <BsBookmarkCheckFill className="w-full h-full p-[10px] rounded-[7px]" color="#1967d3" />
+                                    : <BiBookmark className="w-full h-full p-[10px] rounded-[7px]" color="#1967d3" />
+                            }
                         </div>
                     </div>
+
+                    {/* infomation */}
                     <div className="p-6 bg-[#F5F6FC] rounded-lg mb-[30px]">
                         <div className="flex flex-row mb-[30px]">
                             <div className="min-w-[50px]">
                                 <img src={CalendarIcon} alt="Calendar" />
                             </div>
                             <div>
-                                <h2 className="text-4 text-[#202124] leading-[22px] font-semibold">Experience:</h2>
-                                <span className="text-[15px] text-[#363636]">0-2 Years</span>
+                                <div className="text-4 text-[#202124] leading-[22px] font-semibold">Experience:</div>
+                                <span className="text-[15px] text-[#363636]">{getMaxExperience(sltSeeker?.experienceUsers)}</span>
                             </div>
                         </div>
                         <div className="flex flex-row mb-[30px]">
@@ -301,8 +248,8 @@ function SeekerProfile() {
                                 <img src={ExpiryIcon} alt="Calendar" />
                             </div>
                             <div>
-                                <h2 className="text-4 text-[#202124] leading-[22px] font-semibold">Age:</h2>
-                                <span className="text-[15px] text-[#363636]">28-33 Years</span>
+                                <div className="text-4 text-[#202124] leading-[22px] font-semibold">Age:</div>
+                                <span className="text-[15px] text-[#363636]">{getYearOld(sltSeeker?.dayOfBirth ?? new Date())} Years</span>
                             </div>
                         </div>
                         <div className="flex flex-row mb-[30px]">
@@ -310,8 +257,8 @@ function SeekerProfile() {
                                 <img src={RateIcon} alt="Calendar" />
                             </div>
                             <div>
-                                <h2 className="text-4 text-[#202124] leading-[22px] font-semibold">Current Salary:</h2>
-                                <span className="text-[15px] text-[#363636]">11K - 15K</span>
+                                <div className="text-4 text-[#202124] leading-[22px] font-semibold">Current Salary (per month):</div>
+                                <span className="text-[15px] text-[#363636]">{sltSeeker?.expectSalary * 8 * 30}$</span>
                             </div>
                         </div>
                         <div className="flex flex-row mb-[30px]">
@@ -319,8 +266,8 @@ function SeekerProfile() {
                                 <img src={SalaryIcon} alt="Calendar" />
                             </div>
                             <div>
-                                <h2 className="text-4 text-[#202124] leading-[22px] font-semibold">Expected Salary:</h2>
-                                <span className="text-[15px] text-[#363636]">26K - 30K</span>
+                                <div className="text-4 text-[#202124] leading-[22px] font-semibold">Expected Salary (per month):</div>
+                                <span className="text-[15px] text-[#363636]">{sltSeeker?.expectSalary * 8 * 30 - 2000}$ - {sltSeeker?.expectSalary * 8 * 30 + 2000}$</span>
                             </div>
                         </div>
                         <div className="flex flex-row mb-[30px]">
@@ -328,7 +275,7 @@ function SeekerProfile() {
                                 <img src={UserIcon} alt="Calendar" />
                             </div>
                             <div>
-                                <h2 className="text-4 text-[#202124] leading-[22px] font-semibold">Gender:</h2>
+                                <div className="text-4 text-[#202124] leading-[22px] font-semibold">Gender:</div>
                                 <span className="text-[15px] text-[#363636]">Female</span>
                             </div>
                         </div>
@@ -337,52 +284,64 @@ function SeekerProfile() {
                                 <img src={DegreeIcon} alt="Calendar" />
                             </div>
                             <div>
-                                <h2 className="text-4 text-[#202124] leading-[22px] font-semibold">Education Level:</h2>
-                                <span className="text-[15px] text-[#363636]">Master Degree</span>
+                                <div className="text-4 text-[#202124] leading-[22px] font-semibold">Education Level:</div>
+                                <span className="text-[15px] text-[#363636]">{getMaxLevel(sltSeeker?.educationUsers)}</span>
                             </div>
                         </div>
                     </div>
+
+                    {/* social media */}
                     <div>
                         <div className="p-6 bg-[#F5F6FC] rounded-lg flex justify-between items-center mb-[30px]">
                             <span className="text-[#202124] text-[18px] font-semibold">Social Media</span>
                             <div className="flex flex-row items-center">
                                 <div className="w-7 h-7 flex justify-end items-center">
-                                    <BiLogoFacebook color="dimgray"/>
+                                    <BiLogoFacebook color="dimgray" >
+                                        <a href={sltSeeker?.fbLink}></a>
+                                    </BiLogoFacebook>
                                 </div>
                                 <div className="w-7 h-7 flex justify-end items-center">
-                                    <BiLogoInstagram color="dimgray"/>
+                                    <BiLogoInstagram color="dimgray" className="cursor-pointer">
+                                        <a href={sltSeeker?.insLink}></a>
+                                    </BiLogoInstagram>
                                 </div>
                                 <div className="w-7 h-7 flex justify-end items-center">
-                                    <BiLogoTwitter color="dimgray"/>
-                                </div>
-                            </div>
-                        </div>  
-                    </div>
-                    <div>
-                        <div className="p-6 bg-[#F5F6FC] rounded-lg mb-[30px]">
-                            <span className="text-[#202124] text-[18px] font-semibold ">Professional Skills</span>
-                            <div className="flex flex-row mt-[30px]">
-                                <div className="mr-[10px] mb-[10px]">
-                                    <a className="bg-[#FFF] text-[#696969] py-[5px] px-5 text-[14px] leading-[19px] rounded">app</a>
-                                </div>
-                                <div className="mr-[10px] mb-[10px]">
-                                    <a className="bg-[#FFF] text-[#696969] py-[5px] px-5 text-[14px] leading-[19px] rounded">administrator</a>
+                                    <BiLogoTwitter color="dimgray" className="cursor-pointer">
+                                        <a href={sltSeeker?.twLink}></a>
+                                    </BiLogoTwitter>
                                 </div>
                             </div>
                         </div>
                     </div>
+
+                    {/* profesional skill */}
                     <div>
                         <div className="p-6 bg-[#F5F6FC] rounded-lg mb-[30px]">
-                            <h4 className="text-[#202124] text-[18px] font-semibold mb-[30px]">Contact Us</h4>
+                            <span className="text-[#202124] text-[18px] font-semibold ">Professional Skills</span>
+                            <div className="flex flex-wrap mt-[30px]">
+                                {
+                                    (sltSeeker?.skillUsers ?? [{ skillName: 'Not information' }]).map((item, index) =>
+                                        <div key={index} className="mr-[10px] mb-[10px]">
+                                            <div className="bg-[#FFF] text-[#696969] py-[5px] px-5 text-[14px] leading-[19px] rounded">{item.skillName}</div>
+                                        </div>)
+                                }
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* contact us  */}
+                    <div>
+                        <div className="p-6 bg-[#F5F6FC] rounded-lg mb-[30px]">
+                            <div className="text-[#202124] text-[18px] font-semibold mb-[30px]">Contact Us</div>
                             <div>
                                 <div >
                                     <form>
                                         <div>
                                             <div className="w-full">
-                                                <input className="px-5 w-full mb-5 py-[15px] text-[15px] leading-[30px] text-[dimgray] rounded-lg border-[#ecedf2] border outline-none" type="text" name="username" placeholder="Your Name" required=""/>
+                                                <input className="px-5 w-full mb-5 py-[15px] text-[15px] leading-[30px] text-[dimgray] rounded-lg border-[#ecedf2] border outline-none" type="text" name="username" placeholder="Your Name" required="" />
                                             </div>
                                             <div className="w-full">
-                                                <input className="px-5 w-full mb-5 py-[15px] text-[15px] leading-[30px] text-[dimgray] rounded-lg border-[#ecedf2] border outline-none" type="email" name="email" placeholder="Email Address" required=""/>
+                                                <input className="px-5 w-full mb-5 py-[15px] text-[15px] leading-[30px] text-[dimgray] rounded-lg border-[#ecedf2] border outline-none" type="email" name="email" placeholder="Email Address" required="" />
                                             </div>
                                             <div className="w-full h-[160px] mb-5">
                                                 <textarea className="px-5 h-full w-full mb-5 py-[15px] text-[15px] leading-[30px] text-[dimgray] rounded-lg border-[#ecedf2] border outline-none" name="message" placeholder="Message"></textarea>

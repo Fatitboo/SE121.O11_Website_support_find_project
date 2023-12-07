@@ -69,7 +69,19 @@ export const verifyAccountAction = createAsyncThunk(
         }
     }
 );
-
+export const resetSuccessAction = createAsyncThunk(
+    "account/resetSuccess",
+    async (data, { rejectWithValue, getState, dispatch }) => {
+        try {
+            return data;
+        } catch (error) {
+            if (!error?.response) {
+                throw error;
+            }
+            return rejectWithValue(error?.response?.data);
+        }
+    }
+);
 //slices
 
 const accountVericationSlices = createSlice({
@@ -79,6 +91,7 @@ const accountVericationSlices = createSlice({
         //create
         builder.addCase(accVerificationSendTokenAction.pending, (state, action) => {
             state.loading = true;
+            state.isSuccess=false;
         });
         builder.addCase(
             accVerificationSendTokenAction.fulfilled,
@@ -87,6 +100,7 @@ const accountVericationSlices = createSlice({
                 state.loading = false;
                 state.appErr = undefined;
                 state.serverErr = undefined;
+                state.isSuccess=true;
             }
         );
         builder.addCase(
@@ -95,6 +109,7 @@ const accountVericationSlices = createSlice({
                 state.loading = false;
                 state.appErr = action?.payload?.message;
                 state.serverErr = action?.error?.message;
+                state.isSuccess=false;
             }
         );
 
@@ -114,6 +129,9 @@ const accountVericationSlices = createSlice({
             state.loading = false;
             state.appErr = action?.payload?.message;
             state.serverErr = action?.error?.message;
+        });
+        builder.addCase(resetSuccessAction.fulfilled, (state, action) => {
+            state.isSuccess = false;
         });
     },
 });

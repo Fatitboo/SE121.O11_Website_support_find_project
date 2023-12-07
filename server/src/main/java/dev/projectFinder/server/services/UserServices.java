@@ -40,7 +40,6 @@ public class UserServices {
     private final JwtTokenUtils jwtTokenUtil;
     private final EmailService emailService;
 
-
     public UserResponse createUser(UserDTO userDTO) throws Exception {
         if (!userDTO.getPassword().equals(userDTO.getCPassword())){
             throw new Exception("Confirm password have to match password");
@@ -65,7 +64,7 @@ public class UserServices {
             newAcc.setPassword(encodedPassword);
         }
         User  user = userRepository.save(newAcc);
-        UserResponse userResponse = UserResponse.builder()
+        return UserResponse.builder()
                 .userId(user.getUserId())
                 .fullName(user.getFullName())
                 .avatar(user.getAvatar())
@@ -74,7 +73,6 @@ public class UserServices {
                 .isVerify(user.getIsVerify())
                 .token(null)
                 .build();
-        return userResponse;
 
     }
     public UserResponse login(UserLoginDTO userLoginDTO) throws Exception {
@@ -163,6 +161,15 @@ public class UserServices {
         }else user.setTeamSize(userInforDTO.getTeamSize());
         userRepository.save(user);
     }
+    public void updateCompanyFields(String id, UserInforDTO userInforDTO){
+        Optional<User> foundUser = userRepository.findById(new ObjectId(id));
+        if(foundUser.isEmpty()){
+            throw new DataIntegrityViolationException(MessageKeys.USER_NOT_FOUND);
+        }
+        User user = foundUser.get();
+        user.setFields(userInforDTO.getFields());
+        userRepository.save(user);
+    }
     public void updateSeekerInformation(String id, SeekerResumeDTO seekerResumeDTO){
         Optional<User> foundUser = userRepository.findById(new ObjectId(id));
         if(foundUser.isEmpty()){
@@ -184,10 +191,10 @@ public class UserServices {
         if(seekerResumeDTO.getActions()==5){
             user.setCvLinks(List.of(seekerResumeDTO.getCvLinks()));
             user.setJobDes(seekerResumeDTO.getDescriptionJob());
+            user.setJobTitle(seekerResumeDTO.getJobTitle());
         }
         userRepository.save(user);
     }
-
     public CVLink updateSeekerCV(String id, MultipartFile file) throws IOException {
         Optional<User> foundUser = userRepository.findById(new ObjectId(id));
         if(foundUser.isEmpty()){
@@ -284,7 +291,6 @@ public class UserServices {
         new SecureRandom().nextBytes(randomBytes);
         return Base64.getEncoder().encodeToString(randomBytes);
     }
-
     private String hashToken(String token) {
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
@@ -332,5 +338,29 @@ public class UserServices {
         String encodedPassword = passwordEncoder.encode(password);
         user.setPassword(encodedPassword);
         return userRepository.save(user);
+    }
+    public void updateShortListedUser(String id, String userId){
+        Optional<User> foundUser = userRepository.findById(new ObjectId(id));
+        if(foundUser.isEmpty()){
+            throw new DataIntegrityViolationException(MessageKeys.USER_NOT_FOUND);
+        }
+        User user = foundUser.get();
+        List<User> users = user.getShortListedUser();
+        if(users==null){
+            users= new ArrayList<>();
+        }
+        Optional<User> addUserFound = userRepository.findById(new ObjectId(userId));
+        if(addUserFound.isEmpty()){
+            throw new DataIntegrityViolationException(MessageKeys.USER_NOT_FOUND);
+        }
+        User addUser = addUserFound.get();
+        if(users.contains(addUser)){
+            users.remove(addUser);
+        }
+        else {
+            users.add(addUser);
+        }
+        user.setShortListedUser(users);
+        userRepository.save(user);
     }
 }

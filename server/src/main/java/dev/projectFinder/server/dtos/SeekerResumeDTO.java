@@ -23,6 +23,7 @@ public class SeekerResumeDTO {
     private SkillUser[] skillUsers;
 
     // set pick cv + des job
+    private String jobTitle;
     private String descriptionJob;
     private CVLink[] cvLinks;
     // action implement for data

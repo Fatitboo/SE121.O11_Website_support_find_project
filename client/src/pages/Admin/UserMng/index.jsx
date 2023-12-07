@@ -3,7 +3,7 @@ import { AiOutlineSearch } from 'react-icons/ai'
 import OrganizerItem from "./OrganizerItem";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
-import { getAllUsersAction } from "../../../redux/slices/users/usersSlices";
+import { getAllCorsAction } from "../../../redux/slices/users/usersSlices";
 
 const listItemCbb = [
     {
@@ -31,7 +31,7 @@ const listItemCbb = [
 function UserMng() {
     const dispatch = useDispatch();
     useEffect(() => {
-        dispatch(getAllUsersAction())
+        dispatch(getAllCorsAction())
     }, [dispatch])
     const storeData = useSelector(store => store?.users);
     const { corList, isSuccess, appErr, loading } = storeData;

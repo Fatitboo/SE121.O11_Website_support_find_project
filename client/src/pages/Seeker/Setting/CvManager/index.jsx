@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import FileCV from "./FileCv";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllUserCvAction, updateUserCvAction } from "../../../../redux/slices/users/usersSlices";
-import {LoadingComponent} from "../../../../components";
+import { LoadingComponent } from "../../../../components";
 
 function CVManager() {
     const dispatch = useDispatch()
@@ -12,7 +12,7 @@ function CVManager() {
     }, [dispatch])
     const storeData = useSelector(store => store?.users);
     const { cvUser, loading, appErr, isSuccess } = storeData;
-    
+
     useEffect(() => {
         if (isSuccess) {
             dispatch(getAllUserCvAction())
@@ -34,12 +34,12 @@ function CVManager() {
             event.target.value = null;
             return;
         }
-        
-        
+
+
         console.log(file)
         dispatch(updateUserCvAction(file))
     }
-    
+
     return (
         <div className="px-10 pb-0">
             {/* Start title of page  */}
@@ -74,10 +74,13 @@ function CVManager() {
                             </div>
 
                             {/* Start list CV */}
-                            <div className="relative w-full px-12  grid grid-cols-5">
+                            <div className="relative w-full px-12  grid grid-cols-5 ">
                                 {
-                                    cvUser.map((item, index) => <FileCV key={index} item={item} />)
+                                    cvUser === null ? 'Not have anything!' : cvUser.map((item, index) => <FileCV key={index} item={item} />)
                                 }
+                            </div>
+                            <div className="h-5">
+
                             </div>
                         </div>
                     </div>

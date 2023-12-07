@@ -16,6 +16,7 @@ public class UserResumeResponse {
     private CertificationUser[] certificationUsers;
     private EducationUser[] educationUsers;
     private ExperienceUser[] experienceUsers;
+    private String jobTitle;
     private String jobDes;
 
 }

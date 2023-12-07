@@ -1,5 +1,5 @@
 import { LiaHomeSolid } from 'react-icons/lia';
-import { MdOutlineFactCheck } from 'react-icons/md';
+import { MdAccessibility, MdOutlineFactCheck } from 'react-icons/md';
 import { FiUsers } from 'react-icons/fi';
 import { GrWorkshop } from 'react-icons/gr';
 import { AiOutlineLogout } from 'react-icons/ai';
@@ -13,6 +13,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { logoutUserAction } from '../redux/slices/users/usersSlices';
 import {createVacancyId, setValueSuccess} from '../redux/slices/vacancies/vacanciesSlices';
 import store from '../redux/store/store';
+import { BiBookmark } from 'react-icons/bi';
 
 
 function Sidebar({user}) {
@@ -79,6 +80,12 @@ function Sidebar({user}) {
                                     Reports
                                 </Link>
                             </div>
+                            <div className={classNames(isActive === 'Change password' ? 'bg-[#E9EFFB] text-blue-600' : '', itemStyle)}>
+                                <Link onClick={()=>setActive('Change password')} to="/user-auth/change-password" className="relative text-sm text-center p-3 flex items-center leading-7 font-normal  capitalize rounded-lg ">
+                                    <MdReportGmailerrorred className='relative mr-4 ml-4 text-2xl text-center ' />
+                                    Change password
+                                </Link>
+                            </div>
                             <div className={ itemStyle}>
                                 <div onClick={handleLogout}  className="cursor-pointer relative text-sm text-center p-3 flex items-center leading-7 font-normal  capitalize rounded-lg ">
                                     <AiOutlineLogout className='relative mr-4 ml-4 text-2xl text-center ' />
@@ -114,6 +121,12 @@ function Sidebar({user}) {
                                     CV Manager
                                 </Link>
                             </div>
+                            <div className={classNames(isActive === 'ShortListed Seeker' ? 'bg-[#E9EFFB] text-blue-600' : '', itemStyle)}>
+                                <Link onClick={()=>setActive('ShortListed Seeker')} to="/Seeker/short-listed-users" className="relative text-sm text-center p-3 flex items-center leading-7 font-normal  capitalize rounded-lg ">
+                                    <BiBookmark className='relative mr-4 ml-4 text-2xl text-center ' />
+                                    ShortListed Seeker
+                                </Link>
+                            </div>
                             <div className={classNames(isActive === 'Applied Jobs' ? 'bg-[#E9EFFB] text-blue-600' : '', itemStyle)}>
                                 <Link onClick={()=>setActive('Applied Jobs')} to="/Seeker/applied-jobs" className="relative text-sm text-center p-3 flex items-center leading-7 font-normal  capitalize rounded-lg ">
                                     <LuNetwork className='relative mr-4 ml-4 text-2xl text-center ' />
@@ -121,7 +134,7 @@ function Sidebar({user}) {
                                 </Link>
                             </div>
                             <div className={classNames(isActive === 'Change password' ? 'bg-[#E9EFFB] text-blue-600' : '', itemStyle)}>
-                                <Link onClick={()=>setActive('Change password')} to="/Admin/" className="relative text-sm text-center p-3 flex items-center leading-7 font-normal  capitalize rounded-lg ">
+                                <Link onClick={()=>setActive('Change password')} to="/user-auth/change-password" className="relative text-sm text-center p-3 flex items-center leading-7 font-normal  capitalize rounded-lg ">
                                     <MdReportGmailerrorred className='relative mr-4 ml-4 text-2xl text-center ' />
                                     Change password
                                 </Link>
@@ -173,10 +186,22 @@ function Sidebar({user}) {
                                     Interviews
                                 </Link>
                             </div>
-                            <div className={classNames(isActive === 'Messages' ? 'bg-[#E9EFFB] text-blue-600' : '', itemStyle)}>
-                                <Link onClick={()=>setActive('Messages')} to="/Admin/" className="relative text-sm text-center p-3 flex items-center leading-7 font-normal  capitalize rounded-lg ">
-                                    <MdReportGmailerrorred className='relative mr-4 ml-4 text-2xl text-center ' />
+                            <div className={classNames(isActive === 'Find Seeker' ? 'bg-[#E9EFFB] text-blue-600' : '', itemStyle)}>
+                                <Link onClick={()=>setActive('Find Seeker')} to="/Organizer/find-seeker" className="relative text-sm text-center p-3 flex items-center leading-7 font-normal  capitalize rounded-lg ">
+                                    <MdAccessibility className='relative mr-4 ml-4 text-2xl text-center ' />
                                     Find Seeker
+                                </Link>
+                            </div>
+                            <div className={classNames(isActive === 'ShortListed Seeker' ? 'bg-[#E9EFFB] text-blue-600' : '', itemStyle)}>
+                                <Link onClick={()=>setActive('ShortListed Seeker')} to="/Organizer/short-listed-users" className="relative text-sm text-center p-3 flex items-center leading-7 font-normal  capitalize rounded-lg ">
+                                    <BiBookmark className='relative mr-4 ml-4 text-2xl text-center ' />
+                                    ShortListed Seeker
+                                </Link>
+                            </div>
+                            <div className={classNames(isActive === 'Change password' ? 'bg-[#E9EFFB] text-blue-600' : '', itemStyle)}>
+                                <Link onClick={()=>setActive('Change password')} to="/user-auth/change-password" className="relative text-sm text-center p-3 flex items-center leading-7 font-normal  capitalize rounded-lg ">
+                                    <MdReportGmailerrorred className='relative mr-4 ml-4 text-2xl text-center ' />
+                                    Change password
                                 </Link>
                             </div>
                             <div className={itemStyle}>
