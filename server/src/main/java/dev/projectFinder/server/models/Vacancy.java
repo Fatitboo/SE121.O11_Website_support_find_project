@@ -9,9 +9,11 @@ import dev.projectFinder.server.components.Vacancy.JobPreScreen;
 import dev.projectFinder.server.components.Vacancy.UserInfo;
 import lombok.*;
 import org.bson.types.ObjectId;
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.HashMap;
 
@@ -75,6 +77,10 @@ public class Vacancy {
 
     //can post
     private Boolean post;
+
+    // date create and update
+    @CreatedDate
+    private LocalDateTime createdAt;
 
     public Vacancy(UnCompletedVacancy unCompletedVacancy){
         //userInfo

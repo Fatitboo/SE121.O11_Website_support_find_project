@@ -9,7 +9,7 @@ import { BsBriefcase } from "react-icons/bs"
 import { LiaPhoneSolid } from "react-icons/lia"
 import { CiMail } from "react-icons/ci";
 import "./style.css"
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getDetailUserAction, resetSuccessAction, updateShortlistedUsersAction } from "../../../../redux/slices/users/usersSlices";
 import { LoadingComponent } from "../../../../components";
@@ -17,6 +17,7 @@ import { ToastContainer, toast } from "react-toastify";
 
 function CompanyProfile() {
     const { id } = useParams();
+    const navigate = useNavigate();
     const dispatch = useDispatch()
     useEffect(() => {
         dispatch(getDetailUserAction(id))
@@ -52,6 +53,14 @@ function CompanyProfile() {
     return (<>
         {loading && <LoadingComponent />}
         <ToastContainer />
+        {/* Start title of page  */}
+        <div className="mb-8 px-10">
+            <div  className="font-medium text-3xl text-gray-900 mb-2 leading-10 flex items-center">
+                <ArrowLeftIcon className="h-8 cursor-pointer mr-2" onClick={() => navigate(-1)} />
+                Organizer Info!
+            </div>
+            <div className="text-sm leading-6 font-normal m-0 right-0 flex justify-between items-center ">Ready to jump back in?</div>
+        </div>
         <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/uicons-regular-rounded/css/uicons-regular-rounded.css'></link>
         <div className="mx-[8%] pt-12 grid grid-cols-12 gap-4 min-h-[263px] bg-[#f2f7fb] items-center">
             <div className="col-span-8 pr-[30px]">

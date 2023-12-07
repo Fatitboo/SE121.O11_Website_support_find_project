@@ -5,8 +5,12 @@ import dev.projectFinder.server.dtos.SeekerResumeDTO;
 import dev.projectFinder.server.dtos.UserInforDTO;
 import dev.projectFinder.server.dtos.UserLoginDTO;
 import dev.projectFinder.server.dtos.UserDTO;
+import dev.projectFinder.server.models.UnCompletedVacancy;
 import dev.projectFinder.server.models.User;
+import dev.projectFinder.server.models.Vacancy;
+import dev.projectFinder.server.repositories.UnCompletedVacancyRepository;
 import dev.projectFinder.server.repositories.UserRepository;
+import dev.projectFinder.server.repositories.VacancyRepository;
 import dev.projectFinder.server.responses.UserProfileResponse;
 import dev.projectFinder.server.responses.UserResponse;
 import dev.projectFinder.server.responses.UserResumeResponse;
@@ -41,6 +45,8 @@ import java.util.stream.Collectors;
 public class UserController {
     private final UserServices userServices;
     private final UserRepository userRepository;
+    private final VacancyRepository vacancyRepository;
+    private final UnCompletedVacancyRepository unCompletedVacancyRepository;
     //  localhost:8088/api/v1/users/register/page=5&record=10
     @PostMapping("/register")
     public ResponseEntity<?> createUser(@Valid @RequestBody UserDTO userDTO,
@@ -246,7 +252,35 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
     }
+    @GetMapping("/get-vacancy-cor/{id}")
+    public ResponseEntity<?> getVacancyCor(@PathVariable String id){
+        HashMap<String, Object> response = new HashMap<>();
+        try{
+            User user = userServices.getUserDetail(id);
+            List<UnCompletedVacancy> incomplete = new ArrayList<>();
+            if(user.getUnCompletedVacancies()!=null){
+                for (String unCompleteId:user.getUnCompletedVacancies()) {
+                    Optional<UnCompletedVacancy> fu = unCompletedVacancyRepository.findById(new ObjectId(unCompleteId));
+                    fu.ifPresent(incomplete::add);
+                }
+            }
+            List<Vacancy> complete = new ArrayList<>();
+            if(user.getVacancies()!=null){
+                for (String completeId:user.getVacancies()) {
+                    Optional<Vacancy> cv = vacancyRepository.findById(new ObjectId(completeId));
+                    cv.ifPresent(complete::add);
+                }
+            }
+            response.put("message","Get all vacancy company successfully!" );
+            response.put("incomplete",incomplete);
+            response.put("complete",complete);
 
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        }catch (Exception e) {
+            response.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+    }
     @GetMapping("/get-all-users")
     public ResponseEntity<?> getAllUser(){
         HashMap<String, Object> response = new HashMap<>();
@@ -415,6 +449,7 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
     }
+
 
 
 }

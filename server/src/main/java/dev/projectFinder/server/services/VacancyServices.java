@@ -190,4 +190,12 @@ public class VacancyServices {
         unCompletedVacancyRepository.delete(unCompletedVacancy);
         return vacancy;
     }
+
+    public Vacancy getVacancyById(String id){
+        Optional<Vacancy> vacancyOptional = vacancyRepository.findById(new ObjectId(id));
+        if(vacancyOptional.isEmpty()){
+            throw new DataIntegrityViolationException("Error when get job in database");
+        }
+        return vacancyOptional.get();
+    }
 }
