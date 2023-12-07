@@ -27,13 +27,14 @@ import {
 import { 
     CompanyProfileEdit, 
     DashboardCompany, 
-    FindSeeker, 
+    FindSeeker,  
     ManageProject, 
     ManageVacancy,
     ShortListedSeekers,
     VacancyInfo,
 } from "../pages/Company"
 import FindOrganizer from "../pages/Seeker/FindOrganizer"
+import {ProjectDetail} from "../pages/Company"
 import PostJob from "../pages/Company/PostJob"
 import {
     Login, 
@@ -44,6 +45,7 @@ import {
     ConfirmUsername,
     ChangePassword
 } from '../pages/Auth'
+import CreateProject from "../pages/Company/ManageProject/CreateProject"
 
 
 const publicRoutes = [
@@ -67,19 +69,19 @@ const publicRoutes = [
     {path:'/Seeker/applied-jobs', component: AppliedJob, layout: LayoutHasSidebar},
     {path:'/Seeker/cv-manager', component: CVManager, layout: LayoutHasSidebar},
     {path:'/Seeker/short-listed-users', component: ShortListedCors, layout: LayoutHasSidebar},
-
+    
     //Company layout
     {path:'/Organizer/post-project/:id', component: PostJob, layout: LayoutNoSidebar},
     {path:'/Organizer/dashboard', component: DashboardCompany, layout: LayoutHasSidebar},
     {path:'/Organizer/company-profile-edit', component: CompanyProfileEdit, layout: LayoutHasSidebar},
     {path:'/Organizer/manage-vacancy', component: ManageVacancy, layout: LayoutHasSidebar},
     {path:'/Organizer/manage-project', component: ManageProject, layout: LayoutHasSidebar},
-    {path:'/project-detail/:id', component: ProjectInfo, layout: LayoutHasSidebar},
+    {path:'/Organizer/manage-project/project-detail/:id', component: ProjectDetail, layout: LayoutHasSidebar},
     {path:'/Organizer/find-seeker', component: FindSeeker, layout: LayoutHasSidebar},
     {path:'/Organizer/seeker-profile/:id', component: SeekerProfile, layout: LayoutHasSidebar},
     {path:'/Organizer/short-listed-users', component: ShortListedSeekers, layout: LayoutHasSidebar},
     {path:'/Organizer/vacancy-info/:id', component: VacancyInfo, layout: LayoutHasSidebar},
-
+    {path:'/Organizer/create-project', component: CreateProject, layout: LayoutHasSidebar},
 
 
     //Admin Layout
