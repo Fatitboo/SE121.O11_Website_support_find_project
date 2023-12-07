@@ -125,7 +125,7 @@ function ShortListedSeekers() {
                                     </div>
                                     <div className="list-none mt-10 flex items-center justify-center">
                                         <PaginationButtons
-                                            totalPages={shortListUsers.length / 10}
+                                            totalPages={shortList.length / 10}
                                             currentPage={currentPage}
                                             setCurrentPage={setCurrentPage}
                                         />

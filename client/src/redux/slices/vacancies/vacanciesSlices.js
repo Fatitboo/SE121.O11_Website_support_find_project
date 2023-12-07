@@ -137,17 +137,14 @@ const vacanciesSlices = createSlice({
         //get all vacancies
         builder.addCase(getAllVacancies.pending, (state, action)=>{
             state.loading=true;
-            state.isSuccess=false
         }),
         builder.addCase(getAllVacancies.fulfilled, (state, action)=>{
             state.loading=false;
             state.vacancies = action?.payload?.vacancies; 
-            state.isSuccess=true
         }),
         builder.addCase(getAllVacancies.rejected, (state, action)=>{
             state.loading=false;
             state.appErr = action?.payload?.message;
-            state.isSuccess=false
         })
 
         //create vacancies id

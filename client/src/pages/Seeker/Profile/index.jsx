@@ -296,9 +296,10 @@ function SeekerProfile() {
                             <span className="text-[#202124] text-[18px] font-semibold">Social Media</span>
                             <div className="flex flex-row items-center">
                                 <div className="w-7 h-7 flex justify-end items-center">
-                                    <BiLogoFacebook color="dimgray" >
-                                        <a href={sltSeeker?.fbLink}></a>
-                                    </BiLogoFacebook>
+                                        <a href={sltSeeker?.fbLink} target="_blank" rel="noreferrer">
+                                            <BiLogoFacebook color="dimgray" >
+                                            </BiLogoFacebook>
+                                        </a>
                                 </div>
                                 <div className="w-7 h-7 flex justify-end items-center">
                                     <BiLogoInstagram color="dimgray" className="cursor-pointer">
