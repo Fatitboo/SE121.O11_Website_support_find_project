@@ -31,6 +31,7 @@ import {
     ManageProject, 
     ManageVacancy,
     ShortListedSeekers,
+    VacancyInfo,
 } from "../pages/Company"
 import FindOrganizer from "../pages/Seeker/FindOrganizer"
 import {ProjectDetail} from "../pages/Company"
@@ -79,6 +80,7 @@ const publicRoutes = [
     {path:'/Organizer/find-seeker', component: FindSeeker, layout: LayoutHasSidebar},
     {path:'/Organizer/seeker-profile/:id', component: SeekerProfile, layout: LayoutHasSidebar},
     {path:'/Organizer/short-listed-users', component: ShortListedSeekers, layout: LayoutHasSidebar},
+    {path:'/Organizer/vacancy-info/:id', component: VacancyInfo, layout: LayoutHasSidebar},
     {path:'/Organizer/create-project', component: CreateProject, layout: LayoutHasSidebar},
 
 

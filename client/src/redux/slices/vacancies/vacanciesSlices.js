@@ -81,7 +81,31 @@ export const getVacancyComponent = createAsyncThunk(
         }
     }
 )
+//get vacancy component
+export const getVacancyInfoDetail = createAsyncThunk(
+    'vacancies/getVacancyInfoDetail',
+    async (id, {rejectWithValue, getState, dispatch}) => {
+        try {
+            const user = getState()?.users;
+            const {userAuth}=user;
+            // http call
+            const config = {
+                headers:{
+                    Authorization: `Bearer ${userAuth?.user?.token}`,
+                    'Content-Type':'application/json',
+                },
+            };
 
+            const {data} = await axios.get(`${baseUrl}/${apiPrefix}/get-vacancy-by-id/${id}`, config);
+            return data;
+        } catch (error) {
+            if(!error?.response){
+                throw error;
+            }
+            return rejectWithValue(error?.response?.data);
+        }
+    }
+)
 //update Vacancy Component
 export const updateVacancyComponent = createAsyncThunk(
     'vacancies/updateVacancy',
@@ -107,6 +131,44 @@ export const updateVacancyComponent = createAsyncThunk(
     }
 )
 
+//get vacancy component
+export const getVacancyCor = createAsyncThunk(
+    'vacancies/getVacancyCor',
+    async (payload, {rejectWithValue, getState, dispatch}) => {
+        try {
+            const user = getState()?.users;
+            const {userAuth}=user;
+            // http call
+            const config = {
+                headers:{
+                    Authorization: `Bearer ${userAuth?.user?.token}`,
+                    'Content-Type':'application/json',
+                },
+            };
+            const {data} = await axios.get(`${baseUrl}/api/v1/users/get-vacancy-cor/${userAuth?.user?.userId}`, config);
+            return data;
+        } catch (error) {
+            if(!error?.response){
+                throw error;
+            }
+            return rejectWithValue(error?.response?.data);
+        }
+    }
+)
+//Set success
+export const resetSuccessAction = createAsyncThunk(
+    "vacancies/resetSuccess",
+    async (data, { rejectWithValue, getState, dispatch }) => {
+        try {
+            return data;
+        } catch (error) {
+            if (!error?.response) {
+                throw error;
+            }
+            return rejectWithValue(error?.response?.data);
+        }
+    }
+);
 export function setValueSuccess(value){
     return function setValueSuccess(dispatch, getState){
         dispatch(vacanciesSlices.actions.setValueSuccess(value))
@@ -124,6 +186,8 @@ const vacanciesSlices = createSlice({
         loading: false,
         appErr: null,
         isSuccess: false,
+        complete:[],
+        incomplete:[],
     },
     reducers:{
         setValueSuccess: (state, action) => {
@@ -191,6 +255,45 @@ const vacanciesSlices = createSlice({
         builder.addCase(getVacancyComponent.rejected, (state, action)=>{
             state.loading=false;
             state.appErr = action?.payload?.message;
+        })
+        //get vacancy component
+        builder.addCase(getVacancyCor.pending, (state, action)=>{
+            state.loading=true;
+            state.isSuccess2 = false;
+
+        }),
+        builder.addCase(getVacancyCor.fulfilled, (state, action)=>{
+            state.loading=false;
+            state.appErr = null;
+            state.isSuccess2 = true;
+            state.incomplete = action?.payload?.incomplete;
+            state.complete = action?.payload?.complete;
+        }),
+        builder.addCase(getVacancyCor.rejected, (state, action)=>{
+            state.loading=false;
+            state.appErr = action?.payload?.message;
+            state.isSuccess2 = false;
+
+        })
+        builder.addCase(resetSuccessAction.fulfilled, (state, action) => {
+            state.isSuccess2 = false;
+        });
+        //get vacancy info detail
+        builder.addCase(getVacancyInfoDetail.pending, (state, action)=>{
+            state.loading=true;
+            state.isSuccess2 = false;
+        }),
+        builder.addCase(getVacancyInfoDetail.fulfilled, (state, action)=>{
+            state.loading=false;
+            state.appErr = null;
+            state.isSuccess2 = true;
+            state.vacancyInfo = action?.payload?.vacancyInfo;
+        }),
+        builder.addCase(getVacancyInfoDetail.rejected, (state, action)=>{
+            state.loading=false;
+            state.appErr = action?.payload?.message;
+            state.isSuccess2 = false;
+
         })
     }    
 });

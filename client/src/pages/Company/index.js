@@ -6,6 +6,7 @@ import ManageProject from "./ManageProject";
 import ProjectDetail from "./ManageProject/ProjectDetail/ProjectDetail";
 import FindSeeker from "./FindSeeker";
 import ShortListedSeekers from "./ShortListedSeekers/ShortListedSeekers";
+import VacancyInfo from "./ManageVacancy/VacancyInfo/VacancyInfo";
 export {
     DashboardCompany,
     CompanyProfileEdit,
@@ -14,5 +15,6 @@ export {
     PostJob,
     FindSeeker,
     ShortListedSeekers,
+    VacancyInfo,
     ProjectDetail
 }

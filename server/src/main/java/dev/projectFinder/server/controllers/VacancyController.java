@@ -102,4 +102,17 @@ public class VacancyController
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
     }
+    @GetMapping("/get-vacancy-by-id/{id}")
+    public ResponseEntity<?> getVacancyById(@PathVariable String id){
+        HashMap<String, Object> response = new HashMap<>();
+        try{
+            Vacancy vacancy = vacancyServices.getVacancyById(id);
+            response.put("message","Get vacancy info successfully!");
+            response.put("vacancyInfo", vacancy);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        }catch (Exception e) {
+            response.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+    }
 }
