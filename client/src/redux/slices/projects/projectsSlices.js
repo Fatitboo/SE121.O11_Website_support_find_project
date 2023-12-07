@@ -95,8 +95,8 @@ const projectsSlices = createSlice({
         loading: false,
         appErr: null,
         isSuccess: false,
-        projects: [],
-        project: {}
+        projects: null,
+        project: null
     },
     reducers:{
         setValueSuccess: (state, action) => {
@@ -110,7 +110,7 @@ const projectsSlices = createSlice({
             state.loading=true;
         }),
         builder.addCase(getAllProjectsUser.fulfilled, (state, action)=>{
-            state.loading=false;
+            state.loading=true;
             state.projects = action?.payload?.projects; 
         }),
         builder.addCase(getAllProjectsUser.rejected, (state, action)=>{

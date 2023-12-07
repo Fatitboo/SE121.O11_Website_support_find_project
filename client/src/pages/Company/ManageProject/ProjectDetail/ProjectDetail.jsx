@@ -116,6 +116,7 @@ function ProjectDetail() {
 
     const project = useSelector((state) => state.projects.project.project)
     const vacancies = useSelector((state) => state.projects.project.vacancies)
+    const loading = useSelector((state) => state.projects.project.loading)
     let user = useSelector((state) => state.users.userAuth.user)
 
 
@@ -147,7 +148,7 @@ function ProjectDetail() {
                                     <span className="mr-7 text-[#1967d2]">{user.fullName}</span>
                                     <span className="flex flex-row items-center mr-7"><BiTimeFive className="w-[18px] h-[18px] mr-1"/>{project.duration} months</span>
                                     <span className="flex flex-row items-center mr-7"><GoHourglass className="w-[18px] h-[18px] mr-1"/>{project.startDate.split("-").reverse().reduce((total, item) => total !== "" ? total + "/" + item : total + item, "")}</span>
-                                    <span className="flex flex-row items-center mr-7"><PiTargetLight className="w-[22px] h-[22px] mr-1"/>vacancies</span>
+                                    <span className="flex flex-row items-center mr-7"><PiTargetLight className="w-[22px] h-[22px] mr-1"/>{vacancies.length} vacancies</span>
                                 </div>
                                 {/* skills */}
                                 <div className="flex flex-row">
@@ -204,7 +205,7 @@ function ProjectDetail() {
                             <div>
                                 {
                                     vacancies.map((item, index) => {
-                                        return <VacancyItem key={index} props={item}/>;
+                                        return <VacancyItem key={index} props={item}/>
                                     })
                                 }
                             </div>
