@@ -73,7 +73,7 @@ const publicRoutes = [
 
     //Admin Layout
     {path:'/Admin/user-management', component: UserMng, layout: LayoutHasSidebar},
-    {path:'/Admin/user-management/jobId=:id', component: CompanyProfile, layout: LayoutHasSidebar},
+    {path:'/Admin/user-management/:id', component: CompanyProfileAdmin, layout: LayoutHasSidebar},
     {path:'/Admin/approval-project', component: Approval, layout: LayoutHasSidebar},
     {path:'/Admin/approval-project/:id', component: ProjectInfo, layout: LayoutHasSidebar},
     {path:'/Admin', component: Dashboard, layout: LayoutHasSidebar},
