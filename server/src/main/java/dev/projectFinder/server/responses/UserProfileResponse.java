@@ -27,5 +27,5 @@ public class UserProfileResponse {
     private Address address;
     private String teamSize;
     private String expectSalary;
-
+    private String[] fields;
 }

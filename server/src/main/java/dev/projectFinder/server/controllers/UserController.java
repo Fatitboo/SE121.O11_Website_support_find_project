@@ -6,6 +6,7 @@ import dev.projectFinder.server.dtos.UserInforDTO;
 import dev.projectFinder.server.dtos.UserLoginDTO;
 import dev.projectFinder.server.dtos.UserDTO;
 import dev.projectFinder.server.models.User;
+import dev.projectFinder.server.repositories.UserRepository;
 import dev.projectFinder.server.responses.UserProfileResponse;
 import dev.projectFinder.server.responses.UserResponse;
 import dev.projectFinder.server.responses.UserResumeResponse;
@@ -14,15 +15,23 @@ import dev.projectFinder.server.services.UserServices;
 import dev.projectFinder.server.utils.MessageKeys;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.bson.types.ObjectId;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @CrossOrigin("*")
 @RestController
@@ -31,6 +40,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserController {
     private final UserServices userServices;
+    private final UserRepository userRepository;
     //  localhost:8088/api/v1/users/register/page=5&record=10
     @PostMapping("/register")
     public ResponseEntity<?> createUser(@Valid @RequestBody UserDTO userDTO,
@@ -99,6 +109,11 @@ public class UserController {
             if(userInforDTO.getActions()==3){
                 userServices.updateUserInformation(id, userInforDTO);
                 response.put("message",MessageKeys.UPDATE_INFORMATION_SUCCESSFULLY);
+                return ResponseEntity.ok(response);
+            }
+            if(userInforDTO.getActions()==4){
+                userServices.updateCompanyFields(id, userInforDTO);
+                response.put("message","Update company field successfully!");
                 return ResponseEntity.ok(response);
             }
 
@@ -199,6 +214,7 @@ public class UserController {
                userProfileResponse.setExpectSalary(user.getExpectSalary());
            }else {
                userProfileResponse.setTeamSize(user.getTeamSize());
+               userProfileResponse.setFields(user.getFields());
            }
             response.put("message","Get user profile successfully" );
             response.put("userProfile",userProfileResponse);
@@ -220,6 +236,7 @@ public class UserController {
                     .skillUsers(user.getSkillUsers())
                     .educationUsers(user.getEducationUsers())
                     .experienceUsers(user.getExperienceUsers())
+                    .jobTitle(user.getJobTitle())
                     .build();
             response.put("message","Get user profile successfully" );
             response.put("userResume",userResumeResponse);
@@ -243,13 +260,77 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
     }
+    @GetMapping("/get-all-cors")
+    public ResponseEntity<?> getAllCors(){
+        HashMap<String, Object> response = new HashMap<>();
+        try{
+            List<User> users = userServices.getAllUser();
+            List<User> cors = users.stream().filter(user-> user.getUserType().equals("organizer")).toList();
+            response.put("message","Get all organizers successfully" );
+            response.put("users",cors);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        }catch (Exception e) {
+            response.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+    }
+    @GetMapping("/get-all-seekers")
+    public ResponseEntity<?> getAllSeekers(){
+        HashMap<String, Object> response = new HashMap<>();
+        try{
+            List<User> users = userServices.getAllUser();
+            List<User> seekers = users.stream().filter(user-> user.getUserType().equals("seeker")).toList();
+            response.put("message","Get all seekers successfully" );
+            response.put("users",seekers);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        }catch (Exception e) {
+            response.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+    }
     @GetMapping("/get-user-by-id/{id}")
     public ResponseEntity<?> getUserById(@PathVariable String id){
         HashMap<String, Object> response = new HashMap<>();
         try{
+            // get user detail
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            Object principal = authentication.getPrincipal();
+            String username = "";
+            if (principal instanceof UserDetails userDetails) {
+                username= userDetails.getUsername();
+            }
+            Optional<User> foundUser = userRepository.findByUsername(username);
+            if(foundUser.isEmpty()){
+                throw new DataIntegrityViolationException(MessageKeys.USER_NOT_FOUND);
+            }
+            User userFoundRequest = foundUser.get();
+
+
+            // get user detail
             User user = userServices.getUserDetail(id);
+
+
+            boolean isShorted = false;
+            if(userFoundRequest.getShortListedUser() != null) {
+//                isShorted= (user.getShortListedUser()).stream().anyMatch(u -> (u.getUserId()).toString().equals(id));
+                    isShorted= userFoundRequest.getShortListedUser().contains(user);
+            }
+            response.put("isShorted",isShorted);
             response.put("message","Get detail user successfully" );
             response.put("userDetail",user);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        }catch (Exception e) {
+            response.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+    }
+    @GetMapping("/get-short-listed-users/{id}")
+    public ResponseEntity<?> getShortListedUsers(@PathVariable String id){
+        HashMap<String, Object> response = new HashMap<>();
+        try{
+            User user = userServices.getUserDetail(id);
+            response.put("message","Get short listed users successfully" );
+            response.put("shortListed",user.getShortListedUser());
             return ResponseEntity.status(HttpStatus.OK).body(response);
         }catch (Exception e) {
             response.put("message", e.getMessage());
@@ -321,4 +402,19 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
     }
+
+    @PutMapping("/update-shortListedUser/{id}")
+    public ResponseEntity<?> updateShortListedUser(@RequestParam("userId") String userId, @PathVariable String id){
+        HashMap<String, Object> response = new HashMap<>();
+        try{
+            userServices.updateShortListedUser(id ,userId);
+            response.put("message","Update short listed user successfully" );
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        }catch (Exception e) {
+            response.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+    }
+
+
 }

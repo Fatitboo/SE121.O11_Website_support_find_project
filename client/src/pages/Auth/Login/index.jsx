@@ -68,7 +68,7 @@ function Login() {
                 </div>
                 <form className="mt-2 w-full" onSubmit={handleSubmit(onSubmit)}>
                     <div className="w-full flex items-center justify-center py-4 ">
-                        <div onClick={() => setAccountType('seeker')} className={`flex cursor-pointer mr-1 px-4 py-3 rounded outline-none ${accountType === 'seeker' ? 'bg-[#1d4fd862] text-blue-900 font-semibold' : 'bg-white border border-blue-400 z-[100]'}`}>Seeker Account</div>
+                        <div onClick={() => setAccountType('seeker')} className={`flex cursor-pointer mr-1 px-4 py-3 rounded outline-none ${accountType === 'seeker' ? 'bg-[#1d4fd862] text-blue-900 font-semibold' : 'bg-white border border-blue-400 '}`}>Seeker Account</div>
                         <div onClick={() => setAccountType('organizer')} className={`flex cursor-pointer px-4 py-3 rounded outline-none ${accountType === 'organizer' ? 'bg-[#1d4fd862] text-blue-900 font-semibold' : 'bg-white border border-blue-400 '}`}>Organizer Account</div>
                     </div>
                     <div className="mb-5 w-full">

@@ -148,7 +148,7 @@ export const popularSearch = [
     "Office Assistant",
   ];
 export const DegreesCbb = [
-    { id: 1, name: 'B.A' }, { id: 2, name: 'B.S' }, { id: 3, name: 'M.A' }, { id: 4, name: 'M.S' }, { id: 5, name: 'Ph.D' }, { id: 6, name: 'Ed.D' }, { id: 7, name: 'Assoc.Prof' },
+    { id: 1, name: 'Associate degree' }, { id: 2, name: 'Bachelor degree' }, { id: 3, name: 'Master degree' }, { id: 4, name: 'Doctoral degree' }
 ];
 
 export const levelCbb = [

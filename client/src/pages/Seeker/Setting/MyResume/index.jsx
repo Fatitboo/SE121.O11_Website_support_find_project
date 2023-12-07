@@ -1,5 +1,5 @@
 import { CgAdd } from "react-icons/cg";
-import { CustomButton, LoadingComponent, CustomeCbbCV } from "../../../../components";
+import { CustomButton, LoadingComponent, CustomeCbbCV, TextInput } from "../../../../components";
 import { useEffect, useState } from "react";
 import SkillItem from "./Components/SkilItem";
 import AddExperience from "./AddExperience";
@@ -29,7 +29,8 @@ function MyResume() {
         const dt = {
             actions: 5,
             cvLinks: [...arr],
-            descriptionJob: data.descriptionJob === '' ? userResume?.jobDes : data.descriptionJob
+            descriptionJob: data.descriptionJob === '' ? userResume?.jobDes : data.descriptionJob,
+            jobTitle: data.jobTitle === '' ? userResume?.jobTitle : data.jobTitle
         }
         console.log(dt)
         dispatch(updateUserResumeAction(dt))
@@ -51,7 +52,7 @@ function MyResume() {
         };
         const { data } = await axios.get(`${baseUrl}/api/v1/users/get-all-cv/${userAuth?.user?.userId}`, config);
         const arr = [];
-        const obj = {}
+        const obj = { id: -1, name: '', isDefault: false, publicId: '', fileUrl: '' }
         await data.cvLinks.forEach(item => {
             arr.push({ id: item.cvId, name: item.filename, isDefault: item.isDefault, fileUrl: item.fileUrl, publicId: item.publicId })
             if (item.isDefault) {
@@ -68,6 +69,7 @@ function MyResume() {
     useEffect(() => {
         if (isSuccess) {
             // setValue('descriptionJob', userResume?.jobDes)
+
             dispatch(getUserResumeAction())
         }
     }, [isSuccess])
@@ -228,11 +230,18 @@ function MyResume() {
                             <div className="relative">
                                 <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-2 pb-4">
                                     <div className="px-4 mb-6">
-                                        {/* <TextInput placeholder="My CV" label="Select Your CV" name="cv" type='text' /> */}
-                                        <CustomeCbbCV filterValueSelected={e => handleSlectCv(e)} label={'Select Your CV'} placeHolder={'Select Your CV'} name={'cv'} type={'select'} selectItem={seletedCv} listItem={cvList} />
-
+                                        <CustomeCbbCV filterValueSelected={e => handleSlectCv(e)} inputStyle='h-[50px]' label={'Select Your CV'} placeHolder={'Select Your CV'} name={'cv'} type={'select'} selectItem={seletedCv} listItem={cvList} />
                                     </div>
-
+                                    <div className="px-4 mb-6 ">
+                                    </div>
+                                    <div className="px-4 mb-6 ">
+                                        <label htmlFor="jobTitle" className="block leading-8 text-gray-900 font-medium ">Job Title</label>
+                                        <div className="relative mt-2 rounded-md shadow-sm ">
+                                            <textarea defaultValue={userResume?.jobTitle} {...register('jobTitle')} rows={1} type="text" name="jobTitle" id="jobTitle" className="block bg-[#f0f5f7] focus:bg-white text-base w-full rounded-md border-0 py-2.5 pl-5 pr-5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400  sm:text-base sm:leading-8" placeholder="Job Title" />
+                                        </div>
+                                    </div>
+                                    <div className="px-4 mb-6 ">
+                                    </div>
                                     <div className="col-span-2 px-4 mb-6">
                                         <label htmlFor="descriptionJob" className="block leading-8 text-gray-900 font-medium ">Description</label>
                                         <div className="relative mt-2 rounded-md shadow-sm ">

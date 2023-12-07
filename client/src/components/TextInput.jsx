@@ -1,7 +1,7 @@
 import React from "react";
 import {AiFillExclamationCircle} from "react-icons/ai";
 
-// eslint-disable-next-line react/display-name
+// eslint-disable-next-line react/display-name 
 const TextInput = React.forwardRef(
   ({ type, placeholder, styles, label, register, name, error, labelStyle , onChange, rules, value,onblur, oninput,vl}, ref) => {
     

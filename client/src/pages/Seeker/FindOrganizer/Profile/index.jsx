@@ -1,24 +1,30 @@
 import React, { useEffect, useState } from "react";
+import { Candidate } from "../../../../assets/images";
 import { PiMapPin } from "react-icons/pi";
+import { MoneyIcon, CalendarIcon, ExpiryIcon, RateIcon, SalaryIcon, UserIcon, DegreeIcon } from "../../../../assets/icons";
+import { AiOutlineClockCircle } from "react-icons/ai";
+import BackgroundItem from "../../../../components/Seeker/BackgroundItem";
 import { BiBookmark, BiLogoFacebook, BiLogoInstagram, BiLogoTwitter } from "react-icons/bi";
 import { BsBriefcase } from "react-icons/bs"
 import { LiaPhoneSolid } from "react-icons/lia"
 import { CiMail } from "react-icons/ci";
-import { Link, useParams } from "react-router-dom";
+import "./style.css"
+import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { getDetailUserAction } from "../../../../redux/slices/users/usersSlices";
-import { CgArrowLeft } from "react-icons/cg";
+import { getDetailUserAction, resetSuccessAction, updateShortlistedUsersAction } from "../../../../redux/slices/users/usersSlices";
 import { LoadingComponent } from "../../../../components";
-// import "./style.css"
+import { ToastContainer, toast } from "react-toastify";
 
-function CompanyProfileAdmin() {
+function CompanyProfile() {
     const { id } = useParams();
     const dispatch = useDispatch()
     useEffect(() => {
         dispatch(getDetailUserAction(id))
     }, [dispatch])
+    const notify = (type, message) => toast(message, { type: type });
+
     const storeData = useSelector(store => store?.users);
-    const { loading, appErr, seletedUser } = storeData;
+    const { loading, appErr, seletedUser, isSuccess, isShorted } = storeData;
     const [sltCor, setSltCor] = useState({ ...seletedUser })
     const convertDate = (tt) => {
         const date = new Date(tt);
@@ -34,19 +40,24 @@ function CompanyProfileAdmin() {
     useEffect(() => {
         setSltCor({ ...seletedUser })
     }, [seletedUser])
+    const handleUpdateShortListed = () => {
+        dispatch(updateShortlistedUsersAction(id));
+    }
+    useEffect(() => {
+        if (isSuccess) {
+            dispatch(resetSuccessAction());
+            notify('success', 'Update shorted list users successfully!')
+        }
+    }, [isSuccess])
     return (<>
         {loading && <LoadingComponent />}
+        <ToastContainer />
         <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/uicons-regular-rounded/css/uicons-regular-rounded.css'></link>
-
-        <div className="px-[40px] pt-[10px] grid grid-cols-12 gap-4 min-h-[200px] bg-[#f2f7fb] items-center">
-            <div className="col-span-8 pr-[30px] relative">
-                <Link to={'/Admin/user-management'} className="absolute -top-12 left-0 ">
-                    <CgArrowLeft size={30} />
-                </Link>
+        <div className="mx-[8%] pt-12 grid grid-cols-12 gap-4 min-h-[263px] bg-[#f2f7fb] items-center">
+            <div className="col-span-8 pr-[30px]">
                 {/* quick info  */}
                 <></>
-                <div className="flex text-[#696969] mb-8">
-
+                <div className="flex text-[#696969] mb-12">
                     <div>
                         <img src={sltCor?.avatar?.fileUrl ?? 'https://superio-appdir.vercel.app/_next/image?url=%2Fimages%2Fresource%2Fcompany-logo%2F1-1.png&w=128&q=75'} alt="" className="w-20 h-20 rounded-full" />
                     </div>
@@ -72,30 +83,29 @@ function CompanyProfileAdmin() {
             <div className="col-span-4">
                 <div className="flex flex-row-reverse mb-5">
                     <div className="item flex items-center justify-center w-[60px] h-[52px] rounded-[7px] bg-[rgba(25,103,210,.07)] ml-5 cursor-pointer opacity-80" color="#1967d3">
-                        <BiBookmark className="w-full h-full p-[14px] rounded-[7px]" color="#1967d3" />
+                        {
+                            isShorted
+                                ? <BsBookmarkCheckFill className="w-full h-full p-[10px] rounded-[7px]" color="#1967d3" />
+                                : <BiBookmark className="w-full h-full p-[10px] rounded-[7px]" color="#1967d3" />
+                        }
                     </div>
-                    {
-                        sltCor?.isActive ?
-                            <div className="flex items-center justify-center h-[53px] box-border bg-red-500 px-[18px] py-[8px] w-[130px] rounded-[8px] text-[#fff] hover:bg-red-700 cursor-pointer">
-                                <span className="text-[15px] leading-none font-[400]">Block</span>
-                            </div>
-                            : <div className="flex items-center justify-center h-[53px] box-border bg-blue-600 px-[18px] py-[8px] w-[130px] rounded-[8px] text-[#fff] hover:bg-blue-800 cursor-pointer">
-                                <span className="text-[15px] leading-none font-[400]">Active</span>
-                            </div>
-                    }
-
+                    <div className="flex items-center justify-center h-[53px] box-border bg-[#1967d3] px-[18px] py-[8px] w-[150px] rounded-[8px] text-[#fff] hover:bg-[#0146a6] cursor-pointer">
+                        <span className="text-[15px] leading-none font-[400]">Get in touch</span>
+                    </div>
                 </div>
             </div>
         </div>
-        <div className="mx-[40px] -pt-10">
+        <div className="mx-[8%] pt-[50px] min-h-[800px]">
             <div className="static grid grid-cols-12 gap-4 m-auto box-border">
                 {/* left infomation */}
-                <div className="col-span-8 pr-[30px] bg-white p-6 rounded-lg">
+                <div className="col-span-8 pr-[30px]">
+
+
                     {/* Description  */}
                     <></>
                     <div>
                         <h4 className="text-lg leading-6 text-[#202124] mb-5 font-semibold">About Company</h4>
-                        <p className="text-[#696969] text-base mb-6 font-normal leading-8">
+                        <p className="text-[#696969] text-[15px] mb-6 leading-8">
                             {sltCor?.description ?? 'Not infomation'}
                         </p>
                     </div>
@@ -117,7 +127,7 @@ function CompanyProfileAdmin() {
                 {/* category */}
                 <div className="col-span-4">
 
-                    <div className="p-6 bg-[white] rounded-lg mb-[30px]">
+                    <div className="p-6 bg-[#F5F6FC] rounded-lg mb-[30px]">
                         <div className="flex flex-row items-center justify-between mb-5">
                             <span className="text-4 leading-[26px] text-[#202124] font-semibold">Primary industry:</span>
                             <span className="text-[15px] leading-[25px] text-[dimgray] font-medium">{sltCor?.fields?.[0] ?? 'Not infomation'}</span>
@@ -167,13 +177,13 @@ function CompanyProfileAdmin() {
                         </div>
                     </div>
                     <div>
-                        <div className="p-6 bg-[#FFF] rounded-lg mb-[30px]">
+                        <div className="p-6 bg-[#F5F6FC] rounded-lg mb-[30px]">
                             <span className="text-[#202124] text-[18px] font-semibold ">Company Fields</span>
                             <div className="flex  flex-wrap mt-[30px]">
                                 {
                                     (sltCor?.fields ?? ['Not information']).map((item, index) =>
                                         <div key={index} className="mr-[10px] mb-[10px]">
-                                            <div className="bg-[#F5F6FC] text-[#696969] py-[5px] px-5 text-[14px] leading-[19px] rounded">{item}</div>
+                                            <div className="bg-[#FFF] text-[#696969] py-[5px] px-5 text-[14px] leading-[19px] rounded">{item}</div>
                                         </div>)
                                 }
                             </div>
@@ -187,4 +197,4 @@ function CompanyProfileAdmin() {
     </>);
 }
 
-export default CompanyProfileAdmin;
+export default CompanyProfile;

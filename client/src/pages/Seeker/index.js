@@ -8,6 +8,8 @@ import DashboardSeeker from "./Setting/Dashboard";
 import MyResume from "./Setting/MyResume";
 import AppliedJob from "./Setting/AppliedJobs";
 import CVManager from "./Setting/CvManager";
+import CompanyProfile from "./FindOrganizer/Profile";
+import ShortListedCors from "./ShortListedCors/ShortListedCors";
 export {
     FindProjects, 
     Home, 
@@ -18,5 +20,7 @@ export {
     DashboardSeeker,
     MyResume,
     AppliedJob,
-    CVManager
+    CVManager,
+    CompanyProfile,
+    ShortListedCors
 }

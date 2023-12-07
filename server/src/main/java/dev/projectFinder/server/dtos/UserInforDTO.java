@@ -36,11 +36,13 @@ public class UserInforDTO {
     private String district;
     private String ward;
     private String addressDetail;
-
+    // dto company fields
+    private String[] fields;
     // action implement for data
     // 1: update social link
     // 2: update address
     // 3: update user info
+    // 4: update fields
     private int actions;
 
 }

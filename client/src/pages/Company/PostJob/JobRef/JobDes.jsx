@@ -17,6 +17,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getVacancyComponent, resetComponent, setValueSuccess, updateVacancyComponent } from '../../../../redux/slices/vacancies/vacanciesSlices';
 import { TextInput } from '../../../../components';
 import { IoIosClose } from 'react-icons/io';
+import fetchSkillApikey from '../../../../utils/fetchSkillApiKey';
 
 function JobDes({formId, formSubmit, flag}) {
     const {currentJobComponent, vacancyId, isSuccess} = useSelector(store => store.vacancies)
@@ -57,7 +58,7 @@ function JobDes({formId, formSubmit, flag}) {
     }, [isSuccess])
 
     var myHeaders = new Headers();
-    myHeaders.append("apikey", "X3EvclArNMWz79voKu3x747kY62elNZ3");
+    myHeaders.append("apikey", fetchSkillApikey);
 
     var requestOptions = {
         method: 'GET',

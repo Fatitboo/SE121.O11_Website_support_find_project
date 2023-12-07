@@ -20,14 +20,17 @@ import {
     MyResume,
     DashboardSeeker, 
     AppliedJob,
-    CVManager
+    CVManager,
+    CompanyProfile,
+    ShortListedCors, 
 } from '../pages/Seeker'
 import { 
-    CompanyProfile, 
     CompanyProfileEdit, 
     DashboardCompany, 
+    FindSeeker, 
     ManageProject, 
-    ManageVacancy,  
+    ManageVacancy,
+    ShortListedSeekers,
 } from "../pages/Company"
 import FindOrganizer from "../pages/Seeker/FindOrganizer"
 import PostJob from "../pages/Company/PostJob"
@@ -37,7 +40,8 @@ import {
     ResetPassword,
     NotiSendEmail,
     VerifyAccount,
-    ConfirmUsername
+    ConfirmUsername,
+    ChangePassword
 } from '../pages/Auth'
 
 
@@ -47,20 +51,22 @@ const publicRoutes = [
     {path:'/user-auth/register', component: Register, layout: LayoutNoSidebar},
     {path:'/user-auth/reset-password/:token', component: ResetPassword, layout: LayoutNoSidebar},
     {path:'/user-auth/noti-send-mail', component: NotiSendEmail, layout: LayoutNoSidebar},
+    {path:'/user-auth/change-password', component: ChangePassword, layout: LayoutHasSidebar},
     {path:'/user-auth/confirm-username', component: ConfirmUsername, layout: LayoutNoSidebar},
     {path:'/user-auth/verify-account/:token', component: VerifyAccount, layout: LayoutNoSidebar},
     {path:'/', component: Home, layout: LayoutNoSidebar},
     {path:'/Seeker/find-projects', component: FindProjects, layout: LayoutNoSidebar},
     {path:'/Seeker/find-vacancies', component: FindVacancies, layout: LayoutNoSidebar},
-    {path:'/Seeker/profile', component: SeekerProfile, layout: LayoutNoSidebar},
     {path:'/Seeker/my-profile', component: MyProfile, layout: LayoutHasSidebar},
     {path:'/Seeker/my-resume', component: MyResume, layout: LayoutHasSidebar},
     {path:'/Seeker/project-info', component: ProjectInfo, layout: LayoutNoSidebar},
     {path:'/Seeker/dashboard', component: DashboardSeeker, layout: LayoutHasSidebar},
     {path:'/Seeker/find-organizer', component: FindOrganizer, layout: LayoutNoSidebar},
-    {path:'/Seeker/company-profile', component: CompanyProfile, layout: LayoutNoSidebar},
+    {path:'/Seeker/company-profile/:id', component: CompanyProfile, layout: LayoutNoSidebar},
     {path:'/Seeker/applied-jobs', component: AppliedJob, layout: LayoutHasSidebar},
     {path:'/Seeker/cv-manager', component: CVManager, layout: LayoutHasSidebar},
+    {path:'/Seeker/short-listed-users', component: ShortListedCors, layout: LayoutHasSidebar},
+
     //Company layout
     {path:'/Organizer/post-project/:id', component: PostJob, layout: LayoutNoSidebar},
     {path:'/Organizer/dashboard', component: DashboardCompany, layout: LayoutHasSidebar},
@@ -68,6 +74,9 @@ const publicRoutes = [
     {path:'/Organizer/manage-vacancy', component: ManageVacancy, layout: LayoutHasSidebar},
     {path:'/Organizer/manage-project', component: ManageProject, layout: LayoutHasSidebar},
     {path:'/project-detail/:id', component: ProjectInfo, layout: LayoutHasSidebar},
+    {path:'/Organizer/find-seeker', component: FindSeeker, layout: LayoutHasSidebar},
+    {path:'/Organizer/seeker-profile/:id', component: SeekerProfile, layout: LayoutHasSidebar},
+    {path:'/Organizer/short-listed-users', component: ShortListedSeekers, layout: LayoutHasSidebar},
 
 
 

@@ -8,7 +8,7 @@ import CustomButton from "../CustomButton";
 import { useDispatch, useSelector } from "react-redux";
 import { logoutUserAction } from "../../redux/slices/users/usersSlices";
 import { IoMdWarning } from "react-icons/io";
-import { accVerificationSendTokenAction } from "../../redux/slices/accountVerication/accountVericationSlices";
+import { accVerificationSendTokenAction, resetSuccessAction } from "../../redux/slices/accountVerication/accountVericationSlices";
 import LoadingComponent from "../Loading";
 function MenuList({ user, onClick }) {
     const dispatch = useDispatch()
@@ -103,13 +103,14 @@ function NavbarUser({ user }) {
         setIsOpen(prev => !prev)
     }
     const account = useSelector(store => store?.account)
-    const { loading, token, appErr } = account;
+    const { loading, token, appErr, isSuccess } = account;
 
     useEffect(() => {
-        if (token) {
+        if (isSuccess) {
+            dispatch(resetSuccessAction())
             navigate('/user-auth/noti-send-mail')
         }
-    }, [token])
+    }, [isSuccess])
 
     return (
         <>
@@ -188,7 +189,7 @@ function NavbarUser({ user }) {
                         </div>
                         <div className="ml-3">
                             <p className="text-sm text-yellow-200">
-                                {appErr}
+                                {"Something wrong. Please try again!"}
                             </p>
                         </div>
                     </div>
