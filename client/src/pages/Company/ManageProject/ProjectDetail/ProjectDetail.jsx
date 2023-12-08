@@ -114,8 +114,8 @@ function ProjectDetail() {
     const id = useParams()
     const dispatch = useDispatch()
 
-    const project = useSelector((state) => state.projects.project.project)
-    const vacancies = useSelector((state) => state.projects.project.vacancies)
+    const project = useSelector((state) => state.projects.project?.project)
+    const vacancies = useSelector((state) => state.projects.project?.vacancies)
     let user = useSelector((state) => state.users.userAuth.user)
 
 
@@ -141,12 +141,12 @@ function ProjectDetail() {
                         <div className="flex text-[#696969] mb-12">
                             <div className="ml-0">
                                 <div>
-                                    <div className="text-[26px] leading-[35px] text-[#202124] font-medium">{project.projectName}</div>
+                                    <div className="text-[26px] leading-[35px] text-[#202124] font-medium">{project?.projectName}</div>
                                 </div>
                                 <div className="flex flex-row text-[14px] font-thin my-[8px]">
-                                    <span className="mr-7 text-[#1967d2]">{user.fullName}</span>
-                                    <span className="flex flex-row items-center mr-7"><BiTimeFive className="w-[18px] h-[18px] mr-1"/>{project.duration} months</span>
-                                    <span className="flex flex-row items-center mr-7"><GoHourglass className="w-[18px] h-[18px] mr-1"/>{project.startDate.split("-").reverse().reduce((total, item) => total !== "" ? total + "/" + item : total + item, "")}</span>
+                                    <span className="mr-7 text-[#1967d2]">{user?.fullName}</span>
+                                    <span className="flex flex-row items-center mr-7"><BiTimeFive className="w-[18px] h-[18px] mr-1"/>{project?.duration} months</span>
+                                    <span className="flex flex-row items-center mr-7"><GoHourglass className="w-[18px] h-[18px] mr-1"/>{project?.startDate.split("-").reverse().reduce((total, item) => total !== "" ? total + "/" + item : total + item, "")}</span>
                                     <span className="flex flex-row items-center mr-7"><PiTargetLight className="w-[22px] h-[22px] mr-1"/>vacancies</span>
                                 </div>
                                 {/* skills */}
@@ -203,7 +203,7 @@ function ProjectDetail() {
                             <h4 className="text-base leading-6 text-[#202124] mb-5 font-semibold">Project vacancies</h4>
                             <div>
                                 {
-                                    vacancies.map((item, index) => {
+                                    vacancies?.map((item, index) => {
                                         return <VacancyItem key={index} props={item}/>;
                                     })
                                 }
@@ -222,7 +222,7 @@ function ProjectDetail() {
                             </div>
                             <div>
                                 <div className="text-4 text-[#202124] leading-[22px] font-semibold">Date posted:</div>
-                                <span className="text-[15px] text-[#363636]">{project.startDate.split("-").reverse().reduce((total, item) => total !== "" ? total + "/" + item : total + item, "")}</span>
+                                <span className="text-[15px] text-[#363636]">{project?.startDate.split("-").reverse().reduce((total, item) => total !== "" ? total + "/" + item : total + item, "")}</span>
                             </div>
                         </div>
                         <div className="flex flex-row mb-[30px]">
@@ -231,7 +231,7 @@ function ProjectDetail() {
                             </div>
                             <div>
                                 <div className="text-4 text-[#202124] leading-[22px] font-semibold">Duration:</div>
-                                <span className="text-[15px] text-[#363636]">{project.duration}</span>
+                                <span className="text-[15px] text-[#363636]">{project?.duration}</span>
                             </div>
                         </div>
                         <div className="flex flex-row mb-[30px]">
@@ -240,7 +240,7 @@ function ProjectDetail() {
                             </div>
                             <div>
                                 <div className="text-4 text-[#202124] leading-[22px] font-semibold">Status:</div>
-                                <span className="text-[15px] text-[#363636]">{project.status}</span>
+                                <span className="text-[15px] text-[#363636]">{project?.status}</span>
                             </div>
                         </div>
                         <div className="flex flex-row">
@@ -249,7 +249,7 @@ function ProjectDetail() {
                             </div>
                             <div>
                                 <div className="text-4 text-[#202124] leading-[22px] font-semibold">Expected budget:</div>
-                                <span className="text-[15px] text-[#363636]">${project.budget}</span>
+                                <span className="text-[15px] text-[#363636]">${project?.budget}</span>
                             </div>
                         </div>
                     </div>
@@ -258,32 +258,32 @@ function ProjectDetail() {
                             <span className="text-[#202124] text-[18px] font-semibold">Social Media</span>
                             <div className="flex flex-row items-center">
                                 {
-                                    project.fbLink? 
-                                        <a href={project.fbLink} target="_blank" rel="noreferrer">
+                                    project?.fbLink? 
+                                        <a href={project?.fbLink} target="_blank" rel="noreferrer">
                                             <div className="w-7 h-7 flex justify-end items-center">
                                                 <BiLogoFacebook color="dimgray"/>
                                             </div>
                                         </a> : null
                                 }
                                 {
-                                    project.insLink? 
-                                        <a href={project.insLink} target="_blank" rel="noreferrer">
+                                    project?.insLink? 
+                                        <a href={project?.insLink} target="_blank" rel="noreferrer">
                                             <div className="w-7 h-7 flex justify-end items-center">
                                                 <BiLogoInstagram color="dimgray"/>
                                             </div>
                                         </a> : null
                                 }
                                 {
-                                    project.twLink? 
-                                        <a href={project.twLink} target="_blank" rel="noreferrer">
+                                    project?.twLink? 
+                                        <a href={project?.twLink} target="_blank" rel="noreferrer">
                                             <div className="w-7 h-7 flex justify-end items-center">
                                                 <BiLogoTwitter color="dimgray"/>
                                             </div>
                                         </a> : null
                                 }
                                 {
-                                    project.lkLink? 
-                                        <a href={project.lkLink} target="_blank" rel="noreferrer">
+                                    project?.lkLink? 
+                                        <a href={project?.lkLink} target="_blank" rel="noreferrer">
                                             <div className="w-7 h-7 flex justify-end items-center">
                                                 <BiLogoLinkedin color="dimgray"/>
                                             </div>

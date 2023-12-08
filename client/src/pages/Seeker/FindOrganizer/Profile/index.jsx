@@ -14,6 +14,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getDetailUserAction, resetSuccessAction, updateShortlistedUsersAction } from "../../../../redux/slices/users/usersSlices";
 import { LoadingComponent } from "../../../../components";
 import { ToastContainer, toast } from "react-toastify";
+import { ArrowLeftIcon } from "@heroicons/react/20/solid";
 
 function CompanyProfile() {
     const { id } = useParams();
@@ -54,19 +55,13 @@ function CompanyProfile() {
         {loading && <LoadingComponent />}
         <ToastContainer />
         {/* Start title of page  */}
-        <div className="mb-8 px-10">
-            <div  className="font-medium text-3xl text-gray-900 mb-2 leading-10 flex items-center">
-                <ArrowLeftIcon className="h-8 cursor-pointer mr-2" onClick={() => navigate(-1)} />
-                Organizer Info!
-            </div>
-            <div className="text-sm leading-6 font-normal m-0 right-0 flex justify-between items-center ">Ready to jump back in?</div>
-        </div>
+        
         <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/uicons-regular-rounded/css/uicons-regular-rounded.css'></link>
-        <div className="mx-[8%] pt-12 grid grid-cols-12 gap-4 min-h-[263px] bg-[#f2f7fb] items-center">
-            <div className="col-span-8 pr-[30px]">
+        <div className=" pt-12 grid grid-cols-12 gap-4 min-h-[263px] bg-[#f2f7fb] items-center">
+            <div className="col-span-8 pl-40">
                 {/* quick info  */}
                 <></>
-                <div className="flex text-[#696969] mb-12">
+                <div className="flex text-[#696969] mb-12 ">
                     <div>
                         <img src={sltCor?.avatar?.fileUrl ?? 'https://superio-appdir.vercel.app/_next/image?url=%2Fimages%2Fresource%2Fcompany-logo%2F1-1.png&w=128&q=75'} alt="" className="w-20 h-20 rounded-full" />
                     </div>
@@ -89,7 +84,7 @@ function CompanyProfile() {
                 </div>
                 <></>
             </div>
-            <div className="col-span-4">
+            <div className="col-span-4 pr-40">
                 <div className="flex flex-row-reverse mb-5">
                     <div className="item flex items-center justify-center w-[60px] h-[52px] rounded-[7px] bg-[rgba(25,103,210,.07)] ml-5 cursor-pointer opacity-80" color="#1967d3">
                         {

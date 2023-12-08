@@ -7,12 +7,13 @@ import { Candidate } from "../../../assets/images";
 import { MoneyIcon } from "../../../assets/icons";
 import "./VacancyItemStyle.css"
 import { CiLocationOn } from "react-icons/ci";
+import { Link } from "react-router-dom";
 
 const VacancyItem = ({props, isAvatar, active}) => {
     // {vacancyName, skillsRequired, maxRequired, salary, registant, description, isAvatar, companyName, companyAvatar}
     return (
         <>
-            <div>
+            <Link to={`/Organizer/vacancy-info/${props.vacancyId}`}>
                 <div style={{backgroundColor: active? "#f6faff" : ''}} className="flex flex-row p-7 rounded-[10px] border border-[#ecedf2] hover:bg-[#f6faff] hover:shadow-[0_7px_18px_rgba(64,79,104,.05)] mb-[30px] cursor-pointer">
                     {
                         isAvatar ? (
@@ -84,7 +85,7 @@ const VacancyItem = ({props, isAvatar, active}) => {
                         
                     </div>
                 </div>
-            </div>
+            </Link>
         </>
     );
 };
