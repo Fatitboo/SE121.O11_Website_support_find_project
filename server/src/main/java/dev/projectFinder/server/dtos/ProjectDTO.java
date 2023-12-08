@@ -30,11 +30,13 @@ public class ProjectDTO {
     @JsonFormat(pattern = "yyyy-MM-dd")
     private Date startDate;
     private String duration;
+    private String period;
     private String status;
     private String budget;
     private String[] participants;
     private String[] favouriteUsers;
     private String[] vacancies;
+    private String[] occupations;
     public ProjectDTO(Project project){
         projectName = project.getProjectName();
         description = project.getDescription();
@@ -45,8 +47,11 @@ public class ProjectDTO {
         insLink = project.getInsLink();
         startDate = project.getStartDate();
         duration = project.getDuration();
+        period = project.getPeriod();
         status = project.getStatus();
         budget = project.getBudget();
+        occupations = project.getOccupations();
+
 
         List<String> a = new ArrayList<>();
         for(int i = 0; i < project.getVacancies().length; i++) {

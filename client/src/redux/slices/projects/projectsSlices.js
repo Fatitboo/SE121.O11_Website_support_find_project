@@ -110,7 +110,7 @@ const projectsSlices = createSlice({
             state.loading=true;
         }),
         builder.addCase(getAllProjectsUser.fulfilled, (state, action)=>{
-            state.loading=true;
+            state.loading=false;
             state.projects = action?.payload?.projects; 
         }),
         builder.addCase(getAllProjectsUser.rejected, (state, action)=>{

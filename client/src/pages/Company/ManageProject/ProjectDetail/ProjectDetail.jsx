@@ -11,6 +11,7 @@ import { ArrowLeftIcon } from "@heroicons/react/20/solid";
 import { useNavigate, useParams } from "react-router-dom";
 import { getProjectSingle } from "../../../../redux/slices/projects/projectsSlices";
 import { useDispatch, useSelector } from "react-redux";
+import { CustomLoader, SmallItemLoader, VacancyItemLoader } from "../../../../components/Loader";
 
 const vacancies = [
     {
@@ -114,9 +115,9 @@ function ProjectDetail() {
     const id = useParams()
     const dispatch = useDispatch()
 
-    const project = useSelector((state) => state.projects.project.project)
-    const vacancies = useSelector((state) => state.projects.project.vacancies)
-    const loading = useSelector((state) => state.projects.project.loading)
+    const project = useSelector((state) => state.projects.project?.project)
+    const vacancies = useSelector((state) => state.projects.project?.vacancies)
+    const loading = useSelector((state) => state.projects.loading)  
     let user = useSelector((state) => state.users.userAuth.user)
 
 
@@ -131,7 +132,6 @@ function ProjectDetail() {
                 <ArrowLeftIcon className="h-8 cursor-pointer mr-2" onClick={() => navigate(-1)} />
                 Project Info!
             </div>
-            {/* <div className="text-sm leading-6 font-normal m-0 right-0 flex justify-between items-center ">Ready to jump back in?</div> */}
         </div>
         <div className="mx-[3%] bg-white p-7">
             <div className="static grid grid-cols-12 gap-4 m-auto box-border">
@@ -142,32 +142,47 @@ function ProjectDetail() {
                         <div className="flex text-[#696969] mb-12">
                             <div className="ml-0">
                                 <div>
-                                    <div className="text-[26px] leading-[35px] text-[#202124] font-medium">{project.projectName}</div>
+                                    {
+                                        loading ? <div className="animate-pulse h-[35px] w-[500px] bg-slate-200 rounded-full col-span-2"></div> :
+                                        <div className="text-[26px] leading-[35px] text-[#202124] font-medium">{project?.projectName}</div>
+
+                                    }
                                 </div>
-                                <div className="flex flex-row text-[14px] font-thin my-[8px]">
-                                    <span className="mr-7 text-[#1967d2]">{user.fullName}</span>
-                                    <span className="flex flex-row items-center mr-7"><BiTimeFive className="w-[18px] h-[18px] mr-1"/>{project.duration} months</span>
-                                    <span className="flex flex-row items-center mr-7"><GoHourglass className="w-[18px] h-[18px] mr-1"/>{project.startDate.split("-").reverse().reduce((total, item) => total !== "" ? total + "/" + item : total + item, "")}</span>
-                                    <span className="flex flex-row items-center mr-7"><PiTargetLight className="w-[22px] h-[22px] mr-1"/>{vacancies.length} vacancies</span>
-                                </div>
+                                    {
+                                        loading ? 
+                                        <div className="animate-pulse h-6 w-[300px] bg-slate-200 rounded-full col-span-2 my-[8px]"></div>
+                                        :<div className="flex flex-row text-[14px] font-thin my-[8px]">
+                                            <span className="mr-7 text-[#1967d2]">{user.fullName}</span>
+                                            <span className="flex flex-row items-center mr-7"><BiTimeFive className="w-[18px] h-[18px] mr-1"/>{project?.duration} months</span>
+                                            <span className="flex flex-row items-center mr-7"><GoHourglass className="w-[18px] h-[18px] mr-1"/>{project?.startDate.split("-").reverse().reduce((total, item) => total !== "" ? total + "/" + item : total + item, "")}</span>
+                                            <span className="flex flex-row items-center mr-7"><PiTargetLight className="w-[22px] h-[22px] mr-1"/>{vacancies?.length} vacancies</span>
+                                        </div>
+                                    }
                                 {/* skills */}
-                                <div className="flex flex-row">
-                                    <div className="py-[5px] px-5 rounded-[20px] bg-[#d3e1f5] text-sm text-[#1967d2] mr-[10px]"><span>App</span></div>
-                                    <div className="py-[5px] px-5 rounded-[20px] bg-[#d3e1f5] text-sm text-[#1967d2] mr-[10px]"><span>Digital</span></div>
-                                    <div className="py-[5px] px-5 rounded-[20px] bg-[#d3e1f5] text-sm text-[#1967d2] mr-[10px]"><span>Design</span></div>
-                                </div>
+                                {
+                                        loading ? 
+                                        <div className="animate-pulse h-6 mt-3 w-[200px] bg-slate-200 rounded-full col-span-2 my-[8px]"></div>
+                                        : <div className="flex flex-row">
+                                            <div className="py-[5px] px-5 rounded-[20px] bg-[#d3e1f5] text-sm text-[#1967d2] mr-[10px]"><span>App</span></div>
+                                            <div className="py-[5px] px-5 rounded-[20px] bg-[#d3e1f5] text-sm text-[#1967d2] mr-[10px]"><span>Digital</span></div>
+                                            <div className="py-[5px] px-5 rounded-[20px] bg-[#d3e1f5] text-sm text-[#1967d2] mr-[10px]"><span>Design</span></div>
+                                        </div>
+                                }
                             </div>  
                         </div>
                     <></>
 
                     {/* Description  */}
                     <></>
-                        <div>
-                            <h4 className="text-base leading-6 text-[#202124] mb-5 font-semibold">Project description</h4>
-                            <p className="text-[#696969] text-[15px] mb-6" dangerouslySetInnerHTML={{ __html: project?.description }}>
+                        {
+                            loading ? <CustomLoader type={"title-paragraph"}/> :
+                            <div>
+                                <h4 className="text-base leading-6 text-[#202124] mb-5 font-semibold">Project description</h4>
+                                <p className="text-[#696969] text-[15px] mb-6" dangerouslySetInnerHTML={{ __html: project?.description }}>
 
-                            </p>
-                        </div>
+                                </p>
+                            </div>
+                        }
                     <></>
 
                     {/* Video description */}
@@ -204,7 +219,16 @@ function ProjectDetail() {
                             <h4 className="text-base leading-6 text-[#202124] mb-5 font-semibold">Project vacancies</h4>
                             <div>
                                 {
-                                    vacancies.map((item, index) => {
+                                    loading?
+                                    [1, 2 ,3].map((item, index)=> {
+                                        return (
+                                            <div key={index}>
+                                                <VacancyItemLoader/>
+                                            </div>
+                                        )
+                                    })
+                                    :
+                                    vacancies?.map((item, index) => {
                                         return <VacancyItem key={index} props={item}/>
                                     })
                                 }
@@ -217,74 +241,86 @@ function ProjectDetail() {
                 {/* category */}
                 <div className="col-span-4">
                     <div className="p-6 bg-[#F5F6FC] rounded-lg mb-[30px]">
-                        <div className="flex flex-row mb-[30px]">
-                            <div className="min-w-[50px]">
-                                <img src={CalendarIcon} alt="Calendar" />
+                        {
+                            loading ? <SmallItemLoader/>: 
+                            <div className="flex flex-row mb-[30px]">
+                                <div className="min-w-[50px]">
+                                    <img src={CalendarIcon} alt="Calendar" />
+                                </div>
+                                <div>
+                                    <div className="text-4 text-[#202124] leading-[22px] font-semibold">Date posted:</div>
+                                    <span className="text-[15px] text-[#363636]">{project?.startDate.split("-").reverse().reduce((total, item) => total !== "" ? total + "/" + item : total + item, "")}</span>
+                                </div>
                             </div>
-                            <div>
-                                <div className="text-4 text-[#202124] leading-[22px] font-semibold">Date posted:</div>
-                                <span className="text-[15px] text-[#363636]">{project.startDate.split("-").reverse().reduce((total, item) => total !== "" ? total + "/" + item : total + item, "")}</span>
+                        }
+                        {
+                            loading ? <SmallItemLoader/>:     
+                            <div className="flex flex-row mb-[30px]">
+                                <div className="min-w-[50px]">
+                                    <img src={ExpiryIcon} alt="Calendar" />
+                                </div>
+                                <div>
+                                    <div className="text-4 text-[#202124] leading-[22px] font-semibold">Duration:</div>
+                                    <span className="text-[15px] text-[#363636]">{project?.duration}</span>
+                                </div>
                             </div>
-                        </div>
-                        <div className="flex flex-row mb-[30px]">
-                            <div className="min-w-[50px]">
-                                <img src={ExpiryIcon} alt="Calendar" />
+                        }
+                        {
+                            loading ? <SmallItemLoader/>: 
+                            <div className="flex flex-row mb-[30px]">
+                                <div className="min-w-[50px]">
+                                    <AiOutlineSetting color="#1967D2" className="w-6 h-6" strokeWidth={0}/>
+                                </div>
+                                <div>
+                                    <div className="text-4 text-[#202124] leading-[22px] font-semibold">Status:</div>
+                                    <span className="text-[15px] text-[#363636]">{project?.status}</span>
+                                </div>
                             </div>
-                            <div>
-                                <div className="text-4 text-[#202124] leading-[22px] font-semibold">Duration:</div>
-                                <span className="text-[15px] text-[#363636]">{project.duration}</span>
+                        }
+                        {
+                            loading ? <SmallItemLoader/>: 
+                            <div className="flex flex-row">
+                                <div className="min-w-[50px]">
+                                    <img src={SalaryIcon} alt="Calendar" />
+                                </div>
+                                <div>
+                                    <div className="text-4 text-[#202124] leading-[22px] font-semibold">Expected budget:</div>
+                                    <span className="text-[15px] text-[#363636]">${project?.budget}</span>
+                                </div>
                             </div>
-                        </div>
-                        <div className="flex flex-row mb-[30px]">
-                            <div className="min-w-[50px]">
-                                <AiOutlineSetting color="#1967D2" className="w-6 h-6" strokeWidth={0}/>
-                            </div>
-                            <div>
-                                <div className="text-4 text-[#202124] leading-[22px] font-semibold">Status:</div>
-                                <span className="text-[15px] text-[#363636]">{project.status}</span>
-                            </div>
-                        </div>
-                        <div className="flex flex-row">
-                            <div className="min-w-[50px]">
-                                <img src={SalaryIcon} alt="Calendar" />
-                            </div>
-                            <div>
-                                <div className="text-4 text-[#202124] leading-[22px] font-semibold">Expected budget:</div>
-                                <span className="text-[15px] text-[#363636]">${project.budget}</span>
-                            </div>
-                        </div>
+                        }
                     </div>
                     <div>
                         <div className="p-6 bg-[#F5F6FC] rounded-lg flex justify-between items-center mb-[30px]">
                             <span className="text-[#202124] text-[18px] font-semibold">Social Media</span>
                             <div className="flex flex-row items-center">
                                 {
-                                    project.fbLink? 
-                                        <a href={project.fbLink} target="_blank" rel="noreferrer">
+                                    project?.fbLink? 
+                                        <a href={project?.fbLink} target="_blank" rel="noreferrer">
                                             <div className="w-7 h-7 flex justify-end items-center">
                                                 <BiLogoFacebook color="dimgray"/>
                                             </div>
                                         </a> : null
                                 }
                                 {
-                                    project.insLink? 
-                                        <a href={project.insLink} target="_blank" rel="noreferrer">
+                                    project?.insLink? 
+                                        <a href={project?.insLink} target="_blank" rel="noreferrer">
                                             <div className="w-7 h-7 flex justify-end items-center">
                                                 <BiLogoInstagram color="dimgray"/>
                                             </div>
                                         </a> : null
                                 }
                                 {
-                                    project.twLink? 
-                                        <a href={project.twLink} target="_blank" rel="noreferrer">
+                                    project?.twLink? 
+                                        <a href={project?.twLink} target="_blank" rel="noreferrer">
                                             <div className="w-7 h-7 flex justify-end items-center">
                                                 <BiLogoTwitter color="dimgray"/>
                                             </div>
                                         </a> : null
                                 }
                                 {
-                                    project.lkLink? 
-                                        <a href={project.lkLink} target="_blank" rel="noreferrer">
+                                    project?.lkLink? 
+                                        <a href={project?.lkLink} target="_blank" rel="noreferrer">
                                             <div className="w-7 h-7 flex justify-end items-center">
                                                 <BiLogoLinkedin color="dimgray"/>
                                             </div>

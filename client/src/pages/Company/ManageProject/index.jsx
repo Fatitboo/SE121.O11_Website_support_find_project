@@ -70,6 +70,7 @@ function ManageProject() {
     const dispatch = useDispatch()
     let user = useSelector((state) => state.users.userAuth.user)
     let projects = useSelector((state) => state.projects.projects)
+    let loading = useSelector((state) => state.projects.loading)
     useEffect(() => {   
         dispatch(getAllProjectsUser({id: user.userId}))
     }, [])
@@ -132,13 +133,90 @@ function ManageProject() {
                                         </thead>
                                         <tbody>
                                             {
-                                                //  !projects?
-
+                                                loading?
                                                 [1, 2 ,3, 4].map((item, index)=> {
                                                     return (
-                                                        <tr key={index} className="shadow rounded-md p-4 w-full mx-auto">
-                                                            <td className="animate-pulse flex space-x-4 py-2" colSpan={6}>
-                                                                <div className="rounded-full bg-slate-200 h-10 w-10"></div>
+                                                        <tr key={index} className="animate-pulse relative shadow rounded-md p-4 w-full mx-auto gap-2">
+                                                            <td className="space-x-4 py-2.5 px-0.5 w-full flex items-center">
+                                                                {/* <div className="rounded-full bg-slate-200 h-12 w-12"></div> */}
+                                                                <div className="flex-1 space-y-6 py-1">
+                                                                <div className="h-2 bg-slate-200 rounded"></div>
+                                                                <div className="space-y-3">
+                                                                    <div className="grid grid-cols-3 gap-4">
+                                                                        <div className="h-2 bg-slate-200 rounded col-span-2"></div>
+                                                                        <div className="h-2 bg-slate-200 rounded col-span-1"></div>
+                                                                    </div>
+                                                                    <div className="h-2 bg-slate-200 rounded"></div>
+                                                                </div>
+                                                                </div>
+                                                            </td>
+                                                            <td className="space-x-4 py-2.5 px-0.5 w-1/12">
+                                                                {/* <div className="rounded-full bg-slate-200 h-10 w-10"></div> */}
+                                                                <div className="flex-1 space-y-6 py-1">
+                                                                <div className="h-2 bg-slate-200 rounded"></div>
+                                                                <div className="space-y-3">
+                                                                    <div className="grid grid-cols-3 gap-4">
+                                                                        <div className="h-2 bg-slate-200 rounded col-span-2"></div>
+                                                                        <div className="h-2 bg-slate-200 rounded col-span-1"></div>
+                                                                    </div>
+                                                                    <div className="h-2 bg-slate-200 rounded"></div>
+                                                                </div>
+                                                                </div>
+                                                            </td>
+                                                            <td className="space-x-4 py-2.5 px-0.5 w-1/12">
+                                                                {/* <div className="rounded-full bg-slate-200 h-10 w-10"></div> */}
+                                                                <div className="flex-1 space-y-6 py-1">
+                                                                <div className="h-2 bg-slate-200 rounded"></div>
+                                                                <div className="space-y-3">
+                                                                    <div className="grid grid-cols-3 gap-4">
+                                                                        <div className="h-2 bg-slate-200 rounded col-span-2"></div>
+                                                                        <div className="h-2 bg-slate-200 rounded col-span-1"></div>
+                                                                    </div>
+                                                                    <div className="h-2 bg-slate-200 rounded"></div>
+                                                                </div>
+                                                                </div>
+                                                            </td>
+                                                            <td className="space-x-4 py-2.5 px-0.5 w-[14%]">
+                                                                {/* <div className="rounded-full bg-slate-200 h-10 w-10"></div> */}
+                                                                <div className="flex-1 space-y-6 py-1">
+                                                                <div className="h-2 bg-slate-200 rounded"></div>
+                                                                <div className="space-y-3">
+                                                                    <div className="grid grid-cols-3 gap-4">
+                                                                        <div className="h-2 bg-slate-200 rounded col-span-2"></div>
+                                                                        <div className="h-2 bg-slate-200 rounded col-span-1"></div>
+                                                                    </div>
+                                                                    <div className="h-2 bg-slate-200 rounded"></div>
+                                                                </div>
+                                                                </div>
+                                                            </td>
+                                                            <td className="space-x-4 py-2.5 px-0.5 w-1/12">
+                                                                {/* <div className="rounded-full bg-slate-200 h-10 w-10"></div> */}
+                                                                <div className="flex-1 space-y-6 py-1">
+                                                                <div className="h-2 bg-slate-200 rounded"></div>
+                                                                <div className="space-y-3">
+                                                                    <div className="grid grid-cols-3 gap-4">
+                                                                        <div className="h-2 bg-slate-200 rounded col-span-2"></div>
+                                                                        <div className="h-2 bg-slate-200 rounded col-span-1"></div>
+                                                                    </div>
+                                                                    <div className="h-2 bg-slate-200 rounded"></div>
+                                                                </div>
+                                                                </div>
+                                                            </td>
+                                                            <td className="space-x-4 py-2.5 px-0.5 w-1/12">
+                                                                {/* <div className="rounded-full bg-slate-200 h-10 w-10"></div> */}
+                                                                <div className="flex-1 space-y-6 py-1">
+                                                                <div className="h-2 bg-slate-200 rounded"></div>
+                                                                <div className="space-y-3">
+                                                                    <div className="grid grid-cols-3 gap-4">
+                                                                        <div className="h-2 bg-slate-200 rounded col-span-2"></div>
+                                                                        <div className="h-2 bg-slate-200 rounded col-span-1"></div>
+                                                                    </div>
+                                                                    <div className="h-2 bg-slate-200 rounded"></div>
+                                                                </div>
+                                                                </div>
+                                                            </td>
+                                                            <td className="space-x-4 py-2.5 px-0.5 w-full">
+                                                                {/* <div className="rounded-full bg-slate-200 h-10 w-10"></div> */}
                                                                 <div className="flex-1 space-y-6 py-1">
                                                                 <div className="h-2 bg-slate-200 rounded"></div>
                                                                 <div className="space-y-3">
@@ -154,67 +232,67 @@ function ManageProject() {
                                                     )
                                                 })
                                                 
-                                                // : projects.map((item, index) => {
-                                                //     return (
-                                                //         <tr key={index} className="relative border-b border-solid border-[#ecedf2] w-full hover:bg-[#f4f2f2] cursor-pointer px-5  ">
-                                                //             <td className="relative pl-5 py-5 font-normal text-base w-3/12">
-                                                //                 <div className="mb-0 relative h-16 ">
-                                                //                     {/* <span className="absolute l-0 t-0 w-10">
-                                                //                         <img src={item.logoProject} className="inline-block max-w-full h-auto align-middle" alt="logo" />
-                                                //                     </span> */}
-                                                //                     <div className="pl-0">
-                                                //                         <div className="font-medium text-md text-ellipsis mb-1 line-clamp-2 ">{item.projectName}</div>
-                                                //                         <div className="flex font-light text-sm mb-0">
-                                                //                             <div className="flex mr-3">
-                                                //                                 <BiPackage className="mt-1 mr-1"/> Segment
-                                                //                             </div>
-                                                //                             <div className="flex">
-                                                //                                 <BiMap className="mt-1 mr-1" />  {item.address}
-                                                //                             </div>
-                                                //                         </div>
-                                                //                     </div>
-                                                //                 </div>
-                                                //             </td>
-                                                //             <td className="font-light text-blue-700 w-1/12">
-                                                //                 <div className="flex h-full items-center">
-                                                //                     <div className="mr-1">{item.vacancies? item.vacancies.length : 0}</div> 
-                                                //                     <div>Vacancies</div>
-                                                //                 </div>
-                                                //             </td>
-                                                //             <td className="font-light text-blue-700 w-1/12  ">
-                                                //                 <div className="flex h-full items-center">
-                                                //                     <div className="mr-1">{item.vacancies? item.vacancies.length : 0}</div> 
-                                                //                     <div>Applicants</div>
+                                                : projects?.map((item, index) => {
+                                                    return (
+                                                        <tr key={index} className="relative border-b border-solid border-[#ecedf2] w-full hover:bg-[#f4f2f2] cursor-pointer px-5  ">
+                                                            <td className="relative pl-5 py-5 font-normal text-base w-3/12">
+                                                                <div className="mb-0 relative h-16 ">
+                                                                    {/* <span className="absolute l-0 t-0 w-10">
+                                                                        <img src={item.logoProject} className="inline-block max-w-full h-auto align-middle" alt="logo" />
+                                                                    </span> */}
+                                                                    <div className="pl-0">
+                                                                        <div className="font-medium text-md text-ellipsis mb-1 line-clamp-2 ">{item.projectName}</div>
+                                                                        <div className="flex font-light text-sm mb-0">
+                                                                            <div className="flex mr-3">
+                                                                                <BiPackage className="mt-1 mr-1"/> Segment
+                                                                            </div>
+                                                                            <div className="flex">
+                                                                                <BiMap className="mt-1 mr-1" />  {item.address}
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </td>
+                                                            <td className="font-light text-blue-700 w-1/12">
+                                                                <div className="flex h-full items-center">
+                                                                    <div className="mr-1">{item.vacancies? item.vacancies.length : 0}</div> 
+                                                                    <div>Vacancies</div>
+                                                                </div>
+                                                            </td>
+                                                            <td className="font-light text-blue-700 w-1/12  ">
+                                                                <div className="flex h-full items-center">
+                                                                    <div className="mr-1">{item.vacancies? item.vacancies.length : 0}</div> 
+                                                                    <div>Applicants</div>
 
-                                                //                 </div>
-                                                //             </td>
-                                                //             <td className="text-center w-[14%] font-light text-gray-700 text-base">
-                                                //                 <div>{item.startDate}</div>
-                                                //             </td>
-                                                //             <td className="text-center w-1/12 font-light text-gray-700 text-base">
-                                                //                 <div>{item.duration}</div>
-                                                //             </td>
-                                                //             <td className="w-1/12 text-center">
-                                                //                 <div className="">{item?.status}</div>
-                                                //             </td>
-                                                //             <td >
-                                                //                 <div className="">
-                                                //                     <div className="list-none flex relative item-center justify-center">
-                                                //                         <Link to={`/Organizer/manage-project/project-detail/${item.projectId}`} className="list-none relative mr-2 bg-[#f5f7fc] border rounded-md border-[#e9ecf9] px-1 pt-1 hover:bg-[#5f86e9] hover:text-white">
-                                                //                             <LiaEyeSolid fontSize={18} /> 
-                                                //                         </Link>
-                                                //                         <li className="list-none relative mr-2 bg-[#f5f7fc] border rounded-md border-[#e9ecf9] px-1 pt-1 hover:bg-[#278646] hover:text-white">
-                                                //                             <button> <BiPencil fontSize={18} /> </button>
-                                                //                         </li>
-                                                //                         <li className="list-none relative bg-[#f5f7fc] border rounded-md border-[#e9ecf9] px-1 pt-1 hover:bg-[#ce3e37] hover:text-white">
-                                                //                             <button > <LiaTrashAltSolid fontSize={18} /> </button>
-                                                //                         </li>
-                                                //                     </div>
-                                                //                 </div>
-                                                //             </td>
-                                                //         </tr>
-                                                //     );
-                                                // })
+                                                                </div>
+                                                            </td>
+                                                            <td className="text-center w-[14%] font-light text-gray-700 text-base">
+                                                                <div>{item.startDate}</div>
+                                                            </td>
+                                                            <td className="text-center w-1/12 font-light text-gray-700 text-base">
+                                                                <div>{item.duration} {item.period}</div>
+                                                            </td>
+                                                            <td className="w-1/12 text-center">
+                                                                <div className="">{item?.status}</div>
+                                                            </td>
+                                                            <td >
+                                                                <div className="">
+                                                                    <div className="list-none flex relative item-center justify-center">
+                                                                        <Link to={`/Organizer/manage-project/project-detail/${item.projectId}`} className="list-none relative mr-2 bg-[#f5f7fc] border rounded-md border-[#e9ecf9] px-1 pt-1 hover:bg-[#5f86e9] hover:text-white">
+                                                                            <LiaEyeSolid fontSize={18} /> 
+                                                                        </Link>
+                                                                        <li className="list-none relative mr-2 bg-[#f5f7fc] border rounded-md border-[#e9ecf9] px-1 pt-1 hover:bg-[#278646] hover:text-white">
+                                                                            <button> <BiPencil fontSize={18} /> </button>
+                                                                        </li>
+                                                                        <li className="list-none relative bg-[#f5f7fc] border rounded-md border-[#e9ecf9] px-1 pt-1 hover:bg-[#ce3e37] hover:text-white">
+                                                                            <button > <LiaTrashAltSolid fontSize={18} /> </button>
+                                                                        </li>
+                                                                    </div>
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                    );
+                                                })
                                             }
 
                                         </tbody>
