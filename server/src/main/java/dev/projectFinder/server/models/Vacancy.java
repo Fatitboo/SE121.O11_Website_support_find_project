@@ -3,6 +3,7 @@ package dev.projectFinder.server.models;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import dev.projectFinder.server.components.CVLink;
+import dev.projectFinder.server.components.Participant;
 import dev.projectFinder.server.components.Vacancy.Combobox.Combobox;
 import dev.projectFinder.server.components.Vacancy.Experience;
 import dev.projectFinder.server.components.Vacancy.JobPreScreen;
@@ -16,6 +17,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
 @Data
 @Getter
@@ -64,7 +66,9 @@ public class Vacancy {
     private String hiringTimeline;
 
     //Registants
-    private User[] registants;
+    private List<String> registants;
+
+    private List<Participant> participants;
 
     //skill required
     private String[] skillsRequired;
@@ -77,6 +81,12 @@ public class Vacancy {
 
     //can post
     private Boolean post;
+
+    // admin approval
+    // 1. pending
+    // 2. fullfil
+    // 3. rejected
+    private String approvalStatus;
 
     // date create and update
     @CreatedDate

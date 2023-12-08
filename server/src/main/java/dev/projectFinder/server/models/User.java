@@ -69,7 +69,7 @@ public class User implements UserDetails {
     private String jobDes;
     private String jobTitle;
     private List<String> appliedVacancies;
-
+    private List<Notification> notifications;
 
     // Organizer
     private String teamSize;
