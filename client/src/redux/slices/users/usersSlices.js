@@ -343,6 +343,31 @@ export const getDetailUserAction = createAsyncThunk(
         }
     }
 );
+// get Data Statistical
+export const getDataStatisticalAction = createAsyncThunk(
+    'users/getDataStatistical',
+    async (id, { rejectWithValue, getState, dispatch }) => {
+        try {
+            const user = getState()?.users;
+            const { userAuth } = user;
+            // http call 
+            const config = {
+                headers: {
+                    Authorization: `Bearer ${userAuth?.user?.token}`,
+                    'Content-Type': 'application/json',
+                },
+            };
+            const { data } = await axios.get(`${baseUrl}/${apiPrefix}/get-data-statistical/${userAuth?.user?.userId}`, config);
+            console.log(data)
+            return data;
+        } catch (error) {
+            if (!error?.response) {
+                throw error;
+            }
+            return rejectWithValue(error?.response?.data);
+        }
+    }
+);
 // get ShortListed Users
 export const getShortListedUsersAction = createAsyncThunk(
     'users/getShortListedUsers',
@@ -837,6 +862,29 @@ const usersSlices = createSlice({
             state.shortListUsers = action?.payload?.shortListed
         });
         builder.addCase(getShortListedUsersAction.rejected, (state, action) => {
+            state.loading = false;
+            state.appErr = action?.payload?.message;
+            state.isSuccess = false;
+        });
+        //get Data Statistical Action
+        builder.addCase(getDataStatisticalAction.pending, (state, action) => {
+            state.loading = true;
+            state.appErr = undefined;
+            state.isSuccess = false;
+        });
+
+        builder.addCase(getDataStatisticalAction.fulfilled, (state, action) => {
+            state.loading = false;
+            state.appErr = undefined;
+            state.isSuccess = true;
+            state.viewsProfile = action?.payload?.viewProfiles;
+            state.appliedVacancies = action?.payload?.appliedVacancies;
+            state.shortListed = action?.payload?.shortListed;
+            state.postedProjects = action?.payload?.postedProjects;
+            state.postedVacancies = action?.payload?.postedVacancies;
+
+        });
+        builder.addCase(getDataStatisticalAction.rejected, (state, action) => {
             state.loading = false;
             state.appErr = action?.payload?.message;
             state.isSuccess = false;

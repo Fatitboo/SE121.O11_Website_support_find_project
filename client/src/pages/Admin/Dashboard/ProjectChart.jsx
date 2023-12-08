@@ -12,9 +12,9 @@ function ProjectChart({data}) {
                     data={data}
                     margin={{
                         top: 5,
-                        right: 30,
+                        right: 20,
                         left: 20,
-                        bottom: 5,
+                        bottom: 0,
                     }}
                 >
                     <CartesianGrid strokeDasharray="3 3" />
@@ -22,7 +22,7 @@ function ProjectChart({data}) {
                     <YAxis />
                     <Tooltip />
                     <Legend />
-                    <Line type="monotone" dataKey="pv" stroke="#8884d8" activeDot={{ r: 8 }} />
+                    <Line type="monotone" dataKey="views" stroke="#8884d8" activeDot={{ r: 8 }} />
                    
                 </LineChart>
             </ResponsiveContainer>

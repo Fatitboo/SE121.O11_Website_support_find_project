@@ -339,7 +339,8 @@ public class UserController {
             }
             User userFoundRequest = foundUser.get();
 
-
+            // increase views
+            userServices.increaseViews(id);
             // get user detail
             User user = userServices.getUserDetail(id);
 
@@ -450,6 +451,30 @@ public class UserController {
         }
     }
 
+    @GetMapping("/get-data-statistical/{id}")
+    public ResponseEntity<?> getDataStatistical(@PathVariable String id){
+        HashMap<String, Object> response = new HashMap<>();
+        try{
+            User user = userServices.getUserDetail(id);
 
+            List<Vacancy> complete = new ArrayList<>();
+            if(user.getAppliedVacancies()!=null){
+                for (String vacancyId:user.getAppliedVacancies()) {
+                    Optional<Vacancy> cv = vacancyRepository.findById(new ObjectId(vacancyId));
+                    cv.ifPresent(complete::add);
+                }
+            }
+            response.put("shortListed",  user.getShortListedUser()!= null ? user.getShortListedUser().size() : 0);
+            response.put("postedVacancies",  user.getVacancies()!= null ? user.getVacancies().size() : 0);
+            response.put("postedProjects",  user.getProjects()!= null ? user.getProjects().size() : 0);
+            response.put("message","Get data statistical successfully" );
+            response.put("appliedVacancies",complete);
+            response.put("viewProfiles",user.getViewsProfiles());
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        }catch (Exception e) {
+            response.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+    }
 
 }

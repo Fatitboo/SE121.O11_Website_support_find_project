@@ -1,11 +1,11 @@
-import { FiUsers } from 'react-icons/fi'
-import { GrOrganization } from 'react-icons/gr'
-import { AiOutlineFundProjectionScreen } from 'react-icons/ai'
 import ProjectChart from './ProjectChart';
 import {ComboBox} from '../../../components'
 import UserChart from './UserChart';
 import RecentProject from './RecentProject'
 import RecentOrganizerRegisted from './RecentOrganizer';
+import { Link } from 'react-router-dom';
+import {  IoCodeWorkingOutline, IoDocumentTextOutline, IoCalculatorOutline, IoTabletPortraitOutline } from 'react-icons/io5';
+import { LiaStar } from 'react-icons/lia';
 const listApprovalProjects = [
     {
         key: 'project1',
@@ -176,51 +176,51 @@ function Dashboard() {
 
             </div>
 
-            <div className="grid grid-cols-4 gap-5 ">
-                <div className="bg-white h-[100px] rounded-lg shadow flex ">
-                    <div className='basis-1/3 place-content-center place-items-cent items-center flex'>
-                        <div className='rounded-full bg-[#0d747444] h-2/3 w-2/3 flex items-center place-content-center'>
-                            <FiUsers fontSize={40} />
+            <div className="grid grid-cols-4 gap-5 mb-5">
+                <Link to={'/Organizer/manage-vacancy'} className="bg-white h-[120px] rounded-lg shadow flex p-6 cursor-pointer">
+                    <div className='basis-1/3 place-content-center place-items-cent  items-center flex'>
+                        <div className='rounded-lg bg-[rgba(25,103,210,.1)] h-[80px] w-[80px] text-[#1967d2] flex items-center place-content-center'>
+                            <IoDocumentTextOutline fontSize={40} />
                         </div>
                     </div>
-                    <div className='basis-2/3 flex flex-col justify-center'>
-                        <span className='text-sm'>Total Seeker</span>
-                        <span className='font-medium text-2xl'>1000</span>
+                    <div className='basis-2/3 flex flex-col justify-center items-end'>
+                        <span className='font-medium text-4xl text-[#1967d2]'>{0}</span>
+                        <span className='text-sm text-[#202124]'>Total Seekers</span>
                     </div>
-                </div>
-                <div className="bg-white h-[100px] rounded-lg shadow flex ">
-                    <div className='basis-1/3 place-content-center place-items-cent items-center flex'>
-                        <div className='rounded-full bg-[#e68e3b44] h-2/3 w-2/3 flex items-center place-content-center'>
-                            <GrOrganization fontSize={40} />
+                </Link>
+                <Link to={'/Organizer/'} className="bg-white h-[120px] rounded-lg shadow flex p-6 cursor-pointer">
+                    <div className='basis-1/3 place-content-center place-items-cent  items-center flex'>
+                        <div className='rounded-lg bg-[rgba(217,48,37,.1)] h-[80px] w-[80px] text-[#d93025] flex items-center place-content-center'>
+                            <IoCalculatorOutline fontSize={40} className="text-[#d93025]" />
                         </div>
                     </div>
-                    <div className='basis-2/3 flex flex-col justify-center'>
-                        <span className='text-sm'>Total Organizer</span>
-                        <span className='font-medium text-2xl'>1000</span>
+                    <div className='basis-2/3 flex flex-col justify-center items-end'>
+                        <span className='font-medium text-4xl   text-[#d93025]'>23</span>
+                        <span className='text-sm text-[#202124]'>Total Organizers</span>
                     </div>
-                </div>
-                <div className="bg-white h-[100px] rounded-lg shadow flex ">
-                    <div className='basis-1/3 place-content-center place-items-cent items-center flex'>
-                        <div className='rounded-full bg-[#70d72bd5] h-2/3 w-2/3 flex items-center place-content-center'>
-                            <AiOutlineFundProjectionScreen fontSize={40} />
+                </Link>
+                <Link to={'/Organizer/manage-project'} className="bg-white h-[120px] rounded-lg shadow flex p-6 cursor-pointer">
+                    <div className='basis-1/3 place-content-center place-items-cent  items-center flex'>
+                        <div className='rounded-lg bg-[rgba(249,171,0,.1)] h-[80px] w-[80px] text-[#f9ab00] flex items-center place-content-center'>
+                            <IoTabletPortraitOutline fontSize={40} />
                         </div>
                     </div>
-                    <div className='basis-2/3 flex flex-col justify-center'>
-                        <span className='text-sm'>Total project</span>
-                        <span className='font-medium text-2xl'>1000</span>
+                    <div className='basis-2/3 flex flex-col justify-center items-end'>
+                        <span className='font-medium text-4xl  text-[#f9ab00] '>{0}</span>
+                        <span className='text-sm text-[#202124]'>Total Projects</span>
                     </div>
-                </div>
-                <div className="bg-white h-[100px] rounded-lg shadow flex ">
-                    <div className='basis-1/3 place-content-center place-items-cent items-center flex'>
-                        <div className='rounded-full bg-[#70d72bd5] h-2/3 w-2/3 flex items-center place-content-center'>
-                            <AiOutlineFundProjectionScreen fontSize={40} />
+                </Link>
+                <Link to={'/Organizer/short-listed-users'} className="bg-white h-[120px] rounded-lg shadow flex p-6 cursor-pointer">
+                    <div className='basis-1/3 place-content-center place-items-cent  items-center flex'>
+                        <div className='rounded-lg bg-[rgba(52,168,83,.1)] h-[80px] w-[80px] text-[#34a853] flex items-center place-content-center'>
+                            <LiaStar fontSize={40} />
                         </div>
                     </div>
-                    <div className='basis-2/3 flex flex-col justify-center'>
-                        <span className='text-sm'>Total project</span>
-                        <span className='font-medium text-2xl'>1000</span>
+                    <div className='basis-2/3 flex flex-col justify-center items-end'>
+                        <span className='font-medium text-4xl text-[#34a853]  '>{0}</span>
+                        <span className='text-sm text-[#202124]'>Total Vacancies</span>
                     </div>
-                </div>
+                </Link>
             </div>
 
 

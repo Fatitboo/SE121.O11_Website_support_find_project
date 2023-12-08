@@ -187,7 +187,7 @@ function ProjectInfo() {
                             <div>
                                 {
                                     vacancies.map((item, index) => {
-                                        return <VacancyItem key={index} vacancyName={item.vacancyName} salary={item.salary} skillsRequired={item.skillsRequired} description={item.description} maxRequired={item.maxRequired}/>;
+                                        return <VacancyItem key={index} vacancyId={item?.vacancyId} vacancyName={item.vacancyName} salary={item.salary} skillsRequired={item.skillsRequired} description={item.description} maxRequired={item.maxRequired}/>;
                                     })
                                 }
                             </div>

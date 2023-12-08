@@ -109,10 +109,17 @@ function ShortListedSeekers() {
                                                         <span className="text-[#a0abb8] font-light text-sm flex flex-row items-center mb-2 "><BiMoney color="#a0abb8" strokeWidth={"1.5px"} className="w-[18px] h-[18px] mr-1" />{item?.expectSalary ? item?.expectSalary + '$/ hour' : 'Not infor'}</span>
 
                                                         <div className="text-[#a0abb8] text-sm flex flex-row items-start mb-3 w-full pr-6 mt-4">
-                                                            <div className="flex flex-wrap line-clamp-2 w-full items-start  min-h-[60px]">
+                                                            <div className="flex flex-wrap line-clamp-2 w-full items-start  min-h-[60px] " >
                                                                 {
-                                                                    (item.skillUsers ?? [{ skillName: 'Not information' }]).map((i, index) => {
-                                                                        return <div key={index} className="mr-1.5 whitespace-nowrap bg-[#f0f5f7] rounded-xl px-4 py-1 m-1 font-light">{i.skillName} </div>
+                                                                    (item.skillUsers ?? [{ skillName: 'Not information', skillLevel: 'Beginner' }]).map((i, index) => {
+                                                                        return (
+                                                                            <div key={index} className={`mr-3 items-center w-fit
+                                                                                ${i.skillLevel === "Beginner" ? "bg-[rgba(25,103,210,.15)] text-[#1967d2]"
+                                                                                    : i.skillLevel === "Intermediate" ? "bg-[rgba(52,168,83,.15)] text-[#34a853]"
+                                                                                        : "bg-[rgba(249,171,0,.15)] text-[#f9ab00]"} rounded-3xl flex`}>
+                                                                                <span className="text-[13px] px-[10px] py-[5px] leading-none">{i.skillName}</span>
+                                                                            </div>
+                                                                        )
                                                                     })
                                                                 }
                                                             </div>

@@ -52,7 +52,7 @@ public class User implements UserDetails {
     private String insLink;
     private List<User> shortListedUser;
     private Boolean isActive;
-
+    private List<ViewsProfile> viewsProfiles;
     // token + expired
     private String tokenResetPassword;
     private LocalDateTime expiredDateTokenResetPassword;
@@ -68,6 +68,8 @@ public class User implements UserDetails {
     private ExperienceUser[] experienceUsers;
     private String jobDes;
     private String jobTitle;
+    private List<String> appliedVacancies;
+
 
     // Organizer
     private String teamSize;

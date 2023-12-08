@@ -181,15 +181,15 @@ function ProjectDetail() {
                         <div>
                             <div className="flex flex-row items-center mt-6">
                                 <h4 className="text-base leading-6 text-[#202124] font-semibold">Share this project</h4>
-                                <a href="https://www.facebook.com/" className="flex flex-row items-center bg-[#3b5998] py-[10px] px-[25px] text-[14px] ml-[12px] rounded-lg">
+                                <a href="https://www.facebook.com/" target="_blank" className="flex flex-row items-center bg-[#3b5998] py-[10px] px-[25px] text-[14px] ml-[12px] rounded-lg">
                                     <BiLogoFacebook color="#fff" className="w-5 h-5"/>
                                     <span className="text-[#fff] ml-1">Facebook</span>
                                 </a>
-                                <a href="https://www.linkedin.com" className="flex flex-row items-center bg-[#007bb5] py-[10px] px-[25px] text-[14px] ml-[9px] rounded-lg">
+                                <a href="https://www.linkedin.com" target="_blank" className="flex flex-row items-center bg-[#007bb5] py-[10px] px-[25px] text-[14px] ml-[9px] rounded-lg">
                                     <BiLogoLinkedin color="#fff" className="w-5 h-5"/>
                                     <span className="text-[#fff] ml-1">Linked in</span>
                                 </a>
-                                <a href="https://www.instagram.com" className="flex flex-row items-center bg-[#ea3ca4] py-[10px] px-[25px] text-[14px] ml-[9px] rounded-lg">
+                                <a href="https://www.instagram.com" target="_blank" className="flex flex-row items-center bg-[#ea3ca4] py-[10px] px-[25px] text-[14px] ml-[9px] rounded-lg">
                                     <BiLogoInstagram color="#fff" className="w-5 h-5"/>
                                     <span className="text-[#fff] ml-1">Instagram</span>
                                 </a>

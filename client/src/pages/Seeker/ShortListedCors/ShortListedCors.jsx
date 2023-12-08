@@ -51,8 +51,8 @@ function ShortListedCors() {
     useEffect(() => {
         if (isSuccess) {
             dispatch(resetSuccessAction());
-            setShortList([...shortListUsers]);
-            setPages([...shortListUsers.slice(currentPage * 10, (currentPage + 1) * 10)])
+            setShortList([...shortListUsers??[]]);
+            setPages([...shortListUsers??[].slice(currentPage * 10, (currentPage + 1) * 10)])
         }
     }, [isSuccess])
     return (
@@ -96,7 +96,7 @@ function ShortListedCors() {
                             <div className="px-6 relative">
                                 <div className="overflow-y-hidden overflow-x-auto">
                                     <div className="relative w-full overflow-y-hidden overflow-x-hidden rounded-md mb-8 bg-white border-0 grid grid-cols-2 gap-8 pt-3 px-2">
-                                        {
+                                        {pages.length !== 0 ? 
                                             pages.map((item, index) => {
                                                 return <Link to={'/Organizer/seeker-profile/' + item.userId} key={index} className="col-span-1 border-[0.5px] rounded border-[#ccc] p-4 flex shadow hover:transition-all cursor-pointer hover:animate-[wiggle_0.3s_ease_0s_forwards] hover:bg-[#FFF]">
                                                     <img src={item.avatar?.fileUrl ?? 'https://i.pinimg.com/564x/16/3e/39/163e39beaa36d1f9a061b0f0c5669750.jpg'} className="w-[80px] h-[80px] rounded-full my-2 mx-2 shadow"></img>
@@ -120,10 +120,10 @@ function ShortListedCors() {
                                                     </div>
 
                                                 </Link>
-                                            })
+                                            }) : <div className="text-center mt-10 col-span-2 ">Not have any shortListed Organizer!</div>
                                         }
                                     </div>
-                                    <div className="list-none mt-10 flex items-center justify-center">
+                                    <div className="list-none mt-10 flex items-center justify-center mb-4">
                                         <PaginationButtons
                                             totalPages={shortListUsers?.length / 10}
                                             currentPage={currentPage}

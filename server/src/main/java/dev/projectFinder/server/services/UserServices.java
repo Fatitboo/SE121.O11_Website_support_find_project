@@ -2,6 +2,7 @@ package dev.projectFinder.server.services;
 
 
 import dev.projectFinder.server.components.JwtTokenUtils;
+import dev.projectFinder.server.components.ViewsProfile;
 import dev.projectFinder.server.dtos.SeekerResumeDTO;
 import dev.projectFinder.server.dtos.UserDTO;
 import dev.projectFinder.server.dtos.UserInforDTO;
@@ -26,8 +27,8 @@ import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 @Service
@@ -361,6 +362,44 @@ public class UserServices {
             users.add(addUser);
         }
         user.setShortListedUser(users);
+        userRepository.save(user);
+    }
+    public void increaseViews(String id){
+        Optional<User> foundUser = userRepository.findById(new ObjectId(id));
+        if(foundUser.isEmpty()){
+            throw new DataIntegrityViolationException(MessageKeys.USER_NOT_FOUND);
+        }
+        User user = foundUser.get();
+        LocalDate currentDate = LocalDate.now();
+        int currentMonth = currentDate.getMonthValue();
+        int currentYear = currentDate.getYear();
+        String viewId = "";
+        if(currentMonth<10){
+            viewId+="0"+currentMonth+"/"+currentYear;
+        }else {
+            viewId+=currentMonth+"/"+currentYear;
+        }
+        List<ViewsProfile> viewsProfiles = user.getViewsProfiles();
+        if(viewsProfiles == null){
+            viewsProfiles = new ArrayList<>();
+            viewsProfiles.add(new ViewsProfile(viewId, 1));
+        }
+        else {
+
+            String finalViewId = viewId;
+            if (viewsProfiles.stream().anyMatch(((viewsProfile) -> viewsProfile.getViewsId().equals(finalViewId)))){
+                for (ViewsProfile viewsProfile: viewsProfiles) {
+                    if(viewsProfile.getViewsId().equals(viewId)){
+                        int num = viewsProfile.getNumOfViews()+1;
+                        viewsProfile.setNumOfViews(num);
+                    }
+                }
+           }
+            else {
+                viewsProfiles.add(new ViewsProfile(viewId, 1));
+            }
+        }
+        user.setViewsProfiles(viewsProfiles);
         userRepository.save(user);
     }
 }
