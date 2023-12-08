@@ -26,6 +26,12 @@ public class OccupationController {
         List<Occupation> Occupations = occupationServices.getAllOccupations();
         return ResponseEntity.ok(Occupations);
     }
+
+    @GetMapping("search-occupation/{keyWord}")
+    public ResponseEntity<?> searchOccupations(@PathVariable String keyWord){
+        List<Occupation> Occupations = occupationServices.searchOccupations(keyWord);
+        return ResponseEntity.ok(Occupations);
+    }
     @PostMapping("")
     public ResponseEntity<?> createNewOccupation(@Valid @RequestBody OccupationDTO occupationDTO, BindingResult result){
         HashMap<String, Object> response = new HashMap<>();

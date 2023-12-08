@@ -70,6 +70,7 @@ function ManageProject() {
     const dispatch = useDispatch()
     let user = useSelector((state) => state.users.userAuth.user)
     let projects = useSelector((state) => state.projects.projects)
+    let loading = useSelector((state) => state.projects.loading)
     useEffect(() => {   
         dispatch(getAllProjectsUser({id: user.userId}))
     }, [])
@@ -132,7 +133,106 @@ function ManageProject() {
                                         </thead>
                                         <tbody>
                                             {
-                                                projects?.map((item, index) => {
+                                                loading?
+                                                [1, 2 ,3, 4].map((item, index)=> {
+                                                    return (
+                                                        <tr key={index} className="animate-pulse relative shadow rounded-md p-4 w-full mx-auto gap-2">
+                                                            <td className="space-x-4 py-2.5 px-0.5 w-full flex items-center">
+                                                                {/* <div className="rounded-full bg-slate-200 h-12 w-12"></div> */}
+                                                                <div className="flex-1 space-y-6 py-1">
+                                                                <div className="h-2 bg-slate-200 rounded"></div>
+                                                                <div className="space-y-3">
+                                                                    <div className="grid grid-cols-3 gap-4">
+                                                                        <div className="h-2 bg-slate-200 rounded col-span-2"></div>
+                                                                        <div className="h-2 bg-slate-200 rounded col-span-1"></div>
+                                                                    </div>
+                                                                    <div className="h-2 bg-slate-200 rounded"></div>
+                                                                </div>
+                                                                </div>
+                                                            </td>
+                                                            <td className="space-x-4 py-2.5 px-0.5 w-1/12">
+                                                                {/* <div className="rounded-full bg-slate-200 h-10 w-10"></div> */}
+                                                                <div className="flex-1 space-y-6 py-1">
+                                                                <div className="h-2 bg-slate-200 rounded"></div>
+                                                                <div className="space-y-3">
+                                                                    <div className="grid grid-cols-3 gap-4">
+                                                                        <div className="h-2 bg-slate-200 rounded col-span-2"></div>
+                                                                        <div className="h-2 bg-slate-200 rounded col-span-1"></div>
+                                                                    </div>
+                                                                    <div className="h-2 bg-slate-200 rounded"></div>
+                                                                </div>
+                                                                </div>
+                                                            </td>
+                                                            <td className="space-x-4 py-2.5 px-0.5 w-1/12">
+                                                                {/* <div className="rounded-full bg-slate-200 h-10 w-10"></div> */}
+                                                                <div className="flex-1 space-y-6 py-1">
+                                                                <div className="h-2 bg-slate-200 rounded"></div>
+                                                                <div className="space-y-3">
+                                                                    <div className="grid grid-cols-3 gap-4">
+                                                                        <div className="h-2 bg-slate-200 rounded col-span-2"></div>
+                                                                        <div className="h-2 bg-slate-200 rounded col-span-1"></div>
+                                                                    </div>
+                                                                    <div className="h-2 bg-slate-200 rounded"></div>
+                                                                </div>
+                                                                </div>
+                                                            </td>
+                                                            <td className="space-x-4 py-2.5 px-0.5 w-[14%]">
+                                                                {/* <div className="rounded-full bg-slate-200 h-10 w-10"></div> */}
+                                                                <div className="flex-1 space-y-6 py-1">
+                                                                <div className="h-2 bg-slate-200 rounded"></div>
+                                                                <div className="space-y-3">
+                                                                    <div className="grid grid-cols-3 gap-4">
+                                                                        <div className="h-2 bg-slate-200 rounded col-span-2"></div>
+                                                                        <div className="h-2 bg-slate-200 rounded col-span-1"></div>
+                                                                    </div>
+                                                                    <div className="h-2 bg-slate-200 rounded"></div>
+                                                                </div>
+                                                                </div>
+                                                            </td>
+                                                            <td className="space-x-4 py-2.5 px-0.5 w-1/12">
+                                                                {/* <div className="rounded-full bg-slate-200 h-10 w-10"></div> */}
+                                                                <div className="flex-1 space-y-6 py-1">
+                                                                <div className="h-2 bg-slate-200 rounded"></div>
+                                                                <div className="space-y-3">
+                                                                    <div className="grid grid-cols-3 gap-4">
+                                                                        <div className="h-2 bg-slate-200 rounded col-span-2"></div>
+                                                                        <div className="h-2 bg-slate-200 rounded col-span-1"></div>
+                                                                    </div>
+                                                                    <div className="h-2 bg-slate-200 rounded"></div>
+                                                                </div>
+                                                                </div>
+                                                            </td>
+                                                            <td className="space-x-4 py-2.5 px-0.5 w-1/12">
+                                                                {/* <div className="rounded-full bg-slate-200 h-10 w-10"></div> */}
+                                                                <div className="flex-1 space-y-6 py-1">
+                                                                <div className="h-2 bg-slate-200 rounded"></div>
+                                                                <div className="space-y-3">
+                                                                    <div className="grid grid-cols-3 gap-4">
+                                                                        <div className="h-2 bg-slate-200 rounded col-span-2"></div>
+                                                                        <div className="h-2 bg-slate-200 rounded col-span-1"></div>
+                                                                    </div>
+                                                                    <div className="h-2 bg-slate-200 rounded"></div>
+                                                                </div>
+                                                                </div>
+                                                            </td>
+                                                            <td className="space-x-4 py-2.5 px-0.5 w-full">
+                                                                {/* <div className="rounded-full bg-slate-200 h-10 w-10"></div> */}
+                                                                <div className="flex-1 space-y-6 py-1">
+                                                                <div className="h-2 bg-slate-200 rounded"></div>
+                                                                <div className="space-y-3">
+                                                                    <div className="grid grid-cols-3 gap-4">
+                                                                        <div className="h-2 bg-slate-200 rounded col-span-2"></div>
+                                                                        <div className="h-2 bg-slate-200 rounded col-span-1"></div>
+                                                                    </div>
+                                                                    <div className="h-2 bg-slate-200 rounded"></div>
+                                                                </div>
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                    )
+                                                })
+                                                
+                                                : projects?.map((item, index) => {
                                                     return (
                                                         <tr key={index} className="relative border-b border-solid border-[#ecedf2] w-full hover:bg-[#f4f2f2] cursor-pointer px-5  ">
                                                             <td className="relative pl-5 py-5 font-normal text-base w-3/12">
@@ -170,7 +270,7 @@ function ManageProject() {
                                                                 <div>{item.startDate}</div>
                                                             </td>
                                                             <td className="text-center w-1/12 font-light text-gray-700 text-base">
-                                                                <div>{item.duration}</div>
+                                                                <div>{item.duration} {item.period}</div>
                                                             </td>
                                                             <td className="w-1/12 text-center">
                                                                 <div className="">{item?.status}</div>

@@ -39,11 +39,13 @@ public class Project {
     @JsonFormat(pattern = "yyyy-MM-dd")
     private Date startDate;
     private String duration;
+    private String period;
     private String status;
     private String budget;
     private ObjectId[] participants;
     private ObjectId[] favouriteUsers;
     private ObjectId[] vacancies;
+    private String[] occupations;
     // date create and update
     @CreatedDate
     private LocalDateTime createdAt;
@@ -62,6 +64,7 @@ public class Project {
         insLink = projectDTO.getInsLink();
         startDate = projectDTO.getStartDate();
         duration = projectDTO.getDuration();
+        period = projectDTO.getPeriod();
         status = projectDTO.getStatus();
         budget = projectDTO.getBudget();
 
@@ -70,5 +73,6 @@ public class Project {
             a.add(new ObjectId(projectDTO.getVacancies()[i]));
         }
         vacancies = a.toArray(new ObjectId[0]);
+        occupations = projectDTO.getOccupations();
     }
 }

@@ -145,6 +145,7 @@ export const getVacancyCor = createAsyncThunk(
                     'Content-Type':'application/json',
                 },
             };
+            console.log(userAuth?.user?.userId)
             const {data} = await axios.get(`${baseUrl}/api/v1/users/get-vacancy-cor/${userAuth?.user?.userId}`, config);
             return data;
         } catch (error) {

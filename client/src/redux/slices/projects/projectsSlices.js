@@ -95,8 +95,8 @@ const projectsSlices = createSlice({
         loading: false,
         appErr: null,
         isSuccess: false,
-        projects: [],
-        project: {}
+        projects: null,
+        project: null
     },
     reducers:{
         setValueSuccess: (state, action) => {

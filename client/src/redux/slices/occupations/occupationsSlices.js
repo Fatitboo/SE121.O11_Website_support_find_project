@@ -112,6 +112,32 @@ export const deleteOccupationAction = createAsyncThunk(
         }
     }
 )
+//Search occupation
+// export const searchOccupationAction = createAsyncThunk(
+//     'occupations/searchOccupation',
+//     async (payload , {rejectWithValue, getState, dispatch})=>{
+//         try {
+            
+//             const user = getState()?.users;
+//             const {userAuth}=user;
+//             // http call 
+//             const config = {
+//                 headers:{
+//                     Authorization: `Bearer ${userAuth?.user?.token}`,
+//                     'Content-Type':'application/json',
+//                 },
+//             };
+//             console.log('get all')
+//             const {data} = await axios.get(`${baseUrl}/${apiPrefix}/search-occupation`, payload, config);
+//             return data;
+//         } catch (error) {
+//             if(!error?.response){
+//                 throw error;
+//             }
+//             return rejectWithValue(error?.response?.data);
+//         }
+//     }
+// )
 const occupationsSlices = createSlice({
     name:'occupations',
     initialState:{

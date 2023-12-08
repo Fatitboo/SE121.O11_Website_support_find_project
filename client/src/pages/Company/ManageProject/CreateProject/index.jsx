@@ -1,6 +1,6 @@
 import { IoArrowBackOutline, IoArrowForward } from "react-icons/io5";
 import { Link, useNavigate } from "react-router-dom";
-import { TextInput } from "../../../../components";
+import { CustomComboBox, TextInput } from "../../../../components";
 import FroalaEditor from 'react-froala-wysiwyg';
 import 'froala-editor/css/froala_style.min.css';
 import 'froala-editor/css/froala_editor.pkgd.min.css';
@@ -14,24 +14,35 @@ import 'froala-editor/js/plugins/markdown.min.js';
 import { useForm } from "react-hook-form";
 import VacancyItem from "../../../Seeker/ProjectInfo/VacancyItem";
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect, useState } from "react";
-import { getAllVacancies } from "../../../../redux/slices/vacancies/vacanciesSlices";
+import { useEffect, useRef, useState } from "react";
+import { getAllVacancies, getVacancyCor } from "../../../../redux/slices/vacancies/vacanciesSlices";
 import { HiPlus } from "react-icons/hi";
 import { createProject, setValueSuccess } from "../../../../redux/slices/projects/projectsSlices";
+import { VacancyItemLoader } from "../../../../components/Loader";
+import { IoIosClose } from "react-icons/io";
+import baseUrl from "../../../../utils/baseUrl";
+import axios from "axios";
 
+const period = [{ id: 1, name:"month(s)"}, { id: 2, name: "week(s)"}, { id: 3, name: "day(s)"}, { id: 4, name:"year(s)"},]
 function CreateProject() {
     const { register, handleSubmit, formState: { errors } } = useForm({ mode: 'onChange' });
     const dispatch = useDispatch()
     const navigate = useNavigate()
-    let vacancies = useSelector((state) => state.vacancies.vacancies)
+    let vacancies = useSelector((state) => state.vacancies.complete)
     let isSuccess = useSelector((state) => state.projects.isSuccess)
     let user = useSelector((state) => state.users.userAuth.user)
     const [selected, setSelected] = useState([])
     const [value, setValue] = useState([])
     const [dateValue, setDateValue] = useState("")    
+    const [durationType, setDurationType] = useState(period[0])    
+    const [occupations, setOccupations] = useState([])
+    const [occupationSelected, setOccupationSelected] = useState([])
+    const [spin, setSpin] = useState(false);
+    const loading = useSelector((state) => state.vacancies.loading)
+    const inputBox = useRef();
     
     useEffect(() => {
-        dispatch(getAllVacancies())
+        dispatch(getVacancyCor())
     }, [])
 
     useEffect(() => {
@@ -42,15 +53,51 @@ function CreateProject() {
     }, [isSuccess])
 
     const onSubmitForm = (data) => {
-        const dataValue = {
-            ...data, description: value, userId: user.userId , startDate: dateValue, vacancies: selected.map(item => item.vacancyId)
+        const main = {
+            ...data, 
+            description: value, 
+            userId: user.userId, 
+            startDate: dateValue,
+            vacancies: selected.map(item => item.vacancyId),
+            period: durationType.name,
+            status: "Pending",
+            occupations: occupationSelected
         }
-        console.log(dataValue)
-        dispatch(createProject({"id": user.userId, "value": dataValue}))
+        dispatch(createProject({"id": user.userId, "value": main}))
     }
 
     const handleChangeDate = (e) => {
         setDateValue(e.target.value)
+    }
+    const filterValuePeriod = (e) => {
+        setDurationType(e)
+    }
+
+    const fetchDataOccupation = (value) => {
+        if (value === '')
+        {
+            setOccupations([])
+        }
+        else{
+            setSpin(true)
+            
+            axios.get(`${baseUrl}/api/v1/occupations/search-occupation/${value}`, {
+                headers: {
+                    'Authorization': 'Bearer ' + user?.token
+                }
+            })
+            .then(response => {
+                // const occus = response.data.reduce((ar, item) => ar.concat(item.listMajor), [])
+                const occus = response.data.map((item) => item.occupationName)
+                setOccupations([...occus]);
+                setSpin(false)
+            })
+            .catch(error => {
+                console.error(error);
+            });
+
+            
+        }
     }
 
     return (
@@ -58,9 +105,9 @@ function CreateProject() {
         {/* Start title of page  */}
         <div className="mb-8">
             <h3 className="font-medium text-3xl text-gray-900 mb-2 leading-10 flex flex-row items-center">
-                <Link to="/Organizer/manage-project">
+                <div onClick={() => {setValueSuccess(false); navigate("/Organizer/manage-project")}}>
                     <IoArrowBackOutline style={{marginRight: '5px', marginTop: '1px'}} size={30}/>
-                </Link>
+                </div>
                 Create Projects!</h3>
             <div className="text-sm leading-6 font-normal m-0 right-0 flex justify-between items-center ">Ready to jump back in?</div>
         </div>
@@ -79,25 +126,69 @@ function CreateProject() {
                                             required: "Project name is required!",
                                         })} error={errors.projectName ? errors.projectName.message : ""} label="Project Name*" type="text" />
                                     </div>
-                                    <div className="flex flex-row items-start justify-between mt-5">
+                                    <div className="grid grid-cols-4 gap-7 items-start justify-between mt-5">
                                         <div>
                                             <p className="block leading-8 text-gray-900 font-medium mb-1">Start date*</p>
-                                            <input onChange={handleChangeDate} className="w-[220px] block bg-[#f9fbfc] focus:bg-white text-base outline-1 shadow-s rounded-md py-2 pl-5 pr-5 text-gray-900 border-[1px] border-gray-300 placeholder:text-gray-400 sm:text-base sm:leading-8" type="date" />
+                                            <input onChange={handleChangeDate} className="w-full block bg-[#f9fbfc] focus:bg-white text-base outline-1 shadow-s rounded-md py-2 pl-5 pr-5 text-gray-900 border-[1px] border-gray-300 placeholder:text-gray-400 sm:text-base sm:leading-8" type="date" />
                                         </div>
-                                        <div>
+                                        <div className="col-span-2">
                                             <TextInput name={"duration"} register={register("duration", {
                                                 required: "Duration is required!",
                                             })} error={errors.duration ? errors.duration.message : ""} label="Duration*" type="text" />
                                         </div>
                                         <div>
-                                            <TextInput name={"budget"} register={register("budget", {
-                                                required: "Budget is required!",
-                                            })} error={errors.budget ? errors.budget.message : ""} label="Budget*" type="text" />
+                                            <p className="block leading-8 text-gray-900 font-medium mb-[6px]">Period*</p>
+                                            <CustomComboBox listItem={period} name="showBy" filterValueSelected={filterValuePeriod} selectItem={durationType} placeHolder={'Select an options.'}/>
                                         </div>
+                                    </div>
+                                    <div className="grid grid-cols-4 gap-7  mt-5">
                                         <div>
                                             <TextInput name={"maxParticipants"} register={register("maxParticipants", {
                                                 required: "Max participants is required!",
                                             })} error={errors.maxParticipants ? errors.maxParticipants.message : ""} label="Max Participants*" type="text" />
+                                        </div>
+                                        <div>
+                                            <TextInput name={"budget"} register={register("budget", {
+                                                required: "Budget is required!",
+                                            })} error={errors.budget ? errors.budget.message : ""} label="Budget($)*" type="text" />
+                                        </div>
+                                        <div className="col-span-2">
+                                            <p className="block leading-8 text-gray-900 font-medium mb-[6px]">Fields</p>   
+                                            <div tabIndex={0} onBlur={() => setOccupations([])} className={`relative flex flex-row gap-1 flex-wrap items-center w-full bg-white focus:bg-white focus:border-gray-900 text-base shadow-sm rounded-md pl-5 py-2 text-gray-900 border border-gray-300 placeholder:text-gray-400 sm:text-base sm:leading-8`}>
+                                                {
+                                                    occupationSelected?.map((item, index) => {
+                                                        return <div key={index} className='flex flex-row items-center rounded-[4px] gap-1 bg-[#1967d3] text-white p-1 h-8'>
+                                                            <div className='whitespace-nowrap'>{item}</div>
+                                                            <div className='cursor-pointer' onClick={() => setOccupationSelected(occupationSelected.filter(i => i != item))}>
+                                                                <IoIosClose />
+                                                            </div>
+                                                        </div>
+                                                    })
+                                                }
+                                                <div className='flex-1'>
+                                                    <input
+                                                        type="text"
+                                                        ref={inputBox}
+                                                        onBlur={(e) => e.stopPropagation()}
+                                                        onChange={(e) => fetchDataOccupation(e.target.value)}
+                                                        className={`min-w-5 w-full block focus:outline-none bg-white focus:bg-white text-base shadow-sm rounded-md pr-5 text-gray-900 border-gray-300 placeholder:text-gray-400 sm:text-base sm:leading-8`}
+                                                    />                                                        
+                                                </div>
+                                                
+                                                {spin ? <svg className="absolute right-1 animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 24 24">
+                                                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="white" strokeWidth="4"></circle>
+                                                    <path className="opacity-75" fill="#cccccc" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                                </svg> : null}
+                                            </div>
+                                            <div  className='relative' style={{visibility: occupations.length === 0 ? 'collapse' : 'visible'}}>
+                                                <div className='border mt-1 rounded overflow-auto absolute z-10 w-full max-h-56'>
+                                                    {
+                                                        occupations.map((item, index) => {
+                                                            return <div onClick={() => {!occupationSelected.includes(item) && setOccupationSelected([...occupationSelected, item]); inputBox.current.value = ""; setOccupations([])}} key={index} className={`hover:bg-[#eef1f2]  block focus:outline-none bg-white focus:bg-white text-base shadow-sm py-2.5 pl-5 pr-5 text-gray-90 placeholder:text-gray-400 sm:text-base sm:leading-8 cursor-pointer`}>{item}</div>
+                                                        })
+                                                    }
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                     <div className="grid grid-cols-2 gap-x-7 mt-5">
@@ -171,6 +262,15 @@ function CreateProject() {
                                                 <p className="block leading-8 text-gray-900 font-medium mb-1">Your Vacancies</p>
                                                 <div className="h-[500px] overflow-auto">
                                                     {
+                                                        loading?
+                                                        [1, 2 ,3].map((item, index)=> {
+                                                            return (
+                                                                <div key={index}>
+                                                                    <VacancyItemLoader/>
+                                                                </div>
+                                                            )
+                                                        })
+                                                        :
                                                         vacancies?.map((item, index) => {
                                                             return <div key={index} className="relative">
                                                                 {

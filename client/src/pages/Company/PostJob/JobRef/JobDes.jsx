@@ -44,7 +44,6 @@ function JobDes({formId, formSubmit, flag}) {
         if(currentJobComponent){
             setValue(currentJobComponent.description)
             setSkills(currentJobComponent.skills)
-           console.log("doo", currentJobComponent)
         }
     }, [currentJobComponent]);
 

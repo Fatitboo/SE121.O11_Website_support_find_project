@@ -9,8 +9,12 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
+
 @Service
 @RequiredArgsConstructor
 public class OccupationServices {
@@ -20,6 +24,28 @@ public class OccupationServices {
     }
     public Occupation getOccupationById(String id){
         return occupationRepository.findById(new ObjectId(id)).orElseThrow(() -> new RuntimeException("Skill not found"));
+    }
+    public List<Occupation> searchOccupations(String keyWord){
+        List<Occupation> occupations = occupationRepository.findAll();
+
+        String key = keyWord.toLowerCase();
+        List<Occupation> occupationSearched = new ArrayList<>();
+        for (Occupation occupation : occupations) {
+            if(occupation.getOccupationName().toLowerCase().contains(key)){
+                occupationSearched.add(occupation);
+            }
+//            else{
+//                String[] majors = occupation.getListMajor();
+//                String[] newMajors = Arrays.stream(majors).filter(item -> item.toLowerCase().contains(key)).toArray(String[]::new);
+//                if(newMajors.length != 0) {
+//                    Occupation occu = new Occupation();
+//                    occu.setOccupationName(occupation.getOccupationName());
+//                    occu.setListMajor(newMajors);
+//                    occupationSearched.add(occu);
+//                }
+//            }
+        }
+        return occupationSearched;
     }
     @Transactional
     public Occupation createNewOccupation(OccupationDTO occupationDTO){
