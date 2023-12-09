@@ -43,7 +43,6 @@ public class UserServices {
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenUtils jwtTokenUtil;
     private final EmailService emailService;
-    private final VacancyRepository vacancyRepository;
     private final ProjectRepository projectRepository;
 
     public UserResponse createUser(UserDTO userDTO) throws Exception {

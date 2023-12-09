@@ -86,19 +86,6 @@ public class ProjectService {
         return project;
     }
 
-    public Project updateProject(String id, ProjectDTO projectDTO) throws Exception {
-        Optional<Project> projectOptional = projectRepository.findById(new ObjectId(id));
-        if(projectOptional.isEmpty()){
-            throw new DataIntegrityViolationException("Error when get project in database");
-        }
-        Project project = projectOptional.get();
-
-        project.setValue(projectDTO);
-        projectRepository.save(project);
-
-        return project;
-    }
-
     public List<Project> getAllProjectUser(String id) throws Exception {
         Optional<User> userOptional = userRepository.findById(new ObjectId(id));
         if(userOptional.isEmpty()){

@@ -5,7 +5,7 @@ import { MoneyIcon, CalendarIcon, ExpiryIcon, RateIcon, SalaryIcon, UserIcon, De
 import { AiOutlineClockCircle } from "react-icons/ai";
 import BackgroundItem from "../../../../components/Seeker/BackgroundItem";
 import { BiBookmark, BiLogoFacebook, BiLogoInstagram, BiLogoTwitter } from "react-icons/bi";
-import { BsBriefcase } from "react-icons/bs"
+import { BsBookmarkCheckFill, BsBriefcase } from "react-icons/bs"
 import { LiaPhoneSolid } from "react-icons/lia"
 import { CiMail } from "react-icons/ci";
 import "./style.css"
@@ -86,7 +86,7 @@ function CompanyProfile() {
             </div>
             <div className="col-span-4 pr-40">
                 <div className="flex flex-row-reverse mb-5">
-                    <div className="item flex items-center justify-center w-[60px] h-[52px] rounded-[7px] bg-[rgba(25,103,210,.07)] ml-5 cursor-pointer opacity-80" color="#1967d3">
+                    <div onClick={()=>handleUpdateShortListed()} className="item flex items-center justify-center w-[60px] h-[52px] rounded-[7px] bg-[rgba(25,103,210,.07)] ml-5 cursor-pointer opacity-80" color="#1967d3">
                         {
                             isShorted
                                 ? <BsBookmarkCheckFill className="w-full h-full p-[10px] rounded-[7px]" color="#1967d3" />
