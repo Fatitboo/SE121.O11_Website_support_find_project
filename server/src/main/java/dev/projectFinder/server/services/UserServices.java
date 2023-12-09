@@ -1,16 +1,15 @@
 package dev.projectFinder.server.services;
 
 
-import dev.projectFinder.server.components.JwtTokenUtils;
-import dev.projectFinder.server.components.ViewsProfile;
+import dev.projectFinder.server.components.*;
 import dev.projectFinder.server.dtos.SeekerResumeDTO;
 import dev.projectFinder.server.dtos.UserDTO;
 import dev.projectFinder.server.dtos.UserInforDTO;
 import dev.projectFinder.server.dtos.UserLoginDTO;
 import dev.projectFinder.server.models.User;
-import dev.projectFinder.server.components.Address;
-import dev.projectFinder.server.components.CVLink;
+import dev.projectFinder.server.models.Vacancy;
 import dev.projectFinder.server.repositories.UserRepository;
+import dev.projectFinder.server.repositories.VacancyRepository;
 import dev.projectFinder.server.responses.UserResponse;
 import dev.projectFinder.server.utils.MessageKeys;
 import lombok.RequiredArgsConstructor;
@@ -36,6 +35,7 @@ import java.util.*;
 public class UserServices {
     private final AuthenticationManager authenticationManager;
     private final UserRepository userRepository;
+    private final VacancyRepository vacancyRepository;
     private final UploadServices uploadServices;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenUtils jwtTokenUtil;
@@ -401,5 +401,54 @@ public class UserServices {
         }
         user.setViewsProfiles(viewsProfiles);
         userRepository.save(user);
+    }
+    public void applyVacancy(String id, String vacancyId){
+        Optional<User> foundUser = userRepository.findById(new ObjectId(id));
+        if(foundUser.isEmpty()){
+            throw new DataIntegrityViolationException(MessageKeys.USER_NOT_FOUND);
+        }
+        User user = foundUser.get();
+
+        Optional<Vacancy> vacancyFounder = vacancyRepository.findById(new ObjectId(vacancyId));
+        if(vacancyFounder.isEmpty()){
+            throw new DataIntegrityViolationException("Fail to find vacancy in database");
+        }
+        Vacancy vacancy = vacancyFounder.get();
+
+        Optional<User> foundCor = userRepository.findById(new ObjectId(vacancy.getUserInfo().getUserId()));
+        if(foundCor.isEmpty()){
+            throw new DataIntegrityViolationException(MessageKeys.USER_NOT_FOUND);
+        }
+        User cor = foundCor.get();
+
+        if(user.getAppliedVacancies().contains(vacancy.getVacancyId().toString())) return;
+
+        // set list applied vacancy
+        List<String> appliedVacancies = user.getAppliedVacancies();
+        if(appliedVacancies.isEmpty()) appliedVacancies = new ArrayList<>();
+        if(!appliedVacancies.contains(vacancy.getVacancyId().toString()))
+            appliedVacancies.add(vacancy.getVacancyId().toString());
+        user.setAppliedVacancies(appliedVacancies);
+        userRepository.save(user);
+
+        // set notification for this applied
+        Notification noti = new Notification();
+        noti.setNotiTime(LocalDateTime.now());
+        noti.setContentNoti(user.getFullName() + " has been applied to " + vacancy.getVacancyName());
+
+        List<Notification> listNotiCor = cor.getNotifications();
+        if(listNotiCor == null || listNotiCor.isEmpty()) listNotiCor = new ArrayList<>();
+        listNotiCor.add(noti);
+        cor.setNotifications(listNotiCor);
+        userRepository.save(cor);
+
+        //setvacancy
+
+        List<String> registants = vacancy.getRegistants();
+        if(registants == null || registants.isEmpty()) registants = new ArrayList<>();
+        if(!registants.contains(user.getUserId().toString()))
+            registants.add(user.getUserId().toString());
+        vacancy.setRegistants(registants);
+        vacancyRepository.save(vacancy);
     }
 }

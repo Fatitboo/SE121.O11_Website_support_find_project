@@ -477,4 +477,16 @@ public class UserController {
         }
     }
 
+    @PostMapping("/apply-vacancies/{id}/{vacancyId}")
+    public ResponseEntity<?> applyVacancy(@PathVariable String id, @PathVariable String vacancyId){
+        HashMap<String, Object> response = new HashMap<>();
+        try{
+            userServices.applyVacancy(id, vacancyId);
+            response.put("message", "Your applied has been send to corporator!");
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        }catch (Exception e) {
+            response.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+    }
 }

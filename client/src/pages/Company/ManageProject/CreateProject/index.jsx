@@ -39,6 +39,7 @@ function CreateProject() {
     const [occupationSelected, setOccupationSelected] = useState([])
     const [spin, setSpin] = useState(false);
     const loading = useSelector((state) => state.vacancies.loading)
+    const loadingCR = useSelector((state) => state.projects.loadingCR)
     const inputBox = useRef();
     
     useEffect(() => {
@@ -47,7 +48,7 @@ function CreateProject() {
 
     useEffect(() => {
         if(isSuccess){
-            setValueSuccess(false)
+            dispatch(setValueSuccess(false))
             navigate("/Organizer/manage-project")
         }
     }, [isSuccess])
@@ -95,8 +96,6 @@ function CreateProject() {
             .catch(error => {
                 console.error(error);
             });
-
-            
         }
     }
 
@@ -134,6 +133,7 @@ function CreateProject() {
                                         <div className="col-span-2">
                                             <TextInput name={"duration"} register={register("duration", {
                                                 required: "Duration is required!",
+                                                valueAsNumber: true,
                                             })} error={errors.duration ? errors.duration.message : ""} label="Duration*" type="text" />
                                         </div>
                                         <div>
@@ -150,6 +150,7 @@ function CreateProject() {
                                         <div>
                                             <TextInput name={"budget"} register={register("budget", {
                                                 required: "Budget is required!",
+                                                valueAsNumber: true,
                                             })} error={errors.budget ? errors.budget.message : ""} label="Budget($)*" type="text" />
                                         </div>
                                         <div className="col-span-2">
@@ -291,9 +292,19 @@ function CreateProject() {
                                     </div>
                                     <div>
                                         <div className="flex justify-end mt-10">
-                                            <button className="flex-row text-sm text-center px-4 p-3 text-[white] hover:bg-[#0146a6] bg-[#1967d3] flex items-center leading-7 font-bold rounded-lg " type="submit" >
-                                                Start Create
-                                                <IoArrowForward size={20} className="ml-2 mt-1"/>
+                                        <button className="flex-row w-36 text-sm text-center justify-center px-4 p-3 text-[white] hover:bg-[#0146a6] bg-[#1967d3] flex items-center leading-7 font-bold rounded-lg " type="submit" >
+                                            {
+                                                loadingCR ?
+                                                    <svg className="right-1 animate-spin h-6 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 24 24">
+                                                        <circle className="opacity-0" cx="12" cy="12" r="10" stroke="white" strokeWidth="4"></circle>
+                                                        <path className="opacity-90" fill="white" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                                    </svg> 
+                                                :
+                                                    <div className="flex flex-row items-center">
+                                                        Start Create
+                                                        <IoArrowForward size={20} className="ml-2 mt-1"/>
+                                                    </div>                                                
+                                            }
                                             </button>
                                         </div>
                                     </div>

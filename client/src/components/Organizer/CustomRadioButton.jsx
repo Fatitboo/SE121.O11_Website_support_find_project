@@ -22,7 +22,7 @@ export default function CustomRadioButton({label, listItem, filterValueChecked, 
                     {
                         listItem.map((item, index) => {
                             return (
-                                <li key={index} value={index} onClick={() => {setSelected(item);}} className='flex items-center justify-between bg-white py-1 px-5 focus:outline-none text-base text-gray-900 hover:font-normal hover:opacity-90'>
+                                <li key={index} value={index} onClick={() => {setSelected(item);}} className='flex items-center justify-between py-1 px-5 focus:outline-none text-base text-gray-900 hover:font-normal hover:opacity-90'>
                                     <div className="flex flex-row items-center cursor-pointer mt-1">
                                         <div>
                                             <div className="relative h-7 flex items-center">

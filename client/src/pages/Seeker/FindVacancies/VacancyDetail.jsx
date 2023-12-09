@@ -1,13 +1,20 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {HiOutlineLocationMarker} from "react-icons/hi";
 import {PiSuitcaseSimpleThin, PiTargetLight} from 'react-icons/pi';
 import {GoHourglass} from "react-icons/go";
 import {BiBookmark, BiTimeFive} from 'react-icons/bi';
 import { Candidate } from "../../../assets/images";
 import { MoneyIcon } from "../../../assets/icons";
+import { useDispatch, useSelector } from "react-redux";
+import { applyVacancyAction } from "../../../redux/slices/users/usersSlices";
 
 const VacancyDetail = ({props}) => {
-    // {vacancyName, skillsRequired, maxRequired, salary, registant, location, description, isAvatar, companyName, companyAvatar}
+    const dispatch = useDispatch();
+    const loading = useSelector((state) => state.users.loading)
+
+    const handleApplied = () => {
+        props?.vacancyId && dispatch(applyVacancyAction(props.vacancyId))
+    }
     return (
         <>
             <div className="height-[100vh] flex flex-1 flex-col rounded-[10px] border border-[#ecedf2] shadow-[0_7px_18px_rgba(64,79,104,.05)] pb-2">
@@ -23,8 +30,15 @@ const VacancyDetail = ({props}) => {
                                 {props?.location}
                             </span>
                             <div className="flex flex-row mt-6 h-[46px]">
-                                <div className="flex items-center justify-center w-1/4 box-border bg-[#1967d3] px-[10px] py-[4px] rounded-[8px] text-[#fff] hover:bg-[#0146a6] cursor-pointer">
-                                    <span className="text-[15px] leading-none font-bold">Apply now</span>
+                                <div className="flex items-center justify-center w-1/4 box-border bg-[#1967d3] px-[10px] py-[4px] rounded-[8px] text-[#fff] hover:bg-[#0146a6] cursor-pointer" onClick={handleApplied} >
+                                    {
+                                        !loading ? <span className="text-[15px] leading-none font-bold">Apply now</span>
+                                        : <svg className="right-1 animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 24 24">
+                                        <circle className="opacity-0" cx="12" cy="12" r="10" stroke="white" strokeWidth="4"></circle>
+                                        <path className="opacity-90" fill="white" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                    </svg>
+                                    }
+                                    
                                 </div>
                                 <div className="item flex items-center justify-center w-[52px] rounded-[7px] bg-[rgba(25,103,210,.07)] hover:bg-[rgba(15,30,51,0.07)] ml-5 cursor-pointer opacity-80">
                                     <BiBookmark className="w-full h-full p-[12px] rounded-[7px]" color="#1967d3"/>

@@ -75,4 +75,25 @@ public class Project {
         vacancies = a.toArray(new ObjectId[0]);
         occupations = projectDTO.getOccupations();
     }
+    public void setValue(ProjectDTO projectDTO){
+        projectName = projectDTO.getProjectName();
+        description = projectDTO.getDescription();
+        maxParticipants = projectDTO.getMaxParticipants();
+        fbLink = projectDTO.getFbLink();
+        twLink = projectDTO.getTwLink();
+        lkLink = projectDTO.getLkLink();
+        insLink = projectDTO.getInsLink();
+        startDate = projectDTO.getStartDate();
+        duration = projectDTO.getDuration();
+        period = projectDTO.getPeriod();
+        status = projectDTO.getStatus();
+        budget = projectDTO.getBudget();
+
+        List<ObjectId> a = new ArrayList<>();
+        for(int i = 0; i < projectDTO.getVacancies().length; i++) {
+            a.add(new ObjectId(projectDTO.getVacancies()[i]));
+        }
+        vacancies = a.toArray(new ObjectId[0]);
+        occupations = projectDTO.getOccupations();
+    }
 }
