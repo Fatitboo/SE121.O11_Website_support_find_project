@@ -2,10 +2,10 @@ import { AiOutlineCheckCircle, AiOutlineSearch } from "react-icons/ai";
 import { ComboBox } from "../../../components";
 import { BiMap, BiPackage, BiPencil } from "react-icons/bi";
 import { LiaEyeSolid, LiaTrashAltSolid } from "react-icons/lia";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { HiPlus } from "react-icons/hi";
-import { useEffect } from "react";
-import { getAllProjectsUser } from "../../../redux/slices/projects/projectsSlices";
+import { useEffect, useState } from "react";
+import { deleteProjectAction, getAllProjectsUser, setValueSuccess } from "../../../redux/slices/projects/projectsSlices";
 import { useDispatch, useSelector } from "react-redux";
 
 const vacancyList = [
@@ -68,16 +68,35 @@ const listItemCbb = [
 
 function ManageProject() {
     const dispatch = useDispatch()
+    const navigate = useNavigate()
+    let [selectId, setSelectedId] = useState()
+    let [currentProjects, setCurrentProjects] = useState(null)
     let user = useSelector((state) => state.users.userAuth.user)
     let projects = useSelector((state) => state.projects.projects)
     let loading = useSelector((state) => state.projects.loading)
+    let loadingDL = useSelector((state) => state.projects.loadingDL)
     useEffect(() => {   
         dispatch(getAllProjectsUser({id: user.userId}))
     }, [])
     const onFilterValueSelected = (filterValue) => {
-        console.log(filterValue)
-
+        if(filterValue.name === 'All') setCurrentProjects(projects)
+        else
+            setCurrentProjects(projects.filter((item) => item.status === filterValue.name));
     }
+
+    const handleSearch = (e) => {
+        setCurrentProjects(projects.filter((item) => item.projectName.toLowerCase().trim().includes(e.target.value.toLowerCase().trim()) ||
+                                                     item.status.toLowerCase().trim().includes(e.target.value.toLowerCase().trim())));
+    }
+
+    useEffect(() => {
+        if(projects) setCurrentProjects(projects)
+    }, [projects])
+
+    const handleDeleteProject = (item) => {
+        dispatch(deleteProjectAction({id: item.projectId}))
+    }
+
     return (
         <div className="px-10 pb-0">
             {/* Start title of page  */}
@@ -85,7 +104,6 @@ function ManageProject() {
                 <div className="font-medium text-3xl text-gray-900 mb-2 leading-10">Manage Projects!</div>
                 <div className="text-sm leading-6 font-normal m-0 right-0 flex justify-between items-center ">Ready to jump back in?</div>
             </div>
-
             {/* Start main content  to display something*/}
             <div className="flex flex-wrap mt-3">
                 <div className="max-w-full pt-3 shrink-0 w-full">
@@ -99,7 +117,7 @@ function ManageProject() {
                                         <form action="#" method="post"  >
                                             <div className="relative mb-0">
                                                 <AiOutlineSearch fontSize={22} color="#a7a9ad" className="absolute l-3 t-0 h-10 justify-center ml-2 text-center z-10 " />
-                                                <input type='search' name="search-field" id="search-field" placeholder="Search" className="relative mt-2 block w-72 border pt-1 pb-1 pl-10 h-9 pr-5 text-sm bg-[#f0f5f7] focus:bg-white  rounded-md" />
+                                                <input type='search' onChange={handleSearch} name="search-field" id="search-field" placeholder="Search" className="relative mt-2 block w-72 border pt-1 pb-1 pl-10 h-9 pr-5 text-sm bg-[#f0f5f7] focus:bg-white  rounded-md" />
                                             </div>
                                         </form>
                                     </div>
@@ -109,10 +127,11 @@ function ManageProject() {
 
                                 </div>
                                 <div className="flex ">
-                                    <Link to="/Organizer/create-project" className="relative text-sm text-center pr-4 p-3 text-[white] hover:bg-[#0146a6] bg-[#1967d3] flex items-center leading-7 font-normal rounded-lg ">
+        
+                                    <div onClick={() => {dispatch(setValueSuccess(false)); navigate('/Organizer/create-project')}} className="relative text-sm text-center pr-4 p-3 text-[white] cursor-pointer hover:bg-[#0146a6] bg-[#1967d3] flex items-center leading-7 font-normal rounded-lg ">
                                         <HiPlus className='relative mr-2 ml-2 text-2xl text-center ' />
                                         Create Project
-                                    </Link>
+                                    </div>
                                 </div>
                             </div>
 
@@ -232,7 +251,7 @@ function ManageProject() {
                                                     )
                                                 })
                                                 
-                                                : projects?.map((item, index) => {
+                                                : currentProjects?.map((item, index) => {
                                                     return (
                                                         <tr key={index} className="relative border-b border-solid border-[#ecedf2] w-full hover:bg-[#f4f2f2] cursor-pointer px-5  ">
                                                             <td className="relative pl-5 py-5 font-normal text-base w-3/12">
@@ -281,11 +300,20 @@ function ManageProject() {
                                                                         <Link to={`/Organizer/manage-project/project-detail/${item.projectId}`} className="list-none relative mr-2 bg-[#f5f7fc] border rounded-md border-[#e9ecf9] px-1 pt-1 hover:bg-[#5f86e9] hover:text-white">
                                                                             <LiaEyeSolid fontSize={18} /> 
                                                                         </Link>
-                                                                        <li className="list-none relative mr-2 bg-[#f5f7fc] border rounded-md border-[#e9ecf9] px-1 pt-1 hover:bg-[#278646] hover:text-white">
+                                                                        <Link to={`/Organizer/update-project/${item.projectId}`} className="list-none relative mr-2 bg-[#f5f7fc] border rounded-md border-[#e9ecf9] px-1 pt-1 hover:bg-[#278646] hover:text-white">
                                                                             <button> <BiPencil fontSize={18} /> </button>
-                                                                        </li>
-                                                                        <li className="list-none relative bg-[#f5f7fc] border rounded-md border-[#e9ecf9] px-1 pt-1 hover:bg-[#ce3e37] hover:text-white">
-                                                                            <button > <LiaTrashAltSolid fontSize={18} /> </button>
+                                                                        </Link>
+                                                                        <li className="list-none relative bg-[#f5f7fc] border rounded-md border-[#e9ecf9] px-1 pt-1 hover:bg-[#ce3e37] hover:text-white" style={{backgroundColor: loadingDL && item.projectId === selectId ? '#ce3e37': ''}} onClick={() => {setSelectedId(item.projectId); handleDeleteProject(item)}}>
+                                                                            <button > 
+                                                                                {
+                                                                                    loadingDL && item.projectId === selectId ? <svg className="right-1 animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 24 24">
+                                                                                        <circle className="opacity-0" cx="12" cy="12" r="10" stroke="white" strokeWidth="4"></circle>
+                                                                                        <path className="opacity-90" fill="white" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                                                                    </svg> 
+                                                                                    :
+                                                                                    <LiaTrashAltSolid fontSize={18} /> 
+                                                                                }
+                                                                            </button>
                                                                         </li>
                                                                     </div>
                                                                 </div>

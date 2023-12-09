@@ -25,7 +25,26 @@ public class ProjectService {
     private final ProjectRepository projectRepository;
     private final VacancyRepository vacancyRepository;
     private final UserServices userServices;
+    public List<HashMap<String, Object>> getAllProject ()throws Exception{
 
+        List<Project> listProject = projectRepository.findAll();
+
+        List<HashMap<String, Object>> result = new ArrayList<>();
+
+        for(int i = 0; i < listProject.size(); i++){
+            HashMap<String, Object> item = new HashMap<>();
+            Optional<User> userOptional = userRepository.findById(listProject.get(i).getUserId());
+            if(userOptional.isEmpty()){
+                continue;
+            }
+            User user = userOptional.get();
+            item.put("project", listProject.get(i));
+            item.put("fullName", user.getFullName());
+            item.put("avatar", user.getAvatar().getFileUrl());
+            result.add(item);
+        }
+        return result;
+    }
     public Project createProject(String id, ProjectDTO projectDTO) throws Exception {
         Optional<User> userOptional = userRepository.findById(new ObjectId(id));
         if(userOptional.isEmpty()){
@@ -50,6 +69,32 @@ public class ProjectService {
 
         userRepository.save(user);
         userServices.increaseViews("6556ca3b5e265815afd0ffca");
+
+        return project;
+    }
+
+    public Project updateProject(String id, ProjectDTO projectDTO) throws Exception {
+        Optional<Project> projectOptional = projectRepository.findById(new ObjectId(id));
+        if(projectOptional.isEmpty()){
+            throw new DataIntegrityViolationException("Error when get project in database");
+        }
+        Project project = projectOptional.get();
+
+        project.setValue(projectDTO);
+        projectRepository.save(project);
+
+        return project;
+    }
+
+    public Project updateProject(String id, ProjectDTO projectDTO) throws Exception {
+        Optional<Project> projectOptional = projectRepository.findById(new ObjectId(id));
+        if(projectOptional.isEmpty()){
+            throw new DataIntegrityViolationException("Error when get project in database");
+        }
+        Project project = projectOptional.get();
+
+        project.setValue(projectDTO);
+        projectRepository.save(project);
 
         return project;
     }
@@ -118,5 +163,47 @@ public class ProjectService {
         Project project=  projectOptional.get();
         project.setStatus(status);
         projectRepository.save(project);
+    }
+
+    public void deleteProject(String id) throws Exception{
+        Optional<Project> projectOptional = projectRepository.findById(new ObjectId(id));
+        if(projectOptional.isEmpty()){
+            throw new DataIntegrityViolationException("Error when get project in database");
+        }
+        Project project = projectOptional.get();
+        projectRepository.deleteById(project.getProjectId());
+
+        Optional<User> userOptional = userRepository.findById(project.getUserId());
+        if(userOptional.isEmpty()){
+            throw new DataIntegrityViolationException("Error when get user in database");
+        }
+        User user = userOptional.get();
+
+        List<String> projectIds = user.getProjects();
+
+        projectIds.remove(project.getProjectId().toString());
+
+        user.setProjects(projectIds);
+
+        userRepository.save(user);
+    }
+
+    public List<Vacancy> getVacanciesProject(String projectId) throws Exception{
+        Optional<Project> projectOptional = projectRepository.findById(new ObjectId(projectId));
+        if(projectOptional.isEmpty()){
+            throw new DataIntegrityViolationException("Error when get project in database");
+        }
+        ProjectDTO project = new ProjectDTO(projectOptional.get());
+
+        List<Vacancy> vacancies = new ArrayList<>();
+        for(int i = 0; i < project.getVacancies().length; i++){
+            Optional<Vacancy> vacancyOptional = vacancyRepository.findById(new ObjectId(project.getVacancies()[i]));
+            if(vacancyOptional.isEmpty()){
+                throw new DataIntegrityViolationException("Error when get vacancy in database");
+            }
+            Vacancy vacancy = vacancyOptional.get();
+            vacancies.add(vacancy);
+        }
+        return vacancies;
     }
 }

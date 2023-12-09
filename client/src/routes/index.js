@@ -49,6 +49,7 @@ import {
     ChangePassword
 } from '../pages/Auth'
 import CreateProject from "../pages/Company/ManageProject/CreateProject"
+import UpdateProject from "../pages/Company/ManageProject/UpdateProject"
 
 
 const publicRoutes = [
@@ -85,6 +86,7 @@ const publicRoutes = [
     {path:'/Organizer/short-listed-users', component: ShortListedSeekers, layout: LayoutHasSidebar},
     {path:'/Organizer/vacancy-info/:id', component: VacancyInfo, layout: LayoutHasSidebar},
     {path:'/Organizer/create-project', component: CreateProject, layout: LayoutHasSidebar},
+    {path:'/Organizer/update-project/:id', component: UpdateProject, layout: LayoutHasSidebar},
 
 
     //Admin Layout

@@ -534,6 +534,34 @@ export const updateShortlistedUsersAction = createAsyncThunk(
         }
     }
 );
+
+//applied vacancies
+export const applyVacancyAction = createAsyncThunk(
+    "users/applyVacancy",
+    async (vacanciesId, { rejectWithValue, getState, dispatch }) => {
+        const user = getState()?.users;
+        const { userAuth } = user;
+        // http call 
+        const config = {
+            headers: {
+                Authorization: `Bearer ${userAuth?.user?.token}`,
+                'Content-Type':'application/json',
+            },
+        };
+        try {
+            console.log( typeof vacanciesId)
+            const { data } = await axios.post(
+                `${baseUrl}/api/v1/users/apply-vacancies/${userAuth?.user?.userId}/${vacanciesId}`, {},config
+            );
+            return data;
+        } catch (error) {
+            if (!error?.response) {
+                throw error;
+            }
+            return rejectWithValue(error?.response?.data);
+        }
+    }
+);
 //Set success
 export const resetSuccessAction = createAsyncThunk(
     "users/resetSuccess",
@@ -938,6 +966,21 @@ const usersSlices = createSlice({
             state.loading = false;
             state.appErr = action?.payload?.message;
             state.isSuccess = false;
+        });
+
+         //applied vacancies
+        builder.addCase(applyVacancyAction.pending, (state, action) => {
+            state.loading = true;
+            state.isSuccessApplied = false;
+        });
+
+        builder.addCase(applyVacancyAction.fulfilled, (state, action) => {
+            state.loading = false;
+            state.isSuccessApplied = true;
+        });
+        builder.addCase(applyVacancyAction.rejected, (state, action) => {
+            state.loading = false;
+            state.isSuccessApplied = false
         });
     }
 

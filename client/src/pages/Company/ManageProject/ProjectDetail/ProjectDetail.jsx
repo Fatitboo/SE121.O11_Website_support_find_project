@@ -8,7 +8,7 @@ import { CalendarIcon, ExpiryIcon, SalaryIcon } from "../../../../assets/icons";
 import VacancyItem from "../../../Seeker/ProjectInfo/VacancyItem";
 import ParticipantItem from "../../../Seeker/ProjectInfo/ParticipantItem";
 import { ArrowLeftIcon } from "@heroicons/react/20/solid";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { getProjectSingle } from "../../../../redux/slices/projects/projectsSlices";
 import { useDispatch, useSelector } from "react-redux";
 import { CustomLoader, SmallItemLoader, VacancyItemLoader } from "../../../../components/Loader";
@@ -153,8 +153,8 @@ function ProjectDetail() {
                                         <div className="animate-pulse h-6 w-[300px] bg-slate-200 rounded-full col-span-2 my-[8px]"></div>
                                         :<div className="flex flex-row text-[14px] font-thin my-[8px]">
                                             <span className="mr-7 text-[#1967d2]">{user.fullName}</span>
-                                            <span className="flex flex-row items-center mr-7"><BiTimeFive className="w-[18px] h-[18px] mr-1"/>{project?.duration} months</span>
-                                            <span className="flex flex-row items-center mr-7"><GoHourglass className="w-[18px] h-[18px] mr-1"/>{project?.startDate.split("-").reverse().reduce((total, item) => total !== "" ? total + "/" + item : total + item, "")}</span>
+                                            <span className="flex flex-row items-center mr-7"><BiTimeFive className="w-[18px] h-[18px] mr-1"/>{project?.startDate.split("-").reverse().reduce((total, item) => total !== "" ? total + "/" + item : total + item, "")}</span>
+                                            <span className="flex flex-row items-center mr-7"><GoHourglass className="w-[18px] h-[18px] mr-1"/>{project?.duration} months</span>
                                             <span className="flex flex-row items-center mr-7"><PiTargetLight className="w-[22px] h-[22px] mr-1"/>{vacancies?.length} vacancies</span>
                                         </div>
                                     }
@@ -163,9 +163,11 @@ function ProjectDetail() {
                                         loading ? 
                                         <div className="animate-pulse h-6 mt-3 w-[200px] bg-slate-200 rounded-full col-span-2 my-[8px]"></div>
                                         : <div className="flex flex-row">
-                                            <div className="py-[5px] px-5 rounded-[20px] bg-[#d3e1f5] text-sm text-[#1967d2] mr-[10px]"><span>App</span></div>
-                                            <div className="py-[5px] px-5 rounded-[20px] bg-[#d3e1f5] text-sm text-[#1967d2] mr-[10px]"><span>Digital</span></div>
-                                            <div className="py-[5px] px-5 rounded-[20px] bg-[#d3e1f5] text-sm text-[#1967d2] mr-[10px]"><span>Design</span></div>
+                                            {
+                                                project?.occupations?.map((item, index) => {
+                                                    return <div key={index} className="py-[5px] px-5 rounded-[20px] bg-[#d3e1f5] text-sm text-[#1967d2] mr-[10px]"><span>{item}</span></div>
+                                                })
+                                            }
                                         </div>
                                 }
                             </div>  
@@ -195,21 +197,47 @@ function ProjectDetail() {
                     {/* Share to social */}
                     <></>
                         <div>
-                            <div className="flex flex-row items-center mt-6">
-                                <h4 className="text-base leading-6 text-[#202124] font-semibold">Share this project</h4>
-                                <a href="https://www.facebook.com/" className="flex flex-row items-center bg-[#3b5998] py-[10px] px-[25px] text-[14px] ml-[12px] rounded-lg">
-                                    <BiLogoFacebook color="#fff" className="w-5 h-5"/>
-                                    <span className="text-[#fff] ml-1">Facebook</span>
-                                </a>
-                                <a href="https://www.linkedin.com" className="flex flex-row items-center bg-[#007bb5] py-[10px] px-[25px] text-[14px] ml-[9px] rounded-lg">
-                                    <BiLogoLinkedin color="#fff" className="w-5 h-5"/>
-                                    <span className="text-[#fff] ml-1">Linked in</span>
-                                </a>
-                                <a href="https://www.instagram.com" className="flex flex-row items-center bg-[#ea3ca4] py-[10px] px-[25px] text-[14px] ml-[9px] rounded-lg">
-                                    <BiLogoInstagram color="#fff" className="w-5 h-5"/>
-                                    <span className="text-[#fff] ml-1">Instagram</span>
-                                </a>
-                            </div>
+                            {
+                                !loading ? <div className="flex flex-row items-center mt-6">
+                                            <h4 className="text-base leading-6 text-[#202124] font-semibold">Share this project</h4>
+                                            <div className="flex flex-row">
+                                                {
+                                                    project?.fbLink ?  <a href={project?.fbLink} className="flex flex-row items-center bg-[#3b5998] py-[10px] px-[20px] text-[14px] ml-[12px] rounded-lg">
+                                                        <BiLogoFacebook color="#fff" className="w-5 h-5"/>
+                                                        <span className="text-[#fff] ml-1">Facebook</span>
+                                                    </a> :null
+                                                }
+
+                                                {
+                                                    project?.lkLink ?  <a href={project?.lkLink} className="flex flex-row items-center bg-[#007bb5] py-[10px] px-[20px] text-[14px] ml-[9px] rounded-lg">
+                                                        <BiLogoLinkedin color="#fff" className="w-5 h-5"/>
+                                                        <span className="text-[#fff] ml-1">Linked in</span>
+                                                    </a> :null
+                                                }
+
+                                                {
+                                                    project?.insLink ?  <a href={project?.insLink} className="flex flex-row items-center bg-[#ea3ca4] py-[10px] px-[20px] text-[14px] ml-[9px] rounded-lg">
+                                                        <BiLogoInstagram color="#fff" className="w-5 h-5"/>
+                                                        <span className="text-[#fff] ml-1">Instagram</span>
+                                                    </a> :null
+                                                }
+                                                {
+                                                    project?.twLink ?  <a href={project?.twLink} className="flex flex-row items-center bg-[#357cd3] py-[10px] px-[20px] text-[14px] ml-[9px] rounded-lg">
+                                                        <BiLogoTwitter color="#fff" className="w-5 h-5"/>
+                                                        <span className="text-[#fff] ml-1">Twitter</span>
+                                                    </a> :null
+                                                }
+                                            </div>
+                                        </div>: 
+                                 <div className="flex flex-row items-center mt-6 gap-3">
+                                    <div className="animate-pulse h-[20px] w-[150px] bg-slate-200 rounded-lg col-span-2"></div>
+                                    <div className="animate-pulse h-[35px] w-[150px] bg-slate-200 rounded-lg col-span-2"></div>
+                                    <div className="animate-pulse h-[35px] w-[150px] bg-slate-200 rounded-lg col-span-2"></div>
+                                    <div className="animate-pulse h-[35px] w-[150px] bg-slate-200 rounded-lg col-span-2"></div>
+                                    <div className="animate-pulse h-[35px] w-[150px] bg-slate-200 rounded-lg col-span-2"></div>
+                                </div> 
+                            }
+                            
                         </div>
                     <></>
                     
@@ -229,7 +257,9 @@ function ProjectDetail() {
                                     })
                                     :
                                     vacancies?.map((item, index) => {
-                                        return <VacancyItem key={index} props={item}/>
+                                        return <Link key={index} to={`/Organizer/vacancy-info/${item.vacancyId}`}>
+                                            <VacancyItem props={item}/>
+                                        </Link>
                                     })
                                 }
                             </div>
