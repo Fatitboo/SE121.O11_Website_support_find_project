@@ -7,25 +7,23 @@ function RecentProject({item}) {
             <td className="relative pl-5 py-5 font-normal text-base w-2/12">
                 <div className="mb-0 relative h-14 ">
                     <span className="absolute l-0 t-0 w-10">
-                        <img src={item.logoOriginazer} className="inline-block max-w-full h-auto align-middle" alt="logo" />
+                        <img src={item?.corLogo} className="inline-block max-w-full h-auto align-middle" alt="logo" />
                     </span>
                     <div className="pl-16  ">
-                        <h4 className="font-medium text-md text-ellipsis mb-1 line-clamp-1 ">{item.originazerName}</h4>
-                        <div className="flex font-light text-sm mb-0"> <BiMap className="mt-1 mr-1" />  {item.address}</div>
+                        <div className="font-medium text-md text-ellipsis mb-1 line-clamp-1 ">{item?.corName}</div>
+                        <div className="flex font-light text-sm mb-0"> <BiMap className="mt-1 mr-1" />  {item?.corAddress}</div>
                     </div>
                 </div>
             </td>
             <td className=" w-3/12">
-                <h4 className="font-medium text-ellipsis w-full line-clamp-2">{item.projectName}</h4>
+                <div className="font-medium text-ellipsis w-full line-clamp-2">{item?.project?.projectName}</div>
             </td>
             <td className="w-1/12">
-                <h4 className="text-center">{item.status}</h4>
+                <div className="text-center">{item.project?.status}</div>
             </td>
-            <td className="font-light underline text-blue-400 text-center w-1/12">
-                <a href={item.socialLink} >Link</a>
-            </td>
-            <td className="text-center w-1/12">
-                <h4>{item.uploadDate.toLocaleDateString('vi-VN')}</h4>
+           
+            <td className="text-center w-2/12">
+                <div>{item?.project?.createdAt?item?.project?.createdAt[2]+'/'+item?.project?.createdAt[1]+'/'+item?.project?.createdAt[0]:''}</div>
             </td>
             <td >
                 <div className="">

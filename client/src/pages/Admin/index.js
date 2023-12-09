@@ -6,6 +6,9 @@ import UserMng from './UserMng'
 import AddOccupation from "./OccupationMng/AddOccupation";
 import EditOccupation from "./OccupationMng/EditOccupation";
 import CompanyProfileAdmin from "./UserMng/CompanyProfileAdmin";
+import ManageVacancyAdmin from "./ManageVacancy";
+import VacancyInfoAdmin from "./ManageVacancy/VacancyInfo/VacancyInfo";
+import ProjectDetailAdmin from "./Approval/ProjectDetail/ProjectDetail";
 export {
     Approval,
     Dashboard,
@@ -14,5 +17,8 @@ export {
     UserMng,
     AddOccupation,
     EditOccupation,
-    CompanyProfileAdmin
+    CompanyProfileAdmin,
+    ManageVacancyAdmin,
+    VacancyInfoAdmin,
+    ProjectDetailAdmin
 }

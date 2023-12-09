@@ -1,21 +1,23 @@
 package dev.projectFinder.server.services;
 
 
-import dev.projectFinder.server.components.JwtTokenUtils;
-import dev.projectFinder.server.components.ViewsProfile;
+import dev.projectFinder.server.components.*;
 import dev.projectFinder.server.dtos.SeekerResumeDTO;
 import dev.projectFinder.server.dtos.UserDTO;
 import dev.projectFinder.server.dtos.UserInforDTO;
 import dev.projectFinder.server.dtos.UserLoginDTO;
+import dev.projectFinder.server.models.Project;
 import dev.projectFinder.server.models.User;
-import dev.projectFinder.server.components.Address;
-import dev.projectFinder.server.components.CVLink;
+import dev.projectFinder.server.models.Vacancy;
+import dev.projectFinder.server.repositories.ProjectRepository;
 import dev.projectFinder.server.repositories.UserRepository;
+import dev.projectFinder.server.repositories.VacancyRepository;
 import dev.projectFinder.server.responses.UserResponse;
 import dev.projectFinder.server.utils.MessageKeys;
 import lombok.RequiredArgsConstructor;
 import org.bson.types.ObjectId;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -40,6 +42,8 @@ public class UserServices {
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenUtils jwtTokenUtil;
     private final EmailService emailService;
+    private final VacancyRepository vacancyRepository;
+    private final ProjectRepository projectRepository;
 
     public UserResponse createUser(UserDTO userDTO) throws Exception {
         if (!userDTO.getPassword().equals(userDTO.getCPassword())){
@@ -364,7 +368,8 @@ public class UserServices {
         user.setShortListedUser(users);
         userRepository.save(user);
     }
-    public void increaseViews(String id){
+    public void increaseViews(String id  ){
+
         Optional<User> foundUser = userRepository.findById(new ObjectId(id));
         if(foundUser.isEmpty()){
             throw new DataIntegrityViolationException(MessageKeys.USER_NOT_FOUND);
@@ -401,5 +406,37 @@ public class UserServices {
         }
         user.setViewsProfiles(viewsProfiles);
         userRepository.save(user);
+    }
+
+    public HashMap<String, Object> getDataStatisticalAdmin(String id){
+        User user = this.getUserDetail(id);
+        HashMap<String, Object> hashMap = new HashMap<>();
+        List<User> users = this.getAllUser();
+        List<User> cors = new ArrayList<>(users.stream().filter(u -> u.getUserType().equals("organizer")).toList());
+        List<User> seekers = users.stream().filter(u-> u.getUserType().equals("seeker")).toList();
+        List<Vacancy> vacancies = vacancyRepository.findAll();
+        List<Project> projects = projectRepository.findAll();
+
+        cors.sort(Comparator.comparing(User::getCreatedAt).reversed());
+        vacancies.sort(Comparator.comparing(Vacancy::getCreatedAt).reversed());
+        projects.sort(Comparator.comparing(Project::getCreatedAt).reversed());
+        hashMap.put("viewsProfile", user.getViewsProfiles());
+        hashMap.put("recentOrganizers", cors.subList(0, 5));
+        List<RecentProject> recentProjects = new ArrayList<>();
+        for (Project project: projects.subList(0, Math.min(projects.size(), 4))){
+            User fUser = userRepository.findById(project.getUserId()).get();
+            recentProjects.add(new RecentProject(project,
+                    fUser.getFullName(),
+                    fUser.getAvatar()!=null ? fUser.getAvatar().getFileUrl() : "https://pic.onlinewebfonts.com/thumbnails/icons_148020.svg",
+                    fUser.getAddress()!=null ? fUser.getAddress().getProvince() : "No information"));
+        }
+        hashMap.put("recentProjects", recentProjects);
+        hashMap.put("recentVacancies", vacancies.subList(0, Math.min(vacancies.size(), 5)));
+        hashMap.put("numSeekers", seekers.size());
+        hashMap.put("numOrganizers", cors.size());
+        hashMap.put("numVacancies", vacancies.size());
+        hashMap.put("numProjects", projects.size());
+
+        return hashMap;
     }
 }

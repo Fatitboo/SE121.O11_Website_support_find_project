@@ -270,7 +270,7 @@ export const getAllUserCvAction = createAsyncThunk(
 )
 // get all  cors
 export const getAllCorsAction = createAsyncThunk(
-    'users/getAllUsers',
+    'users/getAllCors',
     async (payload, { rejectWithValue, getState, dispatch }) => {
         try {
             const user = getState()?.users;
@@ -279,13 +279,13 @@ export const getAllCorsAction = createAsyncThunk(
             const config = {
                 headers: {
                     Authorization: `Bearer ${userAuth?.user?.token}`,
-                    'Content-Type': 'application/json',
                 },
             };
-            const { data } = await axios.get(`${baseUrl}/${apiPrefix}/get-all-cors`, config);
+            const { data } = await axios.get(`${baseUrl}/${apiPrefix}/get-all-organizers`, config);
             console.log(data)
             return data;
         } catch (error) {
+            console.log(error)
             if (!error?.response) {
                 throw error;
             }
@@ -358,6 +358,31 @@ export const getDataStatisticalAction = createAsyncThunk(
                 },
             };
             const { data } = await axios.get(`${baseUrl}/${apiPrefix}/get-data-statistical/${userAuth?.user?.userId}`, config);
+            console.log(data)
+            return data;
+        } catch (error) {
+            if (!error?.response) {
+                throw error;
+            }
+            return rejectWithValue(error?.response?.data);
+        }
+    }
+);
+// get Data Statistical Admin
+export const getDataStatisticalAdminAction = createAsyncThunk(
+    'users/getDataStatisticalAdmin',
+    async (id, { rejectWithValue, getState, dispatch }) => {
+        try {
+            const user = getState()?.users;
+            const { userAuth } = user;
+            // http call 
+            const config = {
+                headers: {
+                    Authorization: `Bearer ${userAuth?.user?.token}`,
+                    'Content-Type': 'application/json',
+                },
+            };
+            const { data } = await axios.get(`${baseUrl}/${apiPrefix}/get-data-statistical-admin`, config);
             console.log(data)
             return data;
         } catch (error) {
@@ -885,6 +910,31 @@ const usersSlices = createSlice({
 
         });
         builder.addCase(getDataStatisticalAction.rejected, (state, action) => {
+            state.loading = false;
+            state.appErr = action?.payload?.message;
+            state.isSuccess = false;
+        });
+         //get Data Statistical Admin Action
+         builder.addCase(getDataStatisticalAdminAction.pending, (state, action) => {
+            state.loading = true;
+            state.appErr = undefined;
+            state.isSuccess = false;
+        });
+
+        builder.addCase(getDataStatisticalAdminAction.fulfilled, (state, action) => {
+            state.loading = false;
+            state.appErr = undefined;
+            state.isSuccess = true;
+            state.recentOrganizers = action?.payload?.recentOrganizers;
+            state.recentProjects = action?.payload?.recentProjects;
+            state.recentVacancies = action?.payload?.recentVacancies;
+            state.numSeekers = action?.payload?.numSeekers;
+            state.numOrganizers = action?.payload?.numOrganizers;
+            state.numVacancies = action?.payload?.numVacancies;
+            state.viewsProfile = action?.payload?.viewsProfile;
+            state.numProjects = action?.payload?.numProjects;
+        });
+        builder.addCase(getDataStatisticalAdminAction.rejected, (state, action) => {
             state.loading = false;
             state.appErr = action?.payload?.message;
             state.isSuccess = false;

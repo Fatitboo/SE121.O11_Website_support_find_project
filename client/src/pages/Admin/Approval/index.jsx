@@ -1,8 +1,10 @@
-import { AiOutlineSearch} from "react-icons/ai";
-import {ComboBox} from "../../../components";
-import ProjectItem from "./ProjectItem";
-import { useState } from "react";
 
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { getAllProjectsAdmin, resetSuccessAction } from "../../../redux/slices/projects/projectsSlices";
+import { ComboBox, LoadingComponent, PaginationButtons } from "../../../components";
+import { AiOutlineSearch } from "react-icons/ai";
+import ProjectItem from './ProjectItem'
 const listApprovalProjects = [
     {
         key: 'project1',
@@ -53,23 +55,41 @@ const listItemCbb = [
 
 ]
 function Approval() {
-    const [projectList, setProjectList] = useState([...listApprovalProjects])
-    const onFilterValueSelected = (filterValue) => {
-        console.log(filterValue)
-        if (filterValue.name === 'All') {
-            setProjectList([...listApprovalProjects])
-        }
-        else {
-            const newlist = listApprovalProjects.filter(item => item.maxParticipants === filterValue.name)
-            setProjectList(newlist)
-        }
-            
+    const dispatch = useDispatch();
+    const [projectList, setProjectList] = useState([])
+    const [currentPage, setCurrentPage] = useState(0);
+    const [pages, setPages] = useState([]);
+    const [filterKeyWord, setFilterKeyWord] = useState('');
+
+
+    useEffect(() => {
+        dispatch(getAllProjectsAdmin());
+    }, [dispatch])
+    const storeData = useSelector(store => store?.projects);
+    const { loading, appErr, isSuccess, projectsAdmin } = storeData;
+
+    const onFilterlistPostedCbb = (filterValue) => {
+
     }
+    useEffect(() => {
+        setPages([...projectList.filter(item => ((item?.project?.projectName).toLowerCase().includes(filterKeyWord.toLowerCase()) || (item?.corName).toLowerCase().includes(filterKeyWord.toLowerCase()))).slice(currentPage * 10, (currentPage + 1) * 10)])
+    }, [currentPage, projectList, filterKeyWord])
+    useEffect(() => {
+        if (isSuccess) {
+            dispatch(resetSuccessAction());
+            setProjectList([...projectsAdmin]);
+            setPages([...projectsAdmin.slice(currentPage * 10, (currentPage + 1) * 10)])
+        }
+    }, [isSuccess])
+
+
     return (
         <div className="px-10 pb-0">
             {/* Start title of page  */}
+            {/* {loading && <LoadingComponent />} */}
+
             <div className="mb-8">
-                <h3 className="font-medium text-3xl text-gray-900 mb-2 leading-10">All Projects!</h3>
+                <div className="font-medium text-3xl text-gray-900 mb-2 leading-10">All Projects!</div>
                 <div className="text-sm leading-6 font-normal m-0 right-0 flex justify-between items-center ">Ready to jump back in?</div>
             </div>
 
@@ -86,17 +106,17 @@ function Approval() {
                                         <form action="#" method="post"  >
                                             <div className="relative mb-0">
                                                 <AiOutlineSearch fontSize={22} color="#a7a9ad" className="absolute l-3 t-0 h-10 justify-center ml-2 text-center z-10 " />
-                                                <input type='search' name="search-field" id="search-field" placeholder="Search" className="relative mt-2 block w-72 border pt-1 pb-1 pl-10 h-9 pr-5 text-sm bg-[#f0f5f7] focus:bg-white  rounded-md" />
+                                                <input onChange={e => setFilterKeyWord(e.target.value)} type='search' name="search-field" id="search-field" placeholder="Search" className="relative mt-2 block w-72 border pt-1 pb-1 pl-10 h-9 pr-5 text-sm bg-[#f0f5f7] focus:bg-white  rounded-md" />
                                             </div>
                                         </form>
                                     </div>
-                                   <div className="w-40">
-                                        <ComboBox listItem={listItemCbb} filterValueSelected={onFilterValueSelected} />
-                                   </div>
-                                    
+                                    <div className="w-40">
+                                        <ComboBox listItem={listItemCbb} filterValueSelected={onFilterlistPostedCbb} />
+                                    </div>
+
                                 </div>
                                 <div className="flex ">
-                                    <h4 className="mr-1">Pending projects: </h4> <span>  10</span>
+                                    <div className="mr-1">Pending projects: </div> <span>  10</span>
                                 </div>
                             </div>
 
@@ -106,21 +126,113 @@ function Approval() {
                                     <table className="relative w-full overflow-y-hidden overflow-x-hidden rounded-md mb-8 bg-white border-0 ">
                                         <thead className="bg-[#f5f7fc] color-white border-transparent border-0 w-full">
                                             <tr className="w-full">
-                                                <th className="relative text-[#3a60bf] font-normal py-6 text-base text-left w-3/12 pl-5 pr-0">Originazer Name</th>
+                                                <th className="relative text-[#3a60bf] font-normal py-6 text-base text-left w-3/12 pl-5">Originazer Name</th>
                                                 <th className="relative text-[#3a60bf] font-normal py-6 text-base px-0 text-left w-3/12 ">Project Name</th>
-                                                <th className="relative text-[#3a60bf] font-normal py-6 text-base text-left w-1/12 px-5">Participants</th>
-                                                <th className="relative text-[#3a60bf] font-normal py-6 text-base text-left px-5 w-1/12">SocialLink</th>
-                                                <th className="relative text-[#3a60bf] font-normal py-6 text-base  w-2/12 text-center px-3">Upload date</th>
-                                                <th className="relative text-[#3a60bf] font-normal py-6 text-base text-left pl-6">Action</th>
+                                                <th className="relative text-[#3a60bf] font-normal py-6 text-base text-left w-1/12 ">Participants</th>
+                                                <th className="relative text-[#3a60bf] font-normal py-6 text-base  w-2/12 text-center ">Upload date</th>
+                                                <th className="relative text-[#3a60bf] font-normal py-6 text-base text-left  w-3/24">Status</th>
+                                                <th className="relative text-[#3a60bf] font-normal py-6 text-base text-left ">Action</th>
                                             </tr>
                                         </thead>
                                         <tbody>
 
-                                            {projectList.map((item) => (
-                                                <ProjectItem item={item} key={item.key} />
-                                            ))}
+                                            {loading ?
+                                                [1, 2, 3, 4].map((item, index) => {
+                                                    return (
+                                                        <tr key={index} className="animate-pulse relative shadow rounded-md p-4 w-full mx-auto gap-2">
+                                                            <td className="space-x-4 py-2.5 px-0.5 w-full flex items-center">
+                                                                {/* <div className="rounded-full bg-slate-200 h-12 w-12"></div> */}
+                                                                <div className="flex-1 space-y-6 py-1">
+                                                                    <div className="h-2 bg-slate-200 rounded"></div>
+                                                                    <div className="space-y-3">
+                                                                        <div className="grid grid-cols-3 gap-4">
+                                                                            <div className="h-2 bg-slate-200 rounded col-span-2"></div>
+                                                                            <div className="h-2 bg-slate-200 rounded col-span-1"></div>
+                                                                        </div>
+                                                                        <div className="h-2 bg-slate-200 rounded"></div>
+                                                                    </div>
+                                                                </div>
+                                                            </td>
+                                                            <td className="space-x-4 py-2.5 px-0.5 w-1/12">
+                                                                {/* <div className="rounded-full bg-slate-200 h-10 w-10"></div> */}
+                                                                <div className="flex-1 space-y-6 py-1">
+                                                                    <div className="h-2 bg-slate-200 rounded"></div>
+                                                                    <div className="space-y-3">
+                                                                        <div className="grid grid-cols-3 gap-4">
+                                                                            <div className="h-2 bg-slate-200 rounded col-span-2"></div>
+                                                                            <div className="h-2 bg-slate-200 rounded col-span-1"></div>
+                                                                        </div>
+                                                                        <div className="h-2 bg-slate-200 rounded"></div>
+                                                                    </div>
+                                                                </div>
+                                                            </td>
+                                                            <td className="space-x-4 py-2.5 px-0.5 w-1/12">
+                                                                {/* <div className="rounded-full bg-slate-200 h-10 w-10"></div> */}
+                                                                <div className="flex-1 space-y-6 py-1">
+                                                                    <div className="h-2 bg-slate-200 rounded"></div>
+                                                                    <div className="space-y-3">
+                                                                        <div className="grid grid-cols-3 gap-4">
+                                                                            <div className="h-2 bg-slate-200 rounded col-span-2"></div>
+                                                                            <div className="h-2 bg-slate-200 rounded col-span-1"></div>
+                                                                        </div>
+                                                                        <div className="h-2 bg-slate-200 rounded"></div>
+                                                                    </div>
+                                                                </div>
+                                                            </td>
+                                                            <td className="space-x-4 py-2.5 px-0.5 w-[14%]">
+                                                                {/* <div className="rounded-full bg-slate-200 h-10 w-10"></div> */}
+                                                                <div className="flex-1 space-y-6 py-1">
+                                                                    <div className="h-2 bg-slate-200 rounded"></div>
+                                                                    <div className="space-y-3">
+                                                                        <div className="grid grid-cols-3 gap-4">
+                                                                            <div className="h-2 bg-slate-200 rounded col-span-2"></div>
+                                                                            <div className="h-2 bg-slate-200 rounded col-span-1"></div>
+                                                                        </div>
+                                                                        <div className="h-2 bg-slate-200 rounded"></div>
+                                                                    </div>
+                                                                </div>
+                                                            </td>
+                                                            <td className="space-x-4 py-2.5 px-0.5 w-1/12">
+                                                                {/* <div className="rounded-full bg-slate-200 h-10 w-10"></div> */}
+                                                                <div className="flex-1 space-y-6 py-1">
+                                                                    <div className="h-2 bg-slate-200 rounded"></div>
+                                                                    <div className="space-y-3">
+                                                                        <div className="grid grid-cols-3 gap-4">
+                                                                            <div className="h-2 bg-slate-200 rounded col-span-2"></div>
+                                                                            <div className="h-2 bg-slate-200 rounded col-span-1"></div>
+                                                                        </div>
+                                                                        <div className="h-2 bg-slate-200 rounded"></div>
+                                                                    </div>
+                                                                </div>
+                                                            </td>
+                                                            <td className="space-x-4 py-2.5 px-0.5 w-1/12">
+                                                                {/* <div className="rounded-full bg-slate-200 h-10 w-10"></div> */}
+                                                                <div className="flex-1 space-y-6 py-1">
+                                                                    <div className="h-2 bg-slate-200 rounded"></div>
+                                                                    <div className="space-y-3">
+                                                                        <div className="grid grid-cols-3 gap-4">
+                                                                            <div className="h-2 bg-slate-200 rounded col-span-2"></div>
+                                                                            <div className="h-2 bg-slate-200 rounded col-span-1"></div>
+                                                                        </div>
+                                                                        <div className="h-2 bg-slate-200 rounded"></div>
+                                                                    </div>
+                                                                </div>
+                                                            </td>
+                                                            
+                                                        </tr>
+                                                    )
+                                                }) : pages?.map((item, index) => (
+                                                    <ProjectItem item={item} key={index} />
+                                                ))}
                                         </tbody>
                                     </table>
+                                    <div className="list-none mt-10 flex items-center justify-center mb-4">
+                                        <PaginationButtons
+                                            totalPages={projectList.length / 10}
+                                            currentPage={currentPage}
+                                            setCurrentPage={setCurrentPage}
+                                        />
+                                    </div>
                                 </div>
                             </div>
                         </div>

@@ -1,9 +1,9 @@
-import { ComboBox, LoadingComponent } from "../../../components";
+import { ComboBox, LoadingComponent, PaginationButtons } from "../../../components";
 import { AiOutlineSearch } from 'react-icons/ai'
 import OrganizerItem from "./OrganizerItem";
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect } from "react";
-import { getAllCorsAction } from "../../../redux/slices/users/usersSlices";
+import { useEffect, useState } from "react";
+import { getAllCorsAction, resetSuccessAction } from "../../../redux/slices/users/usersSlices";
 
 const listItemCbb = [
     {
@@ -33,12 +33,27 @@ function UserMng() {
     useEffect(() => {
         dispatch(getAllCorsAction())
     }, [dispatch])
+    const [OrganizerList, setOrganizerList] = useState([])
+    const [currentPage, setCurrentPage] = useState(0);
+    const [pages, setPages] = useState([]);
+    const [filterKeyWord, setFilterKeyWord] = useState('');
     const storeData = useSelector(store => store?.users);
     const { corList, isSuccess, appErr, loading } = storeData;
 
     const onFilterValueSelected = (filterValue) => {
         console.log(filterValue)
     }
+    
+    useEffect(() => {
+        setPages([...OrganizerList.filter(item => ((item?.fullName).toLowerCase().includes(filterKeyWord.toLowerCase()) || (item?.email ?? '').toLowerCase().includes(filterKeyWord.toLowerCase())|| (item?.phoneNumber ?? '').toLowerCase().includes(filterKeyWord.toLowerCase()))).slice(currentPage * 10, (currentPage + 1) * 10)])
+    }, [currentPage, OrganizerList, filterKeyWord])
+    useEffect(() => {
+        if (isSuccess) {
+            dispatch(resetSuccessAction());
+            setOrganizerList([...corList]);
+            setPages([...corList.slice(currentPage * 10, (currentPage + 1) * 10)])
+        }
+    }, [isSuccess])
     return (
         <div className="px-10  pb-0">
             {loading && <LoadingComponent />}
@@ -58,12 +73,12 @@ function UserMng() {
                             <div className="relative flex justify-between items-center flex-wrap bg-transparent px-8 py-5">
                                 <div className="flex">
                                     <div className="relative mr-4">
-                                        <form action="#" method="post"  >
+                                        <div >
                                             <div className="relative mb-0">
                                                 <AiOutlineSearch fontSize={22} color="#a7a9ad" className="absolute l-3 t-0 h-10 justify-center ml-2 text-center z-10 " />
-                                                <input type='search' name="search-field" id="search-field" placeholder="Search" className="relative  focus:bg-white  mt-2 block w-72 border pt-1 pb-1 pl-10 h-9 pr-5 text-sm bg-[#f0f5f7] rounded-md" />
+                                                <input onChange={e=>setFilterKeyWord(e.target.value)} type='search' name="search-field" id="search-field" placeholder="Search" className="relative  focus:bg-white  mt-2 block w-72 border pt-1 pb-1 pl-10 h-9 pr-5 text-sm bg-[#f0f5f7] rounded-md" />
                                             </div>
-                                        </form>
+                                        </div>
                                     </div>
                                     <div className="w-40">
                                         <ComboBox listItem={listItemCbb} filterValueSelected={onFilterValueSelected} />
@@ -92,11 +107,18 @@ function UserMng() {
                                         </thead>
                                         <tbody>
 
-                                            {corList.map((item) => (
+                                            {pages.map((item) => (
                                                 <OrganizerItem item={item} key={item.userId} />
                                             ))}
                                         </tbody>
                                     </table>
+                                    <div className="list-none mt-10 flex items-center justify-center mb-4">
+                                        <PaginationButtons
+                                            totalPages={OrganizerList.length / 10}
+                                            currentPage={currentPage}
+                                            setCurrentPage={setCurrentPage}
+                                        />
+                                    </div>
                                 </div>
                             </div>
                         </div>

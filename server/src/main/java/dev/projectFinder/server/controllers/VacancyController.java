@@ -5,6 +5,7 @@ import dev.projectFinder.server.dtos.VacancyDTO;
 import dev.projectFinder.server.models.UnCompletedVacancy;
 import dev.projectFinder.server.models.User;
 import dev.projectFinder.server.models.Vacancy;
+import dev.projectFinder.server.services.UserServices;
 import dev.projectFinder.server.services.VacancyServices;
 import dev.projectFinder.server.utils.MessageKeys;
 import jakarta.validation.Valid;
@@ -115,4 +116,21 @@ public class VacancyController
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
     }
+
+    @PutMapping("/update-status-vacancy/{id}")
+    public ResponseEntity<?> updateStatusVacancy(@PathVariable String id, @RequestParam("status") String status){
+        HashMap<String, Object> response = new HashMap<>();
+        try{
+            vacancyServices.updateStatusVacancy(id, status);
+            response.put("message","Update status vacancy successfully!");
+            response.put("updateVacancyId", id);
+            response.put("status", status);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        }catch (Exception e) {
+            response.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+    }
+
+
 }

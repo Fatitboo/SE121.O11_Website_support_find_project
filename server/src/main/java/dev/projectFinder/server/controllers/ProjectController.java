@@ -1,5 +1,6 @@
 package dev.projectFinder.server.controllers;
 
+import dev.projectFinder.server.components.RecentProject;
 import dev.projectFinder.server.components.Vacancy.UserInfo;
 import dev.projectFinder.server.dtos.ProjectDTO;
 import dev.projectFinder.server.dtos.VacancyDTO;
@@ -55,6 +56,34 @@ public class ProjectController {
         try{
             HashMap<String, Object> projectVacancies = projectService.getProjectInfo(projectId);
             response.put("res", projectVacancies);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        }catch (Exception e) {
+            response.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+    }
+
+    @GetMapping("/get-all-projects")
+    public ResponseEntity<?> getAllProjects(){
+        HashMap<String, Object> response = new HashMap<>();
+        try{
+            List<RecentProject> projects = projectService.getAllProjects();
+
+            response.put("projects", projects);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        }catch (Exception e) {
+            response.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+    }
+    @PutMapping("/update-status-vacancy/{id}")
+    public ResponseEntity<?> updateStatusVacancy(@PathVariable String id, @RequestParam("status") String status){
+        HashMap<String, Object> response = new HashMap<>();
+        try{
+            projectService.updateStatusProject(id, status);
+            response.put("message","Update status project successfully!");
+            response.put("updateProjectId", id);
+            response.put("status", status);
             return ResponseEntity.status(HttpStatus.OK).body(response);
         }catch (Exception e) {
             response.put("message", e.getMessage());

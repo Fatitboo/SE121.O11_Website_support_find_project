@@ -8,7 +8,10 @@ import {
     OccupationMng, 
     AddOccupation, 
     EditOccupation ,
-    CompanyProfileAdmin
+    CompanyProfileAdmin,
+    ManageVacancyAdmin,
+    VacancyInfoAdmin,
+    ProjectDetailAdmin
 } from "../pages/Admin"
 import {
     Home, 
@@ -88,7 +91,9 @@ const publicRoutes = [
     {path:'/Admin/user-management', component: UserMng, layout: LayoutHasSidebar},
     {path:'/Admin/user-management/:id', component: CompanyProfileAdmin, layout: LayoutHasSidebar},
     {path:'/Admin/approval-project', component: Approval, layout: LayoutHasSidebar},
-    {path:'/Admin/approval-project/:id', component: ProjectInfo, layout: LayoutHasSidebar},
+    {path:'/Admin/approval-project/:id', component: ProjectDetailAdmin, layout: LayoutHasSidebar},
+    {path:'/Admin/manage-vacancy', component: ManageVacancyAdmin, layout: LayoutHasSidebar},
+    {path:'/Admin/manage-vacancy/:id', component: VacancyInfoAdmin, layout: LayoutHasSidebar},
     {path:'/Admin', component: Dashboard, layout: LayoutHasSidebar},
     {path:'/Admin/skills-management', component: Skills, layout: LayoutHasSidebar},
     {path:'/Admin/occupation-management', component: OccupationMng, layout: LayoutHasSidebar},

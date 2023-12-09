@@ -294,20 +294,7 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
     }
-    @GetMapping("/get-all-cors")
-    public ResponseEntity<?> getAllCors(){
-        HashMap<String, Object> response = new HashMap<>();
-        try{
-            List<User> users = userServices.getAllUser();
-            List<User> cors = users.stream().filter(user-> user.getUserType().equals("organizer")).toList();
-            response.put("message","Get all organizers successfully" );
-            response.put("users",cors);
-            return ResponseEntity.status(HttpStatus.OK).body(response);
-        }catch (Exception e) {
-            response.put("message", e.getMessage());
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
-        }
-    }
+
     @GetMapping("/get-all-seekers")
     public ResponseEntity<?> getAllSeekers(){
         HashMap<String, Object> response = new HashMap<>();
@@ -476,5 +463,30 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
     }
-
+    @GetMapping("/get-data-statistical-admin")
+    public ResponseEntity<?> getDataStatisticalAdmin(){
+        HashMap<String, Object> response = new HashMap<>();
+        try{
+            response = userServices.getDataStatisticalAdmin("6556ca3b5e265815afd0ffca");
+            response.put("message","Get data statistical admin successfully" );
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        }catch (Exception e) {
+            response.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+    }
+    @GetMapping("/get-all-organizers")
+    public ResponseEntity<?> getAllOrganizer(){
+        HashMap<String, Object> response = new HashMap<>();
+        try{
+            List<User> users = userServices.getAllUser();
+            List<User> cors = users.stream().filter(user-> user.getUserType().equals("organizer")).toList();
+            response.put("message","Get all organizers successfully" );
+            response.put("users",cors);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        }catch (Exception e) {
+            response.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+    }
 }

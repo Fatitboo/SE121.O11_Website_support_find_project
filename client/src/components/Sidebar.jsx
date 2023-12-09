@@ -14,6 +14,7 @@ import { logoutUserAction } from '../redux/slices/users/usersSlices';
 import {createVacancyId, setValueSuccess} from '../redux/slices/vacancies/vacanciesSlices';
 import store from '../redux/store/store';
 import { BiBookmark } from 'react-icons/bi';
+import { BsBagDash } from 'react-icons/bs';
 
 
 function Sidebar({user}) {
@@ -53,13 +54,19 @@ function Sidebar({user}) {
                             <div className={classNames(isActive === 'Projects' ? 'bg-[#E9EFFB] text-blue-600' : '', itemStyle)}>
                                 <Link to="/Admin/approval-project" onClick={()=>setActive('Projects')} className="relative text-sm text-center p-3 flex items-center leading-7 font-normal  capitalize rounded-lg ">
                                     <MdOutlineFactCheck className='relative mr-4 ml-4 text-2xl text-center ' />
-                                    Projects
+                                    Manage Projects
                                 </Link>
                             </div>
-                            <div className={classNames(isActive === 'Originazer' ? 'bg-[#E9EFFB] text-blue-600' : '', itemStyle)}>
-                                <Link to="/Admin/user-management" onClick={()=>setActive('Originazer')} className="relative text-sm text-center p-3 flex items-center leading-7 font-normal  capitalize rounded-lg ">
+                            <div className={classNames(isActive === 'Organizer' ? 'bg-[#E9EFFB] text-blue-600' : '', itemStyle)}>
+                                <Link to="/Admin/user-management" onClick={()=>setActive('Organizer')} className="relative text-sm text-center p-3 flex items-center leading-7 font-normal  capitalize rounded-lg ">
                                     <FiUsers className='relative mr-4 ml-4 text-2xl text-center ' />
-                                    Originazer
+                                    Manage Organizer
+                                </Link>
+                            </div>
+                            <div className={classNames(isActive === 'Manage Vacancy' ? 'bg-[#E9EFFB] text-blue-600' : '', itemStyle)}>
+                                <Link onClick={()=>setActive('Manage Vacancy')} to="/Admin/manage-vacancy" className="relative text-sm text-center p-3 flex items-center leading-7 font-normal  capitalize rounded-lg ">
+                                    <BsBagDash className='relative mr-4 ml-4 text-2xl text-center ' />
+                                    Manage Vacancy
                                 </Link>
                             </div>
                             {/* <div className={classNames(isActive === 'Skills' ? 'bg-[#E9EFFB] text-blue-600' : '', itemStyle)}>

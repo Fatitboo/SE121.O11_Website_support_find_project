@@ -29,8 +29,31 @@ export const getAllProjectsUser = createAsyncThunk(
         }
     }
 )
+//get all projects Admin
+export const getAllProjectsAdmin  = createAsyncThunk(
+    'project/getAllProjectsAdmin',
+    async (payload, {rejectWithValue, getState, dispatch}) => {
+        try {
+            const user = getState()?.users;
+            const {userAuth}=user;
+            // http call 
+            const config = {
+                headers:{
+                    Authorization: `Bearer ${userAuth?.user?.token}`,
+                    'Content-Type':'application/json',
+                },
+            };
 
-
+            const {data} = await axios.get(`${baseUrl}/${apiPrefix}/get-all-projects`, config);
+            return data;
+        } catch (error) {
+            if(!error?.response){
+                throw error;
+            }
+            return rejectWithValue(error?.response?.data);
+        }
+    }
+)
 //create project
 export const createProject = createAsyncThunk(
     'projects/createProjectId',
@@ -83,7 +106,20 @@ export const getProjectSingle = createAsyncThunk(
         }
     }
 )
-
+//Set success
+export const resetSuccessAction = createAsyncThunk(
+    "projects/resetSuccess",
+    async (data, { rejectWithValue, getState, dispatch }) => {
+        try {
+            return data;
+        } catch (error) {
+            if (!error?.response) {
+                throw error;
+            }
+            return rejectWithValue(error?.response?.data);
+        }
+    }
+);
 export function setValueSuccess(value){
     return function setValueSuccess(dispatch, getState){
         dispatch(projectsSlices.actions.setValueSuccess(value))
@@ -117,6 +153,24 @@ const projectsSlices = createSlice({
             state.loading=false;
             state.appErr = action?.payload?.message;
         })
+        //get all projects admin
+        builder.addCase(getAllProjectsAdmin.pending, (state, action)=>{
+            state.loading=true;
+            state.isSuccess = false;
+
+        }),
+        builder.addCase(getAllProjectsAdmin.fulfilled, (state, action)=>{
+            state.loading=false;
+            state.projectsAdmin = action?.payload?.projects;
+            state.isSuccess = true;
+
+        }),
+        builder.addCase(getAllProjectsAdmin.rejected, (state, action)=>{
+            state.loading=false;
+            state.appErr = action?.payload?.message;
+            state.isSuccess = false;
+
+        })
         //create project
         builder.addCase(createProject.pending, (state, action)=>{
             state.loading=true;
@@ -144,6 +198,9 @@ const projectsSlices = createSlice({
             state.loading=false;
             state.appErr = action?.payload?.message;
         })
+        builder.addCase(resetSuccessAction.fulfilled, (state, action) => {
+            state.isSuccess = false;
+        });
     }    
 });
 

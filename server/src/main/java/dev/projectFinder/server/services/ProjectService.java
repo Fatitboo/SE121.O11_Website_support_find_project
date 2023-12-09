@@ -1,5 +1,6 @@
 package dev.projectFinder.server.services;
 
+import dev.projectFinder.server.components.RecentProject;
 import dev.projectFinder.server.dtos.ProjectDTO;
 import dev.projectFinder.server.models.Project;
 import dev.projectFinder.server.models.User;
@@ -23,7 +24,7 @@ public class ProjectService {
     private final UserRepository userRepository;
     private final ProjectRepository projectRepository;
     private final VacancyRepository vacancyRepository;
-
+    private final UserServices userServices;
 
     public Project createProject(String id, ProjectDTO projectDTO) throws Exception {
         Optional<User> userOptional = userRepository.findById(new ObjectId(id));
@@ -31,7 +32,6 @@ public class ProjectService {
             throw new DataIntegrityViolationException("Error when get user in database");
         }
         User user = userOptional.get();
-
         Project project = Project.builder().build();
 
         project.initValue(projectDTO, id);
@@ -49,6 +49,7 @@ public class ProjectService {
         user.setProjects(projectIds);
 
         userRepository.save(user);
+        userServices.increaseViews("6556ca3b5e265815afd0ffca");
 
         return project;
     }
@@ -95,5 +96,27 @@ public class ProjectService {
         hashMap.put("project", project);
         hashMap.put("vacancies", vacancies);
         return hashMap;
+    }
+
+    public List<RecentProject> getAllProjects(){
+        List<Project> projects =  projectRepository.findAll();
+        List<RecentProject> recentProjects = new ArrayList<>();
+        for (Project project: projects){
+            User fUser = userRepository.findById(project.getUserId()).get();
+            recentProjects.add(new RecentProject(project,
+                    fUser.getFullName(),
+                    fUser.getAvatar()!=null ? fUser.getAvatar().getFileUrl() : "https://pic.onlinewebfonts.com/thumbnails/icons_148020.svg",
+                    fUser.getAddress()!=null ? fUser.getAddress().getProvince() : "No information"));
+        }
+        return recentProjects;
+    }
+    public void updateStatusProject(String id,String status){
+        Optional<Project> projectOptional = projectRepository.findById(new ObjectId(id));
+        if(projectOptional.isEmpty()){
+            throw new DataIntegrityViolationException("Error when get project in database!");
+        }
+        Project project=  projectOptional.get();
+        project.setStatus(status);
+        projectRepository.save(project);
     }
 }

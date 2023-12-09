@@ -84,7 +84,7 @@ public class Vacancy {
 
     // admin approval
     // 1. pending
-    // 2. fullfil
+    // 2. fulfil
     // 3. rejected
     private String approvalStatus;
 
