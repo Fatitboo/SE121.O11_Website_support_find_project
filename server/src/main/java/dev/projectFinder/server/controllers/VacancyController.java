@@ -40,7 +40,6 @@ public class VacancyController
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
     }
-
     //POSTING
     @GetMapping("/posting/{id}")
     public ResponseEntity<?> getCurrentJobComponent(@PathVariable String id){
@@ -48,6 +47,7 @@ public class VacancyController
         try{
             HashMap<Integer, Object> currentJobComponent = vacancyServices.getCurrentJobComponent(id);
             response.put("flag", currentJobComponent.keySet().toArray()[0]);
+            response.put("id", id);
             response.put("currentJobComponent", currentJobComponent.values().toArray()[0]);
             return ResponseEntity.status(HttpStatus.OK).body(response);
         }catch (Exception e) {
@@ -88,6 +88,18 @@ public class VacancyController
             return ResponseEntity.ok(response);
         }catch (Exception e){
             response.put("message",e.getMessage() );
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+    }
+    @GetMapping("/uncompleted-vacancy/{id}")
+    public ResponseEntity<?> getFullUnCompletedVacancy(@PathVariable String id){
+        HashMap<String, Object> response = new HashMap<>();
+        try{
+            UnCompletedVacancy unCompletedVacancy = vacancyServices.getFullUnCompletedVacancy(id);
+            response.put("unCompletedVacancy", unCompletedVacancy);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        }catch (Exception e) {
+            response.put("message", e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
     }
@@ -132,18 +144,17 @@ public class VacancyController
         }
     }
 
-    @DeleteMapping("/delete-incomplete-vacancy/{id}")
-    public ResponseEntity<?> deleteIncompleteVacancy(@PathVariable String id){
+    @DeleteMapping("/delete-uncompleted-vacancy/{id}")
+    public ResponseEntity<?> deleteUncompletedVacancy(@PathVariable String id){
         HashMap<String, Object> response = new HashMap<>();
         try{
-            vacancyServices.deleteIncompleteVacancy(id);
-            response.put("message","Delete incomplete vacancy successfully!");
-            response.put("deleteIncplVacancyId", id);
+            vacancyServices.deleteUncompletedVacancy(id);
+            response.put("message","Delete vacancy successfully!");
+            response.put("id", id);
             return ResponseEntity.status(HttpStatus.OK).body(response);
         }catch (Exception e) {
             response.put("message", e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
     }
-
 }

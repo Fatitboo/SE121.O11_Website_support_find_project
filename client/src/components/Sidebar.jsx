@@ -33,7 +33,7 @@ function Sidebar({user}) {
     useEffect(() => {
         if(isSuccess) {
             dispatch(setValueSuccess(false))
-            navigate("/Organizer/post-project/jobId=" + vacancyId)
+            navigate("/Organizer/post-vacancy/jobId=" + vacancyId)
         }
     }, [isSuccess])
 

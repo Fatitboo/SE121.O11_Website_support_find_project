@@ -4,11 +4,11 @@ import { useEffect, useRef, useState } from "react";
 import { AiFillExclamationCircle } from "react-icons/ai";
 import { Validate, FormErrors } from "./validator";
 import { useDispatch, useSelector } from "react-redux";
-import { getVacancyComponent, setValueSuccess, updateVacancyComponent } from "../../../../redux/slices/vacancies/vacanciesSlices";
+import { getVacancyComponent, resetComponent, setValueSuccess, updateVacancyComponent } from "../../../../redux/slices/vacancies/vacanciesSlices";
 
 const showBy = [{ id: 1, name:"Fixed hours"}, { id: 2, name: "Range"}, { id: 3, name: "Maximum"}, { id: 4, name: "Minimum"}]
 const period = [{ id: 1, name:"month(s)"}, { id: 2, name: "week(s)"}, { id: 3, name: "day(s)"}]
-function JobDetail({formSubmit, formId, flag}) {
+function JobDetail({formSubmit, formId, flag, config, content, onDoneSubmit}) {
     const dispatch = useDispatch();
     const {currentJobComponent, vacancyId, isSuccess} = useSelector(store => store.vacancies)
     let [jobTypes] = useState([{ id: 0, name: "Full-time", value: 0}, { id: 1, name: "Part-time", value: 1}, { id: 2, name: "Temporary", value: 2}, { id: 3, name: "Contract", value: 3}, { id: 4, name: "Internship", value: 4}, { id: 5, name: "Commission", value: 5}, { id: 6, name: "New-Grad", value: 6}, { id: 7, name: "Permanent", value: 7}])
@@ -63,8 +63,15 @@ function JobDetail({formSubmit, formId, flag}) {
     useEffect(() => {
         if(isSuccess){
             dispatch(setValueSuccess(false))
-            formSubmit()
+            if(config){
+                onDoneSubmit()
+            }
+            else{
+                dispatch(resetComponent())
+                formSubmit()
+            }
         }
+
     }, [isSuccess])
 
     useEffect(() => {
@@ -176,14 +183,17 @@ function JobDetail({formSubmit, formId, flag}) {
     return (  
         <>
             <div>
-                <div className="flex flex-row justify-between bg-[#faf9f8] rounded-xl -mx-8">
-                    <div className="flex items-center m-8">
-                        <span className="text-[#2D2D2D] text-[28px] font-bold">Add job details</span>                        
+                {
+                    config ? null :
+                    <div className="flex flex-row justify-between bg-[#faf9f8] rounded-xl -mx-8">
+                        <div className="flex items-center m-8">
+                            <span className="text-[#2D2D2D] text-[28px] font-bold">Add job details</span>                        
+                        </div>
+                        <div className="col-span-3 flex mr-8">
+                            <img src={JobDetailImage} alt="" className="h-52 overflow-hidden"/>
+                        </div>
                     </div>
-                    <div className="col-span-3 flex mr-8">
-                        <img src={JobDetailImage} alt="" className="h-52 overflow-hidden"/>
-                    </div>
-                </div>
+                }
                 <div className="p-8">
                     <form id={formId} onSubmit={handleSubmit}>
                         <CustomCheckBox listItem={jobTypes} name="jobTypes" rules="requiredCb" selectedItem={currentJobComponent?.jobTypes} error={errors.jobTypes} filterValueChecked={filterValueChecked} onBlur={blurElement} label="What type of job is it?*"/> 
@@ -205,11 +215,11 @@ function JobDetail({formSubmit, formId, flag}) {
                                                             type="text"
                                                             name="showBy_1"
                                                             rules={`requiredText|number|positiveNumber|maxHourWeek|max:${inputsValues.showBy_2}`}
-                                                            value={inputsValues.showBy_1}
+                                                            value={inputsValues.showBy_1 || ''}
                                                             onBlur={blurElement}
                                                             onChange={handleChange}
                                                             style={{borderColor: `${errors.showBy_1 ? "#a9252b": ""}`, outlineColor: `${errors.showBy_1 ? "#a9252b": ""}`}}
-                                                            className={`w-full block bg-[#f9fbfc] focus:bg-white text-base shadow-sm rounded-md py-2.5 pl-5 pr-5 text-gray-900 border border-gray-300 placeholder:text-gray-400 sm:text-base sm:leading-8`}
+                                                            className={`w-full block bg-[#f9fbfc] focus:bg-white text-base shadow-sm rounded-md py-2 pl-5 pr-5 text-gray-900 border border-gray-300 placeholder:text-gray-400 sm:text-base sm:leading-8`}
                                                         />                                                        
                                                     </div>
                                                 </div>
@@ -226,7 +236,7 @@ function JobDetail({formSubmit, formId, flag}) {
                                                             value={inputsValues.showBy_2}
                                                             onChange={handleChange}
                                                             style={{borderColor: `${errors.showBy_2 ? "#a9252b": ""}`, outlineColor: `${errors.showBy_2 ? "#a9252b": ""}`}}
-                                                            className={`w-full bg-[#f9fbfc] focus:bg-white text-base shadow-sm rounded-md py-2.5 pl-5 pr-5 text-gray-900 border border-gray-300 placeholder:text-gray-400 sm:text-base sm:leading-8`}
+                                                            className={`w-full bg-[#f9fbfc] focus:bg-white text-base shadow-sm rounded-md py-2 pl-5 pr-5 text-gray-900 border border-gray-300 placeholder:text-gray-400 sm:text-base sm:leading-8`}
                                                         />
                                                     </div>) : null
                                                 }
@@ -261,7 +271,7 @@ function JobDetail({formSubmit, formId, flag}) {
                                                     value={inputsValues.length}
                                                     style={{borderColor: `${errors.length ? "#a9252b": ""}`, outlineColor: `${errors.length ? "#a9252b": ""}`}}
                                                     rules="requiredText|number|positiveNumber"
-                                                    className={`w-full bg-[#f9fbfc] focus:bg-white text-base shadow-sm rounded-md py-2.5 pl-5 pr-5 text-gray-900 border border-gray-300 placeholder:text-gray-400 sm:text-base sm:leading-8`}
+                                                    className={`w-full bg-[#f9fbfc] focus:bg-white text-base shadow-sm rounded-md py-2 pl-5 pr-5 text-gray-900 border border-gray-300 placeholder:text-gray-400 sm:text-base sm:leading-8`}
                                                 />
                                             </div>
                                             <div>

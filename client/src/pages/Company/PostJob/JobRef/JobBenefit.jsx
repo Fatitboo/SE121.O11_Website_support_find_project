@@ -4,9 +4,9 @@ import { CustomComboBox } from "../../../../components";
 import { useEffect, useState } from "react";
 import { FormErrors, Validate } from "./validator";
 import { useDispatch, useSelector } from "react-redux";
-import { getVacancyComponent, setValueSuccess, updateVacancyComponent } from "../../../../redux/slices/vacancies/vacanciesSlices";
+import { getVacancyComponent, resetComponent, setValueSuccess, updateVacancyComponent } from "../../../../redux/slices/vacancies/vacanciesSlices";
 
-function JobBenefit({formId, formSubmit, flag}) {
+function JobBenefit({formId, formSubmit, flag, config, content, onDoneSubmit}) {
     const dispatch = useDispatch();
     const {currentJobComponent, vacancyId, isSuccess} = useSelector(store => store.vacancies)
     const showPayBy = [{ id: 1, name:"Range"}, { id: 2, name: "Starting amount"}, { id: 3, name: "Maximum amount"}, { id: 4, name: "Exact amount"}]
@@ -53,9 +53,15 @@ function JobBenefit({formId, formSubmit, flag}) {
     }
 
     useEffect(() => {
-        if(isSuccess ) {
+        if(isSuccess){
             dispatch(setValueSuccess(false))
-            formSubmit()
+            if(config){
+                onDoneSubmit()
+            }
+            else{
+                dispatch(resetComponent())
+                formSubmit()
+            }
         }
         
     }, [isSuccess])
@@ -118,17 +124,21 @@ function JobBenefit({formId, formSubmit, flag}) {
     return (  
         <>
             <div>
-                <div className="flex flex-row justify-between bg-[#faf9f8] rounded-xl -mx-8">
-                    <div className="flex items-center m-8">
-                        <span className="text-[#2D2D2D] text-[28px] font-bold">Add pay and benefits</span>                        
+                {
+                    config ? null :
+                    <div className="flex flex-row justify-between bg-[#faf9f8] rounded-xl -mx-8">
+                        <div className="flex items-center m-8">
+                            <span className="text-[#2D2D2D] text-[28px] font-bold">Add pay and benefits</span>                        
+                        </div>
+                        <div className="col-span-3 flex mr-8">
+                            <img src={JobBenefitImage} alt="" className="h-52 overflow-hidden"/>
+                        </div>
                     </div>
-                    <div className="col-span-3 flex mr-8">
-                        <img src={JobBenefitImage} alt="" className="h-52 overflow-hidden"/>
-                    </div>
-                </div>
+                }
                 <div className="p-8">
                     <form id={formId} onSubmit={handleSubmit}>
-                        <div className="mt-6">
+                        {config ? null :<div className="h-6"></div>}
+                        <div className="">
                             <p className='block leading-8 text-gray-900 text-base font-semibold' style={{color: `${errors.pay_1 || errors.pay_2 ? "#a9252b": ''}`}}>Expected hours</p>
                             <div className="flex flex-row items-center gap-2">
                                 <div className="flex flex-row items-center gap-2 w-full">
@@ -147,7 +157,7 @@ function JobBenefit({formId, formSubmit, flag}) {
                                                     value={inputsValues.pay_1}
                                                     onChange={handleChange}
                                                     style={{borderColor: `${errors.pay_1 ? "#a9252b" : ''}`, outlineColor: `${errors.pay_1 ? "#a9252b" : ''}`}}
-                                                    className={`w-full block bg-[#f9fbfc] focus:bg-white text-base shadow-sm rounded-md py-2.5 pl-5 pr-5 text-gray-900 border border-gray-300 placeholder:text-gray-400 sm:text-base sm:leading-8`}
+                                                    className={`w-full block bg-[#f9fbfc] focus:bg-white text-base shadow-sm rounded-md py-2 pl-5 pr-5 text-gray-900 border border-gray-300 placeholder:text-gray-400 sm:text-base sm:leading-8`}
                                                 />                                                        
                                             </div>
                                         </div>
@@ -164,7 +174,7 @@ function JobBenefit({formId, formSubmit, flag}) {
                                                         value={inputsValues.pay_2}
                                                         onChange={handleChange}
                                                         style={{borderColor: `${errors.pay_2 ? "#a9252b" : ''}`, outlineColor: `${errors.pay_2 ? "#a9252b" : ''}`}}
-                                                        className={`w-full bg-[#f9fbfc] focus:bg-white text-base shadow-sm rounded-md py-2.5 pl-5 pr-5 text-gray-900 border border-gray-300 placeholder:text-gray-400 sm:text-base sm:leading-8`}
+                                                        className={`w-full bg-[#f9fbfc] focus:bg-white text-base shadow-sm rounded-md py-2 pl-5 pr-5 text-gray-900 border border-gray-300 placeholder:text-gray-400 sm:text-base sm:leading-8`}
                                                     />
                                                 </div>
                                             </> : null

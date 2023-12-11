@@ -67,22 +67,22 @@ public class VacancyServices {
         HashMap<Integer, Object> data = new HashMap<>();
         switch (unCompletedVacancy.getFlag()){
             case 0:
-                data.put(unCompletedVacancy.getFlag(), unCompletedVacancy.getJobBasic());
+                data.put(0, unCompletedVacancy.getJobBasic());
                 break;
             case 1:
-                data.put(unCompletedVacancy.getFlag(), unCompletedVacancy.getJobDetail());
+                data.put(1, unCompletedVacancy.getJobDetail());
                 break;
             case 2:
-                data.put(unCompletedVacancy.getFlag(), unCompletedVacancy.getJobBenefit());
+                data.put(2, unCompletedVacancy.getJobBenefit());
                 break;
             case 3:
-                data.put(unCompletedVacancy.getFlag(), unCompletedVacancy.getJobDes());
+                data.put(3, unCompletedVacancy.getJobDes());
                 break;
             case 4:
-                data.put(unCompletedVacancy.getFlag(), unCompletedVacancy.getJobRef());
+                data.put(4, unCompletedVacancy.getJobRef());
                 break;
             case 5:
-                data.put(unCompletedVacancy.getFlag(), unCompletedVacancy.getJobPreScreen());
+                data.put(5, unCompletedVacancy.getJobPreScreen());
                 break;
         }
         return data;
@@ -197,6 +197,34 @@ public class VacancyServices {
         }
         return vacancyOptional.get();
     }
+    public UnCompletedVacancy getFullUnCompletedVacancy(String id) throws Exception{
+        Optional<UnCompletedVacancy> unCompletedVacancyOptional = unCompletedVacancyRepository.findById(new ObjectId(id));
+            if(unCompletedVacancyOptional.isEmpty()){
+            throw new DataIntegrityViolationException("Error when get job in database");
+        }
+        return unCompletedVacancyOptional.get();
+    }
+    public void deleteUncompletedVacancy(String id){
+        Optional<UnCompletedVacancy> unCompletedVacancyOptional = unCompletedVacancyRepository.findById(new ObjectId(id));
+        if(unCompletedVacancyOptional.isEmpty()){
+            throw new DataIntegrityViolationException("Error when get job in database");
+        }
+        UnCompletedVacancy unCompletedVacancy = unCompletedVacancyOptional.get();
+        String userId = unCompletedVacancy.getUserInfo().getUserId();
+
+        Optional<User> userOptional = userRepository.findById(new ObjectId(userId));
+        if(userOptional.isEmpty()){
+            throw new DataIntegrityViolationException("Error when get user in database");
+        }
+        User user = userOptional.get();
+
+        List<String> unCompletedVacancyIds = user.getUnCompletedVacancies();
+        unCompletedVacancyIds.remove(unCompletedVacancy.getVacancyId().toString());
+        user.setUnCompletedVacancies(unCompletedVacancyIds);
+
+        userRepository.save(user);
+        unCompletedVacancyRepository.deleteById(unCompletedVacancy.getVacancyId());
+    }
     public void updateStatusVacancy(String id,String status){
         Optional<Vacancy> vacancyOptional = vacancyRepository.findById(new ObjectId(id));
         if(vacancyOptional.isEmpty()){
@@ -209,9 +237,5 @@ public class VacancyServices {
         }
         vacancyRepository.save(vacancy);
     }
-    public void deleteIncompleteVacancy(String id){
-        Optional<UnCompletedVacancy> optionalUnCompletedVacancy = unCompletedVacancyRepository.findById(new ObjectId(id));
-        if(optionalUnCompletedVacancy.isEmpty()) throw  new DataIntegrityViolationException("Error when get incomplete vacancy in database!");
-        unCompletedVacancyRepository.deleteById(new ObjectId(id));
-    }
+    
 }

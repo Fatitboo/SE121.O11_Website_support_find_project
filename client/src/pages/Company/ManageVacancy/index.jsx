@@ -8,14 +8,16 @@ import { useDispatch, useSelector } from "react-redux";
 import { deleteIncompleteVacancy, getVacancyCor, resetSuccessAction } from "../../../redux/slices/vacancies/vacanciesSlices";
 import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
+import { deleteuncompletedVacancyAction, getVacancyCor, resetSuccessAction } from "../../../redux/slices/vacancies/vacanciesSlices";
+import { Link, useNavigate } from "react-router-dom";
 
 const listPostedCbb = [ { id: 1,name: 'All'},{id: 2,name: 'Posted'},{id: 3, name: 'UnPosted' }]
 const listApprovedCbb = [ { id: 1,name: 'All'},{id: 2,name: 'Approved'},{id: 3, name: 'UnApproved' }]
 
 function ManageVacancy() {
     const dispatch = useDispatch();
+    const navigate = useNavigate();
     const [completeList, setCompleteList] = useState([])
-    const [incompleteList, setIncompleteList] = useState([])
     const [currentPage, setCurrentPage] = useState(0);
     const [pages, setPages] = useState([]);
     const [filterKeyWord, setFilterKeyWord] = useState('');
@@ -40,13 +42,21 @@ function ManageVacancy() {
             setCompleteList([...complete.filter(i => !i.post)])
         }
     }
+
+    const handleToPosting = (item) => {
+        navigate(`/Organizer/post-vacancy/${item.vacancyId}`)
+    }
+
+    const handleDeleteInComplete = (item) => {
+        dispatch(deleteuncompletedVacancyAction(item.vacancyId))
+    }
+
     useEffect(() => {
         setPages([...completeList.filter(item => ((item?.vacancyName).toLowerCase().includes(filterKeyWord.toLowerCase()) || (item?.projectName ?? '').toLowerCase().includes(filterKeyWord.toLowerCase())) ).slice(currentPage * 10, (currentPage + 1) * 10)])
     }, [currentPage, completeList, filterKeyWord])
     useEffect(() => {
         if (isSuccess2) {
             dispatch(resetSuccessAction());
-            setIncompleteList([...incomplete]);
             setCompleteList([...complete]);
             setPages([...complete.slice(currentPage * 10, (currentPage + 1) * 10)])
         }
@@ -96,20 +106,20 @@ function ManageVacancy() {
 
                             {/* Start header of content */}
                             <div className="relative flex justify-between items-center flex-wrap bg-transparent px-6 pt-8">
-                                {incompleteList.length !== 0 ?
+                                {incomplete?.length !== 0 ?
                                     <table className="relative w-full overflow-y-hidden overflow-x-hidden rounded-md mb-8 bg-white border-0 ">
                                         <thead className=" color-white border-transparent border-0 w-full">
                                             <tr className="bg-red-50 w-full border-b border-solid border-[#ecedf2]">
-                                                <th className="relative  font-medium py-6 text-base text-left w-4/12 pl-6 ">ImComplete vacancy</th>
+                                                <th className="relative  font-medium py-6 text-base text-left w-4/12 pl-6 ">InComplete vacancy</th>
                                                 <th className="relative  font-medium py-6 text-base text-left w-6/12 pl-6 "></th>
                                                 <th className="relative  font-medium py-6 text-base text-left w-2/12 pl-10 ">Status</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             {
-                                                incompleteList?.map((item, index) => {
+                                                incomplete?.map((item, index) => {
                                                     return (
-                                                        <tr key={index} className="relative border-b border-solid border-[#ecedf2] w-full hover:bg-[#f4f2f2] cursor-pointer px-5  ">
+                                                        <tr key={index} className="relative border-b border-solid border-[#ecedf2] w-full hover:bg-[#f4f2f2] cursor-pointer px-5 ">
                                                             <td className="relative pl-5 py-5 font-normal text-base w-4/12">
                                                                 <div className="mb-0 relative h-16 ">
                                                                     <div className="pl-2">
@@ -127,12 +137,12 @@ function ManageVacancy() {
                                                                 <div className="mb-0 relative h-16 flex rounded border border-red-300 items-center justify-between px-3 bg-red-50">
                                                                     <AiFillExclamationCircle size={20} className="text-red-600" />
                                                                     <div>Your vacancy posting is incomplete.</div>
-                                                                    <CustomButton title={'Finish posting'} containerStyles="text-white justify-center w-fit flex py-2  px-4  focus:outline-none bg-blue-700 hover:bg-blue-900 rounded-md text-base " />
+                                                                    <CustomButton onClick={() => handleToPosting(item)} title={'Finish posting'} containerStyles="text-white justify-center w-fit flex py-2  px-4  focus:outline-none bg-blue-700 hover:bg-blue-900 rounded-md text-base " />
                                                                 </div>
                                                             </td>
                                                             <td className=" flex items-center justify-between mt-8 pr-4 pl-8">
                                                                 <div >Incomplete</div>
-                                                                <Menu as="div" className="relative ">
+                                                                <Menu as="div" className="relative z-10">
                                                                     <div>
                                                                         <Menu.Button className="mt-2 rounded-md text-black text-sm font-medium hover:bg-black/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/75">
                                                                             <BiDotsVerticalRounded size={20} />
@@ -150,7 +160,7 @@ function ManageVacancy() {
                                                                             <div className="px-1 py-1 ">
                                                                                 <Menu.Item>
                                                                                     {({ active }) => (
-                                                                                        <button className={`${active ? 'bg-blue-500 text-white' : 'text-gray-900'} group flex w-full items-center rounded-md px-2 py-2 text-sm`} >
+                                                                                        <button className={`${active ? 'bg-blue-500 text-white' : 'text-gray-900'} group flex w-full items-center rounded-md px-2 py-2 text-sm`} onClick={() => handleToPosting(item)}>
                                                                                             <BiEdit className="mr-2 h-5 w-5" aria-hidden="true" />
                                                                                             Continue
                                                                                         </button>
@@ -160,7 +170,7 @@ function ManageVacancy() {
                                                                             <div className="px-1 py-1">
                                                                                 <Menu.Item>
                                                                                     {({ active }) => (
-                                                                                        <button onClick={()=>handleDeleteincompleteVacancy(item?.vacancyId)} className={`${active ? 'bg-blue-500 text-white' : 'text-gray-900'} group flex w-full items-center rounded-md px-2 py-2 text-sm`} >
+                                                                                        <button onClick={() => {handleDeleteInComplete(item)}} className={`${active ? 'bg-blue-500 text-white' : 'text-gray-900'} group flex w-full items-center rounded-md px-2 py-2 text-sm`} >
                                                                                             <BiTrash className="mr-2 h-5 w-5 text-red-400" aria-hidden="true" />
                                                                                             Delete
                                                                                         </button>
@@ -183,8 +193,9 @@ function ManageVacancy() {
                             </div>
 
                             {/* Start table */}
+                            <div onClick={() => console.log(incomplete)}>click me</div>
                             <div className="px-6 relative">
-                                <div className="overflow-y-hidden overflow-x-auto">
+                                <div className="overflow-x-auto overflow-y-auto">
 
                                     <div className="flex">
                                         <div className="relative mr-4">

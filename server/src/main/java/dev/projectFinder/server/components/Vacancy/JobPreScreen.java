@@ -27,5 +27,12 @@ public class JobPreScreen {
 // select - text
     private String textIndent;
 
+    private String value;
+
+//  answer
+    private String answerType;
+    private Combobox[] result;
+
+
 }
 
