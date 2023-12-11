@@ -1,57 +1,56 @@
-import { AiOutlineCheckCircle, AiOutlineSearch } from "react-icons/ai";
+import {  AiOutlineSearch } from "react-icons/ai";
 import { ComboBox, LoadingComponent, PaginationButtons } from "../../../components";
-import { BiMap, BiMoney, BiPackage } from "react-icons/bi";
-import { LiaEyeSolid, LiaTrashAltSolid } from "react-icons/lia";
+import { BiMoney } from "react-icons/bi";
 import { HiOutlineLocationMarker } from "react-icons/hi";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { getShortListedUsersAction, resetSuccessAction } from "../../../redux/slices/users/usersSlices";
 import { Link } from "react-router-dom";
 
-const listItemCbb = [
-    {
-        id: 1,
-        name: 'All'
-    },
-    {
-        id: 2,
-        name: 'Pending',
 
-    },
-    {
-        id: 3,
-        name: 'Processing',
-    },
-    {
-        id: 4,
-        name: 'Finish',
-
-    },
-    {
-        id: 5,
-        name: 'Cancelled',
-
-    },
-
-
-]
 function ShortListedSeekers() {
-    const onFilterValueSelected = (filterValue) => {
-        console.log(filterValue)
-    }
+    
     const dispatch = useDispatch();
+    const [filterKeyWord, setFilterKeyWord] = useState('');
     const [shortList, setShortList] = useState([]);
     const [currentPage, setCurrentPage] = useState(0);
     const [pages, setPages] = useState([]);
+    const [categoryList, setCategoryList] = useState([{ id: 0, name: 'All' }]);
+
     useEffect(() => {
         dispatch(getShortListedUsersAction())
     }, [dispatch])
     const storeData = useSelector(store => store?.users);
     const { shortListUsers, isSuccess, appErr, loading } = storeData;
+    const onFilterValueSelected = (filterValue) => {
+        if (filterValue.name === 'All') {
+            setShortList([...shortListUsers ?? []]);
+        }
+        else {
+            setShortList([...shortListUsers.filter(item => (item?.skillUsers?.filter(i => i.skillName.toLowerCase().includes(filterValue.name.toLowerCase())))?.length > 0)]);
+        }
+    }
+    useEffect(() => {
+        setPages([...shortList.filter(item => ((item?.fullName).toLowerCase().includes(filterKeyWord.toLowerCase())
+                                            ||(item?.jobTitle).toLowerCase().includes(filterKeyWord.toLowerCase())
+                                            || item?.skillUsers?.filter(i => i?.skillName?.toLowerCase().includes(filterKeyWord.toLowerCase())).length>0))
+                                            .slice(currentPage * 9, (currentPage + 1) * 9)])
+    }, [currentPage, shortList, filterKeyWord])
     useEffect(() => {
         if (isSuccess) {
             dispatch(resetSuccessAction());
             setShortList([...shortListUsers]);
+            const uniqueFields = shortListUsers.reduce((result, seeker) => {
+                if (seeker.skillUsers) {
+                    seeker.skillUsers.forEach(skill => {
+                        if (!result.find(item => item.name === skill.skillName)) {
+                            result.push({ id: result.length + 1, name: skill.skillName });
+                        }
+                    });
+                }
+                return result;
+            }, []);
+            setCategoryList([{ id: 0, name: 'All' }, ...uniqueFields]);
             setPages([...shortListUsers.slice(currentPage * 10, (currentPage + 1) * 10)])
         }
     }, [isSuccess])
@@ -78,12 +77,12 @@ function ShortListedSeekers() {
                                         <form action="#" method="post"  >
                                             <div className="relative mb-0">
                                                 <AiOutlineSearch fontSize={22} color="#a7a9ad" className="absolute l-3 t-0 h-10 justify-center ml-2 text-center z-10 " />
-                                                <input type='search' name="search-field" id="search-field" placeholder="Search" className="relative mt-2 block w-72 border pt-1 pb-1 pl-10 h-9 pr-5 text-sm bg-[#f0f5f7] focus:bg-white  rounded-md" />
+                                                <input onChange={(e) => setFilterKeyWord(e.target.value)} type='search' name="search-field" id="search-field" placeholder="Search" className="relative mt-2 block w-72 border pt-1 pb-1 pl-10 h-9 pr-5 text-sm bg-[#f0f5f7] focus:bg-white  rounded-md" />
                                             </div>
                                         </form>
                                     </div>
                                     <div className="w-40">
-                                        <ComboBox listItem={listItemCbb} filterValueSelected={onFilterValueSelected} />
+                                        <ComboBox listItem={categoryList} filterValueSelected={onFilterValueSelected} />
                                     </div>
 
                                 </div>

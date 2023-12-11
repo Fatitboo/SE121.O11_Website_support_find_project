@@ -216,6 +216,60 @@ export const updateUserCvAction = createAsyncThunk(
         }
     }
 )
+// update Filename cv seeker 
+export const updateFilenameCvAction = createAsyncThunk(
+    'users/updateFilenameCv',
+    async (info, { rejectWithValue, getState, dispatch }) => {
+        try {
+            const user = getState()?.users;
+            const { userAuth } = user;
+            // http call 
+            const config = {
+                headers: {
+                    Authorization: `Bearer ${userAuth?.user?.token}`,
+                    'Content-Type': 'multipart/form-data',
+                },
+            };
+            const formData = new FormData();
+            formData.append('newName', info.newName);
+            formData.append('publicId', info.publicId)
+            console.log(formData)
+            const { data } = await axios.post(`${baseUrl}/${apiPrefix}/update-filename-cv/${userAuth?.user?.userId}`, formData, config);
+            console.log(data)
+            return data;
+        } catch (error) {
+            if (!error?.response) {
+                throw error;
+            }
+            return rejectWithValue(error?.response?.data);
+        }
+    }
+)
+// update Avtive Cor By Admin 
+export const updateAvtiveCorByAdminAction = createAsyncThunk(
+    'users/updateAvtiveCorByAdmin',
+    async (id, { rejectWithValue, getState, dispatch }) => {
+        try {
+            const user = getState()?.users;
+            const { userAuth } = user;
+            // http call 
+            const config = {
+                headers: {
+                    Authorization: `Bearer ${userAuth?.user?.token}`,
+                    'Content-Type': 'application/json',
+                },
+            };
+            const { data } = await axios.put(`${baseUrl}/${apiPrefix}/update-active-cor/${id}`, {}, config);
+            console.log(data)
+            return data;
+        } catch (error) {
+            if (!error?.response) {
+                throw error;
+            }
+            return rejectWithValue(error?.response?.data);
+        }
+    }
+)
 // delete cv seeker 
 export const deleteUserCvAction = createAsyncThunk(
     'users/deleteUserCv',
@@ -545,13 +599,13 @@ export const applyVacancyAction = createAsyncThunk(
         const config = {
             headers: {
                 Authorization: `Bearer ${userAuth?.user?.token}`,
-                'Content-Type':'application/json',
+                'Content-Type': 'application/json',
             },
         };
         try {
-            console.log( typeof vacanciesId)
+            console.log(typeof vacanciesId)
             const { data } = await axios.post(
-                `${baseUrl}/api/v1/users/apply-vacancies/${userAuth?.user?.userId}/${vacanciesId}`, {},config
+                `${baseUrl}/api/v1/users/apply-vacancies/${userAuth?.user?.userId}/${vacanciesId}`, {}, config
             );
             return data;
         } catch (error) {
@@ -587,7 +641,7 @@ const usersSlices = createSlice({
         cvUser: [],
         selectedCv: {},
         corList: [],
-        skrList:[]
+        skrList: []
     },
     reducers: {
         setSltCv: (state, action) => {
@@ -601,236 +655,279 @@ const usersSlices = createSlice({
             state.appErr = undefined;
             state.isSuccess = false;
         }),
-        builder.addCase(registerUserAction.fulfilled, (state, action) => {
-            state.loading = false;
-            state.registered = action?.payload;
-            state.appErr = undefined;
-            state.isSuccess = true;
-        }),
-        builder.addCase(registerUserAction.rejected, (state, action) => {
-            state.loading = false;
-            state.appErr = action?.payload?.message;
-            state.isSuccess = false;
-        }),
-        // login user 
-        builder.addCase(loginUserAction.pending, (state, action) => {
-            state.loading = true;
-            state.appErr = undefined;
-        }),
-        builder.addCase(loginUserAction.fulfilled, (state, action) => {
-            state.loading = false;
-            state.userAuth = action?.payload;
-            state.appErr = undefined;
-        }),
-        builder.addCase(loginUserAction.rejected, (state, action) => {
-            state.loading = false;
-            state.appErr = action?.payload?.message;
-        }),
-        // logout user 
-        builder.addCase(logoutUserAction.pending, (state, action) => {
-            state.loading = true;
-            state.appErr = undefined;
-        }),
-        builder.addCase(logoutUserAction.fulfilled, (state, action) => {
-            state.loading = false;
-            state.userAuth = undefined;
-            state.appErr = undefined;
-        }),
-        builder.addCase(logoutUserAction.rejected, (state, action) => {
-            state.loading = false;
-            state.appErr = action?.payload?.message;
-        }),
-        // get profile user 
-        builder.addCase(getUserProfileAction.pending, (state, action) => {
-            state.loading = true;
-            state.appErr = undefined;
-            state.isSuccess = false;
-        }),
-        builder.addCase(getUserProfileAction.fulfilled, (state, action) => {
-            state.loading = false;
-            state.userProfile = action?.payload?.userProfile;
-            state.appErr = undefined;
-        }),
-        builder.addCase(getUserProfileAction.rejected, (state, action) => {
-            state.loading = false;
-            state.appErr = action?.payload?.message;
-        }),
-        // get resume user 
-        builder.addCase(getUserResumeAction.pending, (state, action) => {
-            state.loading = true;
-            state.appErr = undefined;
-            state.isSuccess = false;
+            builder.addCase(registerUserAction.fulfilled, (state, action) => {
+                state.loading = false;
+                state.registered = action?.payload;
+                state.appErr = undefined;
+                state.isSuccess = true;
+            }),
+            builder.addCase(registerUserAction.rejected, (state, action) => {
+                state.loading = false;
+                state.appErr = action?.payload?.message;
+                state.isSuccess = false;
+            }),
+            // login user 
+            builder.addCase(loginUserAction.pending, (state, action) => {
+                state.loading = true;
+                state.appErr = undefined;
+            }),
+            builder.addCase(loginUserAction.fulfilled, (state, action) => {
+                state.loading = false;
+                state.userAuth = action?.payload;
+                state.appErr = undefined;
+            }),
+            builder.addCase(loginUserAction.rejected, (state, action) => {
+                state.loading = false;
+                state.appErr = action?.payload?.message;
+            }),
+            // logout user 
+            builder.addCase(logoutUserAction.pending, (state, action) => {
+                state.loading = true;
+                state.appErr = undefined;
+            }),
+            builder.addCase(logoutUserAction.fulfilled, (state, action) => {
+                state.loading = false;
+                state.userAuth = undefined;
+                state.appErr = undefined;
+            }),
+            builder.addCase(logoutUserAction.rejected, (state, action) => {
+                state.loading = false;
+                state.appErr = action?.payload?.message;
+            }),
+            // get profile user 
+            builder.addCase(getUserProfileAction.pending, (state, action) => {
+                state.loading = true;
+                state.appErr = undefined;
+                state.isSuccess = false;
+            }),
+            builder.addCase(getUserProfileAction.fulfilled, (state, action) => {
+                state.loading = false;
+                state.userProfile = action?.payload?.userProfile;
+                state.appErr = undefined;
+            }),
+            builder.addCase(getUserProfileAction.rejected, (state, action) => {
+                state.loading = false;
+                state.appErr = action?.payload?.message;
+            }),
+            // get resume user 
+            builder.addCase(getUserResumeAction.pending, (state, action) => {
+                state.loading = true;
+                state.appErr = undefined;
+                state.isSuccess = false;
 
-        }),
-        builder.addCase(getUserResumeAction.fulfilled, (state, action) => {
-            state.loading = false;
-            state.userResume = action?.payload?.userResume;
-            state.appErr = undefined;
-        }),
-        builder.addCase(getUserResumeAction.rejected, (state, action) => {
-            state.loading = false;
-            state.appErr = action?.payload?.message;
-        }),
-        // update avatar user 
-        builder.addCase(updateAvatarAction.pending, (state, action) => {
-            state.loading = true;
-            state.appErr = undefined;
-        }),
-        builder.addCase(updateAvatarAction.fulfilled, (state, action) => {
-            state.loading = false;
-            state.userProfile = { ...state.userProfile, avatar: action?.payload?.image };
-            state.appErr = undefined;
-        }),
-        builder.addCase(updateAvatarAction.rejected, (state, action) => {
-            state.loading = false;
-            state.appErr = action?.payload?.message;
-        }),
-        // update profile user 
-        builder.addCase(updateUserProfileAction.pending, (state, action) => {
-            state.loading = true;
-            state.appErr = undefined;
-            state.isSuccess = false;
-        }),
-        builder.addCase(updateUserProfileAction.fulfilled, (state, action) => {
-            state.loading = false;
-            state.userProfile = { ...state.userProfile, ...action?.payload?.userProfile };
-            state.appErr = undefined;
-            state.isSuccess = true;
-        }),
-        builder.addCase(updateUserProfileAction.rejected, (state, action) => {
-            state.loading = false;
-            state.appErr = action?.payload?.message;
-            state.isSuccess = false;
-        }),
-        // update resume user 
-        builder.addCase(updateUserResumeAction.pending, (state, action) => {
-            state.loading = true;
-            state.appErr = undefined;
-            state.isSuccess = false;
-        }),
-        builder.addCase(updateUserResumeAction.fulfilled, (state, action) => {
-            state.loading = false;
-            state.userResume = { ...state.userResume, ...action?.payload?.userResume };
-            state.appErr = undefined;
-            state.isSuccess = true;
-        }),
-        builder.addCase(updateUserResumeAction.rejected, (state, action) => {
-            state.loading = false;
-            state.appErr = action?.payload?.message;
-            state.isSuccess = false;
-        }),
+            }),
+            builder.addCase(getUserResumeAction.fulfilled, (state, action) => {
+                state.loading = false;
+                state.userResume = action?.payload?.userResume;
+                state.appErr = undefined;
+            }),
+            builder.addCase(getUserResumeAction.rejected, (state, action) => {
+                state.loading = false;
+                state.appErr = action?.payload?.message;
+            }),
+            // update avatar user 
+            builder.addCase(updateAvatarAction.pending, (state, action) => {
+                state.loading = true;
+                state.appErr = undefined;
+            }),
+            builder.addCase(updateAvatarAction.fulfilled, (state, action) => {
+                state.loading = false;
+                state.userProfile = { ...state.userProfile, avatar: action?.payload?.image };
+                state.appErr = undefined;
+            }),
+            builder.addCase(updateAvatarAction.rejected, (state, action) => {
+                state.loading = false;
+                state.appErr = action?.payload?.message;
+            }),
+            // update profile user 
+            builder.addCase(updateUserProfileAction.pending, (state, action) => {
+                state.loading = true;
+                state.appErr = undefined;
+                state.isSuccess = false;
+            }),
+            builder.addCase(updateUserProfileAction.fulfilled, (state, action) => {
+                state.loading = false;
+                state.userProfile = { ...state.userProfile, ...action?.payload?.userProfile };
+                state.appErr = undefined;
+                state.isSuccess = true;
+            }),
+            builder.addCase(updateUserProfileAction.rejected, (state, action) => {
+                state.loading = false;
+                state.appErr = action?.payload?.message;
+                state.isSuccess = false;
+            }),
+            // update resume user 
+            builder.addCase(updateUserResumeAction.pending, (state, action) => {
+                state.loading = true;
+                state.appErr = undefined;
+                state.isSuccess = false;
+            }),
+            builder.addCase(updateUserResumeAction.fulfilled, (state, action) => {
+                state.loading = false;
+                state.userResume = { ...state.userResume, ...action?.payload?.userResume };
+                state.appErr = undefined;
+                state.isSuccess = true;
+            }),
+            builder.addCase(updateUserResumeAction.rejected, (state, action) => {
+                state.loading = false;
+                state.appErr = action?.payload?.message;
+                state.isSuccess = false;
+            }),
 
-        // get all cv
-        builder.addCase(getAllUserCvAction.pending, (state, action) => {
-            state.loading = true;
-            state.appErr = undefined;
-            state.isSuccess = false;
+            // get all cv
+            builder.addCase(getAllUserCvAction.pending, (state, action) => {
+                state.loading = true;
+                state.appErr = undefined;
+                state.isSuccess = false;
 
-        }),
-        builder.addCase(getAllUserCvAction.fulfilled, (state, action) => {
-            state.loading = false;
-            state.cvUser = action?.payload?.cvLinks;
-            state.appErr = undefined;
+            }),
+            builder.addCase(getAllUserCvAction.fulfilled, (state, action) => {
+                state.loading = false;
+                state.cvUser = action?.payload?.cvLinks;
+                state.appErr = undefined;
 
-        }),
-        builder.addCase(getAllUserCvAction.rejected, (state, action) => {
-            state.loading = false;
-            state.appErr = action?.payload?.message;
+            }),
+            builder.addCase(getAllUserCvAction.rejected, (state, action) => {
+                state.loading = false;
+                state.appErr = action?.payload?.message;
 
-        }),
-        // update cv user 
-        builder.addCase(updateUserCvAction.pending, (state, action) => {
-            state.loading = true;
-            state.appErr = undefined;
-            state.isSuccess = false;
-        }),
-        builder.addCase(updateUserCvAction.fulfilled, (state, action) => {
-            state.loading = false;
-            state.cvUser.push({...action?.payload?.cv});
-            state.appErr = undefined;
-            state.isSuccess = true;
-        }),
-        builder.addCase(updateUserCvAction.rejected, (state, action) => {
-            state.loading = false;
-            state.appErr = action?.payload?.message;
-            state.isSuccess = false;
-        }),
-        // delete cv user 
-        builder.addCase(deleteUserCvAction.pending, (state, action) => {
-            state.loading = true;
-            state.appErr = undefined;
-            state.isSuccess = false;
-        }),
-        builder.addCase(deleteUserCvAction.fulfilled, (state, action) => {
-            state.loading = false;
-            state.cvUser = state.cvUser.filter((cv) => cv.publicId !== action?.payload?.deleteId);
-            state.appErr = undefined;
-            state.isSuccess = true;
-        }),
-        builder.addCase(deleteUserCvAction.rejected, (state, action) => {
-            state.loading = false;
-            state.appErr = action?.payload?.message;
-            state.isSuccess = false;
-        }),
-        // get all cors
-        builder.addCase(getAllCorsAction.pending, (state, action) => {
-            state.loading = true;
-            state.appErr = undefined;
-            state.isSuccess = false;
-        }),
-        builder.addCase(getAllCorsAction.fulfilled, (state, action) => {
-            state.loading = false;
-            state.corList = action?.payload?.users;
-            state.appErr = undefined;
-            state.isSuccess = true;
-        }),
-        builder.addCase(getAllCorsAction.rejected, (state, action) => {
-            state.loading = false;
-            state.appErr = action?.payload?.message;
-            state.isSuccess = false;
-        }),
-        // get all seekers
-        builder.addCase(getAllSeekersAction.pending, (state, action) => {
-            state.loading = true;
-            state.appErr = undefined;
-            state.isSuccess = false;
-        }),
-        builder.addCase(getAllSeekersAction.fulfilled, (state, action) => {
-            state.loading = false;
-            state.skrList = action?.payload?.users;
-            state.appErr = undefined;
-            state.isSuccess = true;
-        }),
-        builder.addCase(getAllSeekersAction.rejected, (state, action) => {
-            state.loading = false;
-            state.appErr = action?.payload?.message;
-            state.isSuccess = false;
-        }),
-        // get detail user
-        builder.addCase(getDetailUserAction.pending, (state, action) => {
-            state.loading = true;
-            state.appErr = undefined;
-            state.isSuccess = false;
+            }),
+            // add cv user 
+            builder.addCase(updateUserCvAction.pending, (state, action) => {
+                state.loading = true;
+                state.appErr = undefined;
+                state.isSuccess = false;
+            }),
+            builder.addCase(updateUserCvAction.fulfilled, (state, action) => {
+                state.loading = false;
+                state.cvUser.push({ ...action?.payload?.cv });
+                state.appErr = undefined;
+                state.isSuccess = true;
+            }),
+            builder.addCase(updateUserCvAction.rejected, (state, action) => {
+                state.loading = false;
+                state.appErr = action?.payload?.message;
+                state.isSuccess = false;
+            }),
+            // update AvtiveCorByAdmin Action
+            builder.addCase(updateAvtiveCorByAdminAction.pending, (state, action) => {
+                state.loading = true;
+                state.appErr = undefined;
+                state.isSuccessUpd = false;
+            }),
+            builder.addCase(updateAvtiveCorByAdminAction.fulfilled, (state, action) => {
+                state.loading = false;
+                state.appErr = undefined;
+                state.isSuccessUpd = true;
 
-        }),
-        builder.addCase(getDetailUserAction.fulfilled, (state, action) => {
-            state.loading = false;
-            state.seletedUser = action?.payload?.userDetail;
-            state.isShorted = action?.payload?.isShorted;
-            state.appErr = undefined;
+                let currentUser = state.corList.findIndex(user => user.userId === action?.payload?.userUpd);
+                if (currentUser !== -1) {
+                    state.corList[currentUser].isActive = !state.corList[currentUser].isActive;
+                }
+                else {
+                    state.seletedUser.isActive = !state.seletedUser.isActive;
+                }
+            }),
+            builder.addCase(updateAvtiveCorByAdminAction.rejected, (state, action) => {
+                state.loading = false;
+                state.appErr = action?.payload?.message;
+                state.isSuccessUpd = false;
+            }),
 
-        }),
-        builder.addCase(getDetailUserAction.rejected, (state, action) => {
-            state.loading = false;
-            state.appErr = action?.payload?.message;
+            // update  filename cv user 
+            builder.addCase(updateFilenameCvAction.pending, (state, action) => {
+                state.loading = true;
+                state.appErr = undefined;
+                state.isSuccess = false;
+            }),
+            builder.addCase(updateFilenameCvAction.fulfilled, (state, action) => {
+                state.loading = false;
+                let crCv = state.cvUser.findIndex(cv => cv.publicId === action?.payload?.publicId);
+                state.cvUser[crCv].filename = action?.payload?.newName;
+                state.appErr = undefined;
+                state.isSuccess = true;
+            }),
+            builder.addCase(updateFilenameCvAction.rejected, (state, action) => {
+                state.loading = false;
+                state.appErr = action?.payload?.message;
+                state.isSuccess = false;
+            }),
+            // delete cv user 
+            builder.addCase(deleteUserCvAction.pending, (state, action) => {
+                state.loading = true;
+                state.appErr = undefined;
+                state.isSuccess = false;
+            }),
+            builder.addCase(deleteUserCvAction.fulfilled, (state, action) => {
+                state.loading = false;
+                state.cvUser = state.cvUser.filter((cv) => cv.publicId !== action?.payload?.deleteId);
+                state.appErr = undefined;
+                state.isSuccess = true;
+            }),
+            builder.addCase(deleteUserCvAction.rejected, (state, action) => {
+                state.loading = false;
+                state.appErr = action?.payload?.message;
+                state.isSuccess = false;
+            }),
+            // get all cors
+            builder.addCase(getAllCorsAction.pending, (state, action) => {
+                state.loading = true;
+                state.appErr = undefined;
+                state.isSuccess = false;
+            }),
+            builder.addCase(getAllCorsAction.fulfilled, (state, action) => {
+                state.loading = false;
+                state.corList = action?.payload?.users;
+                state.appErr = undefined;
+                state.isSuccess = true;
+            }),
+            builder.addCase(getAllCorsAction.rejected, (state, action) => {
+                state.loading = false;
+                state.appErr = action?.payload?.message;
+                state.isSuccess = false;
+            }),
+            // get all seekers
+            builder.addCase(getAllSeekersAction.pending, (state, action) => {
+                state.loading = true;
+                state.appErr = undefined;
+                state.isSuccess = false;
+            }),
+            builder.addCase(getAllSeekersAction.fulfilled, (state, action) => {
+                state.loading = false;
+                state.skrList = action?.payload?.users;
+                state.appErr = undefined;
+                state.isSuccess = true;
+            }),
+            builder.addCase(getAllSeekersAction.rejected, (state, action) => {
+                state.loading = false;
+                state.appErr = action?.payload?.message;
+                state.isSuccess = false;
+            }),
+            // get detail user
+            builder.addCase(getDetailUserAction.pending, (state, action) => {
+                state.loading = true;
+                state.appErr = undefined;
+                state.isSuccess = false;
 
-        }),
-        //create token
-        builder.addCase(resetPassSendTokenAction.pending, (state, action) => {
-            state.loading = true;
-            state.appErr = undefined;
-            state.isSuccess = false;
-        });
+            }),
+            builder.addCase(getDetailUserAction.fulfilled, (state, action) => {
+                state.loading = false;
+                state.seletedUser = action?.payload?.userDetail;
+                state.isShorted = action?.payload?.isShorted;
+                state.appErr = undefined;
+
+            }),
+            builder.addCase(getDetailUserAction.rejected, (state, action) => {
+                state.loading = false;
+                state.appErr = action?.payload?.message;
+
+            }),
+            //create token
+            builder.addCase(resetPassSendTokenAction.pending, (state, action) => {
+                state.loading = true;
+                state.appErr = undefined;
+                state.isSuccess = false;
+            });
         builder.addCase(resetPassSendTokenAction.fulfilled, (state, action) => {
             state.token = action?.payload?.token;
             state.loading = false;
@@ -864,6 +961,7 @@ const usersSlices = createSlice({
         });
         builder.addCase(resetSuccessAction.fulfilled, (state, action) => {
             state.isSuccess = false;
+            state.isSuccessUpd = false;
         });
         //change pass account
         builder.addCase(changePasswordAction.pending, (state, action) => {
@@ -883,8 +981,8 @@ const usersSlices = createSlice({
             state.appErr = action?.payload?.message;
             state.isSuccess = false;
         });
-         //update Shortlisted Users Action
-         builder.addCase(updateShortlistedUsersAction.pending, (state, action) => {
+        //update Shortlisted Users Action
+        builder.addCase(updateShortlistedUsersAction.pending, (state, action) => {
             state.loading = true;
             state.appErr = undefined;
             state.isSuccess = false;
@@ -942,8 +1040,8 @@ const usersSlices = createSlice({
             state.appErr = action?.payload?.message;
             state.isSuccess = false;
         });
-         //get Data Statistical Admin Action
-         builder.addCase(getDataStatisticalAdminAction.pending, (state, action) => {
+        //get Data Statistical Admin Action
+        builder.addCase(getDataStatisticalAdminAction.pending, (state, action) => {
             state.loading = true;
             state.appErr = undefined;
             state.isSuccess = false;
@@ -968,7 +1066,7 @@ const usersSlices = createSlice({
             state.isSuccess = false;
         });
 
-         //applied vacancies
+        //applied vacancies
         builder.addCase(applyVacancyAction.pending, (state, action) => {
             state.loading = true;
             state.isSuccessApplied = false;

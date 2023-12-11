@@ -25,7 +25,8 @@ import {
     AppliedJob,
     CVManager,
     CompanyProfile,
-    ShortListedCors, 
+    ShortListedCors,
+    VacancyInfoSeeker, 
 } from '../pages/Seeker'
 import { 
     CompanyProfileEdit, 
@@ -64,6 +65,7 @@ const publicRoutes = [
     {path:'/', component: Home, layout: LayoutNoSidebar},
     {path:'/Seeker/find-projects', component: FindProjects, layout: LayoutNoSidebar},
     {path:'/Seeker/find-vacancies', component: FindVacancies, layout: LayoutNoSidebar},
+    {path:'/Seeker/vacancy-info/:id', component: VacancyInfoSeeker, layout: LayoutHasSidebar},
     {path:'/Seeker/my-profile', component: MyProfile, layout: LayoutHasSidebar},
     {path:'/Seeker/my-resume', component: MyResume, layout: LayoutHasSidebar},
     {path:'/Seeker/project-info', component: ProjectInfo, layout: LayoutNoSidebar},

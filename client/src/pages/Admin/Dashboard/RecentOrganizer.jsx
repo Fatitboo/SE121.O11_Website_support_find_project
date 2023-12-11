@@ -3,7 +3,7 @@ import { CiCalendarDate } from 'react-icons/ci'
 import { Link } from "react-router-dom";
 function RecentOrganizerRegisted({ item }) {
     return (
-        <Link to={'/'} className="relative px-3 py-5 font-normal text-base   cursor-pointer w-full">
+        <Link to={`/Admin/user-management/${item.userId}`}  className="relative px-3 py-5 font-normal text-base   cursor-pointer w-full">
             <div className="mb-2 grid grid-cols-5 grid-flow-row h-14 px-3 ">
                 <div className="w-full p-1 col-span-1">
                     <img src={item?.avatar?.fileUrl??'https://pic.onlinewebfonts.com/thumbnails/icons_148020.svg'} className="w-full h-auto align-middle" alt="logo" />

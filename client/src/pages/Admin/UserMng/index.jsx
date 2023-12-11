@@ -3,7 +3,9 @@ import { AiOutlineSearch } from 'react-icons/ai'
 import OrganizerItem from "./OrganizerItem";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
-import { getAllCorsAction, resetSuccessAction } from "../../../redux/slices/users/usersSlices";
+import { getAllCorsAction, resetSuccessAction} from "../../../redux/slices/users/usersSlices";
+import Swal from "sweetalert2";
+
 
 const listItemCbb = [
     {
@@ -38,14 +40,17 @@ function UserMng() {
     const [pages, setPages] = useState([]);
     const [filterKeyWord, setFilterKeyWord] = useState('');
     const storeData = useSelector(store => store?.users);
-    const { corList, isSuccess, appErr, loading } = storeData;
+    const { corList, isSuccess, appErr, loading,isSuccessUpd } = storeData;
 
     const onFilterValueSelected = (filterValue) => {
         console.log(filterValue)
     }
-    
+
     useEffect(() => {
-        setPages([...OrganizerList.filter(item => ((item?.fullName).toLowerCase().includes(filterKeyWord.toLowerCase()) || (item?.email ?? '').toLowerCase().includes(filterKeyWord.toLowerCase())|| (item?.phoneNumber ?? '').toLowerCase().includes(filterKeyWord.toLowerCase()))).slice(currentPage * 10, (currentPage + 1) * 10)])
+        setPages([...OrganizerList.filter(item => ((item?.fullName).toLowerCase().includes(filterKeyWord.toLowerCase()) 
+            || (item?.email ?? '').toLowerCase().includes(filterKeyWord.toLowerCase()) 
+            || (item?.phoneNumber ?? '').toLowerCase().includes(filterKeyWord.toLowerCase())))
+            .slice(currentPage * 10, (currentPage + 1) * 10)])
     }, [currentPage, OrganizerList, filterKeyWord])
     useEffect(() => {
         if (isSuccess) {
@@ -54,6 +59,19 @@ function UserMng() {
             setPages([...corList.slice(currentPage * 10, (currentPage + 1) * 10)])
         }
     }, [isSuccess])
+    useEffect(() => {
+        if (isSuccessUpd) {
+            dispatch(resetSuccessAction());
+            Swal.fire({
+                title: "Updated!",
+                text: "This active status of organizer has been updated.",
+                icon: "success",
+                confirmButtonColor: '#3085d6'
+            })
+            setOrganizerList([...corList]);
+            setPages([...corList.slice(currentPage * 10, (currentPage + 1) * 10)])
+        }
+    }, [isSuccessUpd])
     return (
         <div className="px-10  pb-0">
             {loading && <LoadingComponent />}
@@ -76,7 +94,7 @@ function UserMng() {
                                         <div >
                                             <div className="relative mb-0">
                                                 <AiOutlineSearch fontSize={22} color="#a7a9ad" className="absolute l-3 t-0 h-10 justify-center ml-2 text-center z-10 " />
-                                                <input onChange={e=>setFilterKeyWord(e.target.value)} type='search' name="search-field" id="search-field" placeholder="Search" className="relative  focus:bg-white  mt-2 block w-72 border pt-1 pb-1 pl-10 h-9 pr-5 text-sm bg-[#f0f5f7] rounded-md" />
+                                                <input onChange={e => setFilterKeyWord(e.target.value)} type='search' name="search-field" id="search-field" placeholder="Search" className="relative  focus:bg-white  mt-2 block w-72 border pt-1 pb-1 pl-10 h-9 pr-5 text-sm bg-[#f0f5f7] rounded-md" />
                                             </div>
                                         </div>
                                     </div>
@@ -86,7 +104,7 @@ function UserMng() {
                                     </div>
                                 </div>
                                 <div className="flex ">
-                                    <div className="mr-1 font-medium">Registed Organizer: </div> <span>  {corList.length}</span>
+                                    <div className="mr-1 font-medium">Registed Organizer: </div> <span>  {pages.length} / {OrganizerList.length} Organizers</span>
                                 </div>
                             </div>
 
@@ -107,9 +125,107 @@ function UserMng() {
                                         </thead>
                                         <tbody>
 
-                                            {pages.map((item) => (
-                                                <OrganizerItem item={item} key={item.userId} />
-                                            ))}
+                                            {loading ?
+                                                [1, 2, 3, 4, 5, 6, 7].map((item, index) => {
+                                                    return (
+                                                        <tr key={index} className="animate-pulse relative shadow rounded-md p-4 w-full mx-auto gap-2">
+                                                            <td className="space-x-4 py-2.5 px-0.5 w-full flex items-center">
+                                                                {/* <div className="rounded-full bg-slate-200 h-12 w-12"></div> */}
+                                                                <div className="flex-1 space-y-6 py-1">
+                                                                    <div className="h-2 bg-slate-200 rounded"></div>
+                                                                    <div className="space-y-3">
+                                                                        <div className="grid grid-cols-3 gap-4">
+                                                                            <div className="h-2 bg-slate-200 rounded col-span-2"></div>
+                                                                            <div className="h-2 bg-slate-200 rounded col-span-1"></div>
+                                                                        </div>
+                                                                        <div className="h-2 bg-slate-200 rounded"></div>
+                                                                    </div>
+                                                                </div>
+                                                            </td>
+                                                            <td className="space-x-4 py-2.5 px-0.5 w-1/12">
+                                                                {/* <div className="rounded-full bg-slate-200 h-10 w-10"></div> */}
+                                                                <div className="flex-1 space-y-6 py-1">
+                                                                    <div className="h-2 bg-slate-200 rounded"></div>
+                                                                    <div className="space-y-3">
+                                                                        <div className="grid grid-cols-3 gap-4">
+                                                                            <div className="h-2 bg-slate-200 rounded col-span-2"></div>
+                                                                            <div className="h-2 bg-slate-200 rounded col-span-1"></div>
+                                                                        </div>
+                                                                        <div className="h-2 bg-slate-200 rounded"></div>
+                                                                    </div>
+                                                                </div>
+                                                            </td>
+                                                            <td className="space-x-4 py-2.5 px-0.5 w-1/12">
+                                                                {/* <div className="rounded-full bg-slate-200 h-10 w-10"></div> */}
+                                                                <div className="flex-1 space-y-6 py-1">
+                                                                    <div className="h-2 bg-slate-200 rounded"></div>
+                                                                    <div className="space-y-3">
+                                                                        <div className="grid grid-cols-3 gap-4">
+                                                                            <div className="h-2 bg-slate-200 rounded col-span-2"></div>
+                                                                            <div className="h-2 bg-slate-200 rounded col-span-1"></div>
+                                                                        </div>
+                                                                        <div className="h-2 bg-slate-200 rounded"></div>
+                                                                    </div>
+                                                                </div>
+                                                            </td>
+                                                            <td className="space-x-4 py-2.5 px-0.5 w-[14%]">
+                                                                {/* <div className="rounded-full bg-slate-200 h-10 w-10"></div> */}
+                                                                <div className="flex-1 space-y-6 py-1">
+                                                                    <div className="h-2 bg-slate-200 rounded"></div>
+                                                                    <div className="space-y-3">
+                                                                        <div className="grid grid-cols-3 gap-4">
+                                                                            <div className="h-2 bg-slate-200 rounded col-span-2"></div>
+                                                                            <div className="h-2 bg-slate-200 rounded col-span-1"></div>
+                                                                        </div>
+                                                                        <div className="h-2 bg-slate-200 rounded"></div>
+                                                                    </div>
+                                                                </div>
+                                                            </td>
+                                                            <td className="space-x-4 py-2.5 px-0.5 w-1/12">
+                                                                {/* <div className="rounded-full bg-slate-200 h-10 w-10"></div> */}
+                                                                <div className="flex-1 space-y-6 py-1">
+                                                                    <div className="h-2 bg-slate-200 rounded"></div>
+                                                                    <div className="space-y-3">
+                                                                        <div className="grid grid-cols-3 gap-4">
+                                                                            <div className="h-2 bg-slate-200 rounded col-span-2"></div>
+                                                                            <div className="h-2 bg-slate-200 rounded col-span-1"></div>
+                                                                        </div>
+                                                                        <div className="h-2 bg-slate-200 rounded"></div>
+                                                                    </div>
+                                                                </div>
+                                                            </td>
+                                                            <td className="space-x-4 py-2.5 px-0.5 w-1/12">
+                                                                {/* <div className="rounded-full bg-slate-200 h-10 w-10"></div> */}
+                                                                <div className="flex-1 space-y-6 py-1">
+                                                                    <div className="h-2 bg-slate-200 rounded"></div>
+                                                                    <div className="space-y-3">
+                                                                        <div className="grid grid-cols-3 gap-4">
+                                                                            <div className="h-2 bg-slate-200 rounded col-span-2"></div>
+                                                                            <div className="h-2 bg-slate-200 rounded col-span-1"></div>
+                                                                        </div>
+                                                                        <div className="h-2 bg-slate-200 rounded"></div>
+                                                                    </div>
+                                                                </div>
+                                                            </td>
+                                                            <td className="space-x-4 py-2.5 px-0.5 w-full">
+                                                                {/* <div className="rounded-full bg-slate-200 h-10 w-10"></div> */}
+                                                                <div className="flex-1 space-y-6 py-1">
+                                                                    <div className="h-2 bg-slate-200 rounded"></div>
+                                                                    <div className="space-y-3">
+                                                                        <div className="grid grid-cols-3 gap-4">
+                                                                            <div className="h-2 bg-slate-200 rounded col-span-2"></div>
+                                                                            <div className="h-2 bg-slate-200 rounded col-span-1"></div>
+                                                                        </div>
+                                                                        <div className="h-2 bg-slate-200 rounded"></div>
+                                                                    </div>
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                    )
+                                                }) :
+                                                pages.map((item) => (
+                                                    <OrganizerItem item={item} key={item.userId} />
+                                                ))}
                                         </tbody>
                                     </table>
                                     <div className="list-none mt-10 flex items-center justify-center mb-4">

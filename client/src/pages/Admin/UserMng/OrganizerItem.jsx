@@ -1,9 +1,14 @@
 import { BiMap } from 'react-icons/bi'
-import { FaBan } from 'react-icons/fa';
 import { LiaEyeSolid } from 'react-icons/lia'
 import { Link } from 'react-router-dom';
+import Swal from 'sweetalert2';
+import { updateAvtiveCorByAdminAction } from '../../../redux/slices/users/usersSlices';
+import { useDispatch } from 'react-redux';
+import { HiOutlineLockClosed } from 'react-icons/hi';
+import { AiOutlineUnlock } from 'react-icons/ai';
 
 function OrganizerItem({ item }) {
+    const dispatch = useDispatch()
     const convertDate = (tt) => {
         const date = new Date(tt);
         // Lấy thông tin ngày, tháng, năm
@@ -14,6 +19,21 @@ function OrganizerItem({ item }) {
         // Tạo chuỗi ngày theo định dạng 'yyyy-MM-dd'
         const formattedDate = `${day}-${month}-${year}`;
         return formattedDate
+    }
+    const handleUpdateActiveOrg = async (id, active) => {
+        Swal.fire({
+            title: `Confirm ${active}`,
+            text: `Are you sure you want to ${active} this organizer?`,
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Confirm"
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                dispatch(updateAvtiveCorByAdminAction(id))
+            }
+        });
     }
 
     return (
@@ -52,9 +72,16 @@ function OrganizerItem({ item }) {
                         <Link to={`/Admin/user-management/${item.userId}`} className="list-none relative mr-3 bg-[#f5f7fc] border rounded-md border-[#e9ecf9] px-1 pt-1 hover:bg-[#5f86e9] hover:text-white">
                             <button> <LiaEyeSolid fontSize={20} /> </button>
                         </Link>
-                        <li className="list-none relative bg-[#f5f7fc] border rounded-md border-[#e9ecf9] px-1 pt-1 hover:bg-[#ce3e37] hover:text-white">
-                            <button > <FaBan fontSize={20} /> </button>
-                        </li>
+                        {
+                            item.isActive ?
+                                <li onClick={()=>handleUpdateActiveOrg(item?.userId, 'block')} className="list-none relative bg-[#f5f7fc] border rounded-md border-[#e9ecf9] px-1 pt-1 hover:bg-[#ce3e37] hover:text-white">
+                                    <button > <HiOutlineLockClosed fontSize={20} /> </button>
+                                </li>
+                                :
+                                <li onClick={()=>handleUpdateActiveOrg(item?.userId, 'unblock')} className="list-none relative bg-[#f5f7fc] border rounded-md border-[#e9ecf9] px-1 pt-1 hover:bg-green-500 hover:text-white">
+                                    <button > <AiOutlineUnlock fontSize={20} /> </button>
+                                </li>
+                        }
                     </ul>
                 </div>
             </td>

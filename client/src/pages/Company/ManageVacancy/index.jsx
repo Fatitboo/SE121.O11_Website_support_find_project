@@ -5,8 +5,9 @@ import { LiaEyeSolid, LiaTrashAltSolid } from "react-icons/lia";
 import { Menu, Transition } from "@headlessui/react";
 import { Fragment, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getVacancyCor, resetSuccessAction } from "../../../redux/slices/vacancies/vacanciesSlices";
+import { deleteIncompleteVacancy, getVacancyCor, resetSuccessAction } from "../../../redux/slices/vacancies/vacanciesSlices";
 import { Link } from "react-router-dom";
+import Swal from "sweetalert2";
 
 const listPostedCbb = [ { id: 1,name: 'All'},{id: 2,name: 'Posted'},{id: 3, name: 'UnPosted' }]
 const listApprovedCbb = [ { id: 1,name: 'All'},{id: 2,name: 'Approved'},{id: 3, name: 'UnApproved' }]
@@ -24,9 +25,9 @@ function ManageVacancy() {
         dispatch(getVacancyCor());
     }, [dispatch])
     const storeData = useSelector(store => store?.vacancies);
-    const { loading, appErr, isSuccess2, incomplete, complete } = storeData;
+    const { loading, appErr, isSuccess2, incomplete, complete,isSuccessUpd } = storeData;
     const onFilterlistApprovedCbb = (filterValue) => {
-        console.log(filterValue)
+        // console.log(filterValue)
     }
     const onFilterlistPostedCbb = (filterValue) => {
         if(filterValue.name === 'All'){
@@ -48,10 +49,35 @@ function ManageVacancy() {
             setIncompleteList([...incomplete]);
             setCompleteList([...complete]);
             setPages([...complete.slice(currentPage * 10, (currentPage + 1) * 10)])
-
         }
     }, [isSuccess2])
-    
+    useEffect(() => {
+        if (isSuccessUpd) {
+            dispatch(resetSuccessAction());
+            setIncompleteList([...incomplete]);
+            Swal.fire({
+                title: "Deleted!",
+                text: "This item has been deleted.",
+                icon: "success",
+                confirmButtonColor: '#3085d6'
+            })
+        }
+    }, [isSuccessUpd])
+    const handleDeleteincompleteVacancy = (id)=>{
+        Swal.fire({
+            title: "Confirm Delete",
+            text: "Are you sure you want to delete this item?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Delete"
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                dispatch(deleteIncompleteVacancy(id));
+                }
+        });
+    }
     return (
         <div className="px-10 pb-0">
             {/* Start title of page  */}
@@ -134,7 +160,7 @@ function ManageVacancy() {
                                                                             <div className="px-1 py-1">
                                                                                 <Menu.Item>
                                                                                     {({ active }) => (
-                                                                                        <button className={`${active ? 'bg-blue-500 text-white' : 'text-gray-900'} group flex w-full items-center rounded-md px-2 py-2 text-sm`} >
+                                                                                        <button onClick={()=>handleDeleteincompleteVacancy(item?.vacancyId)} className={`${active ? 'bg-blue-500 text-white' : 'text-gray-900'} group flex w-full items-center rounded-md px-2 py-2 text-sm`} >
                                                                                             <BiTrash className="mr-2 h-5 w-5 text-red-400" aria-hidden="true" />
                                                                                             Delete
                                                                                         </button>

@@ -155,6 +155,30 @@ export const updateVacancyStatus = createAsyncThunk(
         }
     }
 )
+//delete Incomplete Vacancy 
+export const deleteIncompleteVacancy = createAsyncThunk(
+    'vacancies/deleteIncompleteVacancy',
+    async (id, { rejectWithValue, getState, dispatch }) => {
+        try {
+            const user = getState()?.users;
+            const { userAuth } = user;
+            // http call 
+            const config = {
+                headers: {
+                    Authorization: `Bearer ${userAuth?.user?.token}`,
+                    'Content-Type': 'multipart/form-data',
+                },
+            };
+            const { data } = await axios.delete(`${baseUrl}/${apiPrefix}/delete-incomplete-vacancy/${id}`, config);
+            return data;
+        } catch (error) {
+            if (!error?.response) {
+                throw error;
+            }
+            return rejectWithValue(error?.response?.data);
+        }
+    }
+)
 //get vacancy component
 export const getVacancyCor = createAsyncThunk(
     'vacancies/getVacancyCor',
@@ -169,7 +193,7 @@ export const getVacancyCor = createAsyncThunk(
                     'Content-Type': 'application/json',
                 },
             };
-            console.log(userAuth?.user?.userId)
+
             const { data } = await axios.get(`${baseUrl}/api/v1/users/get-vacancy-cor/${userAuth?.user?.userId}`, config);
             return data;
         } catch (error) {
@@ -214,8 +238,8 @@ const vacanciesSlices = createSlice({
         isSuccess: false,
         complete: [],
         incomplete: [],
-        vacancyInfo:{},
-        vacancies:[]
+        vacancyInfo: {},
+        vacancies: []
     },
     reducers: {
         setValueSuccess: (state, action) => {
@@ -226,121 +250,136 @@ const vacanciesSlices = createSlice({
         },
     },
     extraReducers: (builder) => {
-        //get all vacancies
-        builder.addCase(getAllVacancies.pending, (state, action) => {
-            state.loading = true;
-            state.isSuccess2 = false
-        }),
-        builder.addCase(getAllVacancies.fulfilled, (state, action) => {
-            state.loading = false;
-            state.vacancies = action?.payload?.vacancies;
-            state.isSuccess2 = true
-        }),
-        builder.addCase(getAllVacancies.rejected, (state, action) => {
-            state.loading = false;
-            state.appErr = action?.payload?.message;
-            state.isSuccess2 = false
-        }),
+            //get all vacancies
+            builder.addCase(getAllVacancies.pending, (state, action) => {
+                state.loading = true;
+                state.isSuccess2 = false
+            }),
+            builder.addCase(getAllVacancies.fulfilled, (state, action) => {
+                state.loading = false;
+                state.vacancies = action?.payload?.vacancies;
+                state.isSuccess2 = true
+            }),
+            builder.addCase(getAllVacancies.rejected, (state, action) => {
+                state.loading = false;
+                state.appErr = action?.payload?.message;
+                state.isSuccess2 = false
+            }),
 
-        //create vacancies id
-        builder.addCase(createVacancyId.pending, (state, action) => {
-            state.loading = true;
-            state.isSuccess = false
-        }),
-        builder.addCase(createVacancyId.fulfilled, (state, action) => {
-            state.loading = false;
-            state.vacancyId = action?.payload.id;
-            state.appErr = null;
-            state.isSuccess = true
-        }),
-        builder.addCase(createVacancyId.rejected, (state, action) => {
-            state.loading = false;
-            state.appErr = action?.payload?.message;
-            state.isSuccess = false
-        }),
-        //update vacancies
-        builder.addCase(updateVacancyComponent.pending, (state, action) => {
-            state.loading = true;
-            state.isSuccess = false
-        }),
-        builder.addCase(updateVacancyComponent.fulfilled, (state, action) => {
-            state.loading = false;
-            state.appErr = null;
-            state.isSuccess = true;
-        }),
-        builder.addCase(updateVacancyComponent.rejected, (state, action) => {
-            state.loading = false;
-            state.appErr = action?.payload?.message;
-            state.isSuccess = false;
-        }),
-        //update vacancy status
-        builder.addCase(updateVacancyStatus.pending, (state, action) => {
-            state.loading = true;
-        }),
-        builder.addCase(updateVacancyStatus.fulfilled, (state, action) => {
-            state.loading = false;
-            state.appErr = null;
-            let currentVacancy = state.vacancies.findIndex((v) => v.vacancyId === action?.payload?.updateVacancyId);
-            if(currentVacancy!==-1)  state.vacancies[currentVacancy].approvalStatus = action?.payload?.status;
-            state.isSuccessUpd = true;
-        }),
-        builder.addCase(updateVacancyStatus.rejected, (state, action) => {
-            state.loading = false;
-            state.appErr = action?.payload?.message;
-            state.isSuccessUpd = false;
-        }),
-        //get vacancy component
-        builder.addCase(getVacancyComponent.pending, (state, action) => {
-            state.loading = true;
-        }),
-        builder.addCase(getVacancyComponent.fulfilled, (state, action) => {
-            state.loading = false;
-            state.appErr = null;
-            state.currentJobComponent = action?.payload.currentJobComponent;
-        }),
-        builder.addCase(getVacancyComponent.rejected, (state, action) => {
-            state.loading = false;
-            state.appErr = action?.payload?.message;
-        }),
-        //get vacancy component
-        builder.addCase(getVacancyCor.pending, (state, action) => {
-            state.loading = true;
-            state.isSuccess2 = false;
-        }),
-        builder.addCase(getVacancyCor.fulfilled, (state, action) => {
-            state.loading = false;
-            state.appErr = null;
-            state.isSuccess2 = true;
-            state.incomplete = action?.payload?.incomplete;
-            state.complete = action?.payload?.complete;
-        }),
-        builder.addCase(getVacancyCor.rejected, (state, action) => {
-            state.loading = false;
-            state.appErr = action?.payload?.message;
-            state.isSuccess2 = false;
-        }),
+            //create vacancies id
+            builder.addCase(createVacancyId.pending, (state, action) => {
+                state.loading = true;
+                state.isSuccess = false
+            }),
+            builder.addCase(createVacancyId.fulfilled, (state, action) => {
+                state.loading = false;
+                state.vacancyId = action?.payload.id;
+                state.appErr = null;
+                state.isSuccess = true
+            }),
+            builder.addCase(createVacancyId.rejected, (state, action) => {
+                state.loading = false;
+                state.appErr = action?.payload?.message;
+                state.isSuccess = false
+            }),
+            //update vacancies
+            builder.addCase(updateVacancyComponent.pending, (state, action) => {
+                state.loading = true;
+                state.isSuccess = false
+            }),
+            builder.addCase(updateVacancyComponent.fulfilled, (state, action) => {
+                state.loading = false;
+                state.appErr = null;
+                state.isSuccess = true;
+            }),
+            builder.addCase(updateVacancyComponent.rejected, (state, action) => {
+                state.loading = false;
+                state.appErr = action?.payload?.message;
+                state.isSuccess = false;
+            }),
+            //update vacancy status
+            builder.addCase(updateVacancyStatus.pending, (state, action) => {
+                state.loading = true;
+            }),
+            builder.addCase(updateVacancyStatus.fulfilled, (state, action) => {
+                state.loading = false;
+                state.appErr = null;
+                let currentVacancy = state.vacancies.findIndex((v) => v.vacancyId === action?.payload?.updateVacancyId);
+                if (currentVacancy !== -1) state.vacancies[currentVacancy].approvalStatus = action?.payload?.status;
+                state.isSuccessUpd = true;
+            }),
+            builder.addCase(updateVacancyStatus.rejected, (state, action) => {
+                state.loading = false;
+                state.appErr = action?.payload?.message;
+                state.isSuccessUpd = false;
+            }),
+            //update vacancy status
+            builder.addCase(deleteIncompleteVacancy.pending, (state, action) => {
+                state.loading = true;
+            }),
+            builder.addCase(deleteIncompleteVacancy.fulfilled, (state, action) => {
+                state.loading = false;
+                state.appErr = null;
+                state.incomplete = state.incomplete.filter(item => item.vacancyId !== action?.payload?.deleteIncplVacancyId);
+                state.isSuccessUpd = true;
+            }),
+            builder.addCase(deleteIncompleteVacancy.rejected, (state, action) => {
+                state.loading = false;
+                state.appErr = action?.payload?.message;
+                state.isSuccessUpd = false;
+            }),
+            //get vacancy component
+            builder.addCase(getVacancyComponent.pending, (state, action) => {
+                state.loading = true;
+            }),
+            builder.addCase(getVacancyComponent.fulfilled, (state, action) => {
+                state.loading = false;
+                state.appErr = null;
+                state.currentJobComponent = action?.payload.currentJobComponent;
+            }),
+            builder.addCase(getVacancyComponent.rejected, (state, action) => {
+                state.loading = false;
+                state.appErr = action?.payload?.message;
+            }),
+            //get vacancy component
+            builder.addCase(getVacancyCor.pending, (state, action) => {
+                state.loading = true;
+                state.isSuccess2 = false;
+            }),
+            builder.addCase(getVacancyCor.fulfilled, (state, action) => {
+                state.loading = false;
+                state.appErr = null;
+                state.isSuccess2 = true;
+                state.incomplete = action?.payload?.incomplete;
+                state.complete = action?.payload?.complete;
+            }),
+            builder.addCase(getVacancyCor.rejected, (state, action) => {
+                state.loading = false;
+                state.appErr = action?.payload?.message;
+                state.isSuccess2 = false;
+            }),
 
-        // 
-        builder.addCase(resetSuccessAction.fulfilled, (state, action) => {
-            state.isSuccess2 = false;
-            state.isSuccessUpd = false;
-        }),
-        //get vacancy info detail
-        builder.addCase(getVacancyInfoDetail.pending, (state, action) => {
-            state.loading = true;
-            state.isSuccess2 = false;
-        }),
-        builder.addCase(getVacancyInfoDetail.fulfilled, (state, action) => {
-            state.loading = false;
-            state.appErr = null;
-            state.isSuccess2 = true;
-            state.vacancyInfo = action?.payload?.vacancyInfo;
-        }),
-        builder.addCase(getVacancyInfoDetail.rejected, (state, action) => {
-            state.loading = false;
-            state.appErr = action?.payload?.message;
-            state.isSuccess2 = false;
-        })
+            // 
+            builder.addCase(resetSuccessAction.fulfilled, (state, action) => {
+                state.isSuccess2 = false;
+                state.isSuccessUpd = false;
+            }),
+            //get vacancy info detail
+            builder.addCase(getVacancyInfoDetail.pending, (state, action) => {
+                state.loading = true;
+                state.isSuccess2 = false;
+            }),
+            builder.addCase(getVacancyInfoDetail.fulfilled, (state, action) => {
+                state.loading = false;
+                state.appErr = null;
+                state.isSuccess2 = true;
+                state.vacancyInfo = action?.payload?.vacancyInfo;
+            }),
+            builder.addCase(getVacancyInfoDetail.rejected, (state, action) => {
+                state.loading = false;
+                state.appErr = action?.payload?.message;
+                state.isSuccess2 = false;
+            })
     }
 });
 

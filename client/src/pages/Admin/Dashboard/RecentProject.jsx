@@ -1,6 +1,7 @@
 import { AiOutlineCheckCircle } from "react-icons/ai";
 import { LiaEyeSolid, LiaTrashAltSolid } from "react-icons/lia";
 import { BiMap } from "react-icons/bi";
+import { Link } from "react-router-dom";
 function RecentProject({item}) {
     return (
         <tr  className="relative border-b border-solid border-[#ecedf2] w-full hover:bg-[#f4f2f2] cursor-pointer px-3">
@@ -28,8 +29,8 @@ function RecentProject({item}) {
             <td >
                 <div className="">
                     <ul className="list-none flex relative item-center ">
-                        <li className="list-none relative mr-2 bg-[#f5f7fc] border rounded-md border-[#e9ecf9] px-1 pt-1 hover:bg-[#5f86e9] hover:text-white">
-                            <button> <LiaEyeSolid fontSize={18} /> </button>
+                        <li  className="list-none relative mr-2 bg-[#f5f7fc] border rounded-md border-[#e9ecf9] px-1 pt-1 hover:bg-[#5f86e9] hover:text-white">
+                            <Link to={'/Admin/approval-project/'+item?.project?.projectId}> <LiaEyeSolid fontSize={18} /> </Link>
                         </li>
                         <li className="list-none relative mr-2 bg-[#f5f7fc] border rounded-md border-[#e9ecf9] px-1 pt-1 hover:bg-[#278646] hover:text-white">
                             <button> <AiOutlineCheckCircle fontSize={18} /> </button>

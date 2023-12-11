@@ -187,7 +187,7 @@ function FindOrganizer() {
     // const [distance, setDistance] = useState("100");
     // const [plan, setPlan] = useState('startup')
     useEffect(() => {
-        setPages([...companyList.filter(item => ((item?.fullName).toLowerCase().includes(filterKeyWord.toLowerCase()) || item?.fields?.map(i => i.toLowerCase().includes(filterKeyWord.toLowerCase()))) && ((item?.address?.province ?? '').toLowerCase()?.includes(filterLocation.toLowerCase()) || (item?.address?.district ?? '').toLowerCase()?.includes(filterLocation.toLowerCase()))).slice(currentPage * itemPerPage, (currentPage + 1) * itemPerPage)])
+        setPages([...companyList.filter(item => ((item?.fullName).toLowerCase().includes(filterKeyWord.toLowerCase()) || item?.fields?.filter(i => i.toLowerCase().includes(filterKeyWord.toLowerCase())).length>0) && ((item?.address?.province ?? '').toLowerCase()?.includes(filterLocation.toLowerCase()) || (item?.address?.district ?? '').toLowerCase()?.includes(filterLocation.toLowerCase()))).slice(currentPage * itemPerPage, (currentPage + 1) * itemPerPage)])
     }, [currentPage, itemPerPage, companyList, filterKeyWord, filterLocation])
     useEffect(() => {
         if (isSuccess) {
@@ -257,10 +257,8 @@ function FindOrganizer() {
                         {/* search by category */}
                         <div>
                             <h1 className="text-lg leading-[24px] text-[#202124] mb-4 mt-5 font-medium">Category</h1>
-                            <div className="rounded-lg   focus:border-[#1967d2]">
-                                <ComboBox listItem={categoryList} filterValueSelected={onFilterCategory} styles={'py-3 outline-none border-none'} />
-
-
+                            <div className="rounded-lg focus:border-[#1967d2] ">
+                                <ComboBox listItem={categoryList} filterValueSelected={onFilterCategory} styles={'py-3 outline-none border-none '} />
                             </div>
                         </div>
                     </div>

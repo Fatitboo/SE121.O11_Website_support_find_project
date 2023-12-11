@@ -3,10 +3,13 @@ import FileCV from "./FileCv";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllUserCvAction, updateUserCvAction } from "../../../../redux/slices/users/usersSlices";
 import { LoadingComponent } from "../../../../components";
+import { ToastContainer, toast } from "react-toastify";
 
 function CVManager() {
     const dispatch = useDispatch()
     const [err, setErr] = useState(null)
+    const notify = (type, message) => toast(message, { type: type });
+
     useEffect(() => {
         dispatch(getAllUserCvAction())
     }, [dispatch])
@@ -43,6 +46,8 @@ function CVManager() {
     return (
         <div className="px-10 pb-0">
             {/* Start title of page  */}
+            <ToastContainer />
+
             {loading && <LoadingComponent />}
             <div className="mb-8">
                 <h3 className="font-medium text-3xl text-gray-900 mb-2 leading-10">CV Manager!</h3>
@@ -50,7 +55,7 @@ function CVManager() {
             </div>
             {/* Start main content  to display something*/}
             <div className="flex flex-wrap mx-3 mt-3">
-                <form encType="multipart/form-data" className="max-w-full px-3 pt-3 shrink-0 w-full">
+                <div  className="max-w-full px-3 pt-3 shrink-0 w-full">
                     <div className="relative rounded-lg mb-8 bg-white shadow max-w-full px-3 pt-1 shrink-0 w-full">
                         <div className="relative w-full">
                             {/* Start header of content */}
@@ -58,7 +63,7 @@ function CVManager() {
                                 <h4 className="mr-1 font-semibold">Cv Manager</h4>
                             </div>
                             {/* start input cv file*/}
-                            <div className="relative px-8 pt-5 pb-10">
+                            <form encType="multipart/form-data" className="relative px-8 pt-5 pb-10">
                                 <div className="relative flex items-center justify-center w-full flex-col">
                                     <input name="attachments[]" accept=".doc,.docx,.xml,application/msword,application/pdf, image/*" id="upload" multiple type="file"
                                         className="opacity-0 absolute overflow-hidden pointer-events-none h-0 w-0 z-[-1] hidden" onChange={onFileChange} />
@@ -71,12 +76,12 @@ function CVManager() {
                                 {err && <p className="pt-4 text-red-700 text-sm">* {err}</p>}
                                 {appErr && <p className="pt-4 text-red-700 text-sm">* {appErr}</p>}
 
-                            </div>
+                            </form>
 
                             {/* Start list CV */}
                             <div className="relative w-full px-12  grid grid-cols-5 ">
                                 {
-                                    cvUser === null ? 'Not have anything!' : cvUser.map((item, index) => <FileCV key={index} item={item} />)
+                                    cvUser === null ? 'Not have anything!' : cvUser.map((item, index) => <FileCV key={index} item={item} notify={notify} />)
                                 }
                             </div>
                             <div className="h-5">
@@ -84,7 +89,7 @@ function CVManager() {
                             </div>
                         </div>
                     </div>
-                </form>
+                </div>
             </div>
         </div>
     );

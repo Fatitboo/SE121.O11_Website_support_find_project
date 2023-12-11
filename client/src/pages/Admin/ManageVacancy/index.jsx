@@ -138,7 +138,7 @@ function ManageVacancy() {
 
                                         </div>
                                         <div className="flex ">
-                                            <div className="mr-1">Pending vacancies: </div> <span>  10</span>
+                                            <div className="mr-1">Total vacancies: </div> <span>  {pages.length} / {vacancyList.length} vacancies</span>
                                         </div>
                                     </div>
 

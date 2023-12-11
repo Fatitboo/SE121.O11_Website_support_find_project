@@ -132,5 +132,18 @@ public class VacancyController
         }
     }
 
+    @DeleteMapping("/delete-incomplete-vacancy/{id}")
+    public ResponseEntity<?> deleteIncompleteVacancy(@PathVariable String id){
+        HashMap<String, Object> response = new HashMap<>();
+        try{
+            vacancyServices.deleteIncompleteVacancy(id);
+            response.put("message","Delete incomplete vacancy successfully!");
+            response.put("deleteIncplVacancyId", id);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        }catch (Exception e) {
+            response.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+    }
 
 }

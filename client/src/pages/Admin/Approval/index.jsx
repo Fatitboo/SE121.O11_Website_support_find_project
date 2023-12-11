@@ -72,7 +72,8 @@ function Approval() {
 
     }
     useEffect(() => {
-        setPages([...projectList.filter(item => ((item?.project?.projectName).toLowerCase().includes(filterKeyWord.toLowerCase()) || (item?.corName).toLowerCase().includes(filterKeyWord.toLowerCase()))).slice(currentPage * 10, (currentPage + 1) * 10)])
+        setPages([...projectList.filter(item => ((item?.project?.projectName).toLowerCase().includes(filterKeyWord.toLowerCase()) 
+            || (item?.corName).toLowerCase().includes(filterKeyWord.toLowerCase()))).slice(currentPage * 10, (currentPage + 1) * 10)])
     }, [currentPage, projectList, filterKeyWord])
     useEffect(() => {
         if (isSuccess) {
@@ -116,7 +117,7 @@ function Approval() {
 
                                 </div>
                                 <div className="flex ">
-                                    <div className="mr-1">Pending projects: </div> <span>  10</span>
+                                    <div className="mr-1">Total projects: </div> <span>  {pages.length} / {projectList.length}</span>
                                 </div>
                             </div>
 
@@ -218,7 +219,7 @@ function Approval() {
                                                                     </div>
                                                                 </div>
                                                             </td>
-                                                            
+
                                                         </tr>
                                                     )
                                                 }) : pages?.map((item, index) => (

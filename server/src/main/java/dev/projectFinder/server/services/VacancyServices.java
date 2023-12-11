@@ -209,4 +209,9 @@ public class VacancyServices {
         }
         vacancyRepository.save(vacancy);
     }
+    public void deleteIncompleteVacancy(String id){
+        Optional<UnCompletedVacancy> optionalUnCompletedVacancy = unCompletedVacancyRepository.findById(new ObjectId(id));
+        if(optionalUnCompletedVacancy.isEmpty()) throw  new DataIntegrityViolationException("Error when get incomplete vacancy in database!");
+        unCompletedVacancyRepository.deleteById(new ObjectId(id));
+    }
 }

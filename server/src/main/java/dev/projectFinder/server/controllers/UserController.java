@@ -157,6 +157,20 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
     }
+    @PostMapping("/update-filename-cv/{id}")
+    public ResponseEntity<?> updateFilenameCV(@PathVariable String id, @RequestParam("newName") String filename, @RequestParam("publicId") String publicId){
+        HashMap<String, Object> response = new HashMap<>();
+        try{
+            userServices.updateFilenameCV(id, filename, publicId);
+            response.put("message","Update Cv successfully!" );
+            response.put("newName",filename);
+            response.put("publicId",publicId);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        }catch (Exception e) {
+            response.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+    }
     @PostMapping("/update-image-user/{id}")
     public ResponseEntity<?> updateImages(@PathVariable String id, @RequestParam("file") MultipartFile file,@RequestParam("publicId") String publicId ){
         HashMap<String, Object> response = new HashMap<>();
@@ -327,15 +341,20 @@ public class UserController {
             User userFoundRequest = foundUser.get();
 
             // increase views
-            userServices.increaseViews(id);
+            if(!userFoundRequest.getUserType().equals("admin")) userServices.increaseViews(id);
             // get user detail
             User user = userServices.getUserDetail(id);
 
 
             boolean isShorted = false;
             if(userFoundRequest.getShortListedUser() != null) {
-//                isShorted= (user.getShortListedUser()).stream().anyMatch(u -> (u.getUserId()).toString().equals(id));
-                    isShorted= userFoundRequest.getShortListedUser().contains(user);
+//                isShorted= user.getShortListedUser().stream().anyMatch(u-> u.getUserId().equals(new ObjectId(id)));
+                for(User u : userFoundRequest.getShortListedUser()){
+                    if(u.getUserId().equals(new ObjectId(id))){
+                        isShorted=true;
+                        break;
+                    }
+                }
             }
             response.put("isShorted",isShorted);
             response.put("message","Get detail user successfully" );
@@ -451,6 +470,7 @@ public class UserController {
                     cv.ifPresent(complete::add);
                 }
             }
+            response.put("notification",user.getNotifications());
             response.put("shortListed",  user.getShortListedUser()!= null ? user.getShortListedUser().size() : 0);
             response.put("postedVacancies",  user.getVacancies()!= null ? user.getVacancies().size() : 0);
             response.put("postedProjects",  user.getProjects()!= null ? user.getProjects().size() : 0);
@@ -489,6 +509,19 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
     }
+    @PutMapping("/update-active-cor/{id}")
+    public ResponseEntity<?> updateActiveCor(@PathVariable String id){
+        HashMap<String, Object> response = new HashMap<>();
+        try{
+            userServices.updateActiveCor(id);
+            response.put("message","Update active of organizer successfully!" );
+            response.put("userUpd",id);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        }catch (Exception e) {
+            response.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+    }
     @PostMapping("/apply-vacancies/{id}/{vacancyId}")
     public ResponseEntity<?> applyVacancy(@PathVariable String id, @PathVariable String vacancyId){
         HashMap<String, Object> response = new HashMap<>();
@@ -501,4 +534,5 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
     }
+
 }

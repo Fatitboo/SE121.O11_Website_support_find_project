@@ -4,22 +4,31 @@ import { BiBookmark, BiLogoFacebook, BiLogoInstagram, BiLogoTwitter } from "reac
 import { BsBriefcase } from "react-icons/bs"
 import { LiaPhoneSolid } from "react-icons/lia"
 import { CiMail } from "react-icons/ci";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { getDetailUserAction } from "../../../../redux/slices/users/usersSlices";
+import { getDetailUserAction, resetSuccessAction, updateAvtiveCorByAdminAction } from "../../../../redux/slices/users/usersSlices";
 import { CgArrowLeft } from "react-icons/cg";
 import { LoadingComponent } from "../../../../components";
+import { getAllProjectsUser } from "../../../../redux/slices/projects/projectsSlices";
+import ProjectItem from "./ProjectItem";
+import Swal from "sweetalert2";
 // import "./style.css"
 
 function CompanyProfileAdmin() {
     const { id } = useParams();
+    const navigate  = useNavigate();
     const dispatch = useDispatch()
     useEffect(() => {
+        dispatch(getAllProjectsUser({ id: id }))
         dispatch(getDetailUserAction(id))
     }, [dispatch])
     const storeData = useSelector(store => store?.users);
-    const { loading, appErr, seletedUser } = storeData;
+    const projects = useSelector((state) => state.projects.projects)
+
+    const { loading, appErr, seletedUser, isSuccessUpd } = storeData;
     const [sltCor, setSltCor] = useState({ ...seletedUser })
+    const [isActive, setIsActive] = useState(seletedUser?.isActive)
+
     const convertDate = (tt) => {
         const date = new Date(tt);
         // Lấy thông tin ngày, tháng, năm
@@ -34,15 +43,42 @@ function CompanyProfileAdmin() {
     useEffect(() => {
         setSltCor({ ...seletedUser })
     }, [seletedUser])
+    const handleUpdateActiveOrg = async (id, active) => {
+        Swal.fire({
+            title: `Confirm ${active}`,
+            text: `Are you sure you want to ${active} this organizer?`,
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Confirm"
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                dispatch(updateAvtiveCorByAdminAction(id))
+            }
+        });
+    }
+    useEffect(() => {
+        if (isSuccessUpd) {
+            dispatch(resetSuccessAction());
+            Swal.fire({
+                title: "Updated!",
+                text: "This active status of organizer has been updated.",
+                icon: "success",
+                confirmButtonColor: '#3085d6'
+            })
+            setIsActive(prev=>!prev)
+        }
+    }, [isSuccessUpd])
     return (<>
         {loading && <LoadingComponent />}
         <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/uicons-regular-rounded/css/uicons-regular-rounded.css'></link>
 
         <div className="px-[40px] pt-[10px] grid grid-cols-12 gap-4 min-h-[200px] bg-[#f2f7fb] items-center">
             <div className="col-span-8 pr-[30px] relative">
-                <Link to={'/Admin/user-management'} className="absolute -top-12 left-0 ">
+                <div onClick={()=>navigate(-1)} className="absolute -top-12 left-0 cursor-pointer">
                     <CgArrowLeft size={30} />
-                </Link>
+                </div>
                 {/* quick info  */}
                 <></>
                 <div className="flex text-[#696969] mb-8">
@@ -71,15 +107,13 @@ function CompanyProfileAdmin() {
             </div>
             <div className="col-span-4">
                 <div className="flex flex-row-reverse mb-5">
-                    <div className="item flex items-center justify-center w-[60px] h-[52px] rounded-[7px] bg-[rgba(25,103,210,.07)] ml-5 cursor-pointer opacity-80" color="#1967d3">
-                        <BiBookmark className="w-full h-full p-[14px] rounded-[7px]" color="#1967d3" />
-                    </div>
+
                     {
-                        sltCor?.isActive ?
-                            <div className="flex items-center justify-center h-[53px] box-border bg-red-500 px-[18px] py-[8px] w-[130px] rounded-[8px] text-[#fff] hover:bg-red-700 cursor-pointer">
+                        isActive ?
+                            <div onClick={() => handleUpdateActiveOrg(sltCor?.userId, 'block')} className="flex items-center justify-center h-[53px] box-border bg-red-600 px-[18px] py-[8px] w-[130px] rounded-[8px] text-[#fff] hover:bg-red-700 cursor-pointer">
                                 <span className="text-[15px] leading-none font-[400]">Block</span>
                             </div>
-                            : <div className="flex items-center justify-center h-[53px] box-border bg-blue-600 px-[18px] py-[8px] w-[130px] rounded-[8px] text-[#fff] hover:bg-blue-800 cursor-pointer">
+                            : <div onClick={() => handleUpdateActiveOrg(sltCor?.userId, 'unblock')} className="flex items-center justify-center h-[53px] box-border bg-blue-600 px-[18px] py-[8px] w-[130px] rounded-[8px] text-[#fff] hover:bg-blue-800 cursor-pointer">
                                 <span className="text-[15px] leading-none font-[400]">Active</span>
                             </div>
                     }
@@ -94,7 +128,7 @@ function CompanyProfileAdmin() {
                     {/* Description  */}
                     <></>
                     <div>
-                        <h4 className="text-lg leading-6 text-[#202124] mb-5 font-semibold">About Company</h4>
+                        <h4 className="text-lg leading-6 text-[#202124] mb-5 font-semibold">About Organizer</h4>
                         <p className="text-[#696969] text-base mb-6 font-normal leading-8">
                             {sltCor?.description ?? 'Not infomation'}
                         </p>
@@ -107,9 +141,17 @@ function CompanyProfileAdmin() {
                     </div>
                     <></>
 
-                    {/* Images info */}
+                    {/* project of organizer info */}
                     <></>
                     <div>
+                        <h4 className="text-lg leading-6 text-[#202124] mb-5 font-semibold">Projects Of Organizer</h4>
+                        <div className="mt-5">
+                            {
+                                projects?.map((item, index) => {
+                                    return <ProjectItem key={index} props={item} fullName={sltCor?.fullName} />;
+                                })
+                            }
+                        </div>
 
                     </div>
                     <></>

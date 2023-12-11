@@ -1,9 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Candidate } from "../../../../assets/images";
 import { PiMapPin } from "react-icons/pi";
-import { MoneyIcon, CalendarIcon, ExpiryIcon, RateIcon, SalaryIcon, UserIcon, DegreeIcon } from "../../../../assets/icons";
-import { AiOutlineClockCircle } from "react-icons/ai";
-import BackgroundItem from "../../../../components/Seeker/BackgroundItem";
 import { BiBookmark, BiLogoFacebook, BiLogoInstagram, BiLogoTwitter } from "react-icons/bi";
 import { BsBookmarkCheckFill, BsBriefcase } from "react-icons/bs"
 import { LiaPhoneSolid } from "react-icons/lia"
@@ -14,16 +10,19 @@ import { useDispatch, useSelector } from "react-redux";
 import { getDetailUserAction, resetSuccessAction, updateShortlistedUsersAction } from "../../../../redux/slices/users/usersSlices";
 import { LoadingComponent } from "../../../../components";
 import { ToastContainer, toast } from "react-toastify";
-import { ArrowLeftIcon } from "@heroicons/react/20/solid";
+import { getAllProjectsUser } from "../../../../redux/slices/projects/projectsSlices";
+import ProjectItem from "./ProjectItem";
 
 function CompanyProfile() {
     const { id } = useParams();
     const navigate = useNavigate();
     const dispatch = useDispatch()
     useEffect(() => {
+        dispatch(getAllProjectsUser({ id: id }))
         dispatch(getDetailUserAction(id))
     }, [dispatch])
     const notify = (type, message) => toast(message, { type: type });
+    const projects = useSelector((state) => state.projects.projects)
 
     const storeData = useSelector(store => store?.users);
     const { loading, appErr, seletedUser, isSuccess, isShorted } = storeData;
@@ -124,6 +123,14 @@ function CompanyProfile() {
                     {/* Images info */}
                     <></>
                     <div>
+                        <h4 className="text-lg leading-6 text-[#202124] mb-5 font-semibold">Projects Of Organizer</h4>
+                        <div className="mt-5">
+                            {
+                                projects?.map((item, index) => {
+                                    return <ProjectItem key={index} props={item} fullName={sltCor?.fullName} />;
+                                })
+                            }
+                        </div>
 
                     </div>
                     <></>

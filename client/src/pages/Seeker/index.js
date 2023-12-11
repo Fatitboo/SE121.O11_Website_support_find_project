@@ -10,6 +10,7 @@ import AppliedJob from "./Setting/AppliedJobs";
 import CVManager from "./Setting/CvManager";
 import CompanyProfile from "./FindOrganizer/Profile";
 import ShortListedCors from "./ShortListedCors/ShortListedCors";
+import VacancyInfoSeeker from "./Setting/Dashboard/VacancyInfo/VacancyInfo";
 export {
     FindProjects, 
     Home, 
@@ -22,5 +23,6 @@ export {
     AppliedJob,
     CVManager,
     CompanyProfile,
-    ShortListedCors
+    ShortListedCors,
+    VacancyInfoSeeker
 }

@@ -214,8 +214,22 @@ public class UserServices {
         CVLink cv = new CVLink(UUID.randomUUID().toString(),file.getOriginalFilename(), (String) uploadResult.get("url"), (String) uploadResult.get("public_id"), false);
         cvLinks.add(cv);
         user.setCvLinks(cvLinks);
-          userRepository.save(user);
-          return cv;
+        userRepository.save(user);
+        return cv;
+    }
+    public void updateFilenameCV(String id, String newFilename, String publicId) throws IOException {
+        Optional<User> foundUser = userRepository.findById(new ObjectId(id));
+        if(foundUser.isEmpty()){
+            throw new DataIntegrityViolationException(MessageKeys.USER_NOT_FOUND);
+        }
+        User user = foundUser.get();
+
+        List<CVLink> cvLinks =  user.getCvLinks();
+        for ( CVLink cv: cvLinks){
+            if(cv.getPublicId().equals(publicId)) cv.setFilename(newFilename);
+        }
+        user.setCvLinks(cvLinks);
+        userRepository.save(user);
     }
     public User updateImages(String id, MultipartFile file, String publicId) throws Exception {
         Optional<User> foundUser = userRepository.findById(new ObjectId(id));
@@ -352,15 +366,23 @@ public class UserServices {
         User user = foundUser.get();
         List<User> users = user.getShortListedUser();
         if(users==null){
-            users= new ArrayList<>();
+            users = new ArrayList<>();
         }
         Optional<User> addUserFound = userRepository.findById(new ObjectId(userId));
         if(addUserFound.isEmpty()){
             throw new DataIntegrityViolationException(MessageKeys.USER_NOT_FOUND);
         }
         User addUser = addUserFound.get();
-        if(users.contains(addUser)){
-            users.remove(addUser);
+        boolean isShorted = false;
+        //                isShorted= user.getShortListedUser().stream().anyMatch(u-> u.getUserId().equals(new ObjectId(id)));
+        for(User u : users){
+            if(u.getUserId().equals(new ObjectId(userId))){
+                isShorted=true;
+                break;
+            }
+        }
+        if(isShorted){
+            users.removeIf(u->u.getUserId().equals(new ObjectId(userId)));
         }
         else {
             users.add(addUser);
@@ -407,7 +429,6 @@ public class UserServices {
         user.setViewsProfiles(viewsProfiles);
         userRepository.save(user);
     }
-
     public HashMap<String, Object> getDataStatisticalAdmin(String id){
         User user = this.getUserDetail(id);
         HashMap<String, Object> hashMap = new HashMap<>();
@@ -487,5 +508,15 @@ public class UserServices {
             registants.add(user.getUserId().toString());
         vacancy.setRegistants(registants);
         vacancyRepository.save(vacancy);
+    }
+    public void updateActiveCor(String id){
+        Optional<User> foundUser = userRepository.findById(new ObjectId(id));
+        if(foundUser.isEmpty()){
+            throw new DataIntegrityViolationException(MessageKeys.USER_NOT_FOUND);
+        }
+        User user = foundUser.get();
+        Boolean isActive = user.getIsActive();
+        user.setIsActive(!isActive);
+        userRepository.save(user);
     }
 }
