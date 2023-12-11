@@ -5,8 +5,6 @@ import { LiaEyeSolid, LiaTrashAltSolid } from "react-icons/lia";
 import { Menu, Transition } from "@headlessui/react";
 import { Fragment, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { deleteIncompleteVacancy, getVacancyCor, resetSuccessAction } from "../../../redux/slices/vacancies/vacanciesSlices";
-import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
 import { deleteuncompletedVacancyAction, getVacancyCor, resetSuccessAction } from "../../../redux/slices/vacancies/vacanciesSlices";
 import { Link, useNavigate } from "react-router-dom";
@@ -27,7 +25,7 @@ function ManageVacancy() {
         dispatch(getVacancyCor());
     }, [dispatch])
     const storeData = useSelector(store => store?.vacancies);
-    const { loading, appErr, isSuccess2, incomplete, complete,isSuccessUpd } = storeData;
+    const { loading, appErr, isSuccess2, incomplete, complete,isSuccessDL } = storeData;
     const onFilterlistApprovedCbb = (filterValue) => {
         // console.log(filterValue)
     }
@@ -47,9 +45,6 @@ function ManageVacancy() {
         navigate(`/Organizer/post-vacancy/${item.vacancyId}`)
     }
 
-    const handleDeleteInComplete = (item) => {
-        dispatch(deleteuncompletedVacancyAction(item.vacancyId))
-    }
 
     useEffect(() => {
         setPages([...completeList.filter(item => ((item?.vacancyName).toLowerCase().includes(filterKeyWord.toLowerCase()) || (item?.projectName ?? '').toLowerCase().includes(filterKeyWord.toLowerCase())) ).slice(currentPage * 10, (currentPage + 1) * 10)])
@@ -62,9 +57,8 @@ function ManageVacancy() {
         }
     }, [isSuccess2])
     useEffect(() => {
-        if (isSuccessUpd) {
+        if (isSuccessDL) {
             dispatch(resetSuccessAction());
-            setIncompleteList([...incomplete]);
             Swal.fire({
                 title: "Deleted!",
                 text: "This item has been deleted.",
@@ -72,8 +66,8 @@ function ManageVacancy() {
                 confirmButtonColor: '#3085d6'
             })
         }
-    }, [isSuccessUpd])
-    const handleDeleteincompleteVacancy = (id)=>{
+    }, [isSuccessDL])
+    const handleDeleteincompleteVacancy = (item)=>{
         Swal.fire({
             title: "Confirm Delete",
             text: "Are you sure you want to delete this item?",
@@ -84,7 +78,7 @@ function ManageVacancy() {
             confirmButtonText: "Delete"
         }).then(async (result) => {
             if (result.isConfirmed) {
-                dispatch(deleteIncompleteVacancy(id));
+                dispatch(deleteuncompletedVacancyAction(item.vacancyId))
                 }
         });
     }
@@ -107,7 +101,7 @@ function ManageVacancy() {
                             {/* Start header of content */}
                             <div className="relative flex justify-between items-center flex-wrap bg-transparent px-6 pt-8">
                                 {incomplete?.length !== 0 ?
-                                    <table className="relative w-full overflow-y-hidden overflow-x-hidden rounded-md mb-8 bg-white border-0 ">
+                                    <table className="relative w-full overflow-y overflow-x-hidden rounded-md mb-8 bg-white border-0 ">
                                         <thead className=" color-white border-transparent border-0 w-full">
                                             <tr className="bg-red-50 w-full border-b border-solid border-[#ecedf2]">
                                                 <th className="relative  font-medium py-6 text-base text-left w-4/12 pl-6 ">InComplete vacancy</th>
@@ -170,7 +164,7 @@ function ManageVacancy() {
                                                                             <div className="px-1 py-1">
                                                                                 <Menu.Item>
                                                                                     {({ active }) => (
-                                                                                        <button onClick={() => {handleDeleteInComplete(item)}} className={`${active ? 'bg-blue-500 text-white' : 'text-gray-900'} group flex w-full items-center rounded-md px-2 py-2 text-sm`} >
+                                                                                        <button onClick={() => {handleDeleteincompleteVacancy(item)}} className={`${active ? 'bg-blue-500 text-white' : 'text-gray-900'} group flex w-full items-center rounded-md px-2 py-2 text-sm`} >
                                                                                             <BiTrash className="mr-2 h-5 w-5 text-red-400" aria-hidden="true" />
                                                                                             Delete
                                                                                         </button>

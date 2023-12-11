@@ -100,7 +100,7 @@ const ProjectItem = ({props}) => {
                    
                     <div>
                         <div className="flex flex-col mt-3">
-                            <input type="checkbox" className="peer" checked={dropDownTags} hidden/>
+                            <input type="checkbox" className="peer" checked={dropDownTags} hidden onChange={()=>{}}/>
                             <div className="flex flex-row border rounded-lg items-center justify-between p-2 px-5 transition-all duration-500 cursor-pointer bg-[#F3F2F1] hover:bg-[#cfcece] rounded-es-lg rounded-ee-lg peer-checked:rounded-es-none peer-checked:rounded-ee-none"  onClick={handleGetVacancies}>
                                 <div className="flex flex-row items-top mr-3">
                                     <div className="text-base text-[#2d2d2d] font-bold whitespace-nowrap">
@@ -114,7 +114,7 @@ const ProjectItem = ({props}) => {
                                             </svg> 
                                         :
                                         <div className="h-full self-start mt-[2px] cursor-pointer">
-                                            <input type="checkbox" className="peer" hidden checked={dropDownTags}/>
+                                            <input type="checkbox" className="peer" hidden onChange={()=>{}} checked={dropDownTags}/>
                                             <IoChevronDownOutline size={22} className='transition-transform duration-500 rotate-0 peer-checked:rotate-180'/>
                                         </div>
                                 }

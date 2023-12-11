@@ -87,8 +87,8 @@ function FindProjects() {
             let list = [...currentPrs]
             console.log(list)
             list.sort((a, b) => {
-                const d1 = Date.parse(a.project.startDate)
-                const d2 = Date.parse(b.project.startDate)
+                const d1 = Date.parse(a?.project?.startDate)
+                const d2 = Date.parse(b?.project?.startDate)
                 return d1 > d2 ? -1 : d1 === d2 ? 0 : 1
             })
             setCurrentPrs(list)
@@ -97,8 +97,8 @@ function FindProjects() {
             let list = [...currentPrs]
             console.log(list)
             list.sort((a, b) => {
-                const d1 = Date.parse(a.project.startDate)
-                const d2 = Date.parse(b.project.startDate)
+                const d1 = Date.parse(a?.project?.startDate)
+                const d2 = Date.parse(b?.project?.startDate)
                 return d1 > d2 ? 1 : d1 === d2 ? 0 : -1
             })
             setCurrentPrs(list)
@@ -137,12 +137,12 @@ function FindProjects() {
     const handleSearch = (a, b, c) => {
         if(!projects) return;
         let list = Array.from(projects)
-        list = list.filter((item) => item.project.projectName.toLowerCase().trim().includes(a.toLowerCase().trim())
-                                || item.fullName.toLowerCase().trim().includes(a.toLowerCase().trim()))
+        list = list?.filter((item) => item?.project?.projectName.toLowerCase().trim().includes(a.toLowerCase().trim())
+                                || item?.fullName.toLowerCase().trim().includes(a.toLowerCase().trim()))
                                 console.log(list)
         if(b.type !== 'none' && b.value !== false)
-            list = list.filter(item => {
-                let arr = item.project.createdAt;
+            list = list?.filter(item => {
+                let arr = item?.project?.createdAt;
                 const date = new Date(arr[0], arr[1] - 1, arr[2], arr[3], arr[4], arr[5])
                 let duration = date - Date.now();
                 b.type === 'date' ? 
@@ -159,7 +159,7 @@ function FindProjects() {
             if(c.length != 0)
                 list = list.filter(item => {
                     for(let i = 0; i < c.length; i++){
-                        if(item.project.occupations.includes(c[i]))
+                        if(item?.project?.occupations.includes(c[i]))
                             return true;
                     }
                     return false;
