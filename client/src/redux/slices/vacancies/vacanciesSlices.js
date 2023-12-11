@@ -4,7 +4,7 @@ import axios from "axios";
 import {redirect} from 'react-router-dom'
 const apiPrefix = 'api/v1/vacancies';
 
-//create vacancy id
+//get all vacancies
 export const getAllVacancies = createAsyncThunk(
     'vacancies/getAllVacancies',
     async (payload, {rejectWithValue, getState, dispatch}) => {
@@ -29,7 +29,31 @@ export const getAllVacancies = createAsyncThunk(
         }
     }
 )
+//get current uncompleted vacancies components
+export const getCurrentVacanciesComponent = createAsyncThunk(
+    'vacancies/getCurrentVacanciesComponent',
+    async (payload, {rejectWithValue, getState, dispatch}) => {
+        try {
+            const user = getState()?.users;
+            const {userAuth}=user;
+            // http call 
+            const config = {
+                headers:{
+                    Authorization: `Bearer ${userAuth?.user?.token}`,
+                    'Content-Type':'application/json',
+                },
+            };
 
+            const {data} = await axios.get(`${baseUrl}/${apiPrefix}/posting/${payload}`, config);
+            return data;
+        } catch (error) {
+            if(!error?.response){
+                throw error;
+            }
+            return rejectWithValue(error?.response?.data);
+        }
+    }
+)
 //create vacancy id
 export const createVacancyId = createAsyncThunk(
     'vacancies/createVacancyId',
@@ -55,7 +79,6 @@ export const createVacancyId = createAsyncThunk(
         }
     }
 )
-
 //get vacancy component
 export const getVacancyComponent = createAsyncThunk(
     'vacancies/getVacancyComponent',
@@ -81,7 +104,7 @@ export const getVacancyComponent = createAsyncThunk(
         }
     }
 )
-//get vacancy component
+//get vacancy info detail
 export const getVacancyInfoDetail = createAsyncThunk(
     'vacancies/getVacancyInfoDetail',
     async (id, {rejectWithValue, getState, dispatch}) => {
@@ -120,6 +143,7 @@ export const updateVacancyComponent = createAsyncThunk(
                     'Content-Type':'application/json',
                 },
             }; 
+            console.log(vacancy)
             const {data} = await axios.put(`${baseUrl}/${apiPrefix}/posting/${vacancy.id}`, {...vacancy.value}, config);
             return data;
         } catch (error) {
@@ -130,7 +154,6 @@ export const updateVacancyComponent = createAsyncThunk(
         }
     }
 )
-
 //get vacancy component
 export const getVacancyCor = createAsyncThunk(
     'vacancies/getVacancyCor',
@@ -147,6 +170,80 @@ export const getVacancyCor = createAsyncThunk(
             };
             console.log(userAuth?.user?.userId)
             const {data} = await axios.get(`${baseUrl}/api/v1/users/get-vacancy-cor/${userAuth?.user?.userId}`, config);
+            return data;
+        } catch (error) {
+            if(!error?.response){
+                throw error;
+            }
+            return rejectWithValue(error?.response?.data);
+        }
+    }
+)
+//get uncompleted vacancy
+export const getFullUnCompletedVacancy = createAsyncThunk(
+    'vacancies/getUnVacancy',
+    async (payload, {rejectWithValue, getState, dispatch}) => {
+        try {
+            const user = getState()?.users;
+            const {userAuth}=user;
+            // http call
+            const config = {
+                headers:{
+                    Authorization: `Bearer ${userAuth?.user?.token}`,
+                    'Content-Type':'application/json',
+                },
+            };
+            console.log(userAuth?.user?.userId)
+            const {data} = await axios.get(`${baseUrl}/${apiPrefix}/uncompleted-vacancy/${payload}`, config);
+            return data;
+        } catch (error) {
+            if(!error?.response){
+                throw error;
+            }
+            return rejectWithValue(error?.response?.data);
+        }
+    }
+)
+//get uncompleted vacancy
+export const postFullVacancy = createAsyncThunk(
+    'vacancies/postFullVacancy',
+    async (payload, {rejectWithValue, getState, dispatch}) => {
+        try {
+            const user = getState()?.users;
+            const {userAuth}=user;
+            // http call
+            const config = {
+                headers:{
+                    Authorization: `Bearer ${userAuth?.user?.token}`,
+                    'Content-Type':'application/json',
+                },
+            };
+            console.log(userAuth?.user?.userId)
+            const {data} = await axios.post(`${baseUrl}/${apiPrefix}/post/${payload}`, payload , config);
+            return data;
+        } catch (error) {
+            if(!error?.response){
+                throw error;
+            }
+            return rejectWithValue(error?.response?.data);
+        }
+    }
+)
+//Delete uncompletedVacancy
+export const deleteuncompletedVacancyAction = createAsyncThunk(
+    'projects/deleteUncompletedVacancy',
+    async (payload, {rejectWithValue, getState, dispatch}) => {
+        try {
+            const user = getState()?.users;
+            const {userAuth}=user;
+            // http call 
+            const config = {
+                headers:{
+                    Authorization: `Bearer ${userAuth?.user?.token}`,
+                    'Content-Type':'application/json',
+                },
+            };
+            const {data} = await axios.delete(`${baseUrl}/${apiPrefix}/delete-uncompleted-vacancy/${payload}` , config);
             return data;
         } catch (error) {
             if(!error?.response){
@@ -180,6 +277,11 @@ export function resetComponent(){
         dispatch(vacanciesSlices.actions.resetComponent())
     }
 }
+export function setVacancyId(value){
+    return function setVacancyId(dispatch, getState){
+        dispatch(vacanciesSlices.actions.setVacancyId(value))
+    }
+}
 
 const vacanciesSlices = createSlice({
     name:'vacancies',
@@ -193,9 +295,14 @@ const vacanciesSlices = createSlice({
     reducers:{
         setValueSuccess: (state, action) => {
             state.isSuccess = action.payload
+            state.loadingUD = action.payload
+            state.isSuccess3 = action.payload
         },
         resetComponent: (state, action) => {
             delete state.currentJobComponent
+        },
+        setVacancyId: (state, action) => {
+            state.vacancyId = action.payload
         },
     },
     extraReducers:(builder)=>{
@@ -228,18 +335,22 @@ const vacanciesSlices = createSlice({
             state.appErr = action?.payload?.message;
             state.isSuccess=false
         })
+
         //update vacancies
         builder.addCase(updateVacancyComponent.pending, (state, action)=>{
             state.loading=true;
+            state.loadingUD=true;
             state.isSuccess=false
         }),
         builder.addCase(updateVacancyComponent.fulfilled, (state, action)=>{
+            state.loadingUD=false;
             state.loading=false;
             state.appErr = null;
             state.isSuccess = true;
         }),
         builder.addCase(updateVacancyComponent.rejected, (state, action)=>{
             state.loading=false;
+            state.loadingUD=true;
             state.appErr = action?.payload?.message;
             state.isSuccess = false;
         })
@@ -257,7 +368,8 @@ const vacanciesSlices = createSlice({
             state.loading=false;
             state.appErr = action?.payload?.message;
         })
-        //get vacancy component
+
+        //get vacancy cor
         builder.addCase(getVacancyCor.pending, (state, action)=>{
             state.loading=true;
             state.isSuccess2 = false;
@@ -276,9 +388,7 @@ const vacanciesSlices = createSlice({
             state.isSuccess2 = false;
 
         })
-        builder.addCase(resetSuccessAction.fulfilled, (state, action) => {
-            state.isSuccess2 = false;
-        });
+
         //get vacancy info detail
         builder.addCase(getVacancyInfoDetail.pending, (state, action)=>{
             state.loading=true;
@@ -296,6 +406,81 @@ const vacanciesSlices = createSlice({
             state.isSuccess2 = false;
 
         })
+
+        //get current vacancy component
+        builder.addCase(getCurrentVacanciesComponent.pending, (state, action)=>{
+            state.loading=true;
+            state.isSuccess3 = false;
+        }),
+        builder.addCase(getCurrentVacanciesComponent.fulfilled, (state, action)=>{
+            state.loading=false;
+            state.appErr = null;
+            state.isSuccess3 = true;
+            state.currentJobComponent = action?.payload?.currentJobComponent;
+            state.flag = action?.payload?.flag;
+            state.vacancyId = action?.payload.id; 
+
+        }),
+        builder.addCase(getCurrentVacanciesComponent.rejected, (state, action)=>{
+            state.loading=false;
+            state.appErr = action?.payload?.message;
+            state.isSuccess3 = false;
+
+        })
+
+        //get uncompleted vacancy
+        builder.addCase(getFullUnCompletedVacancy.pending, (state, action)=>{
+            state.loading=true;
+            state.isSuccess4 = false;
+        }),
+        builder.addCase(getFullUnCompletedVacancy.fulfilled, (state, action)=>{
+            state.loading=false;
+            state.appErr = null;
+            state.isSuccess4 = true;
+            state.unCompletedVacancy = action?.payload?.unCompletedVacancy
+
+        }),
+        builder.addCase(getFullUnCompletedVacancy.rejected, (state, action)=>{
+            state.loading=false;
+            state.appErr = action?.payload?.message;
+            state.isSuccess4 = false;
+
+        })
+        //get uncompleted vacancy
+        builder.addCase(postFullVacancy.pending, (state, action)=>{
+            state.loading=true;
+            state.isSuccessCR = false;
+        }),
+        builder.addCase(postFullVacancy.fulfilled, (state, action)=>{
+            state.loading=false;
+            state.appErr = null;
+            state.isSuccessCR = true;
+            state.vacancy = action?.payload?.vacancy
+
+        }),
+        builder.addCase(postFullVacancy.rejected, (state, action)=>{
+            state.loading=false;
+            state.appErr = action?.payload?.message;
+            state.isSuccessCR = false;
+
+        })
+        //delete uncompleted vacancy
+        builder.addCase(deleteuncompletedVacancyAction.pending, (state, action)=>{
+            state.loading=true;
+            state.isSuccessDL = false;
+        }),
+        builder.addCase(deleteuncompletedVacancyAction.fulfilled, (state, action)=>{
+            state.loading=false;
+            state.appErr = null;
+            state.isSuccessDL = true;
+            state.incomplete = state.incomplete.filter((item) => item.vacancyId !== action.payload.id)
+        }),
+        builder.addCase(deleteuncompletedVacancyAction.rejected, (state, action)=>{
+            state.loading=false;
+            state.appErr = action?.payload?.message;
+            state.isSuccessDL = false;
+        })
+
     }    
 });
 

@@ -2,13 +2,17 @@ import { useEffect, useState } from "react";
 import { BsCheck } from "react-icons/bs";
 import { IoMdClose } from "react-icons/io";
 import CustomComboBox from "../../../../../components/Organizer/CustomComboBox";
-function QuestionItem({props, onClose}) {
+function QuestionItem({props, onClose, handleChangeText, filterComboBox, filterRadio, filterSelect, handleRequired}) {
     let [question, setQuestion] = useState(props);
     let [selected, setSelected] = useState([]);
 
     useEffect(() => {
         if(props.selectedItem) setSelected(props.selectedItem);
     }, [props.selectedItem])
+
+    useEffect(() => {
+        if(props) setQuestion(props);
+    }, [props])
 
     // Select Box
 
@@ -17,11 +21,13 @@ function QuestionItem({props, onClose}) {
         if(selected.length === list.length) 
             list.push(props.selectList.find((i) => i.id === item.id))
         setSelected(list)
+        filterSelect(list)
     }
 
     const setRequireValue = (item) => {
-        const k = selected.map((i) => i.id === item.id ? {...i, isRequired: !i.isRequired} : {...i})
+        const k = selected.map((i) => i.id === item.id ? {...i, required: !i.required} : {...i})
         setSelected(k)
+        filterSelect(k)
     }
     switch (question.type) {
         case 'info':
@@ -30,8 +36,8 @@ function QuestionItem({props, onClose}) {
             //     boxType: 'Application question',
             //     question: 'Please list 2-3 dates and time ranges that you could do an interview.',
             //     answerRequire: 'Ask applicants to list some dates and times they could do an interview',
-            //     isRequired: true,
-            //     isDealBreakerBox: true,
+            //     required: true,
+            //     dealBreakerBox: true,
             // }
             return ( 
                 <>
@@ -57,17 +63,17 @@ function QuestionItem({props, onClose}) {
                                 {question.answerRequire}
                             </div>
                             {
-                                question.isDealBreakerBox ? (
+                                question.dealBreakerBox ? (
                                     <div className="flex flex-row items-center">
                                         <div className='flex items-center justify-between bg-white py-1 focus:outline-none text-base text-gray-900 hover:font-normal hover:opacity-90'>
-                                            <div onClick={() => {setQuestion({...question, isRequired: !question.isRequired})}} style={{borderColor: `${question.isRequired ? '#2557a7' : 'gray'}`}} className="flex flex-row items-center cursor-pointer w-full rounded-md group border p-2">
+                                            <div onClick={() => {setQuestion({...question, required: !question.required}); handleRequired()}} style={{borderColor: `${question.required ? '#2557a7' : 'gray'}`}} className="flex flex-row items-center cursor-pointer w-full rounded-md group border p-2">
                                                 <div>
                                                     <div className="relative h-7 flex items-center">
                                                         <div className="absolute bg-[#FFF] border border-[#808082] w-[24px] h-[24px] rounded-[5px] group-hover:bg-[#e1ebff]" color="#FFF"></div>
-                                                        <div style={{visibility: question.isRequired ? 'visible' : 'hidden' }} className={`flex items-center justify-center absolute bg-[#2557a7] w-[24px] h-[24px] rounded-[5px]`} color="#FFF"><BsCheck color="#FFF" size={'21px'}/></div>
+                                                        <div style={{visibility: question.required ? 'visible' : 'hidden' }} className={`flex items-center justify-center absolute bg-[#2557a7] w-[24px] h-[24px] rounded-[5px]`} color="#FFF"><BsCheck color="#FFF" size={'21px'}/></div>
                                                     </div>
                                                 </div>
-                                                <span className="pl-9 text-base mb-[1px] select-none text-[#696969] whitespace-nowrap font-semibold" style={{color: `${question.isRequired ? '#2557a7' : 'gray'}`}}>Deal breaker</span>
+                                                <span className="pl-9 text-base mb-[1px] select-none text-[#696969] whitespace-nowrap font-semibold" style={{color: `${question.required ? '#2557a7' : 'gray'}`}}>Deal breaker</span>
                                             </div>
                                         </div>
                                     </div>
@@ -84,8 +90,8 @@ function QuestionItem({props, onClose}) {
             //     boxType: 'Application question',
             //     question: 'Do you speak ... ?',
             //     preAnswer: 'Speaks',
-            //     isRequired: true,
-            //     isDealBreakerBox: true,
+            //     required: true,
+            //     dealBreakerBox: true,
             // }
             return ( 
                 <>
@@ -114,6 +120,8 @@ function QuestionItem({props, onClose}) {
                                 <div className="w-full">
                                     <input
                                         type="text"
+                                        value={props?.value}
+                                        onChange={handleChangeText}
                                         rules="requiredText|email"
                                         className={`w-full block bg-[#fdfeff] focus:bg-white outline-none hover:border-[#3f73d3] focus:border-[#3f73d3] text-base shadow-sm rounded-md py-1.5 pl-2 pr-5 text-gray-900 border border-gray-300 placeholder:text-gray-400 sm:text-base sm:leading-8`}
                                     />                                                        
@@ -121,17 +129,17 @@ function QuestionItem({props, onClose}) {
                                 {/* {index !== 0 ? <div className="bg-white hover:bg-[#e8f0fe] rounded-md h-full p-3 cursor-pointer" onClick={() => setAddEmail("delete", index)}><AiOutlineClose className="px-1 w-7 h-7" /></div> : null} */}
                             </div>
                             {
-                                question.isDealBreakerBox ? (
+                                question.dealBreakerBox ? (
                                     <div className="flex flex-row items-center ml-3">
                                         <div className='flex items-center justify-between bg-white py-1 focus:outline-none text-base text-gray-900 hover:font-normal hover:opacity-90'>
-                                            <div onClick={() => {setQuestion({...question, isRequired: !question.isRequired})}} style={{borderColor: `${question.isRequired ? '#2557a7' : 'gray'}`}} className="flex flex-row items-center cursor-pointer w-full rounded-md group border p-2">
+                                            <div onClick={() => {setQuestion({...question, required: !question.required});handleRequired()}} style={{borderColor: `${question.required ? '#2557a7' : 'gray'}`}} className="flex flex-row items-center cursor-pointer w-full rounded-md group border p-2">
                                                 <div>
                                                     <div className="relative h-7 flex items-center">
                                                         <div className="absolute bg-[#FFF] border border-[#808082] w-[24px] h-[24px] rounded-[5px] group-hover:bg-[#e1ebff]" color="#FFF"></div>
-                                                        <div style={{visibility: question.isRequired ? 'visible' : 'hidden' }} className={`flex items-center justify-center absolute bg-[#2557a7] w-[24px] h-[24px] rounded-[5px]`} color="#FFF"><BsCheck color="#FFF" size={'21px'}/></div>
+                                                        <div style={{visibility: question.required ? 'visible' : 'hidden' }} className={`flex items-center justify-center absolute bg-[#2557a7] w-[24px] h-[24px] rounded-[5px]`} color="#FFF"><BsCheck color="#FFF" size={'21px'}/></div>
                                                     </div>
                                                 </div>
-                                                <span className="pl-9 text-base mb-[1px] select-none text-[#696969] whitespace-nowrap font-semibold" style={{color: `${question.isRequired ? '#2557a7' : 'gray'}`}}>Deal breaker</span>
+                                                <span className="pl-9 text-base mb-[1px] select-none text-[#696969] whitespace-nowrap font-semibold" style={{color: `${question.required ? '#2557a7' : 'gray'}`}}>Deal breaker</span>
                                             </div>
                                         </div>
                                     </div>
@@ -148,12 +156,11 @@ function QuestionItem({props, onClose}) {
             //     boxType: 'Application question',
             //     question: 'Which shift(s) are you available to work?',
             //     preAnswer: 'Available to work the following shift(s):',
-            //     selectList: [{id: 1, name: 'Day Shift', isRequired: 'false', isDealBreakerBox: 'true'}, {id: 2, name: 'Night Shift', isRequired: 'false', isDealBreakerBox: 'true'}, {id: 3, name: 'Overnight Shift', isRequired: 'false', isDealBreakerBox: 'true'}],
+            //     selectList: [{id: 1, name: 'Day Shift', required: 'false', dealBreakerBox: 'true'}, {id: 2, name: 'Night Shift', required: 'false', dealBreakerBox: 'true'}, {id: 3, name: 'Overnight Shift', required: 'false', dealBreakerBox: 'true'}],
             //     selectedItem: [{id: 1, name: 'Day Shift'}],
             // }
             return ( 
                 <>
-                <div onClick={() => {console.log(selected)}}>clickme</div>
                 <div className="flex flex-col border border-gray-400 rounded-lg overflow-hidden my-6">
                         <div className="flex flex-row items-center justify-between p-3 bg-[#F3F2F1]">
                             <div className="flex flex-row items-top mr-3">
@@ -193,17 +200,17 @@ function QuestionItem({props, onClose}) {
                                                 </div>
                                             </li>
                                             {
-                                                item.isDealBreakerBox ? (
+                                                item.dealBreakerBox ? (
                                                     <div className="flex flex-row items-center" style={selected.find((i) => i.id === item.id) ? {opacity: 1} : {pointerEvents: 'none', userSelect: 'none', opacity: 0.4}} >
                                                         <div className='flex items-center justify-between bg-white py-1 focus:outline-none text-base text-gray-900 hover:font-normal hover:opacity-90'>
-                                                            <div onClick={() => {setRequireValue(item)}} style={{borderColor: `${item.isRequired ? '#2557a7' : 'gray'}`}} className="flex flex-row items-center cursor-pointer w-full rounded-md group border p-2">
+                                                            <div onClick={() => {setRequireValue(item)}} style={{borderColor: `${item.required ? '#2557a7' : 'gray'}`}} className="flex flex-row items-center cursor-pointer w-full rounded-md group border p-2">
                                                                 <div>
                                                                     <div className="relative h-7 flex items-center">
                                                                         <div className="absolute bg-[#FFF] border border-[#808082] w-[24px] h-[24px] rounded-[5px] group-hover:bg-[#e1ebff]" color="#FFF"></div>
-                                                                        <div style={{visibility: selected.find((i) => i.id === item.id)?.isRequired ? 'visible' : 'hidden' }} className={`flex items-center justify-center absolute bg-[#2557a7] w-[24px] h-[24px] rounded-[5px]`} color="#FFF"><BsCheck color="#FFF" size={'21px'}/></div>
+                                                                        <div style={{visibility: selected.find((i) => i.id === item.id)?.required ? 'visible' : 'hidden' }} className={`flex items-center justify-center absolute bg-[#2557a7] w-[24px] h-[24px] rounded-[5px]`} color="#FFF"><BsCheck color="#FFF" size={'21px'}/></div>
                                                                     </div>
                                                                 </div>
-                                                                <span className="pl-9 text-base mb-[1px] select-none text-[#696969] whitespace-nowrap font-semibold" style={{color: `${item.isRequired ? '#2557a7' : 'gray'}`}}>Deal breaker</span>
+                                                                <span className="pl-9 text-base mb-[1px] select-none text-[#696969] whitespace-nowrap font-semibold" style={{color: `${item.required ? '#2557a7' : 'gray'}`}}>Deal breaker</span>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -225,12 +232,11 @@ function QuestionItem({props, onClose}) {
             //     preAnswer: 'Willing to travel up to ... of the time',
             //     selectList: [{id: 1, name: '25%'}, {id: 2, name: '50%'}, {id: 3, name: '75%'}, {id: 4, name: '100%'}]4
             //     selectedItem: [{id: 1, name: '25%'}]
-            //     isRequired: true,
-            //     isDealBreakerBox: true,
+            //     required: true,
+            //     dealBreakerBox: true,
             // }
             return ( 
                 <>
-                <div onClick={() => console.log(selected)}>click me</div>
                     <div className="flex flex-col border border-gray-400 rounded-lg overflow-hidden my-6">
                         <div className="flex flex-row items-center justify-between p-3 bg-[#F3F2F1]">
                             <div className="flex flex-row items-top mr-3">
@@ -253,17 +259,17 @@ function QuestionItem({props, onClose}) {
                                 {question.preAnswer.replace("...", "_________")}
                             </div>
                             {
-                                question.isDealBreakerBox ? (
+                                question.dealBreakerBox ? (
                                     <div className="flex flex-row items-center">
                                         <div className='flex items-center justify-between bg-white py-1 focus:outline-none text-base text-gray-900 hover:font-normal hover:opacity-90'>
-                                            <div onClick={() => {setQuestion({...question, isRequired: !question.isRequired})}} style={{borderColor: `${question.isRequired ? '#2557a7' : 'gray'}`}} className="flex flex-row items-center cursor-pointer w-full rounded-md group border p-2">
+                                            <div onClick={() => {setQuestion({...question, required: !question.required}); handleRequired()}} style={{borderColor: `${question.required ? '#2557a7' : 'gray'}`}} className="flex flex-row items-center cursor-pointer w-full rounded-md group border p-2">
                                                 <div>
                                                     <div className="relative h-7 flex items-center">
                                                         <div className="absolute bg-[#FFF] border border-[#808082] w-[24px] h-[24px] rounded-[5px] group-hover:bg-[#e1ebff]" color="#FFF"></div>
-                                                        <div style={{visibility: question.isRequired ? 'visible' : 'hidden' }} className={`flex items-center justify-center absolute bg-[#2557a7] w-[24px] h-[24px] rounded-[5px]`} color="#FFF"><BsCheck color="#FFF" size={'21px'}/></div>
+                                                        <div style={{visibility: question.required ? 'visible' : 'hidden' }} className={`flex items-center justify-center absolute bg-[#2557a7] w-[24px] h-[24px] rounded-[5px]`} color="#FFF"><BsCheck color="#FFF" size={'21px'}/></div>
                                                     </div>
                                                 </div>
-                                                <span className="pl-9 text-base mb-[1px] select-none text-[#696969] whitespace-nowrap font-semibold" style={{color: `${question.isRequired ? '#2557a7' : 'gray'}`}}>Deal breaker</span>
+                                                <span className="pl-9 text-base mb-[1px] select-none text-[#696969] whitespace-nowrap font-semibold" style={{color: `${question.required ? '#2557a7' : 'gray'}`}}>Deal breaker</span>
                                             </div>
                                         </div>
                                     </div>
@@ -274,7 +280,7 @@ function QuestionItem({props, onClose}) {
                             {
                                 question.selectList.map((item, index) => {
                                     return (
-                                        <li key={index} value={index} onClick={() => {setSelected([item]);}} className='flex cursor-pointer items-center justify-between bg-white py-1 px-5 focus:outline-none text-base text-gray-900 hover:font-normal border hover:opacity-90 rounded-md hover:border-[#3f73d3] group'>
+                                        <li key={index} value={index} onClick={() => {setSelected([item]); filterRadio(item)}} className='flex cursor-pointer items-center justify-between bg-white py-1 px-5 focus:outline-none text-base text-gray-900 hover:font-normal border hover:opacity-90 rounded-md hover:border-[#3f73d3] group'>
                                             <div className="flex flex-row items-center cursor-pointer mt-1">
                                                 <div>
                                                     <div className="relative h-7 flex items-center justify-center">
@@ -300,8 +306,8 @@ function QuestionItem({props, onClose}) {
             //     preAnswer: 'At least',
             //     selectList: [{id: 1, name: '1 year'}, {id: 2, name: '2 years'}, {id: 3, name: '3 years'}, {id: 4, name: '4 years'}, {id: 5, name: '5 years'}, {id: 6, name: '6 years'}, {id: 7, name: '7 years'}, {id: 8, name: '8 years'}, {id: 9, name: '9 years'}, {id: 10, name: '10 years'}],
             //     textIndent: '|of|experience',
-            //     isRequired: true,
-            //     isDealBreakerBox: true,
+            //     required: true,
+            //     dealBreakerBox: true,
             // }
             return ( 
                 <>
@@ -331,13 +337,15 @@ function QuestionItem({props, onClose}) {
                             <div className="flex flex-grow items-center w-auto">
                                 <div className="w-full flex flex-nowrap items-center" >
                                     <div className="w-9!" style={{width: '120px'}}>
-                                        <CustomComboBox filterValueSelected={()=>{}} listItem={question.selectList} selectedItem={question.selectList.find(item=>item.id===question.selectedItem[0].id)} placeHolder={"1 year"}/>
+                                        <CustomComboBox filterValueSelected={filterComboBox} listItem={question.selectList} selectedItem={question.selectList.find(item=>item.id===question.selectedItem[0].id)} placeHolder={"1 year"}/>
                                     </div>
                                     <div className="text-base font-semibold text-[#595959] ml-2 mr-2">
                                         {question.textIndent.split('|')[1]}
                                     </div>
                                     <input
                                         type="text"
+                                        value={props?.value}
+                                        onChange={handleChangeText}
                                         rules="requiredText|email"
                                         className={`block bg-[#f9fbfc] focus:bg-white outline-none hover:border-[#3f73d3] focus:border-[#3f73d3] text-base shadow-sm rounded-md py-2 pl-2 pr-5 text-gray-900 border border-gray-300 placeholder:text-gray-400 sm:text-base sm:leading-8`}
                                     />   
@@ -348,17 +356,17 @@ function QuestionItem({props, onClose}) {
                                 {/* {index !== 0 ? <div className="bg-white hover:bg-[#e8f0fe] rounded-md h-full p-3 cursor-pointer" onClick={() => setAddEmail("delete", index)}><AiOutlineClose className="px-1 w-7 h-7" /></div> : null} */}
                             </div>
                             {
-                                question.isDealBreakerBox ? (
+                                question.dealBreakerBox ? (
                                     <div className="flex flex-row items-center ml-3">
                                         <div className='flex items-center justify-between bg-white py-1 focus:outline-none text-base text-gray-900 hover:font-normal hover:opacity-90'>
-                                            <div onClick={() => {setQuestion({...question, isRequired: !question.isRequired})}} style={{borderColor: `${question.isRequired ? '#2557a7' : 'gray'}`}} className="flex flex-row items-center cursor-pointer w-full rounded-md group border p-2">
+                                            <div onClick={() => {setQuestion({...question, required: !question.required}); handleRequired()}} style={{borderColor: `${question.required ? '#2557a7' : 'gray'}`}} className="flex flex-row items-center cursor-pointer w-full rounded-md group border p-2">
                                                 <div>
                                                     <div className="relative h-7 flex items-center">
                                                         <div className="absolute bg-[#FFF] border border-[#808082] w-[24px] h-[24px] rounded-[5px] group-hover:bg-[#e1ebff]" color="#FFF"></div>
-                                                        <div style={{visibility: question.isRequired ? 'visible' : 'hidden' }} className={`flex items-center justify-center absolute bg-[#2557a7] w-[24px] h-[24px] rounded-[5px]`} color="#FFF"><BsCheck color="#FFF" size={'21px'}/></div>
+                                                        <div style={{visibility: question.required ? 'visible' : 'hidden' }} className={`flex items-center justify-center absolute bg-[#2557a7] w-[24px] h-[24px] rounded-[5px]`} color="#FFF"><BsCheck color="#FFF" size={'21px'}/></div>
                                                     </div>
                                                 </div>
-                                                <span className="pl-9 text-base mb-[1px] select-none text-[#696969] whitespace-nowrap font-semibold" style={{color: `${question.isRequired ? '#2557a7' : 'gray'}`}}>Deal breaker</span>
+                                                <span className="pl-9 text-base mb-[1px] select-none text-[#696969] whitespace-nowrap font-semibold" style={{color: `${question.required ? '#2557a7' : 'gray'}`}}>Deal breaker</span>
                                             </div>
                                         </div>
                                     </div>
@@ -375,8 +383,8 @@ function QuestionItem({props, onClose}) {
             // question: 'This is an employer-written question. You can report inappropriate questions to Indeed through the "Report Job" link at the bottom of the job description. " ... "',
             // preAnswer: 'Write your own question to ask applicants. Do not ask questions that are discriminatory, illegal, or otherwise violate the Indeed site rules.',
             // maxCharacters: 900,
-            // isRequired: false,
-            // isDealBreakerBox: true,
+            // required: false,
+            // dealBreakerBox: true,
             return (
                 <>
                     <div className="flex flex-col border border-gray-400 rounded-lg overflow-hidden my-6">
@@ -404,6 +412,8 @@ function QuestionItem({props, onClose}) {
                                 <div className="w-full">
                                     <textarea
                                         type="text"
+                                        value={props?.value}
+                                        onChange={handleChangeText}
                                         style={{lineHeight: 1.5}}
                                         className={`w-full block bg-[#fdfeff] focus:bg-white outline-none hover:border-[#3f73d3] focus:border-[#3f73d3] text-base shadow-sm rounded-md py-1.5 pl-2 pr-5 text-gray-900 border border-gray-300 placeholder:text-gray-400 sm:text-base sm:leading-8`}
                                     />                                                        

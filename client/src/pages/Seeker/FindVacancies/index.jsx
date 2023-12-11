@@ -12,114 +12,16 @@ import VacancyDetail from "./VacancyDetail";
 import "./style.css"
 import { useDispatch, useSelector } from "react-redux";
 import { getAllVacancies } from "../../../redux/slices/vacancies/vacanciesSlices";
+import VacancyItemLoader from "../../../components/Loader/VacancyLoader";
 
-function onfilterValueSelected(){}
-function changeCheckBox(nextChild, isChecked){
-    if(isChecked){
-        nextChild.style['backgroundColor'] = '#1967d2';
-        nextChild.style['color'] = 'white';
-    }
-    else{
-        nextChild.style['backgroundColor'] = '#FFF';
-        nextChild.style['color'] = '#696969';
-    }
-}
-
-
-
-const project = [
-    {
-        projectId: "1",
-        projectName: "Build ứng dụng quản lý sinh viên",
-        description: "Without JobHunt i’d be homeless, they found me a job and got me sorted out quickly with everything! Can’t quite… The Mitech team works really hard to ensure high level of quality. Without JobHunt i’d be homeless, they found me a job and got me sorted out quickly with everything! Can’t quite… The Mitech team works really hard to ensure high level of quality. Without JobHunt i’d be homeless, they found me a job and got me sorted out quickly with everything! Can’t quite… The Mitech team works really hard to ensure high level of quality",
-        user: {
-            userId: "1",
-            organizerName: "Udemy Inc.",
-        },
-        maxParticipants: 4,
-        socialLink:[
-            {
-                socialName: "Facebook",
-                socialLink: "https://www.facebook.com/"
-            },
-            {
-                socialName: "Github",
-                socialLink: "https://github.com/"
-            }
-        ],
-        starDate: "22:28 29/09/2023",
-        duration: "3 months",
-        status: "Processing",
-        participants:[
-            {
-                userId: 1,
-                ref:'Seeker'
-            }
-        ],
-        favouriteUser:[
-            {
-                userId: 1,
-                ref:'Seeker'
-            }
-        ],
-        vacancies:[
-            {
-                userId: 1,
-                ref:'vacancy'
-            }
-        ]
-    },
-    {
-        projectId: "1",
-        projectName: "Build ứng dụng quản lý sinh viên",
-        description: "Without JobHunt i’d be homeless, they found me a job and got me sorted out quickly with everything! Can’t quite… The Mitech team works really hard to ensure high level of quality",
-        user: {
-            userId: "1",
-            organizerName: "Udemy Inc.",
-        },
-        maxParticipants: 4,
-        socialLink:[
-            {
-                socialName: "Facebook",
-                socialLink: "https://www.facebook.com/"
-            },
-            {
-                socialName: "Github",
-                socialLink: "https://github.com/"
-            }
-        ],
-        starDate: "22:09 29/09/2023",
-        duration: "3 months",
-        status: "Processing",
-        participants:[
-            {
-                userId: 1,
-                ref:'Seeker'
-            }
-        ],
-        favouriteUser:[
-            {
-                userId: 1,
-                ref:'Seeker'
-            }
-        ],
-        vacancies:[
-            {
-                userId: 1,
-                ref:'vacancy'
-            }
-        ]
-    }
-];
 
 function FindVacancies() {
-
-    let [plan, setPlan] = useState('startup')
-
     const [selected, setSelected] = useState({})
     const dispatch = useDispatch()
 
-    let vacancies = useSelector((state) => state.vacancies.vacancies)
+    function onfilterValueSelected(){}
+
+    let {vacancies, loading} = useSelector((state) => state.vacancies)
 
     useEffect(() => {
         dispatch(getAllVacancies())
@@ -186,6 +88,15 @@ function FindVacancies() {
                     </div>
                     <div className="mt-5 flex flex-col gap-3">
                         {
+                            loading?
+                            [1, 2 ,3, 4].map((item, index)=> {
+                                return (
+                                    <div key={index}>
+                                        <VacancyItemLoader/>
+                                    </div>
+                                )
+                            })
+                            :
                             vacancies?.map((item, index) => {
                                 return <div key={index} onClick={() => setSelected(item)}>
                                     <VacancyItem props={item} active={selected ? selected == item ? true : false: false} isAvatar={true}/>
@@ -197,7 +108,7 @@ function FindVacancies() {
 
                 {/* Login search */}
                 <div className="w-1/2 flex flex-col mb-[30px]">
-                    <div className="flex sticky top-0 py-4 h-[100vh]">
+                    <div className="flex sticky top-[70px] py-4 h-[calc(100vh-70px)]">
                         <VacancyDetail props={selected}/>
                     </div>
                 </div>

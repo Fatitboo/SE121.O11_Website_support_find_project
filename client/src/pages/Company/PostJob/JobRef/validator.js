@@ -12,16 +12,16 @@ var ValidatorRules = {
         return value ? (isNumeric(value) ? undefined : "Please fill a number.") : "Please fill a number."
     },
     positiveNumber: function(value){
-        return value ? (value > 0 ? undefined : "Please fill a positive number.") : "Please fill a positive number."
+        return value ? (parseFloat(value) > 0 ? undefined : "Please fill a positive number.") : "Please fill a positive number."
     },
     maxHourWeek: function(value){
-        return value ? (value <= 168 ? undefined : "Exceeded weekly hours.") : "Exceeded weekly hours."
+        return value ? (parseFloat(value) <= 168 ? undefined : "Exceeded weekly hours.") : "Exceeded weekly hours."
     },
     max: function(value, number){
-        return value ? (value <= number ? undefined : "Please do not enter more than the maximum number") : "Please do not enter more than the maximum number"
+        return value ? (parseFloat(value) <= parseFloat(number) ? undefined : "Please do not enter more than the maximum number") : "Please do not enter more than the maximum number"
     },
     min: function(value, number){
-        return value ? (value >= number ? undefined : "Please do not enter less than the minimum number") : "Please do not enter less than the minimum number"
+        return value ? (parseFloat(value) >= parseFloat(number) ? undefined : "Please do not enter less than the minimum number") : "Please do not enter less than the minimum number"
     },
     email: function(value){
         return value ? (value.match(/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/) ? undefined : "Add a valid email address.") : "Add a valid email address."

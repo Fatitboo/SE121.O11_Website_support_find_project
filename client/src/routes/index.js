@@ -72,7 +72,7 @@ const publicRoutes = [
     {path:'/Seeker/short-listed-users', component: ShortListedCors, layout: LayoutHasSidebar},
     
     //Company layout
-    {path:'/Organizer/post-project/:id', component: PostJob, layout: LayoutNoSidebar},
+    {path:'/Organizer/post-vacancy/:id', component: PostJob, layout: LayoutNoSidebar},
     {path:'/Organizer/dashboard', component: DashboardCompany, layout: LayoutHasSidebar},
     {path:'/Organizer/company-profile-edit', component: CompanyProfileEdit, layout: LayoutHasSidebar},
     {path:'/Organizer/manage-vacancy', component: ManageVacancy, layout: LayoutHasSidebar},

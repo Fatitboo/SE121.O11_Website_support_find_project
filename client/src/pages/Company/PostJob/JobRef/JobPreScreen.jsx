@@ -4,9 +4,9 @@ import { JobPreScreenImage } from "../../../../assets/images";
 import QuestionItem from "./JobComponents/QuestionItem";
 import { IoChevronDownOutline  } from "react-icons/io5";
 import QuestionTag from "./JobComponents/QuestionTag";
-import { setValueSuccess, updateVacancyComponent } from "../../../../redux/slices/vacancies/vacanciesSlices";
+import { getVacancyComponent, resetComponent, setValueSuccess, updateVacancyComponent } from "../../../../redux/slices/vacancies/vacanciesSlices";
 import { useDispatch, useSelector } from "react-redux";
-function JobPreScreen({formId, formSubmit, flag}) {
+function JobPreScreen({formId, formSubmit, flag, config, content, onDoneSubmit}) {
     const dispatch = useDispatch();
     const {currentJobComponent, vacancyId, isSuccess} = useSelector(store => store.vacancies)
     const questionPatterns = [
@@ -17,9 +17,10 @@ function JobPreScreen({formId, formSubmit, flag}) {
             boxType: 'Application question',
             question: 'Will you be able to reliably commute to Beaufort, SC 29902 for this job?',
             answerRequire: 'Applicant should be able to reliably commute.',
-            isDealBreakerBox: false,
-            isRequired: false,
-            isMulti: false,
+            dealBreakerBox: false,
+            required: false,
+            multi: false,
+            answerType: 'binary',
         },
         {
             tagId: 2,
@@ -30,9 +31,11 @@ function JobPreScreen({formId, formSubmit, flag}) {
             preAnswer: 'Minimum education level:',
             selectList: [{id: 1, name: 'High school or equivalent'}, {id: 2, name: 'Associate'}, {id: 3, name: "Bachelor's"}, {id: 4, name: "Master's"}, {id: 5, name: "Doctorate"}],
             selectedItem: [{id: 1, name: 'High school or equivalent'}],
-            isRequired: false,
-            isDealBreakerBox: true,
-            isMulti: false
+            required: false,
+            dealBreakerBox: true,
+            multi: false,
+            answerType: 'radio',
+            result: [{id: 1, name: 'High school or equivalent'}]
         },
         {
             tagId: 3,
@@ -43,9 +46,11 @@ function JobPreScreen({formId, formSubmit, flag}) {
             preAnswer: 'Applicant should be able to',
             selectList: [{id: 1, name: 'Relocate before starting work'}, {id: 2, name: 'Relocate with an employer provided relocation package'}],
             selectedItem: [{id: 1, name: 'Relocate before starting work'}],
-            isRequired: false,
-            isDealBreakerBox: true,
-            isMulti: false
+            required: false,
+            dealBreakerBox: true,
+            multi: false,
+            answerType: 'radio',
+            result: [{id: 1, name: 'Relocate before starting work'}],
         },
         {
             tagId: 4,
@@ -53,13 +58,16 @@ function JobPreScreen({formId, formSubmit, flag}) {
             type: 'select-text',
             boxType: 'Application question',
             question: 'How many years of ... experience do you have?',
+            value: '',
             preAnswer: 'At least',
             selectList: [{id: 1, name: '1 year'}, {id: 2, name: '2 years'}, {id: 3, name: '3 years'}, {id: 4, name: '4 years'}, {id: 5, name: '5 years'}, {id: 6, name: '6 years'}, {id: 7, name: '7 years'}, {id: 8, name: '8 years'}, {id: 9, name: '9 years'}, {id: 10, name: '10 years'}],
             textIndent: '|of|experience',
             selectedItem: [{id: 1, name: '1 year'}],
-            isRequired: false,
-            isDealBreakerBox: true,
-            isMulti: true
+            required: false,
+            dealBreakerBox: true,
+            multi: true,
+            answerType: 'select',
+            result: [{id: 1, name: '1 year'}]
         },
         {
             tagId: 5,
@@ -68,31 +76,36 @@ function JobPreScreen({formId, formSubmit, flag}) {
             boxType: 'Application question',
             question: 'Please list 2-3 dates and time ranges that you could do an interview.',
             answerRequire: 'Ask applicants to list some dates and times they could do an interview',
-            isDealBreakerBox: true,
-            isRequired: false,
-            isMulti: false
+            dealBreakerBox: true,
+            required: false,
+            multi: false,
+            answerType: 'list-date',
         },
         {
             tagId: 6,
             tagName: 'Language',
             type: 'text',
+            value: '',
             boxType: 'Application question',
             question: 'Do you speak ... ?',
             preAnswer: 'Speaks',
-            isRequired: false,
-            isDealBreakerBox: true,
-            isMulti: true
+            required: false,
+            dealBreakerBox: true,
+            multi: true,
+            answerType: 'binary',
         },
         {
             tagId: 7,
             tagName: 'License/Certification',
             type: 'text',
+            value: '',
             boxType: 'Application question',
             question: 'Do you have a valid ... ?',
             preAnswer: 'Valid',
-            isRequired: false,
-            isDealBreakerBox: true,
-            isMulti: true
+            required: false,
+            dealBreakerBox: true,
+            multi: true,
+            answerType: 'binary',
         },
         {
             tagId: 8,
@@ -101,9 +114,11 @@ function JobPreScreen({formId, formSubmit, flag}) {
             boxType: 'Application question',
             question: 'Which shift(s) are you available to work?',
             preAnswer: 'Available to work the following shift(s):',
-            selectList: [{id: 1, name: 'Day Shift', isRequired: false, isDealBreakerBox: true}, {id: 2, name: 'Night Shift', isRequired: false, isDealBreakerBox: true}, {id: 3, name: 'Overnight Shift', isRequired: false, isDealBreakerBox: true}],
-            selectedItem: [{id: 1, name: 'Day Shift', isRequired: false, isDealBreakerBox: true}],
-            isMulti: false
+            selectList: [{id: 1, name: 'Day Shift', required: false, dealBreakerBox: true}, {id: 2, name: 'Night Shift', required: false, dealBreakerBox: true}, {id: 3, name: 'Overnight Shift', required: false, dealBreakerBox: true}],
+            selectedItem: [{id: 1, name: 'Day Shift', required: false, dealBreakerBox: true}],
+            multi: false,
+            answerType: 'select',
+            result: [{id: 1, name: 'Day Shift', required: false, dealBreakerBox: true}]
         },
         {
             tagId: 10,
@@ -114,9 +129,11 @@ function JobPreScreen({formId, formSubmit, flag}) {
             preAnswer: 'Willing to travel up to ... of the time',
             selectList: [{id: 1, name: '25%'}, {id: 2, name: '50%'}, {id: 3, name: '75%'}, {id: 4, name: '100%'}],
             selectedItem: [{id: 1, name: '25%'}],
-            isRequired: false,
-            isDealBreakerBox: true,
-            isMulti: false
+            required: false,
+            dealBreakerBox: true,
+            multi: false,
+            answerType: 'radio',
+            result: [{id: 1, name: '25%'}]
         },
         {
             tagId: 11,
@@ -126,14 +143,16 @@ function JobPreScreen({formId, formSubmit, flag}) {
             question: 'This is an employer-written question. You can report inappropriate questions to Indeed through the "Report Job" link at the bottom of the job description. " ... "',
             preAnswer: 'Write your own question to ask applicants. Do not ask questions that are discriminatory, illegal, or otherwise violate the Indeed site rules.',
             maxCharacters: 900,
-            isRequired: false,
-            isDealBreakerBox: true,
-            isMulti: true
+            required: false,
+            dealBreakerBox: true,
+            multi: true,
+            answerType: 'text',
+            value: '',
         }
     ]
 
     let [questionForms, setQuestionForms] = useState([
-        questionPatterns[0], questionPatterns[2], questionPatterns[4]
+        //questionPatterns[0], questionPatterns[2], questionPatterns[4]
     ]);
 
     let [errors, setErrors] = useState({})
@@ -149,9 +168,27 @@ function JobPreScreen({formId, formSubmit, flag}) {
     }
 
     useEffect(() => {
+        if(vacancyId) dispatch(getVacancyComponent({"id":vacancyId, "flag": flag}))
+     }, [vacancyId]);
+
+    useEffect(() => {
+        if(currentJobComponent){
+            if(Array.isArray(currentJobComponent))
+                setQuestionForms([...currentJobComponent])
+        }
+    }, [currentJobComponent]);
+
+
+    useEffect(() => {
         if(isSuccess){
             dispatch(setValueSuccess(false))
-            formSubmit(true)
+            if(config){
+                onDoneSubmit()
+            }
+            else{
+                dispatch(resetComponent())
+                formSubmit()
+            }
         }
     }, [isSuccess])
 
@@ -163,24 +200,65 @@ function JobPreScreen({formId, formSubmit, flag}) {
 
     //
     function setListQuestionForm(item){
-        if(item.isMulti)
-            questionForms.push(item);
-        else
+        if(item.multi){
+            const newArr = [...questionForms]
+            newArr.push(item); 
+                setQuestionForms(newArr)
+        }
+        else{
             if(!questionForms.find(i => i.tagId === item.tagId))
-                questionForms.push(item);
-
-        setQuestionForms([...questionForms])
+            {
+                const newArr = [...questionForms]
+                newArr.push(item); 
+                setQuestionForms(newArr)
+            }
+        }
     }
 
-    function removeQuestion(item){
-        if(questionForms.includes(item))
-            questionForms.splice(questionForms.indexOf(item), 1)
-        setQuestionForms([...questionForms])
+    function removeQuestion(item, index){
+        const newArr = [...questionForms]
+        newArr.splice(index, 1); 
+        setQuestionForms(newArr)
+    }
+
+    function handleChangeText (e,  item, index) {
+        const newArr = [...questionForms]
+        newArr.splice(index, 1, {...item, 'value': e.target.value})
+        setQuestionForms([...newArr])
+    }
+
+    function filterComboBox(e, item, index){
+        const newArr = [...questionForms]
+        newArr.splice(index, 1, {...item, 'result': [{...e}], 'selectedItem': [{...e}]})
+
+        setQuestionForms([...newArr])
+    }
+
+    function filterRadio(e, item, index){
+        const newArr = [...questionForms]
+        newArr.splice(index, 1, {...item, 'result': [{...e}], 'selectedItem': [{...e}]})
+
+        setQuestionForms([...newArr])
+
+    }
+
+    function filterSelect(e, item, index){
+        const newArr = [...questionForms]
+        newArr.splice(index, 1, {...item, 'result': [...e], 'selectedItem': [...e]})
+
+        setQuestionForms([...newArr])
+    }
+
+    function handleRequired(item, index){
+        const newArr = [...questionForms]
+        newArr.splice(index, 1, {...item, 'required': !item.required})
+
+        setQuestionForms([...newArr])
     }
     
     return (  
         <>
-              <div>
+            <div>
                 <div className="flex flex-row justify-between bg-[#faf9f8] rounded-xl -mx-8">
                     <div className="flex items-center m-8">
                         <span className="text-[#2D2D2D] text-[28px] font-bold">Pre-screen applicants</span>                        
@@ -205,15 +283,15 @@ function JobPreScreen({formId, formSubmit, flag}) {
                     </div>
                     <form id={formId} onSubmit={handleSubmit}>
                         {
-                            questionForms.map((item, index) => {
+                            questionForms?.map((item, index) => {
                                 return (
-                                    <QuestionItem key={index} props={item} onClose={() => {removeQuestion(item)}}/>
+                                    <QuestionItem key={index} props={item} filterComboBox={(e) => filterComboBox(e, item, index)} handleChangeText={(e) => handleChangeText(e, item, index)} filterRadio={(e) => filterRadio(e, item, index)} filterSelect={(e) => filterSelect(e, item, index)} handleRequired={() => handleRequired(item, index)} onClose={() => {removeQuestion(item, index)}}/>
                                 )
                             })
                         }
                         <div>
                             <div className="flex flex-col my-6">
-                                <input type="checkbox" className="peer" checked={dropDownTags} hidden/>
+                                <input type="checkbox" className="peer" onChange={() => {}} checked={dropDownTags} hidden/>
                                 <div className="flex flex-row border rounded-lg border-gray-400  items-center justify-between p-3 transition-all duration-500 cursor-pointer bg-[#F3F2F1] hover:bg-[#f3f9ff] hover:border-[#3f73d3] rounded-es-lg rounded-ee-lg peer-checked:rounded-es-none peer-checked:rounded-ee-none"  onClick={() => {setDropDownTags(!dropDownTags)}}>
                                     <div className="flex flex-row items-top mr-3">
                                         <div className="text-base text-[#2d2d2d] font-bold whitespace-nowrap">
@@ -221,17 +299,17 @@ function JobPreScreen({formId, formSubmit, flag}) {
                                         </div>
                                     </div>
                                     <div className="h-full self-start mt-[2px] cursor-pointer">
-                                        <input type="checkbox" className="peer" hidden checked={dropDownTags}/>
+                                        <input type="checkbox" className="peer" onChange={() => {}} hidden checked={dropDownTags}/>
                                         <IoChevronDownOutline size={22} className='transition-transform duration-500 rotate-0 peer-checked:rotate-180'/>
                                     </div>
                                 </div>
                                 <div className={`overflow-auto no-scrollbar border rounded-ee-lg rounded-es-lg border-gray-400 border-t-0 gap-y-2 transition-all duration-500 ease-in-out max-h-0 opacity-0 peer-checked:max-h-56 peer-checked:opacity-100`}>
                                     <div className="m-4 grid grid-cols-3">
                                         {
-                                            questionPatterns.map((item, index) => {
+                                            questionPatterns?.map((item, index) => {
                                                 return (
-                                                    <div key={index} className={questionForms.find(i => i.tagId === item.tagId) && !item.isMulti ? 'opacity-40 select-none cursor-none' : ''}>
-                                                        <QuestionTag name={item.tagName} onClick={() => {setListQuestionForm(item)}}/>
+                                                    <div key={index} className={questionForms.find(i => i.tagId === item.tagId) && !item.multi ? 'opacity-40 select-none cursor-none' : ''}>
+                                                        <QuestionTag name={item.tagName} onClick={() => {setListQuestionForm({...item})}}/>
                                                     </div>
                                                 )
                                             })

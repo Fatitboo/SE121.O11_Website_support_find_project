@@ -12,4 +12,6 @@ public class Combobox {
     private String name;
     private boolean value;
     private String des;
+    private boolean required;
+    private boolean dealBreakerBox;
 }
