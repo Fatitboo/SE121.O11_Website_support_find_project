@@ -3,7 +3,7 @@ import { CustomCheckBox, CustomComboBox } from "../../../components";
 import { IoMdAdd } from "react-icons/io";
 import { AiOutlineClose } from "react-icons/ai";
 
-function AnswerQuestion({props, onTextChanged, userId, onCheckedRadio}) {
+function AnswerQuestion({props, onTextChanged, userId, onCheckedRadio, setDateTimeSelect}) {
     const [selected, setSelected] = useState()
     const [listDateTimeRange, setListDateTimeRange] = useState([{
         1: "",
@@ -17,6 +17,7 @@ function AnswerQuestion({props, onTextChanged, userId, onCheckedRadio}) {
             const newArr = [...listDateTimeRange]
             newArr.splice(index, 1, newItem)
             setDateTimeRange(newArr)
+            setDateTimeSelect(newArr)
         }
     }
     switch (props?.answerType) {
@@ -143,8 +144,7 @@ function AnswerQuestion({props, onTextChanged, userId, onCheckedRadio}) {
                     </div>
                 </>
             );
-
-        case 'select':
+        case 'multi-select':
             return ( 
                 <>
                     <div className="flex flex-col border border-gray-400 rounded-lg overflow-hidden my-6">
@@ -165,6 +165,31 @@ function AnswerQuestion({props, onTextChanged, userId, onCheckedRadio}) {
                         </div>
                         <ul className='rounded-md px-5 flex flex-col gap-2 pb-5'>
                             <CustomCheckBox filterValueChecked={(e) => {onCheckedRadio(e)}} listItem={props?.selectList} placeHolder={"Select an option"}/>
+                        </ul>
+                    </div>
+                </>
+            );
+        case 'select':
+            return ( 
+                <>
+                    <div className="flex flex-col border border-gray-400 rounded-lg overflow-hidden my-6">
+                        <div className="flex flex-row items-center justify-between p-3 bg-[#F3F2F1]">
+                            <div className="flex flex-row items-top mr-3">
+                                <div className="text-base text-[#2d2d2d] font-bold whitespace-nowrap">
+                                    {props?.boxType}
+                                </div>
+                                <div className="text-base text-[#2d2d2d] font-bold whitespace-nowrap mr-1">
+                                    : 
+                                </div>
+                                <div>
+                                    {props?.question?.replace("...", props?.value)}
+                                </div>
+                            </div>
+                        </div>
+                        <div className="flex flex-row items-center justify-between p-3 ">
+                        </div>
+                        <ul className='rounded-md px-5 flex flex-col gap-2 pb-5'>
+                            <CustomComboBox filterValueSelected={(e) => {onCheckedRadio(e)}} listItem={props?.selectList} placeHolder={"Select an option"}/>
                         </ul>
                     </div>
                 </>

@@ -41,6 +41,12 @@ const VacancyDetail = ({props}) => {
         setListQuestion([...newArr])
     }
 
+    const setDateTimeSelect = (e, item, index) => {
+        const newArr = [...listQuestion]
+        newArr.splice(index, 1, {...item, 'answer': item.answer ? {...item.answer, [user.userId]: e} : {[user.userId]: e}})
+        setListQuestion([...newArr])
+    }
+
     return (
         <>
             <div className="height-[100vh] flex flex-1 flex-col rounded-[10px] border border-[#ecedf2] shadow-[0_7px_18px_rgba(64,79,104,.05)] pb-2">
@@ -179,7 +185,7 @@ const VacancyDetail = ({props}) => {
                             {
                                 listQuestion.map((item, index) => {
                                     return <div key={index}>
-                                        <AnswerQuestion userId={user.userId} onCheckedRadio={(e) => onCheckedRadio(e, item, index)} onTextChanged={(e) => handleChangeText(e, item, index)} props={item}/>
+                                        <AnswerQuestion userId={user.userId} onCheckedRadio={(e) => onCheckedRadio(e, item, index)} onTextChanged={(e) => handleChangeText(e, item, index)} setDateTimeSelect={(e) => setDateTimeSelect(e, item, index)} props={item}/>
                                     </div>
                                 })
                             }
