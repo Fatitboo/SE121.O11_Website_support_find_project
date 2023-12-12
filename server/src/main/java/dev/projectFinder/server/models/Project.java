@@ -30,6 +30,7 @@ public class Project {
     private ObjectId projectId;
     private String projectName;
     private String description;
+    @JsonSerialize(using = ToStringSerializer.class)
     private ObjectId userId;
     private int maxParticipants;
     private String fbLink;
@@ -46,6 +47,7 @@ public class Project {
     private ObjectId[] favouriteUsers;
     private ObjectId[] vacancies;
     private String[] occupations;
+    private List<String> reports;
     // date create and update
     @CreatedDate
     private LocalDateTime createdAt;

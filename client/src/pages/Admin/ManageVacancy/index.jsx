@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getAllVacancies, resetSuccessAction, updateVacancyStatus } from "../../../redux/slices/vacancies/vacanciesSlices";
 import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
+import { PiSuitcaseSimpleDuotone } from "react-icons/pi";
 
 const listPostedCbb = [{ id: 1, name: 'All' }, { id: 2, name: 'Pending' }, { id: 3, name: 'Approval' }, { id: 4, name: 'Rejected' }]
 
@@ -29,16 +30,16 @@ function ManageVacancy() {
             setVacancyList([...vacancies ?? []])
         }
         if (filterValue.name === 'Pending') {
-            setVacancyList([...vacancies.filter(i => i.approvalStatus==='pending')])
+            setVacancyList([...vacancies.filter(i => i.approvalStatus === 'pending')])
         }
         if (filterValue.name === 'Approval') {
-            setVacancyList([...vacancies.filter(i => i.approvalStatus==='approval')])
+            setVacancyList([...vacancies.filter(i => i.approvalStatus === 'approval')])
         }
         if (filterValue.name === 'Rejected') {
-            setVacancyList([...vacancies.filter(i => i.approvalStatus==='rejected')])
+            setVacancyList([...vacancies.filter(i => i.approvalStatus === 'rejected')])
         }
     }
-    const handleRejectVacancy =  (id) => {
+    const handleRejectVacancy = (id) => {
         // dispatch(deleteOccupationAction(id));
         Swal.fire({
             title: "Confirm Rejected",
@@ -48,7 +49,7 @@ function ManageVacancy() {
             confirmButtonColor: "#3085d6",
             cancelButtonColor: "#d33",
             confirmButtonText: "Rejected"
-        }).then( (result) => {
+        }).then((result) => {
             if (result.isConfirmed) {
                 const dt = {
                     id: id,
@@ -58,7 +59,7 @@ function ManageVacancy() {
             }
         });
     }
-    const handleApprovalVacancy =  (id) => {
+    const handleApprovalVacancy = (id) => {
         Swal.fire({
             title: "Confirm Approval",
             text: "Are you sure you want to approval this vacancy?",
@@ -67,7 +68,7 @@ function ManageVacancy() {
             confirmButtonColor: "#3085d6",
             cancelButtonColor: "#d33",
             confirmButtonText: "Approval"
-        }).then( (result) => {
+        }).then((result) => {
             if (result.isConfirmed) {
                 const dt = {
                     id: id,
@@ -78,7 +79,11 @@ function ManageVacancy() {
         });
     }
     useEffect(() => {
-        setPages([...vacancyList.filter(item => ((item?.vacancyName).toLowerCase().includes(filterKeyWord.toLowerCase()) || (item?.projectName ?? '').toLowerCase().includes(filterKeyWord.toLowerCase()))).slice(currentPage * 10, (currentPage + 1) * 10)])
+        setPages([...vacancyList.filter(item => ((item?.vacancyName).toLowerCase().includes(filterKeyWord.toLowerCase()) 
+            || (item?.projectName ?? '').toLowerCase().includes(filterKeyWord.toLowerCase())
+            || (item?.userInfo?.fullName ?? '').toLowerCase().includes(filterKeyWord.toLowerCase())
+            || (item?.location ?? '').toLowerCase().includes(filterKeyWord.toLowerCase())
+            )).slice(currentPage * 10, (currentPage + 1) * 10)])
     }, [currentPage, vacancyList, filterKeyWord])
     useEffect(() => {
         if (isSuccess2) {
@@ -244,13 +249,15 @@ function ManageVacancy() {
                                                     return (
                                                         <tr key={index} className="relative border-b border-solid border-[#ecedf2] w-full hover:bg-[#f4f2f2] cursor-pointer px-5  ">
                                                             <td className="relative pl-5 py-5 font-normal text-base w-3/12">
-                                                                <div className="mb-0 relative h-16 ">
-
+                                                                <div className="mb-0 flex h-16 ">
+                                                                    <div className=" w-11">
+                                                                        <img src={item?.userInfo?.avatar??'https://pic.onlinewebfonts.com/thumbnails/icons_148020.svg'} className="inline-block max-w-full h-auto align-middle" alt="logo" />
+                                                                    </div>
                                                                     <div className="pl-2">
                                                                         <div className="font-medium text-md text-ellipsis mb-1 line-clamp-2 ">{item.vacancyName}</div>
                                                                         <div className="flex font-light text-sm mb-0">
                                                                             <div className="flex mr-3">
-                                                                                <BiPackage className="mt-1 mr-1" /> {item?.locationType}
+                                                                                <PiSuitcaseSimpleDuotone className="mt-1 mr-1" /> {item?.userInfo?.fullName}
                                                                             </div>
                                                                             <div className="flex">
                                                                                 <BiMap className="mt-1 mr-1" />  {item?.location}
@@ -284,7 +291,7 @@ function ManageVacancy() {
                                                                         </li>
                                                                         {item?.approvalStatus === 'pending' ? <>
                                                                             <li className="list-none relative mr-2 bg-[#f5f7fc] border rounded-md border-[#e9ecf9] px-1 pt-1 hover:bg-[#278646] hover:text-white">
-                                                                                <button onClick={()=>handleApprovalVacancy(item?.vacancyId)}> <AiOutlineCheckCircle fontSize={18} /> </button>
+                                                                                <button onClick={() => handleApprovalVacancy(item?.vacancyId)}> <AiOutlineCheckCircle fontSize={18} /> </button>
                                                                             </li>
                                                                             <li className="list-none relative bg-[#f5f7fc] border rounded-md border-[#e9ecf9] px-1 pt-1 hover:bg-[#ce3e37] hover:text-white">
                                                                                 <button onClick={() => handleRejectVacancy(item?.vacancyId)}> <LiaBanSolid fontSize={18} /> </button>
@@ -295,7 +302,7 @@ function ManageVacancy() {
                                                                             </li>
                                                                         </> : <>
                                                                             <li className="list-none relative mr-2 bg-[#f5f7fc] border rounded-md border-[#e9ecf9] px-1 pt-1 hover:bg-[#278646] hover:text-white">
-                                                                                <button onClick={()=>handleApprovalVacancy(item?.vacancyId)}> <AiOutlineCheckCircle fontSize={18} /> </button>
+                                                                                <button onClick={() => handleApprovalVacancy(item?.vacancyId)}> <AiOutlineCheckCircle fontSize={18} /> </button>
                                                                             </li>
                                                                         </>
                                                                         }

@@ -3,7 +3,7 @@ import UserChart from './UserChart';
 import RecentProject from './RecentProject'
 import RecentOrganizerRegisted from './RecentOrganizer';
 import { Link } from 'react-router-dom';
-import {  IoDocumentTextOutline, IoCalculatorOutline, IoTabletPortraitOutline } from 'react-icons/io5';
+import { IoDocumentTextOutline, IoCalculatorOutline, IoTabletPortraitOutline } from 'react-icons/io5';
 import { LiaEyeSolid, LiaStar, LiaTrashAltSolid } from 'react-icons/lia';
 import ProjectChartAdmin from './ProjectChartAdmin';
 import { useDispatch, useSelector } from 'react-redux';
@@ -11,6 +11,7 @@ import { useEffect, useState } from 'react';
 import { getDataStatisticalAdminAction, resetSuccessAction } from '../../../redux/slices/users/usersSlices';
 import { BiMap, BiPackage } from 'react-icons/bi';
 import { AiOutlineCheckCircle } from 'react-icons/ai';
+import { isActiveSidebarAction } from '../../../redux/slices/skills/skillsSlices';
 
 const cbb = [
     {
@@ -133,7 +134,7 @@ function Dashboard() {
             </div>
 
             <div className="grid grid-cols-4 gap-5 mb-5">
-                <Link to={'/Organizer/manage-vacancy'} className="bg-white h-[120px] rounded-lg shadow flex p-6 cursor-pointer">
+                <div  className="bg-white h-[120px] rounded-lg shadow flex p-6 cursor-pointer">
                     <div className='basis-1/3 place-content-center place-items-cent  items-center flex'>
                         <div className='rounded-lg bg-[rgba(25,103,210,.1)] h-[80px] w-[80px] text-[#1967d2] flex items-center place-content-center'>
                             <IoDocumentTextOutline fontSize={40} />
@@ -143,8 +144,8 @@ function Dashboard() {
                         <span className='font-medium text-4xl text-[#1967d2]'>{numSeekers}</span>
                         <span className='text-sm text-[#202124]'>Total Seekers</span>
                     </div>
-                </Link>
-                <Link to={'/Organizer/'} className="bg-white h-[120px] rounded-lg shadow flex p-6 cursor-pointer">
+                </div>
+                <Link to="/Admin/user-management" onClick={()=>dispatch(isActiveSidebarAction('Organizer'))} className="bg-white h-[120px] rounded-lg shadow flex p-6 cursor-pointer">
                     <div className='basis-1/3 place-content-center place-items-cent  items-center flex'>
                         <div className='rounded-lg bg-[rgba(217,48,37,.1)] h-[80px] w-[80px] text-[#d93025] flex items-center place-content-center'>
                             <IoCalculatorOutline fontSize={40} className="text-[#d93025]" />
@@ -155,7 +156,7 @@ function Dashboard() {
                         <span className='text-sm text-[#202124]'>Total Organizers</span>
                     </div>
                 </Link>
-                <Link to={'/Organizer/manage-project'} className="bg-white h-[120px] rounded-lg shadow flex p-6 cursor-pointer">
+                <Link to="/Admin/approval-project" onClick={()=>dispatch(isActiveSidebarAction('Projects'))} className="bg-white h-[120px] rounded-lg shadow flex p-6 cursor-pointer">
                     <div className='basis-1/3 place-content-center place-items-cent  items-center flex'>
                         <div className='rounded-lg bg-[rgba(249,171,0,.1)] h-[80px] w-[80px] text-[#f9ab00] flex items-center place-content-center'>
                             <IoTabletPortraitOutline fontSize={40} />
@@ -166,7 +167,7 @@ function Dashboard() {
                         <span className='text-sm text-[#202124]'>Total Projects</span>
                     </div>
                 </Link>
-                <Link to={'/Organizer/short-listed-users'} className="bg-white h-[120px] rounded-lg shadow flex p-6 cursor-pointer">
+                <Link onClick={()=>dispatch(isActiveSidebarAction('Manage Vacancy'))} to="/Admin/manage-vacancy" className="bg-white h-[120px] rounded-lg shadow flex p-6 cursor-pointer">
                     <div className='basis-1/3 place-content-center place-items-cent  items-center flex'>
                         <div className='rounded-lg bg-[rgba(52,168,83,.1)] h-[80px] w-[80px] text-[#34a853] flex items-center place-content-center'>
                             <LiaStar fontSize={40} />
@@ -212,9 +213,81 @@ function Dashboard() {
                                 </tr>
                             </thead>
                             <tbody className='w-full'>
-                                {recentProjects?.map((item, index) => (
-                                    <RecentProject key={index} item={item} />
-                                ))}
+                                {loading ?
+                                    [1, 2, 3, 4].map((item, index) => {
+                                        return (
+                                            <tr key={index} className="animate-pulse relative shadow rounded-md p-4 w-full mx-auto gap-2">
+                                                <td className="space-x-4 py-2.5 px-0.5 w-full flex items-center">
+                                                    {/* <div className="rounded-full bg-slate-200 h-12 w-12"></div> */}
+                                                    <div className="flex-1 space-y-6 py-1">
+                                                        <div className="h-2 bg-slate-200 rounded"></div>
+                                                        <div className="space-y-3">
+                                                            <div className="grid grid-cols-3 gap-4">
+                                                                <div className="h-2 bg-slate-200 rounded col-span-2"></div>
+                                                                <div className="h-2 bg-slate-200 rounded col-span-1"></div>
+                                                            </div>
+                                                            <div className="h-2 bg-slate-200 rounded"></div>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td className="space-x-4 py-2.5 px-0.5 w-1/12">
+                                                    {/* <div className="rounded-full bg-slate-200 h-10 w-10"></div> */}
+                                                    <div className="flex-1 space-y-6 py-1">
+                                                        <div className="h-2 bg-slate-200 rounded"></div>
+                                                        <div className="space-y-3">
+                                                            <div className="grid grid-cols-3 gap-4">
+                                                                <div className="h-2 bg-slate-200 rounded col-span-2"></div>
+                                                                <div className="h-2 bg-slate-200 rounded col-span-1"></div>
+                                                            </div>
+                                                            <div className="h-2 bg-slate-200 rounded"></div>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td className="space-x-4 py-2.5 px-0.5 w-1/12">
+                                                    {/* <div className="rounded-full bg-slate-200 h-10 w-10"></div> */}
+                                                    <div className="flex-1 space-y-6 py-1">
+                                                        <div className="h-2 bg-slate-200 rounded"></div>
+                                                        <div className="space-y-3">
+                                                            <div className="grid grid-cols-3 gap-4">
+                                                                <div className="h-2 bg-slate-200 rounded col-span-2"></div>
+                                                                <div className="h-2 bg-slate-200 rounded col-span-1"></div>
+                                                            </div>
+                                                            <div className="h-2 bg-slate-200 rounded"></div>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td className="space-x-4 py-2.5 px-0.5 w-[14%]">
+                                                    {/* <div className="rounded-full bg-slate-200 h-10 w-10"></div> */}
+                                                    <div className="flex-1 space-y-6 py-1">
+                                                        <div className="h-2 bg-slate-200 rounded"></div>
+                                                        <div className="space-y-3">
+                                                            <div className="grid grid-cols-3 gap-4">
+                                                                <div className="h-2 bg-slate-200 rounded col-span-2"></div>
+                                                                <div className="h-2 bg-slate-200 rounded col-span-1"></div>
+                                                            </div>
+                                                            <div className="h-2 bg-slate-200 rounded"></div>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td className="space-x-4 py-2.5 px-0.5 w-1/12">
+                                                    {/* <div className="rounded-full bg-slate-200 h-10 w-10"></div> */}
+                                                    <div className="flex-1 space-y-6 py-1">
+                                                        <div className="h-2 bg-slate-200 rounded"></div>
+                                                        <div className="space-y-3">
+                                                            <div className="grid grid-cols-3 gap-4">
+                                                                <div className="h-2 bg-slate-200 rounded col-span-2"></div>
+                                                                <div className="h-2 bg-slate-200 rounded col-span-1"></div>
+                                                            </div>
+                                                            <div className="h-2 bg-slate-200 rounded"></div>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        )
+                                    }) :
+                                    recentProjects?.map((item, index) => (
+                                        <RecentProject key={index} item={item} />
+                                    ))}
 
                             </tbody>
                         </table>
@@ -222,9 +295,31 @@ function Dashboard() {
                     <div className="relative rounded-lg mb-8 bg-white shadow w-full pt-1 shrink-0 overflow-hidden">
                         <div className='pt-3 px-6 font-medium text-lg '>Recent Registed Organizer: </div>
                         <div className='w-full'>
-                            {recentOrganizers?.map((item, index) => (
-                                <RecentOrganizerRegisted key={index} item={item} />
-                            ))}
+                            {loading ?
+                                [1, 2, 3, 4].map((item, index) => {
+                                    return (
+                                        <div key={index} className="animate-pulse relative shadow rounded-md p-4 w-full mx-auto gap-2">
+
+                                            <td className="space-x-4 py-2.5 px-0.5 w-[500px]">
+                                                {/* <div className="rounded-full bg-slate-200 h-10 w-10"></div> */}
+                                                <div className="flex-1 space-y-6 py-1">
+                                                    <div className="h-2 bg-slate-200 rounded"></div>
+                                                    <div className="space-y-3">
+                                                        <div className="grid grid-cols-3 gap-4">
+                                                            <div className="h-2 bg-slate-200 rounded col-span-2"></div>
+                                                            <div className="h-2 bg-slate-200 rounded col-span-1"></div>
+                                                        </div>
+                                                        <div className="h-2 bg-slate-200 rounded"></div>
+                                                    </div>
+                                                </div>
+                                            </td>
+
+                                        </div>
+                                    )
+                                }) :
+                                recentOrganizers?.map((item, index) => (
+                                    <RecentOrganizerRegisted key={index} item={item} />
+                                ))}
 
                         </div>
                     </div>
@@ -242,7 +337,92 @@ function Dashboard() {
                                 </tr>
                             </thead>
                             <tbody>
-                                {
+                                {loading ?
+                                    [1, 2, 3, 4].map((item, index) => {
+                                        return (
+                                            <tr key={index} className="animate-pulse relative shadow rounded-md p-4 w-full mx-auto gap-2">
+                                                <td className="space-x-4 py-2.5 px-0.5 w-full flex items-center">
+                                                    {/* <div className="rounded-full bg-slate-200 h-12 w-12"></div> */}
+                                                    <div className="flex-1 space-y-6 py-1">
+                                                        <div className="h-2 bg-slate-200 rounded"></div>
+                                                        <div className="space-y-3">
+                                                            <div className="grid grid-cols-3 gap-4">
+                                                                <div className="h-2 bg-slate-200 rounded col-span-2"></div>
+                                                                <div className="h-2 bg-slate-200 rounded col-span-1"></div>
+                                                            </div>
+                                                            <div className="h-2 bg-slate-200 rounded"></div>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td className="space-x-4 py-2.5 px-0.5 w-1/12">
+                                                    {/* <div className="rounded-full bg-slate-200 h-10 w-10"></div> */}
+                                                    <div className="flex-1 space-y-6 py-1">
+                                                        <div className="h-2 bg-slate-200 rounded"></div>
+                                                        <div className="space-y-3">
+                                                            <div className="grid grid-cols-3 gap-4">
+                                                                <div className="h-2 bg-slate-200 rounded col-span-2"></div>
+                                                                <div className="h-2 bg-slate-200 rounded col-span-1"></div>
+                                                            </div>
+                                                            <div className="h-2 bg-slate-200 rounded"></div>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td className="space-x-4 py-2.5 px-0.5 w-1/12">
+                                                    {/* <div className="rounded-full bg-slate-200 h-10 w-10"></div> */}
+                                                    <div className="flex-1 space-y-6 py-1">
+                                                        <div className="h-2 bg-slate-200 rounded"></div>
+                                                        <div className="space-y-3">
+                                                            <div className="grid grid-cols-3 gap-4">
+                                                                <div className="h-2 bg-slate-200 rounded col-span-2"></div>
+                                                                <div className="h-2 bg-slate-200 rounded col-span-1"></div>
+                                                            </div>
+                                                            <div className="h-2 bg-slate-200 rounded"></div>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td className="space-x-4 py-2.5 px-0.5 w-[14%]">
+                                                    {/* <div className="rounded-full bg-slate-200 h-10 w-10"></div> */}
+                                                    <div className="flex-1 space-y-6 py-1">
+                                                        <div className="h-2 bg-slate-200 rounded"></div>
+                                                        <div className="space-y-3">
+                                                            <div className="grid grid-cols-3 gap-4">
+                                                                <div className="h-2 bg-slate-200 rounded col-span-2"></div>
+                                                                <div className="h-2 bg-slate-200 rounded col-span-1"></div>
+                                                            </div>
+                                                            <div className="h-2 bg-slate-200 rounded"></div>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td className="space-x-4 py-2.5 px-0.5 w-1/12">
+                                                    {/* <div className="rounded-full bg-slate-200 h-10 w-10"></div> */}
+                                                    <div className="flex-1 space-y-6 py-1">
+                                                        <div className="h-2 bg-slate-200 rounded"></div>
+                                                        <div className="space-y-3">
+                                                            <div className="grid grid-cols-3 gap-4">
+                                                                <div className="h-2 bg-slate-200 rounded col-span-2"></div>
+                                                                <div className="h-2 bg-slate-200 rounded col-span-1"></div>
+                                                            </div>
+                                                            <div className="h-2 bg-slate-200 rounded"></div>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td className="space-x-4 py-2.5 px-0.5 w-1/12">
+                                                    {/* <div className="rounded-full bg-slate-200 h-10 w-10"></div> */}
+                                                    <div className="flex-1 space-y-6 py-1">
+                                                        <div className="h-2 bg-slate-200 rounded"></div>
+                                                        <div className="space-y-3">
+                                                            <div className="grid grid-cols-3 gap-4">
+                                                                <div className="h-2 bg-slate-200 rounded col-span-2"></div>
+                                                                <div className="h-2 bg-slate-200 rounded col-span-1"></div>
+                                                            </div>
+                                                            <div className="h-2 bg-slate-200 rounded"></div>
+                                                        </div>
+                                                    </div>
+                                                </td>
+
+                                            </tr>
+                                        )
+                                    }) :
                                     recentVacancies?.map((item, index) => {
                                         return (
                                             <tr key={index} className="relative border-b border-solid border-[#ecedf2] w-full hover:bg-[#f4f2f2] cursor-pointer px-5  ">
@@ -278,7 +458,7 @@ function Dashboard() {
                                                 <td className="w-3/24">
                                                     {item?.approvalStatus ? <div className="bg-green-100 border-green-300 border rounded-xl text-center text-sm text-green-500 w-fit px-1">FullFill</div> : <div className="bg-red-100 border-red-300 w-fit  px-1 text-red-500 border rounded-xl text-center text-sm">Pending</div>}
                                                 </td>
-                                                
+
                                                 <td className="w-3/24" >
                                                     <div className="">
                                                         <ul className="list-none flex relative item-center ">

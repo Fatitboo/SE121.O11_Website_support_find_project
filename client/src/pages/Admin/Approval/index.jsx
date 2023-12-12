@@ -5,28 +5,6 @@ import { getAllProjectsAdmin, resetSuccessAction } from "../../../redux/slices/p
 import { ComboBox, LoadingComponent, PaginationButtons } from "../../../components";
 import { AiOutlineSearch } from "react-icons/ai";
 import ProjectItem from './ProjectItem'
-const listApprovalProjects = [
-    {
-        key: 'project1',
-        logoOriginazer: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSCW82MIe3_DxiUjQUFlKNJrZuDng8sQ1Y_aQ&usqp=CAU',
-        originazerName: 'Google company',
-        address: 'London, Uk',
-        projectName: 'Build a system support findding project-group',
-        maxParticipants: 'Pending',
-        socialLink: 'https://www.facebook.com/profile.php?id=100009796787588',
-        uploadDate: new Date('2003-03-16'),
-    },
-    {
-        key: 'project2',
-        logoOriginazer: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAOEAAADhCAMAAAAJbSJIAAAAclBMVEXz8/PzUyWBvAYFpvD/ugjz9PX19PXz+fr39fr69vPy9fp5uAAAofD/tgDz3Nji6tfzRADzTBfzmYew0oB/xfH70IDX5/P16tfz5eLo7eHzPADzlICs0Hfh6/N3wvH7znj07eEAnvDzvbPL3q6u1/L43q6vy/leAAABd0lEQVR4nO3cR1IDQRREwcb0SEgj770B7n9FNmhEBL1g8zUs8l2gIi9QKUmSpHs5vPtWFV4uANMwunUD3IyiS7+Jebgdx7bddb63uvt+dKOqIBw/xTaZNsLZc3CEhISEhISEhISEhISEhISEhISEhISEhISEhISEhISEhISEhISEhISEhISEhISEhISEhISEhISEhISEhISEhISEhISEhISEhISEhISEhISEhISEjxVuJ7GNfwj7LQjTejcN7noTVu+z4PabgjB1wmumqm50JaAkSX/oLbxmKveiK/zqp8NxHtvx40bMn6dFbKdzgbi81MEdb8LeaRDdqiSsX2Kr541wMXiNjZCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkPCxwuj/0kvb/6V5Gd2hmTqvokulm90HluNrFyhJ0j/rC6N0RI28dGy3AAAAAElFTkSuQmCC',
-        originazerName: 'Microsoft company',
-        address: 'NewYork, Uk',
-        projectName: 'Project support build system open AI',
-        maxParticipants: 'Finish',
-        socialLink: 'https://www.facebook.com/profile.php?id=100009796787588',
-        uploadDate: new Date('2003-03-16'),
-    }
-]
 const listItemCbb = [
     {
         id: 1,

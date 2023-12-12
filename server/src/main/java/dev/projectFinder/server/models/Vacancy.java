@@ -82,6 +82,8 @@ public class Vacancy {
     //can post
     private Boolean post;
 
+    private List<String> reports;
+
     // admin approval
     // 1. pending
     // 2. fulfil

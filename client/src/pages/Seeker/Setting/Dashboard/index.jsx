@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import { getDataStatisticalAction, resetSuccessAction } from "../../../../redux/slices/users/usersSlices";
 import VacancyItem from "./VacancyItem";
 import { Link } from "react-router-dom";
+import { PiSuitcaseSimpleDuotone } from "react-icons/pi";
 
 const cbb = [
     {
@@ -36,7 +37,7 @@ function DashboardSeeker() {
         dispatch(getDataStatisticalAction());
     }, [dispatch])
     const storeData = useSelector(store => store?.users);
-    const { viewsProfile, isSuccess, appErr, loading , userAuth, appliedVacancies,shortListed} = storeData;
+    const { viewsProfile, isSuccess, appErr, loading , userAuth, appliedVacancies,shortListed, notification} = storeData;
     useEffect(() => {
         if (isSuccess) {
             dispatch(resetSuccessAction());
@@ -122,6 +123,39 @@ function DashboardSeeker() {
         setDataView([...dt])
 
     }, [currentLastMonths])
+    const displayNoti = (content) => {
+        // Name has been applied to NameVacancy 
+        const arrNoti = []
+        if (content.includes('has block you to continue vacancy')) {
+            const arr = content.split('has block you to continue vacancy')
+            console.log(arr)
+            arrNoti[0] = arr[0];
+            arrNoti[1] = 'has block you to continue vacancy';
+            arrNoti[2] = arr[1];
+            return arrNoti;
+        }
+        // Admin has been approved the 
+        if (content.includes('has been accepted you to vacancy')) {
+            const arr = content.split('has been accepted you to vacancy')
+            arrNoti[0] = arr[0];
+            arrNoti[1] = 'has been accepted you to vacancy';
+            arrNoti[2] = arr[1];
+            return arrNoti;
+        }
+        if (content.includes('has allowed you to continue vacancy')) {
+            const arr = content.split('has allowed you to continue vacancy')
+            arrNoti[0] = arr[0];
+            arrNoti[1] = 'has allowed you to continue vacancy';
+            arrNoti[2] = arr[1];
+            return arrNoti;
+        }
+       
+        const arr = content.split('has been')
+        arrNoti[0] = arr[0];
+        arrNoti[1] = 'has been';
+        arrNoti[2] = arr[1];
+        return arrNoti;
+    }
     return (
         <div className="px-10 pb-0">
             {loading && <LoadingComponent />}
@@ -181,8 +215,8 @@ function DashboardSeeker() {
 
 
             <div className="flex flex-wrap mt-3">
-                <div className="max-w-full pt-3 shrink-0 w-full grid grid-cols-4 grid-flow-row gap-5 ">
-                    <div className="relative rounded-lg mb-8 bg-white shadow max-w-full pt-1 shrink-0 col-span-3 pr-2 pb-4" >
+                <div className="max-w-full pt-3 shrink-0 w-full grid grid-cols-6 grid-flow-row gap-5 ">
+                    <div className="relative rounded-lg mb-8 bg-white shadow max-w-full pt-1 shrink-0 col-span-4 pr-2 pb-4" >
                         <div className='mx-7 pt-6 font-bold '>Your profile Views</div>
                         <div className=' flex mb-6 ml-4 mt-2' >
                             <span className='mt-3 ml-3 mr-2'>Sort By: </span>
@@ -192,8 +226,26 @@ function DashboardSeeker() {
                         </div>
                         <ProjectChart data={dataViews} />
                     </div>
-                    <div className="relative rounded-lg mb-8 bg-white shadow max-w-full pt-1 shrink-0 ">
+                    <div className="relative rounded-lg mb-8 bg-white shadow max-w-full pt-1 shrink-0 col-span-2">
+                    <div className='mx-5 pt-6 font-bold '>Notifications</div>
+                        <div className="pr-4 pl-5 mt-4">
+                            {
+                                notification?.map((item, index) => {
+                                    return <div key={index} className="flex mt-2 mb-6 ">
+                                        <div className="flex items-center">
+                                            <div className={`rounded-full p-2 mr-4  ${index % 2 === 0 ? 'bg-green-100 text-green-700' : 'bg-blue-100 text-blue-700'}`}><PiSuitcaseSimpleDuotone /></div>
+                                            <div className="flex flex-wrap ">
+                                                <div className="font-medium  flex flex-nowrap mr-1 text-sm ">{displayNoti(item?.contentNoti)[0]} </div>
+                                                <div className="font-normal flex-wrap flex mr-1 text-sm text-gray-500 ">{displayNoti(item?.contentNoti)[1]} </div>
+                                                <div className="font-normal text-blue-700 flex flex-wrap mr-1 text-sm " >{displayNoti(item?.contentNoti)[2]} </div>
 
+                                                <div className="font-normal flex-wrap flex mr-1 text-sm text-gray-500 ">at {`${item?.notiTime[3]}:${item?.notiTime[4]} ${item?.notiTime[2]}/${item?.notiTime[1]}/${item?.notiTime[0]}`}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                })
+                            }
+                        </div>
                     </div>
                 </div>
             </div>

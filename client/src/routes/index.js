@@ -11,7 +11,8 @@ import {
     CompanyProfileAdmin,
     ManageVacancyAdmin,
     VacancyInfoAdmin,
-    ProjectDetailAdmin
+    ProjectDetailAdmin,
+    ManageReport
 } from "../pages/Admin"
 import {
     Home, 
@@ -103,6 +104,7 @@ const publicRoutes = [
     {path:'/Admin/occupation-management', component: OccupationMng, layout: LayoutHasSidebar},
     {path:'/Admin/occupation-management/add-occupation', component: AddOccupation, layout: LayoutHasSidebar},
     {path:'/Admin/occupation-management/edit-occupation/:id', component: EditOccupation, layout: LayoutHasSidebar},
+    {path:'/Admin/manage-report', component: ManageReport, layout: LayoutHasSidebar},
 
     
 ]

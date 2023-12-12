@@ -1,9 +1,13 @@
 package dev.projectFinder.server.controllers;
 
 
+import dev.projectFinder.server.components.VacPro;
+import dev.projectFinder.server.dtos.ReportDTO;
 import dev.projectFinder.server.dtos.SkillDTO;
+import dev.projectFinder.server.models.Report;
 import dev.projectFinder.server.models.Skill;
 import dev.projectFinder.server.services.SkillServices;
+import dev.projectFinder.server.services.UserServices;
 import dev.projectFinder.server.utils.MessageKeys;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +26,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SkillController {
     private final SkillServices skillServices;
+    private final UserServices userServices;
+
     @GetMapping("")
     public ResponseEntity<?> getAllSkills(){
         List<Skill> skills = skillServices.getAllSkills();
@@ -82,4 +88,44 @@ public class SkillController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
     }
+    @PostMapping("/create-report/{itemId}")
+    public ResponseEntity<?> reportVacancyOrProject(@PathVariable String itemId, @RequestBody ReportDTO reportDTO){
+        HashMap<String, Object> response = new HashMap<>();
+        try{
+            skillServices.reportVacancyProject(itemId, reportDTO);
+            response.put("message", "Send report vacancy or project successfully!");
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        }catch (Exception e) {
+            response.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+    }
+
+    @GetMapping("/get-all-report-admin")
+    public ResponseEntity<?> getAllReportsAdmin(){
+        HashMap<String, Object> response = new HashMap<>();
+        try{
+            List<VacPro> reports = skillServices.getAllVacProHasReport();
+            response.put("reports", reports);
+            response.put("message", "Get all reports project successfully!");
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        }catch (Exception e) {
+            response.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+    }
+    @PostMapping("/get-all-report-var/{id}")
+    public ResponseEntity<?> getAllReports(@PathVariable String id, @RequestParam("isVacancy") Boolean isVacancy){
+        HashMap<String, Object> response = new HashMap<>();
+        try{
+            List<Report> reports = skillServices.getAllReportOfVacancyProject(id, isVacancy);
+            response.put("reports", reports);
+            response.put("message", "Get all reports project successfully!");
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        }catch (Exception e) {
+            response.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+    }
+
 }

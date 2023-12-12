@@ -34,7 +34,9 @@ export const loginUserAction = createAsyncThunk(
                 },
             };
             const { data } = await axios.post(`${baseUrl}/${apiPrefix}/login`, userData, config);
-            localStorage.setItem('userInfo', JSON.stringify(data))
+            if(data.isActive){
+                localStorage.setItem('userInfo', JSON.stringify(data))
+            }
             return data;
         } catch (error) {
             if (!error?.response) {
@@ -630,6 +632,20 @@ export const resetSuccessAction = createAsyncThunk(
         }
     }
 );
+//Set UserAuth
+export const resetUserAuthAction = createAsyncThunk(
+    "users/resetUserAuth",
+    async (data, { rejectWithValue, getState, dispatch }) => {
+        try {
+            return data;
+        } catch (error) {
+            if (!error?.response) {
+                throw error;
+            }
+            return rejectWithValue(error?.response?.data);
+        }
+    }
+);
 // get userAuth from local storage
 const getUserAuth = localStorage.getItem('userInfo') ? JSON.parse(localStorage.getItem('userInfo')) : null;
 
@@ -963,6 +979,10 @@ const usersSlices = createSlice({
             state.isSuccess = false;
             state.isSuccessUpd = false;
         });
+        builder.addCase(resetUserAuthAction.fulfilled, (state, action) => {
+           
+            state.userAuth = null;
+        });
         //change pass account
         builder.addCase(changePasswordAction.pending, (state, action) => {
             state.loading = true;
@@ -1028,6 +1048,7 @@ const usersSlices = createSlice({
             state.loading = false;
             state.appErr = undefined;
             state.isSuccess = true;
+            state.notification = action?.payload?.notification;
             state.viewsProfile = action?.payload?.viewProfiles;
             state.appliedVacancies = action?.payload?.appliedVacancies;
             state.shortListed = action?.payload?.shortListed;

@@ -4,7 +4,7 @@ import { BsCheck } from 'react-icons/bs';
 import { AiFillExclamationCircle } from 'react-icons/ai';
 
 export default function CustomRadioButton({label, listItem, filterValueChecked, error, type, rules, name, selectedItem}){
-    const [selected, setSelected] = useState(selectedItem ? selectedItem : {id: 1, name: '', value: false})
+    const [selected, setSelected] = useState(selectedItem ? selectedItem : {id: -1, name: '', value: false})
     useEffect(()=>{
         filterValueChecked(selected)
     

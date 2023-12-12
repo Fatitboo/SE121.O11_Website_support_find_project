@@ -10,24 +10,18 @@ import Swal from "sweetalert2";
 const listItemCbb = [
     {
         id: 1,
-        name: 'Pending',
+        name: 'All',
 
     },
     {
         id: 2,
-        name: 'Processing',
+        name: 'Block',
     },
     {
         id: 3,
-        name: 'Finish',
+        name: 'Active',
 
-    },
-    {
-        id: 4,
-        name: 'Cancelled',
-
-    },
-
+    }
 ]
 
 function UserMng() {
@@ -43,7 +37,15 @@ function UserMng() {
     const { corList, isSuccess, appErr, loading,isSuccessUpd } = storeData;
 
     const onFilterValueSelected = (filterValue) => {
-        console.log(filterValue)
+        if (filterValue.name === 'All') {
+            setOrganizerList([...corList ?? []])
+        }
+        if (filterValue.name === 'Block') {
+            setOrganizerList([...corList.filter(i => !i.isActive)])
+        }
+        if (filterValue.name === 'Active') {
+            setOrganizerList([...corList.filter(i => i.isActive)])
+        }
     }
 
     useEffect(() => {

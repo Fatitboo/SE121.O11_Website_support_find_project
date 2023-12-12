@@ -1,5 +1,6 @@
 package dev.projectFinder.server.services;
 
+import dev.projectFinder.server.components.Notification;
 import dev.projectFinder.server.components.Vacancy.UserInfo;
 import dev.projectFinder.server.dtos.UserDTO;
 import dev.projectFinder.server.dtos.VacancyDTO;
@@ -16,10 +17,8 @@ import org.bson.types.ObjectId;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
+import java.time.LocalDateTime;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -235,7 +234,16 @@ public class VacancyServices {
         if(status.equals("rejected")){
             vacancy.setPost(false);
         }
+        Optional<User> userOptional = userRepository.findById(new ObjectId(vacancy.getUserInfo().getUserId()));
+        if(userOptional.isEmpty()) throw new DataIntegrityViolationException("Error when get user info in database!");
+        User user = userOptional.get();
+        List<Notification> notifications =  user.getNotifications();
+        if(notifications == null) notifications = new ArrayList<>();
+        String contentNoti = "Admin has been "+ status +" vacancy "+vacancy.getVacancyName();
+        notifications.add(new Notification(contentNoti, LocalDateTime.now()));
+        user.setNotifications(notifications);
         vacancyRepository.save(vacancy);
+        userRepository.save(user);
     }
     
 }

@@ -2,14 +2,13 @@ package dev.projectFinder.server.services;
 
 
 import dev.projectFinder.server.components.*;
-import dev.projectFinder.server.dtos.SeekerResumeDTO;
-import dev.projectFinder.server.dtos.UserDTO;
-import dev.projectFinder.server.dtos.UserInforDTO;
-import dev.projectFinder.server.dtos.UserLoginDTO;
+import dev.projectFinder.server.dtos.*;
 import dev.projectFinder.server.models.Project;
+import dev.projectFinder.server.models.Report;
 import dev.projectFinder.server.models.User;
 import dev.projectFinder.server.models.Vacancy;
 import dev.projectFinder.server.repositories.ProjectRepository;
+import dev.projectFinder.server.repositories.ReportRepository;
 import dev.projectFinder.server.repositories.UserRepository;
 import dev.projectFinder.server.repositories.VacancyRepository;
 import dev.projectFinder.server.responses.UserResponse;
@@ -44,6 +43,7 @@ public class UserServices {
     private final JwtTokenUtils jwtTokenUtil;
     private final EmailService emailService;
     private final ProjectRepository projectRepository;
+    private final ReportRepository reportRepository;
 
     public UserResponse createUser(UserDTO userDTO) throws Exception {
         if (!userDTO.getPassword().equals(userDTO.getCPassword())){
@@ -94,6 +94,17 @@ public class UserServices {
         }
         if(!userLoginDTO.getUserType().equals(user.getUserType())){
             throw new BadCredentialsException(MessageKeys.WRONG_USERNAME_PASSWORD);
+        }
+        if(!user.getIsActive()){
+            return UserResponse.builder()
+                    .userId(user.getUserId())
+                    .fullName(user.getFullName())
+                    .avatar(user.getAvatar())
+                    .userType(user.getUserType())
+                    .isActive(user.getIsActive())
+                    .isVerify(user.getIsVerify())
+                    .token(null)
+                    .build();
         }
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
                 userLoginDTO.getUsername(), userLoginDTO.getPassword(),
@@ -519,4 +530,6 @@ public class UserServices {
         user.setIsActive(!isActive);
         userRepository.save(user);
     }
+
+
 }

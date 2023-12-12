@@ -1,10 +1,7 @@
 package dev.projectFinder.server.controllers;
 
 import dev.projectFinder.server.components.CVLink;
-import dev.projectFinder.server.dtos.SeekerResumeDTO;
-import dev.projectFinder.server.dtos.UserInforDTO;
-import dev.projectFinder.server.dtos.UserLoginDTO;
-import dev.projectFinder.server.dtos.UserDTO;
+import dev.projectFinder.server.dtos.*;
 import dev.projectFinder.server.models.UnCompletedVacancy;
 import dev.projectFinder.server.models.User;
 import dev.projectFinder.server.models.Vacancy;
@@ -90,6 +87,7 @@ public class UserController {
         try{
             UserResponse user = userServices.login(userLoginDTO);
             loginResponse.put("message",MessageKeys.LOGIN_SUCCESSFULLY );
+            loginResponse.put("isActive",user.getIsActive());
             loginResponse.put("user",user);
             return ResponseEntity.status(HttpStatus.OK).body(loginResponse);
         }catch (Exception e){
@@ -534,5 +532,6 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
     }
+
 
 }
