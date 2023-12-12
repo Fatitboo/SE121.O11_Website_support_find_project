@@ -2,6 +2,9 @@ package dev.projectFinder.server.components.Vacancy;
 
 import dev.projectFinder.server.components.Vacancy.Combobox.Combobox;
 import lombok.*;
+
+import java.util.HashMap;
+
 @Data
 @Builder
 @AllArgsConstructor
@@ -32,7 +35,6 @@ public class JobPreScreen {
 //  answer
     private String answerType;
     private Combobox[] result;
-
-
+    private HashMap<Object, Object> answer;
 }
 

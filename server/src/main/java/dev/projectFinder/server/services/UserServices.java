@@ -2,6 +2,7 @@ package dev.projectFinder.server.services;
 
 
 import dev.projectFinder.server.components.*;
+import dev.projectFinder.server.components.Vacancy.JobPreScreen;
 import dev.projectFinder.server.dtos.*;
 import dev.projectFinder.server.models.Project;
 import dev.projectFinder.server.models.Report;
@@ -17,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 import org.bson.types.ObjectId;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.mongodb.core.aggregation.ArithmeticOperators;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -518,6 +520,57 @@ public class UserServices {
         if(!registants.contains(user.getUserId().toString()))
             registants.add(user.getUserId().toString());
         vacancy.setRegistants(registants);
+        vacancyRepository.save(vacancy);
+    }
+    public void applyVacancyAndAnswers (String id, String vacancyId, JobPreScreen[] jobPreScreen){
+        Optional<User> foundUser = userRepository.findById(new ObjectId(id));
+        if(foundUser.isEmpty()){
+            throw new DataIntegrityViolationException(MessageKeys.USER_NOT_FOUND);
+        }
+        User user = foundUser.get();
+
+        Optional<Vacancy> vacancyFounder = vacancyRepository.findById(new ObjectId(vacancyId));
+        if(vacancyFounder.isEmpty()){
+            throw new DataIntegrityViolationException("Fail to find vacancy in database");
+        }
+        Vacancy vacancy = vacancyFounder.get();
+
+        Optional<User> foundCor = userRepository.findById(new ObjectId(vacancy.getUserInfo().getUserId()));
+        if(foundCor.isEmpty()){
+            throw new DataIntegrityViolationException(MessageKeys.USER_NOT_FOUND);
+        }
+        User cor = foundCor.get();
+
+
+        // set list applied vacancy
+        List<String> appliedVacancies = user.getAppliedVacancies();
+        if(appliedVacancies != null && user.getAppliedVacancies().contains(vacancy.getVacancyId().toString())) return;
+
+        if(user.getAppliedVacancies() == null || appliedVacancies.isEmpty()) appliedVacancies = new ArrayList<>();
+        if(!appliedVacancies.contains(vacancy.getVacancyId().toString()))
+            appliedVacancies.add(vacancy.getVacancyId().toString());
+        user.setAppliedVacancies(appliedVacancies);
+        userRepository.save(user);
+
+        // set notification for this applied
+        Notification noti = new Notification();
+        noti.setNotiTime(LocalDateTime.now());
+        noti.setContentNoti(user.getFullName() + " has been applied to " + vacancy.getVacancyName());
+
+        List<Notification> listNotiCor = cor.getNotifications();
+        if(listNotiCor == null || listNotiCor.isEmpty()) listNotiCor = new ArrayList<>();
+        listNotiCor.add(noti);
+        cor.setNotifications(listNotiCor);
+        userRepository.save(cor);
+
+        //setvacancy
+
+        List<String> registants = vacancy.getRegistants();
+        if(registants == null || registants.isEmpty()) registants = new ArrayList<>();
+        if(!registants.contains(user.getUserId().toString()))
+            registants.add(user.getUserId().toString());
+        vacancy.setRegistants(registants);
+        vacancy.setJobPreScreen(jobPreScreen);
         vacancyRepository.save(vacancy);
     }
     public void updateActiveCor(String id){

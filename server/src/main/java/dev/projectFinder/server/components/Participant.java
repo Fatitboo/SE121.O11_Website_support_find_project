@@ -11,8 +11,8 @@ import java.time.LocalDateTime;
 @Setter
 public class Participant {
     private String userId;
-    // 1. receive
-    // 2. layOff
+    // 1. received
+    // 2. block
     private String status;
     private LocalDateTime receiveTime;
     private LocalDateTime layOffTime;

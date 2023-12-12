@@ -117,7 +117,7 @@ function JobPreScreen({formId, formSubmit, flag, config, content, onDoneSubmit})
             selectList: [{id: 1, name: 'Day Shift', required: false, dealBreakerBox: true}, {id: 2, name: 'Night Shift', required: false, dealBreakerBox: true}, {id: 3, name: 'Overnight Shift', required: false, dealBreakerBox: true}],
             selectedItem: [{id: 1, name: 'Day Shift', required: false, dealBreakerBox: true}],
             multi: false,
-            answerType: 'select',
+            answerType: 'multi-select',
             result: [{id: 1, name: 'Day Shift', required: false, dealBreakerBox: true}]
         },
         {

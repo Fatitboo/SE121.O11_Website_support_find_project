@@ -1,6 +1,7 @@
 package dev.projectFinder.server.controllers;
 
 import dev.projectFinder.server.components.CVLink;
+import dev.projectFinder.server.components.Vacancy.JobPreScreen;
 import dev.projectFinder.server.dtos.*;
 import dev.projectFinder.server.models.UnCompletedVacancy;
 import dev.projectFinder.server.models.User;
@@ -532,6 +533,5 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
     }
-
 
 }
