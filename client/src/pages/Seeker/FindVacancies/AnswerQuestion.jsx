@@ -172,7 +172,7 @@ function AnswerQuestion({props, onTextChanged, userId, onCheckedRadio, setDateTi
         case 'select':
             return ( 
                 <>
-                    <div className="flex flex-col border border-gray-400 rounded-lg overflow-hidden my-6">
+                    <div className="flex flex-col border border-gray-400 rounded-lg my-6">
                         <div className="flex flex-row items-center justify-between p-3 bg-[#F3F2F1]">
                             <div className="flex flex-row items-top mr-3">
                                 <div className="text-base text-[#2d2d2d] font-bold whitespace-nowrap">

@@ -1,5 +1,8 @@
 package dev.projectFinder.server.services;
 
+import dev.projectFinder.server.components.Notification;
+import dev.projectFinder.server.components.Participant;
+import dev.projectFinder.server.components.Vacancy.JobPreScreen;
 import dev.projectFinder.server.components.Vacancy.UserInfo;
 import dev.projectFinder.server.dtos.UserDTO;
 import dev.projectFinder.server.dtos.VacancyDTO;
@@ -16,10 +19,8 @@ import org.bson.types.ObjectId;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
+import java.time.LocalDateTime;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -237,5 +238,280 @@ public class VacancyServices {
         }
         vacancyRepository.save(vacancy);
     }
-    
+    public List<User> getAllApplicantsVacancy (String id) {
+        Optional<Vacancy> vacancyOptional = vacancyRepository.findById(new ObjectId(id));
+        if(vacancyOptional.isEmpty()){
+            throw new DataIntegrityViolationException("Error when get vacancy in database!");
+        }
+        Vacancy vacancy=  vacancyOptional.get();
+
+        List<String> userIds = vacancy.getRegistants();
+        List<User> users = new ArrayList<>();
+        for(int i = 0; i < userIds.size(); i++){
+            Optional<User> userOptional = userRepository.findById(new ObjectId(userIds.get(i)));
+            if(userOptional.isEmpty()){
+                throw new DataIntegrityViolationException("Error when get user in database!");
+            }
+            users.add(userOptional.get());
+        }
+
+        return users;
+    }
+    public HashMap<String, List<User>> getAllParticipantsVacancy (String id) {
+        Optional<Vacancy> vacancyOptional = vacancyRepository.findById(new ObjectId(id));
+        if(vacancyOptional.isEmpty()){
+            throw new DataIntegrityViolationException("Error when get vacancy in database!");
+        }
+        Vacancy vacancy = vacancyOptional.get();
+
+        List<Participant> userIds = vacancy.getParticipants();
+        HashMap<String, List<User>> hm = new HashMap<>();
+
+        List<User> members = new ArrayList<>();
+        List<User> oldMembers = new ArrayList<>();
+
+        for (Participant userId : userIds) {
+            Optional<User> userOptional = userRepository.findById(new ObjectId(userId.getUserId()));
+            if (userOptional.isEmpty()) {
+                throw new DataIntegrityViolationException("Error when get user in database!");
+            }
+            if(Objects.equals(userId.getStatus(), "received")) members.add(userOptional.get());
+            if(Objects.equals(userId.getStatus(), "block")) oldMembers.add(userOptional.get());
+        }
+
+        hm.put("members", members);
+        hm.put("oldMembers", oldMembers);
+        return hm;
+    }
+
+    //Thay doi trang thai participate vacancy
+    public void acceptApplicantVacancy(String vacancyId, String id) throws Exception{
+        Optional<Vacancy> vacancyOptional = vacancyRepository.findById(new ObjectId(vacancyId));
+        if(vacancyOptional.isEmpty()){
+            throw new DataIntegrityViolationException("Error when get vacancy in database!");
+        }
+        Vacancy vacancy = vacancyOptional.get();
+        Optional<User> userOptional = userRepository.findById(new ObjectId(id));
+        if(userOptional.isEmpty()){
+            throw new DataIntegrityViolationException("Error when get user in database");
+        }
+        User user = userOptional.get();
+
+        // Them mot participant moi -> vacancy
+        List<Participant> listParticipantsVacancy = vacancy.getParticipants();
+
+        if(listParticipantsVacancy == null || listParticipantsVacancy.isEmpty()){
+            listParticipantsVacancy = new ArrayList<>();
+        }
+        Participant newPati = new Participant();
+        newPati.setUserId(id);
+        newPati.setReceiveTime(LocalDateTime.now());
+        newPati.setStatus("received");
+        listParticipantsVacancy.add(newPati);
+        vacancy.setParticipants(listParticipantsVacancy);
+
+        //Xoa bot 1 register
+        List<String> registerVacancy = vacancy.getRegistants();
+        registerVacancy.remove(user.getUserId().toString());
+        vacancy.setRegistants(registerVacancy);
+
+
+        // Them moi mot recreived vacancy -> user
+        List<String> listReceivedVacancy = user.getReceivedVacancies();
+        if(listReceivedVacancy == null || listReceivedVacancy.isEmpty()) {
+            listReceivedVacancy = new ArrayList<>();
+        }
+        listReceivedVacancy.add(vacancy.getVacancyId().toString());
+        user.setReceivedVacancies(listReceivedVacancy);
+
+        // Xoa di mot applicant vacancy -> use
+        List<String> listApplicantVacancy = user.getAppliedVacancies();
+        listApplicantVacancy.remove(vacancy.getVacancyId().toString());
+        user.setAppliedVacancies(listApplicantVacancy);
+
+        //Xoa cau tra loi cua user
+        JobPreScreen[] jobPreScreen = vacancy.getJobPreScreen();
+        for (JobPreScreen preScreen : jobPreScreen) {
+            HashMap<Object, Object> hm = preScreen.getAnswer();
+            hm.remove(user.getUserId().toString());
+            preScreen.setAnswer(hm);
+        }
+        vacancy.setJobPreScreen(jobPreScreen);
+
+        //Tạo notification
+
+        Notification noti = new Notification();
+        noti.setNotiTime(LocalDateTime.now());
+        noti.setContentNoti(vacancy.getUserInfo().getFullName() + " has been accepted you to vacancy " + vacancy.getVacancyName());
+
+        List<Notification> listNoti = user.getNotifications();
+        if(listNoti == null || listNoti.isEmpty()) listNoti = new ArrayList<>();
+        listNoti.add(noti);
+        user.setNotifications(listNoti);
+
+//        //Cap nhat
+        vacancyRepository.save(vacancy);
+        userRepository.save(user);
+    }
+    public void removeApplicantVacancy(String vacancyId, String id) throws Exception{
+        Optional<Vacancy> vacancyOptional = vacancyRepository.findById(new ObjectId(vacancyId));
+        if(vacancyOptional.isEmpty()){
+            throw new DataIntegrityViolationException("Error when get vacancy in database!");
+        }
+        Vacancy vacancy = vacancyOptional.get();
+        Optional<User> userOptional = userRepository.findById(new ObjectId(id));
+        if(userOptional.isEmpty()){
+            throw new DataIntegrityViolationException("Error when get user in database");
+        }
+        User user = userOptional.get();
+
+        //Xoa bot 1 register
+        List<String> registerVacancy = vacancy.getRegistants();
+        registerVacancy.remove(user.getUserId().toString());
+        vacancy.setRegistants(registerVacancy);
+
+
+        // Xoa di mot applicant vacancy -> user
+        List<String> listApplicantVacancy = user.getAppliedVacancies();
+        listApplicantVacancy.remove(vacancy.getVacancyId().toString());
+        user.setAppliedVacancies(listApplicantVacancy);
+
+        //Xoa cau tra loi cua user
+        JobPreScreen[] jobPreScreen = vacancy.getJobPreScreen();
+        for (JobPreScreen preScreen : jobPreScreen) {
+            HashMap<Object, Object> hm = preScreen.getAnswer();
+            hm.remove(user.getUserId().toString());
+            preScreen.setAnswer(hm);
+        }
+        vacancy.setJobPreScreen(jobPreScreen);
+
+        //Tạo notification
+
+        Notification noti = new Notification();
+        noti.setNotiTime(LocalDateTime.now());
+        noti.setContentNoti(vacancy.getUserInfo().getFullName() + " has refused you to join vacancy " + vacancy.getVacancyName());
+
+        List<Notification> listNoti = user.getNotifications();
+        if(listNoti == null || listNoti.isEmpty()) listNoti = new ArrayList<>();
+        listNoti.add(noti);
+        user.setNotifications(listNoti);
+
+//        Cap nhat
+        vacancyRepository.save(vacancy);
+        userRepository.save(user);
+    }
+    public void blockMemberVacancy(String vacancyId, String id) throws Exception{
+        Optional<Vacancy> vacancyOptional = vacancyRepository.findById(new ObjectId(vacancyId));
+        if(vacancyOptional.isEmpty()){
+            throw new DataIntegrityViolationException("Error when get vacancy in database!");
+        }
+        Vacancy vacancy = vacancyOptional.get();
+        Optional<User> userOptional = userRepository.findById(new ObjectId(id));
+        if(userOptional.isEmpty()){
+            throw new DataIntegrityViolationException("Error when get user in database");
+        }
+        User user = userOptional.get();
+
+        // sua trang thai participant -> vacancy
+        List<Participant> listParticipantsVacancy = vacancy.getParticipants();
+
+        for (Participant participant : listParticipantsVacancy) {
+            if (Objects.equals(participant.getUserId(), user.getUserId().toString())) {
+                participant.setStatus("block");
+                break;
+            }
+        }
+        vacancy.setParticipants(listParticipantsVacancy);
+
+        //Tạo notification
+
+        Notification noti = new Notification();
+        noti.setNotiTime(LocalDateTime.now());
+        noti.setContentNoti(vacancy.getUserInfo().getFullName() + " has block you to continue vacancy " + vacancy.getVacancyName());
+
+        List<Notification> listNoti = user.getNotifications();
+        if(listNoti == null || listNoti.isEmpty()) listNoti = new ArrayList<>();
+        listNoti.add(noti);
+        user.setNotifications(listNoti);
+
+//        Cap nhat
+        vacancyRepository.save(vacancy);
+        userRepository.save(user);
+    }
+    public void recoverMemberVacancy(String vacancyId, String id) throws Exception{
+        Optional<Vacancy> vacancyOptional = vacancyRepository.findById(new ObjectId(vacancyId));
+        if(vacancyOptional.isEmpty()){
+            throw new DataIntegrityViolationException("Error when get vacancy in database!");
+        }
+        Vacancy vacancy = vacancyOptional.get();
+        Optional<User> userOptional = userRepository.findById(new ObjectId(id));
+        if(userOptional.isEmpty()){
+            throw new DataIntegrityViolationException("Error when get user in database");
+        }
+        User user = userOptional.get();
+
+        // Them mot participant moi -> vacancy
+        List<Participant> listParticipantsVacancy = vacancy.getParticipants();
+
+        for (Participant participant : listParticipantsVacancy) {
+            if (Objects.equals(participant.getUserId(), user.getUserId().toString())) {
+                participant.setStatus("received");
+                break;
+            }
+        }
+        vacancy.setParticipants(listParticipantsVacancy);
+
+        //Noti
+        Notification noti = new Notification();
+        noti.setNotiTime(LocalDateTime.now());
+        noti.setContentNoti(vacancy.getUserInfo().getFullName() + " has allowed you to continue vacancy " + vacancy.getVacancyName());
+
+        List<Notification> listNoti = user.getNotifications();
+        if(listNoti == null || listNoti.isEmpty()) listNoti = new ArrayList<>();
+        listNoti.add(noti);
+        user.setNotifications(listNoti);
+
+        //Cap nhat
+        vacancyRepository.save(vacancy);
+        userRepository.save(user);
+    }
+    public void deleteBlockMemberVacancy(String vacancyId, String id) throws Exception{
+        Optional<Vacancy> vacancyOptional = vacancyRepository.findById(new ObjectId(vacancyId));
+        if(vacancyOptional.isEmpty()){
+            throw new DataIntegrityViolationException("Error when get vacancy in database!");
+        }
+        Vacancy vacancy = vacancyOptional.get();
+        Optional<User> userOptional = userRepository.findById(new ObjectId(id));
+        if(userOptional.isEmpty()){
+            throw new DataIntegrityViolationException("Error when get user in database");
+        }
+        User user = userOptional.get();
+        // xóa participant hien tai -> vacancy
+        List<Participant> listParticipantsVacancy = vacancy.getParticipants();
+        for (Participant participant : listParticipantsVacancy) {
+            if (Objects.equals(participant.getUserId(), user.getUserId().toString())) {
+                listParticipantsVacancy.remove(participant);
+                break;
+            }
+        }
+        vacancy.setParticipants(listParticipantsVacancy);
+
+        // Them moi mot recreived vacancy -> user
+        List<String> listReceivedVacancy = user.getReceivedVacancies();
+        listReceivedVacancy.remove(vacancy.getVacancyId().toString());
+        user.setReceivedVacancies(listReceivedVacancy);
+
+        //Noti
+        Notification noti = new Notification();
+        noti.setNotiTime(LocalDateTime.now());
+        noti.setContentNoti(vacancy.getUserInfo().getFullName() + " has chased you from vacancy " + vacancy.getVacancyName());
+
+        List<Notification> listNoti = user.getNotifications();
+        if(listNoti == null || listNoti.isEmpty()) listNoti = new ArrayList<>();
+        listNoti.add(noti);
+        user.setNotifications(listNoti);
+
+        vacancyRepository.save(vacancy);
+        userRepository.save(user);
+    }
 }

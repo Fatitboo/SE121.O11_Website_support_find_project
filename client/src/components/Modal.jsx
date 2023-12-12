@@ -1,6 +1,4 @@
 import { CgClose } from "react-icons/cg";
-
-
 export default function Modal({ open,  children }) {
     return (
         // backdrop

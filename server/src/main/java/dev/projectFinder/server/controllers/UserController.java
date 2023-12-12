@@ -1,6 +1,7 @@
 package dev.projectFinder.server.controllers;
 
 import dev.projectFinder.server.components.CVLink;
+import dev.projectFinder.server.components.Vacancy.JobPreScreen;
 import dev.projectFinder.server.dtos.SeekerResumeDTO;
 import dev.projectFinder.server.dtos.UserInforDTO;
 import dev.projectFinder.server.dtos.UserLoginDTO;
@@ -527,6 +528,19 @@ public class UserController {
         HashMap<String, Object> response = new HashMap<>();
         try{
             userServices.applyVacancy(id, vacancyId);
+            response.put("message", "Your applied has been send to corporator!");
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        }catch (Exception e) {
+            response.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+    }
+
+    @PostMapping("/apply-vacancy-and-answers/{id}/{vacancyId}")
+    public ResponseEntity<?> applyVacancyAndAnswer(@Valid @RequestBody JobPreScreen[] jobPreScreen, @PathVariable String id, @PathVariable String vacancyId){
+        HashMap<String, Object> response = new HashMap<>();
+        try{
+            userServices.applyVacancyAndAnswers(id, vacancyId, jobPreScreen);
             response.put("message", "Your applied has been send to corporator!");
             return ResponseEntity.status(HttpStatus.OK).body(response);
         }catch (Exception e) {

@@ -1,5 +1,6 @@
 package dev.projectFinder.server.controllers;
 
+import dev.projectFinder.server.components.Vacancy.JobPreScreen;
 import dev.projectFinder.server.components.Vacancy.UserInfo;
 import dev.projectFinder.server.dtos.VacancyDTO;
 import dev.projectFinder.server.models.UnCompletedVacancy;
@@ -150,6 +151,101 @@ public class VacancyController
         try{
             vacancyServices.deleteUncompletedVacancy(id);
             response.put("message","Delete vacancy successfully!");
+            response.put("id", id);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        }catch (Exception e) {
+            response.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+    }
+
+    @GetMapping("/get-all-applicants-vacancy/{id}")
+    public ResponseEntity<?> getAllApplicantsVacancy(@PathVariable String id){
+        HashMap<String, Object> response = new HashMap<>();
+        try{
+            List<User> users = vacancyServices.getAllApplicantsVacancy(id);
+            response.put("message","Get all applicants vacancy successfully!");
+            response.put("applicants", users);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        }catch (Exception e) {
+            response.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+    }
+    @GetMapping("/get-all-participant-vacancy/{id}")
+    public ResponseEntity<?> getAllParticipantsVacancy(@PathVariable String id){
+        HashMap<String, Object> response = new HashMap<>();
+        try{
+            HashMap<String, List<User>> result = vacancyServices.getAllParticipantsVacancy(id);
+            response.put("message","Get all participants vacancy successfully!");
+            response.put("participants", result);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        }catch (Exception e) {
+            response.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+    }
+
+
+    //Cập nhật trạng thái applicant
+    @PostMapping("/accept-applicant-vacancy/{vacancyId}/{id}")
+    public ResponseEntity<?> acceptApplicantVacancy(@PathVariable String vacancyId, @PathVariable String id){
+        HashMap<String, Object> response = new HashMap<>();
+        try{
+            vacancyServices.acceptApplicantVacancy(vacancyId, id);
+            response.put("message","Get applicants answer successfully!");
+            response.put("id", id);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        }catch (Exception e) {
+            response.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+    }
+    @PutMapping("/remove-applicant-vacancy/{vacancyId}/{id}")
+    public ResponseEntity<?> removeApplicantVacancy(@PathVariable String vacancyId, @PathVariable String id){
+        HashMap<String, Object> response = new HashMap<>();
+        try{
+            vacancyServices.removeApplicantVacancy(vacancyId, id);
+            response.put("message","Remove applicants answer successfully!");
+            response.put("id", id);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        }catch (Exception e) {
+            response.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+    }
+    @PutMapping("/block-member-vacancy/{vacancyId}/{id}")
+    public ResponseEntity<?> blockMemberVacancy(@PathVariable String vacancyId, @PathVariable String id){
+        HashMap<String, Object> response = new HashMap<>();
+        try{
+            vacancyServices.blockMemberVacancy(vacancyId, id);
+            response.put("message","Block member answer successfully!");
+            response.put("id", id);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        }catch (Exception e) {
+            response.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+    }
+    @PutMapping("/recover-member-vacancy/{vacancyId}/{id}")
+    public ResponseEntity<?> recoverMemberVacancy(@PathVariable String vacancyId, @PathVariable String id){
+        HashMap<String, Object> response = new HashMap<>();
+        try{
+            vacancyServices.recoverMemberVacancy(vacancyId, id);
+            response.put("message","Recover member answer successfully!");
+            response.put("id", id);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        }catch (Exception e) {
+            response.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+    }
+    @PutMapping("/delete-block-member-vacancy/{vacancyId}/{id}")
+    public ResponseEntity<?> deleteBlockMemberVacancy(@PathVariable String vacancyId, @PathVariable String id){
+        HashMap<String, Object> response = new HashMap<>();
+        try{
+            vacancyServices.deleteBlockMemberVacancy(vacancyId, id);
+            response.put("message","Delete block member answer successfully!");
             response.put("id", id);
             return ResponseEntity.status(HttpStatus.OK).body(response);
         }catch (Exception e) {

@@ -616,6 +616,33 @@ export const applyVacancyAction = createAsyncThunk(
         }
     }
 );
+//applied vacancies with answer
+export const applyVacancyWithAnswersAction = createAsyncThunk(
+    "users/applyVacancyWithAnswers",
+    async (payload, { rejectWithValue, getState, dispatch }) => {
+        const user = getState()?.users;
+        const { userAuth } = user;
+        // http call 
+        const config = {
+            headers: {
+                Authorization: `Bearer ${userAuth?.user?.token}`,
+                'Content-Type': 'application/json',
+            },
+        };
+        try {
+            console.log(payload)
+            const { data } = await axios.post(
+                `${baseUrl}/api/v1/users/apply-vacancy-and-answers/${userAuth?.user?.userId}/${payload.vacanciesId}`, payload.jobPreScreen, config
+            );
+            return data;
+        } catch (error) {
+            if (!error?.response) {
+                throw error;
+            }
+            return rejectWithValue(error?.response?.data);
+        }
+    }
+);
 //Set success
 export const resetSuccessAction = createAsyncThunk(
     "users/resetSuccess",
@@ -962,6 +989,7 @@ const usersSlices = createSlice({
         builder.addCase(resetSuccessAction.fulfilled, (state, action) => {
             state.isSuccess = false;
             state.isSuccessUpd = false;
+            state.isSuccessApplied = false;
         });
         //change pass account
         builder.addCase(changePasswordAction.pending, (state, action) => {
@@ -1077,6 +1105,20 @@ const usersSlices = createSlice({
             state.isSuccessApplied = true;
         });
         builder.addCase(applyVacancyAction.rejected, (state, action) => {
+            state.loading = false;
+            state.isSuccessApplied = false
+        });
+        //applied vacancies
+        builder.addCase(applyVacancyWithAnswersAction.pending, (state, action) => {
+            state.loading = true;
+            state.isSuccessApplied = false;
+        });
+
+        builder.addCase(applyVacancyWithAnswersAction.fulfilled, (state, action) => {
+            state.loading = false;
+            state.isSuccessApplied = true;
+        });
+        builder.addCase(applyVacancyWithAnswersAction.rejected, (state, action) => {
             state.loading = false;
             state.isSuccessApplied = false
         });

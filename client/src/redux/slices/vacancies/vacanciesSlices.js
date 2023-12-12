@@ -178,7 +178,6 @@ export const updateVacancyStatus = createAsyncThunk(
         }
     }
 )
-
 //get vacancy component
 export const getVacancyCor = createAsyncThunk(
     'vacancies/getVacancyCor',
@@ -256,7 +255,7 @@ export const postFullVacancy = createAsyncThunk(
 )
 //Delete uncompletedVacancy
 export const deleteuncompletedVacancyAction = createAsyncThunk(
-    'projects/deleteUncompletedVacancy',
+    'vacancies/deleteUncompletedVacancy',
     async (payload, { rejectWithValue, getState, dispatch }) => {
         try {
             const user = getState()?.users;
@@ -278,6 +277,194 @@ export const deleteuncompletedVacancyAction = createAsyncThunk(
         }
     }
 )
+//get all applicants vacancy
+export const getAllApplicantVacancy = createAsyncThunk(
+    'vacancies/getAllApplicantVacancy',
+    async (payload, { rejectWithValue, getState, dispatch }) => {
+        try {
+            const user = getState()?.users;
+            const { userAuth } = user;
+            // http call 
+            const config = {
+                headers: {
+                    Authorization: `Bearer ${userAuth?.user?.token}`,
+                    'Content-Type': 'application/json',
+                },
+            };
+            const { data } = await axios.get(`${baseUrl}/${apiPrefix}/get-all-applicants-vacancy/${payload}`, config);
+            return data;
+        } catch (error) {
+            if (!error?.response) {
+                throw error;
+            }
+            return rejectWithValue(error?.response?.data);
+        }
+    }
+)
+//get all applicants vacancy
+export const applyVacancy = createAsyncThunk(
+    'vacancies/applyVacancy',
+    async (payload, { rejectWithValue, getState, dispatch }) => {
+        try {
+            const user = getState()?.users;
+            const { userAuth } = user;
+            // http call 
+            const config = {
+                headers: {
+                    Authorization: `Bearer ${userAuth?.user?.token}`,
+                    'Content-Type': 'application/json',
+                },
+            };
+            const { data } = await axios.post(`${baseUrl}/${apiPrefix}/apply-vacancies/${user.userId}/${payload.vacancyId}/${payload}`, user.userId,config);
+            return data;
+        } catch (error) {
+            if (!error?.response) {
+                throw error;
+            }
+            return rejectWithValue(error?.response?.data);
+        }
+    }
+)
+
+export const getAllParticipantsVacancy = createAsyncThunk(
+    'vacancies/getAllParticipantsVacancy',
+    async (payload, { rejectWithValue, getState, dispatch }) => {
+        try {
+            const user = getState()?.users;
+            const { userAuth } = user;
+            // http call 
+            const config = {
+                headers: {
+                    Authorization: `Bearer ${userAuth?.user?.token}`,
+                    'Content-Type': 'application/json',
+                },
+            };
+            const { data } = await axios.get(`${baseUrl}/${apiPrefix}/get-all-participant-vacancy/${payload}`,config);
+            return data;
+        } catch (error) {
+            if (!error?.response) {
+                throw error;
+            }
+            return rejectWithValue(error?.response?.data);
+        }
+    }
+)
+export const acceptApplicantVacancy = createAsyncThunk(
+    'vacancies/acceptApplicantVacancy',
+    async (payload, { rejectWithValue, getState, dispatch }) => {
+        try {
+            const user = getState()?.users;
+            const { userAuth } = user;
+            // http call 
+            const config = {
+                headers: {
+                    Authorization: `Bearer ${userAuth?.user?.token}`,
+                    'Content-Type': 'application/json',
+                },
+            };
+            const { data } = await axios.post(`${baseUrl}/${apiPrefix}/accept-applicant-vacancy/${payload.vacancyId}/${payload.id}`, user.userId,config);
+            return data;
+        } catch (error) {
+            if (!error?.response) {
+                throw error;
+            }
+            return rejectWithValue(error?.response?.data);
+        }
+    }
+)
+export const removeApplicantVacancy = createAsyncThunk(
+    'vacancies/removeApplicantVacancy',
+    async (payload, { rejectWithValue, getState, dispatch }) => {
+        try {
+            const user = getState()?.users;
+            const { userAuth } = user;
+            // http call 
+            const config = {
+                headers: {
+                    Authorization: `Bearer ${userAuth?.user?.token}`,
+                    'Content-Type': 'application/json',
+                },
+            };
+            const { data } = await axios.put(`${baseUrl}/${apiPrefix}/remove-applicant-vacancy/${payload.vacancyId}/${payload.id}`, user.userId,config);
+            return data;
+        } catch (error) {
+            if (!error?.response) {
+                throw error;
+            }
+            return rejectWithValue(error?.response?.data);
+        }
+    }
+)
+export const blockMemberVacancy = createAsyncThunk(
+    'vacancies/blockMemberVacancy',
+    async (payload, { rejectWithValue, getState, dispatch }) => {
+        try {
+            const user = getState()?.users;
+            const { userAuth } = user;
+            // http call 
+            const config = {
+                headers: {
+                    Authorization: `Bearer ${userAuth?.user?.token}`,
+                    'Content-Type': 'application/json',
+                },
+            };
+            const { data } = await axios.put(`${baseUrl}/${apiPrefix}/block-member-vacancy/${payload.vacancyId}/${payload.id}`, user.userId,config);
+            return data;
+        } catch (error) {
+            if (!error?.response) {
+                throw error;
+            }
+            return rejectWithValue(error?.response?.data);
+        }
+    }
+)
+export const recoverMemberVacancy = createAsyncThunk(
+    'vacancies/recoverMemberVacancy',
+    async (payload, { rejectWithValue, getState, dispatch }) => {
+        try {
+            const user = getState()?.users;
+            const { userAuth } = user;
+            // http call 
+            const config = {
+                headers: {
+                    Authorization: `Bearer ${userAuth?.user?.token}`,
+                    'Content-Type': 'application/json',
+                },
+            };
+            const { data } = await axios.put(`${baseUrl}/${apiPrefix}/recover-member-vacancy/${payload.vacancyId}/${payload.id}`, user.userId,config);
+            return data;
+        } catch (error) {
+            if (!error?.response) {
+                throw error;
+            }
+            return rejectWithValue(error?.response?.data);
+        }
+    }
+)
+export const deleteBlockMemberVacancy = createAsyncThunk(
+    'vacancies/deleteBlockMemberVacancy',
+    async (payload, { rejectWithValue, getState, dispatch }) => {
+        try {
+            const user = getState()?.users;
+            const { userAuth } = user;
+            // http call 
+            const config = {
+                headers: {
+                    Authorization: `Bearer ${userAuth?.user?.token}`,
+                    'Content-Type': 'application/json',
+                },
+            };
+            const { data } = await axios.put(`${baseUrl}/${apiPrefix}/delete-block-member-vacancy/${payload.vacancyId}/${payload.id}`, user.userId,config);
+            return data;
+        } catch (error) {
+            if (!error?.response) {
+                throw error;
+            }
+            return rejectWithValue(error?.response?.data);
+        }
+    }
+)
+
 //Set success
 export const resetSuccessAction = createAsyncThunk(
     "vacancies/resetSuccess",
@@ -333,11 +520,11 @@ const vacanciesSlices = createSlice({
         },
     },
     extraReducers: (builder) => {
-        //get all vacancies
-        builder.addCase(getAllVacancies.pending, (state, action) => {
-            state.loading = true;
-            state.isSuccess2 = false
-        }),
+            //get all vacancies
+            builder.addCase(getAllVacancies.pending, (state, action) => {
+                state.loading = true;
+                state.isSuccess2 = false
+            }),
             builder.addCase(getAllVacancies.fulfilled, (state, action) => {
                 state.loading = false;
                 state.vacancies = action?.payload?.vacancies;
@@ -452,11 +639,11 @@ const vacanciesSlices = createSlice({
 
             })
 
-        //get current vacancy component
-        builder.addCase(getCurrentVacanciesComponent.pending, (state, action) => {
-            state.loading = true;
-            state.isSuccess3 = false;
-        }),
+            //get current vacancy component
+            builder.addCase(getCurrentVacanciesComponent.pending, (state, action) => {
+                state.loading = true;
+                state.isSuccess3 = false;
+            }),
             builder.addCase(getCurrentVacanciesComponent.fulfilled, (state, action) => {
                 state.loading = false;
                 state.appErr = null;
@@ -525,11 +712,135 @@ const vacanciesSlices = createSlice({
                 state.appErr = action?.payload?.message;
                 state.isSuccessDL = false;
             }),
+            builder.addCase(getAllApplicantVacancy.pending, (state, action) => {
+                state.loadingGAA = true;
+            }),
+            builder.addCase(getAllApplicantVacancy.fulfilled, (state, action) => {
+                state.loadingGAA = false;
+                state.appErr = null;
+                state.applicants = action.payload.applicants
+            }),
+            builder.addCase(getAllApplicantVacancy.rejected, (state, action) => {
+                state.loadingGAA = false;
+                state.appErr = action?.payload?.message;
+            }),
+            builder.addCase(applyVacancy.pending, (state, action) => {
+                state.loadingAL = true;
+                state.isSuccessAL = false;
+            }),
+            builder.addCase(applyVacancy.fulfilled, (state, action) => {
+                state.loadingAL = false;
+                state.appErr = null;
+                state.isSuccessAL = true;
+            }),
+            builder.addCase(applyVacancy.rejected, (state, action) => {
+                state.loadingAL = false;
+                state.appErr = action?.payload?.message;
+                state.isSuccessAL = false;
+            }),
             builder.addCase(resetSuccessAction.fulfilled, (state, action) => {
                 state.isSuccess2 = false;
                 state.isSuccessUpd = false;
                 state.isSuccessDL = false;
+                state.isSuccessAL = false;
             })
+
+            //update status
+
+            builder.addCase(acceptApplicantVacancy.pending, (state, action) => {
+                state.loadingACAP = true;
+                state.isSuccessAL = false;
+            }),
+            builder.addCase(acceptApplicantVacancy.fulfilled, (state, action) => {
+                state.loadingACAP = false;
+                state.appErr = null;
+                const a = state?.applicants?.find(item => item.userId === action?.payload?.id)
+                if(a){
+                    state?.participants?.members.push(a)
+                    state.applicants = state?.applicants?.filter(item => item.userId !== action.payload.id)
+                }
+            }),
+            builder.addCase(acceptApplicantVacancy.rejected, (state, action) => {
+                state.loadingACAP = false;
+                state.appErr = action?.payload?.message;
+            }),
+
+            builder.addCase(removeApplicantVacancy.pending, (state, action) => {
+                state.loadingRMAP = true;
+                state.isSuccessAL = false;
+            }),
+            builder.addCase(removeApplicantVacancy.fulfilled, (state, action) => {
+                state.loadingRMAP = false;
+                state.appErr = null;
+                state.applicants = state.applicants.filter(item => item.userId !== action.payload.id)
+            }),
+            builder.addCase(removeApplicantVacancy.rejected, (state, action) => {
+                state.loadingRMAP = false;
+                state.appErr = action?.payload?.message;
+            }),
+
+            builder.addCase(blockMemberVacancy.pending, (state, action) => {
+                state.loadingBLMB = true;
+                state.isSuccessAL = false;
+                
+            }),
+            builder.addCase(blockMemberVacancy.fulfilled, (state, action) => {
+                state.loadingBLMB = false;
+                state.appErr = null;
+                const a = state?.participants?.members?.find(item => item.userId === action?.payload?.id)
+                if(a){
+                    state?.participants?.oldMembers.push(a)
+                    state.participants.members = state?.participants?.members?.filter(item => item.userId !== action.payload.id)
+                }
+            }),
+            builder.addCase(blockMemberVacancy.rejected, (state, action) => {
+                state.loadingBLMB = false;
+                state.appErr = action?.payload?.message;
+            }),
+
+            builder.addCase(recoverMemberVacancy.pending, (state, action) => {
+                state.loadingRCMB = true;
+                state.isSuccessAL = false;
+            }),
+            builder.addCase(recoverMemberVacancy.fulfilled, (state, action) => {
+                state.loadingRCMB = false;
+                state.appErr = null;
+                const a = state?.participants?.oldMembers?.find(item => item.userId === action?.payload?.id)
+                if(a){
+                    state?.participants?.members.push(a)
+                    state.participants.oldMembers = state?.participants?.oldMembers?.filter(item => item.userId !== action.payload.id)
+                }
+            }),
+            builder.addCase(recoverMemberVacancy.rejected, (state, action) => {
+                state.loadingRCMB = false;
+                state.appErr = action?.payload?.message;
+            }),
+
+            builder.addCase(deleteBlockMemberVacancy.pending, (state, action) => {
+                state.loadingDLBL = true;
+                state.isSuccessAL = false;
+            }),
+            builder.addCase(deleteBlockMemberVacancy.fulfilled, (state, action) => {
+                state.loadingDLBL = false;
+                state.appErr = null;
+                state.participants.oldMembers = state.participants.oldMembers.filter(item => item.userId !== action.payload.id)
+            }),
+            builder.addCase(deleteBlockMemberVacancy.rejected, (state, action) => {
+                state.loadingDLBL = false;
+                state.appErr = action?.payload?.message;
+            }),
+            builder.addCase(getAllParticipantsVacancy.pending, (state, action) => {
+                state.loadingGA = true;
+            }),
+            builder.addCase(getAllParticipantsVacancy.fulfilled, (state, action) => {
+                state.loadingGA = false;
+                state.appErr = null;
+                state.participants = action.payload.participants;
+            }),
+            builder.addCase(getAllParticipantsVacancy.rejected, (state, action) => {
+                state.loadingGA = false;
+                state.appErr = action?.payload?.message;
+            }) 
     }
 });
 
