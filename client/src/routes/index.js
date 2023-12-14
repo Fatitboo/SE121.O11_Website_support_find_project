@@ -51,6 +51,7 @@ import {
 } from '../pages/Auth'
 import CreateProject from "../pages/Company/ManageProject/CreateProject"
 import UpdateProject from "../pages/Company/ManageProject/UpdateProject"
+import Payment from "../pages/Company/Payment"
 
 
 const publicRoutes = [
@@ -89,6 +90,7 @@ const publicRoutes = [
     {path:'/Organizer/vacancy-info/:id', component: VacancyInfo, layout: LayoutHasSidebar},
     {path:'/Organizer/create-project', component: CreateProject, layout: LayoutHasSidebar},
     {path:'/Organizer/update-project/:id', component: UpdateProject, layout: LayoutHasSidebar},
+    {path:'/Organizer/payment', component: Payment, layout: LayoutNoSidebar},
 
 
     //Admin Layout
