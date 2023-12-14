@@ -30,5 +30,5 @@ jwt:
 paypal:
   mode: sandbox
   client:
-    id: AUeRPXZINhSkKhYA8mcQzzQNarYHNDINkZof23k29b4ACNu08HzMLBzrUcUdh5C2q2VGGiRWNkO7MxtO
-    secret: ENTlAXuBzzRlGkXBcGplYT8sMzK1Gzg8bgIFjOtSxgH3dt9YMUBxVc16eHeD9iyI9nruQihkTxZTDaMh
+    id: ${API_KEY_PAYPAL_ID}
+    secret: ${API_KEY_PAYPAL_SECRET}
