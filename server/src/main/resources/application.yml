@@ -26,3 +26,9 @@ logging:
 jwt:
   expiration: 2592000 #30 days = 30 * 24 * 60 * 60
   secretKey: TaqlmGv1iEDMRiFp/pHuID1+T84IABfuA0xXh4GhiUI=
+
+paypal:
+  mode: sandbox
+  client:
+    id: AUeRPXZINhSkKhYA8mcQzzQNarYHNDINkZof23k29b4ACNu08HzMLBzrUcUdh5C2q2VGGiRWNkO7MxtO
+    secret: ENTlAXuBzzRlGkXBcGplYT8sMzK1Gzg8bgIFjOtSxgH3dt9YMUBxVc16eHeD9iyI9nruQihkTxZTDaMh
