@@ -523,4 +523,67 @@ public class VacancyServices {
         vacancyRepository.save(vacancy);
         userRepository.save(user);
     }
+    public Boolean updateFavoriteVacancy(String id, String vacancyId){
+        Optional<User> foundUser = userRepository.findById(new ObjectId(id));
+        if(foundUser.isEmpty()){
+            throw new DataIntegrityViolationException(MessageKeys.USER_NOT_FOUND);
+        }
+        User user = foundUser.get();
+        Optional<Vacancy> vacancyOptional = vacancyRepository.findById(new ObjectId(vacancyId));
+        if(vacancyOptional.isEmpty()){
+            throw new DataIntegrityViolationException(MessageKeys.USER_NOT_FOUND);
+        }
+        Vacancy vacancy = vacancyOptional.get();
+        Boolean isPush = true;
+        // update favourite vacancy in user
+        List<String> fvrVacancis = user.getFavoriteVacancies();
+        if(fvrVacancis==null){
+            fvrVacancis = new ArrayList<>();
+        }
+        if(fvrVacancis.contains(vacancyId)){
+            fvrVacancis.remove(vacancyId);
+            isPush = false;
+        }
+        else {
+            fvrVacancis.add(vacancyId);
+        }
+
+        // update favourite users in vacancy
+        List<String> fvrUsers = vacancy.getFavouriteUsers();
+        if(fvrUsers==null){
+            fvrUsers = new ArrayList<>();
+        }
+        if(fvrUsers.contains(id)){
+            fvrUsers.remove(id);
+        }
+        else {
+            fvrUsers.add(id);
+        }
+
+        // set + save
+        user.setFavoriteVacancies(fvrVacancis);
+        vacancy.setFavouriteUsers(fvrUsers);
+
+        vacancyRepository.save(vacancy);
+        userRepository.save(user);
+        return  isPush;
+    }
+    public List<Vacancy> getAllFavouriteVacancies(String userId){
+        Optional<User> foundUser = userRepository.findById(new ObjectId(userId));
+        if(foundUser.isEmpty()){
+            throw new DataIntegrityViolationException(MessageKeys.USER_NOT_FOUND);
+        }
+        User user = foundUser.get();
+        List<String> fvrVacancies = user.getFavoriteVacancies();
+        if(fvrVacancies==null){
+            fvrVacancies = new ArrayList<>();
+        }
+        List<Vacancy> vacancies = new ArrayList<>();
+        for (String vacancyId: fvrVacancies) {
+            Optional<Vacancy> optionalVacancy = vacancyRepository.findById(new ObjectId(vacancyId));
+            if(optionalVacancy.isEmpty()) continue;
+            vacancies.add(optionalVacancy.get());
+        }
+        return vacancies;
+    }
 }

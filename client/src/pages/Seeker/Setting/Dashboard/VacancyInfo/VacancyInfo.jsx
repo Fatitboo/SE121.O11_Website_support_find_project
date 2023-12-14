@@ -8,9 +8,9 @@ import ParticipantItem from "./ParticipantItem";
 import { ArrowLeftIcon } from "@heroicons/react/20/solid";
 import { ToastContainer, toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate, useParams } from "react-router-dom";
-import { BsClock } from "react-icons/bs";
-import { getVacancyInfoDetail, resetSuccessAction } from "../../../../../redux/slices/vacancies/vacanciesSlices";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { BsBookmarkFill, BsClock } from "react-icons/bs";
+import { getVacancyInfoDetail, resetSuccessAction, updateFavouriteVacancyAction } from "../../../../../redux/slices/vacancies/vacanciesSlices";
 import { CalendarIcon, ExpiryIcon, SalaryIcon } from "../../../../../assets/icons";
 import { LoadingComponent } from "../../../../../components";
 import { Candidate } from "../../../../../assets/images";
@@ -88,19 +88,29 @@ function VacancyInfo() {
         }
         return str;
     }
+    const { userAuth } = useSelector(store => store.users);
+    const userId = userAuth?.user?.userId;
+    const checkFavourite = () => {
+        var isFvr = false;
+        if (!sltVacancy?.favouriteUsers) return isFvr;
+        if (sltVacancy?.favouriteUsers.filter(item => item === userId).length === 1) isFvr = true;
+        return isFvr;
+    }
+    const handleUpdateFavourite = () => {
+        dispatch(updateFavouriteVacancyAction(sltVacancy?.vacancyId))
+    }
     return (<>
         {loading && <LoadingComponent />}
         <ToastContainer />
         {/* Start title of page  */}
-        <div className="mb-8 px-10">
-            <div className="font-medium text-3xl text-gray-900 mb-2 leading-10 flex items-center">
+        {/* <div className="pt-10 px-[8%] mx-14 -mb-8">
+            <div className="font-medium text-3xl text-gray-900  flex items-center">
                 <ArrowLeftIcon className="h-8 cursor-pointer mr-2" onClick={() => navigate(-1)} />
-                Vacancy Info!
+
             </div>
-            <div className="text-sm leading-6 font-normal m-0 right-0 flex justify-between items-center ">Ready to jump back in?</div>
-        </div>
+        </div> */}
         <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/uicons-regular-rounded/css/uicons-regular-rounded.css'></link>
-        <div className="px-10 pt-[50px] mx-14  bg-white py-10 rounded-xl shadow">
+        <div className="px-[8%] mx-14   bg-white py-10 rounded-xl ">
             <div className="static grid grid-cols-12 gap-4 m-auto box-border">
                 {/* left infomation */}
                 <div className="col-span-8 pr-[30px]">
@@ -108,14 +118,14 @@ function VacancyInfo() {
                     <></>
                     <div className="flex text-[#696969] mb-12">
                         <div className="w-[100px] h-[100px] rounded-xl">
-                            <img src={sltVacancy?.userInfo?.avatar ?? Candidate} className="w-full h-full rounded-xl" alt="" />
+                            <img src={sltVacancy?.userInfo?.avatar ?? Candidate} className="w-full h-full rounded-xl border " alt="" />
                         </div>
                         <div className="ml-5">
-                            <div>
+                            <div cl>
                                 <div className="text-[24px] leading-[35px] text-[#202124] font-medium">{sltVacancy?.vacancyName}</div>
                             </div>
                             <div className="flex flex-row text-[14px] font-thin my-[8px]">
-                                <span className="mr-7 text-[#1967d2] font-light">{sltVacancy?.userInfo?.fullName}</span>
+                                <span className="mr-7 text-[#1967d2] font-light bg-blue-100 rounded-3xl px-2 py-1">{sltVacancy?.userInfo?.fullName}</span>
                                 <span className="flex flex-row items-center mr-7"><BiPackage className="w-[18px] h-[18px] mr-1" />{sltVacancy?.locationType}</span>
                                 <span className="flex flex-row items-center mr-7"><GoHourglass className="w-[18px] h-[18px] mr-1" />{sltVacancy?.hiringTimeline ?? 'Not infor'}</span>
                                 <span className="flex flex-row items-center mr-7"><PiTargetLight className="w-[22px] h-[22px] mr-1" />{sltVacancy?.maxRequired} required</span>
@@ -124,7 +134,7 @@ function VacancyInfo() {
                             <div className="flex flex-row flex-wrap">
                                 {
                                     (!sltVacancy.timeRequires ? ['Not information'] : [...sltVacancy.timeRequires]).map((item, index) => {
-                                        return <div key={index} className="py-[5px] px-5 rounded-[20px] bg-[#d3e1f5] text-sm text-[#1967d2] mr-[10px] my-1"><span>{item}</span></div>
+                                        return <div key={index} className={`py-[5px] px-5 rounded-[20px]  text-sm mr-[10px] my-1 ${index % 2 === 0 ? 'bg-green-100 text-green-700' : 'bg-orange-50 text-orange-700'}`}><span>{item}</span></div>
                                     })
                                 }
                             </div>
@@ -187,14 +197,19 @@ function VacancyInfo() {
 
                 {/* category */}
                 <div className="col-span-4">
-                    <div className="grid grid-cols-3 gap-6 mb-3">
-                       <div></div>
-                        <div className="flex items-center justify-center h-[53px] box-border bg-blue-700 px-[18px] py-[8px] w-full rounded-[8px] text-[#fff] hover:bg-blue-900 cursor-pointer">
-                            <span className="text-[15px] leading-none font-[400]">Applied</span>
+                    <div className="flex flex-row-reverse gap-6 mb-3">
+                       
+                        
+                        <div className="item flex self-end items-center justify-center w-[50px] h-[52px] rounded-[7px] bg-[rgba(25,103,210,.07)]  cursor-pointer opacity-80" color="#1967d3">
+                            <div onClick={()=>handleUpdateFavourite} className="item flex items-center justify-center w-full h-full">
+                                {
+                                    !checkFavourite() ? <BiBookmark className="w-full h-full  p-2.5 rounded-[7px]" color="#1967d3" />
+                                        : <BsBookmarkFill className="w-full h-full p-2.5 rounded-[7px]" color="#1967d3" />
+                                }
+                            </div>
                         </div>
-                      
-                        <div className="item flex items-end justify-end w-[60px] h-[52px] rounded-[7px] bg-[rgba(25,103,210,.07)] ml-5 cursor-pointer opacity-80" color="#1967d3">
-                            <BiBookmark className="w-full h-full p-[14px] rounded-[7px]" color="#1967d3" />
+                        <div className="flex items-center justify-center h-[53px] box-border bg-blue-700 px-[18px] py-[8px] w-[50%] rounded-[8px] text-[#fff] hover:bg-blue-900 cursor-pointer">
+                            <span className="text-[15px] leading-none font-[400]">Applied</span>
                         </div>
                     </div>
                     <div className="p-6 bg-[#F5F6FC] rounded-lg mb-[30px]">
@@ -253,7 +268,7 @@ function VacancyInfo() {
                                 <span className="text-[15px] text-[#363636]">{pickSalary()}</span>
                             </div>
                         </div>
-                        <div className="flex flex-row mb-[30px]">
+                        {/* <div className="flex flex-row mb-[30px]">
                             <div className="min-w-[50px]">
                                 <AiOutlineSetting color="#1967D2" className="w-6 h-6" strokeWidth={0} />
                             </div>
@@ -264,12 +279,12 @@ function VacancyInfo() {
 
                                 </div>
                             </div>
-                        </div>
+                        </div> */}
 
                     </div>
                     <div>
                         <div className="p-6 bg-[#F5F6FC] rounded-lg  justify-between items-center mb-[30px]">
-                            <div className="text-[#202124] text-[18px] font-semibold mb-3">Vacancy Skills</div>
+                            <div className="text-[#202124] text-[18px] font-semibold mb-3">Vacancy Required Skills</div>
                             <div className="flex flex-row flex-wrap">
                                 {
                                     (!sltVacancy.skillsRequired ? ['Not information'] : [...sltVacancy.skillsRequired]).map((item, index) => {
@@ -281,13 +296,15 @@ function VacancyInfo() {
                     </div>
                     <div>
                         <div className="p-6 bg-[#F5F6FC] rounded-lg mb-[30px]">
-                            <span className="text-[#202124] text-[18px] font-semibold">Participants ({participants.length})</span>
-                            <div className="mt-3">
-                                {
-                                    // participants.map((item, index) => {
-                                    //     return <ParticipantItem key={index} firstName={item.firstName} surName={item.surName} position={item.position} userAvatar={item.userAvatar} />
-                                    // })
-                                }
+                            <span className="text-[#202124] text-[18px] font-semibold">Organizer</span>
+                            <div className="mt-4 flex">
+                                <div className="w-[50px] h-[50px] rounded-xl mr-4">
+                                    <img src={sltVacancy?.userInfo?.avatar ?? Candidate} className="w-full h-full rounded-xl border " alt="" />
+                                </div>
+                                <div>
+                                    <div className="font-medium mb-2">{sltVacancy?.userInfo?.fullName}</div>
+                                    <Link to={'/Seeker/company-profile/' + sltVacancy?.userInfo?.userId} className="font-light text-sm text-blue-700 hover:underline cursor-pointer">View organizer profile</Link>
+                                </div>
                             </div>
                         </div>
                     </div>

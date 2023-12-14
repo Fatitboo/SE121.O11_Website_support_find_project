@@ -63,11 +63,11 @@ export const VacProj = ({ item }) => {
                             <img src={item?.avt} className="w-full h-full" alt="Logo" />
                         </div>
                     </div>
-                    <div className="ml-6">
+                    <div className="ml-6 w-full">
                         <h4 className="text-[18px] text-[#202124] hover:text-[#1967d2] leading-6 font-medium">
                             <a href="#">{item?.vacProName}</a>
                         </h4>
-                        <div className='flex justify-between'>
+                        <div className='flex justify-between w-full'>
                             <div className="flex flex-row items-center mt-2">
                                 <div className="mr-3 bg-[rgba(25,103,210,.15)] text-[#1967d2] rounded-3xl flex">
                                     <span className="text-[13px] px-[20px] py-[5px] leading-none">{item?.orgName}</span>
@@ -77,7 +77,7 @@ export const VacProj = ({ item }) => {
                                     {`${item?.createdAt[2]}/${item?.createdAt[1]}/${item?.createdAt[0]}`}
                                 </div>
                                 <div className="flex flex-row items-center text-[14px] text-[dimgray] leading-[22px] font-normal mr-3">
-                                    <GoHourglass className="w-[18px] h-[18px] mr-[5px]" />
+                                    <GoHourglass className=" h-[18px] mr-[5px]" />
                                     {item?.duration} {item?.isVacancy ? '' : 'weeks'}
                                 </div>
                                 <div className="flex flex-row items-center text-[14px] text-[dimgray] leading-[22px] font-normal mr-3">
@@ -103,8 +103,8 @@ export const VacProj = ({ item }) => {
                                 )
                             })}
                         </div>
-                        <div className="mt-3 overflow-hidden">
-                            <p className={`bg-transparent ${moreDetail ? '' : 'limitline5'}`} dangerouslySetInnerHTML={{ __html: item?.des }}>
+                        <div className="mt-3 overflow-hidden w-full min-h-[60px]">
+                            <p className={`bg-transparent w-[96%] ${moreDetail ? '' : 'limitline5'}`} dangerouslySetInnerHTML={{ __html: item?.des }}>
                             </p>
                         </div>
                     </div>

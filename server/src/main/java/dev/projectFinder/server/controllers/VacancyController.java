@@ -253,4 +253,32 @@ public class VacancyController
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
     }
+    @PutMapping("/update-favourite-vacancy/{id}")
+    public ResponseEntity<?> updateFavoriteVacancy(@RequestParam("vacancyId") String vacancyId, @PathVariable String id){
+        HashMap<String, Object> response = new HashMap<>();
+        try{
+            Boolean isPush =  vacancyServices.updateFavoriteVacancy(id ,vacancyId);
+            response.put("message","Update favourite vacancy successfully" );
+            response.put("userId",id );
+            response.put("vacancyId",vacancyId );
+            response.put("isPush",isPush );
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        }catch (Exception e) {
+            response.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+    }
+    @GetMapping("/get-favourite-vacancies/{id}")
+    public ResponseEntity<?> getFavouriteVacancies(@PathVariable String id){
+        HashMap<String, Object> response = new HashMap<>();
+        try{
+            List<Vacancy> vacancies = vacancyServices.getAllFavouriteVacancies(id);
+            response.put("message","Get favourite vacancies successfully" );
+            response.put("favouriteVacancies",vacancies );
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        }catch (Exception e) {
+            response.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+    }
 }

@@ -6,6 +6,7 @@ import dev.projectFinder.server.dtos.ProjectDTO;
 import dev.projectFinder.server.dtos.VacancyDTO;
 import dev.projectFinder.server.models.UnCompletedVacancy;
 import dev.projectFinder.server.models.Project;
+import dev.projectFinder.server.models.User;
 import dev.projectFinder.server.models.Vacancy;
 import dev.projectFinder.server.services.ProjectService;
 import dev.projectFinder.server.services.VacancyServices;
@@ -138,6 +139,35 @@ public class ProjectController {
             projectService.deleteProject(id);
             response.put("message", "Delete project successfully!");
             response.put("projectId", id);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        }catch (Exception e) {
+            response.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+    }
+    @PutMapping("/update-favourite-project/{id}")
+    public ResponseEntity<?> updateFavoriteProject(@RequestParam("projectId") String projectId, @PathVariable String id){
+        HashMap<String, Object> response = new HashMap<>();
+        try{
+            Boolean isPush =  projectService.updateFavoriteProject(id ,projectId);
+            response.put("message","Update favourite project successfully" );
+            response.put("projectId",projectId );
+            response.put("userId",id );
+            response.put("isPush",isPush );
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        }catch (Exception e) {
+            response.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+    }
+    @GetMapping("/get-favourite-projects/{id}")
+    public ResponseEntity<?> getFavouriteProjects(@PathVariable String id){
+        HashMap<String, Object> response = new HashMap<>();
+        try{
+            List<HashMap<String, Object>> projects = projectService.getAllFavouriteProjects(id);
+            response.put("message","Get favourite projects successfully" );
+            response.put("favouriteProjects",projects );
+
             return ResponseEntity.status(HttpStatus.OK).body(response);
         }catch (Exception e) {
             response.put("message", e.getMessage());

@@ -2,14 +2,15 @@ import React, { useEffect, useState } from "react";
 import {CiSearch, CiLocationOn} from "react-icons/ci"
 import { RadioGroup } from "@headlessui/react";
 import {BsCheck} from "react-icons/bs";
-import {ComboBox, CustomRadioButton} from "../../../components/index"
+import {ComboBox, CustomRadioButton, LoadingComponent} from "../../../components/index"
 import ProjectItem from "./ProjectItem";
 import { useDispatch, useSelector } from "react-redux";
-import { getAllProjects } from "../../../redux/slices/projects/projectsSlices";
+import { getAllProjects, resetSuccessAction } from "../../../redux/slices/projects/projectsSlices";
 import axios from "axios";
 import baseUrl from "../../../utils/baseUrl";
 import { getAllOccupationsAction } from "../../../redux/slices/occupations/occupationsSlices";
 import { current } from "@reduxjs/toolkit";
+import { ToastContainer, toast } from "react-toastify";
 
 function changeCheckBox(nextChild, isChecked){
     if(isChecked){
@@ -65,18 +66,20 @@ function FindProjects() {
     ]
     let [plan, setPlan] = useState('startup')
     let [currentPrs, setCurrentPrs] = useState(null)
+    const notify = (type, message) => toast(message, { type: type });
+
     const [searchObject, setSearchObject] = useState({
         keyWord: '',
         datePost: {id: 0, name: 'All', value: 0},
         occupations: []
     })
-    const projects = useSelector((state) => state.projects.projects)
+    const {projects, loading, isSuccessFvr} = useSelector((state) => state.projects)
     const occupationsList = useSelector((state) => state.occupations.occupationsList)
     const dispatch = useDispatch()
     useEffect(() => {
         dispatch(getAllProjects())
         dispatch(getAllOccupationsAction())
-    }, [])
+    }, [dispatch])
 
     useEffect(() => {
         if(projects) setCurrentPrs(projects)
@@ -169,10 +172,17 @@ function FindProjects() {
 
         setCurrentPrs(list)
     }
-
+    useEffect(()=>{
+        if(isSuccessFvr) {
+            dispatch(resetSuccessAction())
+            notify('success', 'Update favourite project successfully!')
+        }
+    },[isSuccessFvr])
 
     return (<>
       <div>
+      <ToastContainer />
+      {loading && <LoadingComponent/>}
         <div className="flex flex-row gap-4 mx-[8%] pt-12">
             {/* Login search */}
             <div className="w-1/3 flex flex-col">

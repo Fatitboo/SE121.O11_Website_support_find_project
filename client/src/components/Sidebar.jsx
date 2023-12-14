@@ -1,4 +1,4 @@
-import { LiaHomeSolid } from 'react-icons/lia';
+import { LiaDocker, LiaHomeSolid } from 'react-icons/lia';
 import { MdAccessibility, MdOutlineFactCheck, MdOutlinePassword } from 'react-icons/md';
 import { FiUsers } from 'react-icons/fi';
 import { GrWorkshop } from 'react-icons/gr';
@@ -15,6 +15,7 @@ import {createVacancyId, setValueSuccess} from '../redux/slices/vacancies/vacanc
 import { BiBookmark } from 'react-icons/bi';
 import { PiSuitcaseSimpleDuotone } from 'react-icons/pi';
 import { isActiveSidebarAction } from '../redux/slices/skills/skillsSlices';
+import { BsStar } from 'react-icons/bs';
 
 
 function Sidebar({user}) {
@@ -134,6 +135,18 @@ function Sidebar({user}) {
                                 <Link onClick={()=>dispatch(isActiveSidebarAction('ShortListed Organizer'))} to="/Seeker/short-listed-users" className="relative text-sm text-center p-3 flex items-center leading-7 font-normal  capitalize rounded-lg ">
                                     <BiBookmark className='relative mr-4 ml-4 text-2xl text-center ' />
                                     ShortListed Organizer
+                                </Link>
+                            </div>
+                            <div className={classNames(isActive === 'Favourite Projects' ? 'bg-[#E9EFFB] text-blue-600' : '', itemStyle)}>
+                                <Link onClick={()=>dispatch(isActiveSidebarAction('Favourite Projects'))} to="/Seeker/favourite-projects" className="relative text-sm text-center p-3 flex items-center leading-7 font-normal  capitalize rounded-lg ">
+                                    <LiaDocker className='relative mr-4 ml-4 text-2xl text-center ' />
+                                    Favourite Projects
+                                </Link>
+                            </div>
+                            <div className={classNames(isActive === 'Favourite Vacancies' ? 'bg-[#E9EFFB] text-blue-600' : '', itemStyle)}>
+                                <Link onClick={()=>dispatch(isActiveSidebarAction('Favourite Vacancies'))} to="/Seeker/favourite-vacancies" className="relative text-sm text-center p-3 flex items-center leading-7 font-normal  capitalize rounded-lg ">
+                                    <BsStar className='relative mr-4 ml-4 text-2xl text-center ' />
+                                    Favourite Vacancies
                                 </Link>
                             </div>
                             <div className={classNames(isActive === 'Applied Jobs' ? 'bg-[#E9EFFB] text-blue-600' : '', itemStyle)}>

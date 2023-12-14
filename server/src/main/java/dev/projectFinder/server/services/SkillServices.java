@@ -68,6 +68,7 @@ public class SkillServices {
                 .additionalInformation(reportDTO.getAdditionalInformation())
                 .isVacancy(reportDTO.getIsVacancy())
                 .avatar(reportDTO.getAvatar())
+                .orgName(reportDTO.getOrgName())
                 .build();
         Report newReport =  reportRepository.save(report);
         if(reportDTO.getIsVacancy()){

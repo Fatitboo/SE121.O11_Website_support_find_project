@@ -34,7 +34,7 @@ public class ProjectDTO {
     private String status;
     private String budget;
     private String[] participants;
-    private String[] favouriteUsers;
+    private List<String> favouriteUsers;
     private String[] vacancies;
     private String[] occupations;
     public ProjectDTO(Project project){
@@ -51,7 +51,8 @@ public class ProjectDTO {
         status = project.getStatus();
         budget = project.getBudget();
         occupations = project.getOccupations();
-
+        userId = project.getUserId();
+        favouriteUsers = project.getFavouriteUsers();
 
         List<String> a = new ArrayList<>();
         for(int i = 0; i < project.getVacancies().length; i++) {

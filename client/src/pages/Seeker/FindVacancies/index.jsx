@@ -11,13 +11,15 @@ import { PiBriefcaseLight } from "react-icons/pi";
 import VacancyDetail from "./VacancyDetail";
 import "./style.css"
 import { useDispatch, useSelector } from "react-redux";
-import { getAllVacancies } from "../../../redux/slices/vacancies/vacanciesSlices";
+import { getAllVacancies, resetSuccessAction } from "../../../redux/slices/vacancies/vacanciesSlices";
 import VacancyItemLoader from "../../../components/Loader/VacancyLoader";
+import { ToastContainer, toast } from "react-toastify";
 
 
 function FindVacancies() {
     const [selected, setSelected] = useState({})
     const dispatch = useDispatch()
+    const notify = (type, message) => toast(message, { type: type });
 
     function onfilterValueSelected(){}
 
@@ -31,11 +33,18 @@ function FindVacancies() {
         if(vacancies) setSelected(vacancies[0])
     }, [vacancies])
 
-    
+    const isSuccessFvr = useSelector(store=>store.vacancies.isSuccessFvr)
+    useEffect(()=>{
+        if(isSuccessFvr) {
+            dispatch(resetSuccessAction())
+            notify('success', 'Update favourite vacancy successfully!')
+        }
+    },[isSuccessFvr])
 
     return (<>
       <div className="flex flex-col">
         {/* Search Box */}
+        <ToastContainer />
         <div className='flex flex-col items-center justify-center mt-10'>
             <form className='flex bg-[#fff] shadow-[0_18px_40px_rgba(25,15,9,0.1)] rounded-lg p-[15px] items-center'>
                 {/* search by keywords */}
@@ -75,7 +84,7 @@ function FindVacancies() {
                 <div className="w-1/2">
                     <div className="flex flex-row items-center justify-between py-2">
                         <div className="text-[15px] text-[dimgray] leading-6 font-[400]">
-                            Show <strong>10</strong> projects
+                            Show <strong>10</strong> vacancies
                         </div>
                         <div className="flex flex-row items-center">
                             <div className="w-44">
@@ -99,7 +108,7 @@ function FindVacancies() {
                             :
                             vacancies?.map((item, index) => {
                                 return <div key={index} onClick={() => setSelected(item)}>
-                                    <VacancyItem props={item} active={selected ? selected == item ? true : false: false} isAvatar={true}/>
+                                    <VacancyItem props={item} active={selected ? selected == item ? true : false: false} isAvatar={true} notify={notify}/>
                                 </div>                  
                             })
                         }

@@ -315,7 +315,7 @@ export const applyVacancy = createAsyncThunk(
                     'Content-Type': 'application/json',
                 },
             };
-            const { data } = await axios.post(`${baseUrl}/${apiPrefix}/apply-vacancies/${user.userId}/${payload.vacancyId}/${payload}`, user.userId,config);
+            const { data } = await axios.post(`${baseUrl}/${apiPrefix}/apply-vacancies/${user.userId}/${payload.vacancyId}/${payload}`, user.userId, config);
             return data;
         } catch (error) {
             if (!error?.response) {
@@ -339,7 +339,7 @@ export const getAllParticipantsVacancy = createAsyncThunk(
                     'Content-Type': 'application/json',
                 },
             };
-            const { data } = await axios.get(`${baseUrl}/${apiPrefix}/get-all-participant-vacancy/${payload}`,config);
+            const { data } = await axios.get(`${baseUrl}/${apiPrefix}/get-all-participant-vacancy/${payload}`, config);
             return data;
         } catch (error) {
             if (!error?.response) {
@@ -362,7 +362,7 @@ export const acceptApplicantVacancy = createAsyncThunk(
                     'Content-Type': 'application/json',
                 },
             };
-            const { data } = await axios.post(`${baseUrl}/${apiPrefix}/accept-applicant-vacancy/${payload.vacancyId}/${payload.id}`, user.userId,config);
+            const { data } = await axios.post(`${baseUrl}/${apiPrefix}/accept-applicant-vacancy/${payload.vacancyId}/${payload.id}`, user.userId, config);
             return data;
         } catch (error) {
             if (!error?.response) {
@@ -385,7 +385,7 @@ export const removeApplicantVacancy = createAsyncThunk(
                     'Content-Type': 'application/json',
                 },
             };
-            const { data } = await axios.put(`${baseUrl}/${apiPrefix}/remove-applicant-vacancy/${payload.vacancyId}/${payload.id}`, user.userId,config);
+            const { data } = await axios.put(`${baseUrl}/${apiPrefix}/remove-applicant-vacancy/${payload.vacancyId}/${payload.id}`, user.userId, config);
             return data;
         } catch (error) {
             if (!error?.response) {
@@ -408,7 +408,7 @@ export const blockMemberVacancy = createAsyncThunk(
                     'Content-Type': 'application/json',
                 },
             };
-            const { data } = await axios.put(`${baseUrl}/${apiPrefix}/block-member-vacancy/${payload.vacancyId}/${payload.id}`, user.userId,config);
+            const { data } = await axios.put(`${baseUrl}/${apiPrefix}/block-member-vacancy/${payload.vacancyId}/${payload.id}`, user.userId, config);
             return data;
         } catch (error) {
             if (!error?.response) {
@@ -431,7 +431,7 @@ export const recoverMemberVacancy = createAsyncThunk(
                     'Content-Type': 'application/json',
                 },
             };
-            const { data } = await axios.put(`${baseUrl}/${apiPrefix}/recover-member-vacancy/${payload.vacancyId}/${payload.id}`, user.userId,config);
+            const { data } = await axios.put(`${baseUrl}/${apiPrefix}/recover-member-vacancy/${payload.vacancyId}/${payload.id}`, user.userId, config);
             return data;
         } catch (error) {
             if (!error?.response) {
@@ -454,7 +454,7 @@ export const deleteBlockMemberVacancy = createAsyncThunk(
                     'Content-Type': 'application/json',
                 },
             };
-            const { data } = await axios.put(`${baseUrl}/${apiPrefix}/delete-block-member-vacancy/${payload.vacancyId}/${payload.id}`, user.userId,config);
+            const { data } = await axios.put(`${baseUrl}/${apiPrefix}/delete-block-member-vacancy/${payload.vacancyId}/${payload.id}`, user.userId, config);
             return data;
         } catch (error) {
             if (!error?.response) {
@@ -470,6 +470,63 @@ export const resetSuccessAction = createAsyncThunk(
     "vacancies/resetSuccess",
     async (data, { rejectWithValue, getState, dispatch }) => {
         try {
+            return data;
+        } catch (error) {
+            if (!error?.response) {
+                throw error;
+            }
+            return rejectWithValue(error?.response?.data);
+        }
+    }
+);
+//update Favourite vacancy
+export const updateFavouriteVacancyAction = createAsyncThunk(
+    "vacancies/updateFavouriteVacancy",
+    async (vacancyId, { rejectWithValue, getState, dispatch }) => {
+        const user = getState()?.users;
+        const { userAuth } = user;
+        // http call 
+        const config = {
+            headers: {
+                Authorization: `Bearer ${userAuth?.user?.token}`,
+                'Content-Type': 'multipart/form-data',
+            },
+        };
+        const formData = new FormData();
+        formData.append('vacancyId', vacancyId);
+        try {
+            const { data } = await axios.put(
+                `${baseUrl}/${apiPrefix}/update-favourite-vacancy/${userAuth?.user?.userId}`,
+                formData,
+                config
+            );
+            return data;
+        } catch (error) {
+            if (!error?.response) {
+                throw error;
+            }
+            return rejectWithValue(error?.response?.data);
+        }
+    }
+);
+
+//get all Favourite vacancy
+export const getAllFavouriteVacanciesAction = createAsyncThunk(
+    "vacancies/getAllFavouriteVacancies",
+    async (vacancyId, { rejectWithValue, getState, dispatch }) => {
+        const user = getState()?.users;
+        const { userAuth } = user;
+        // http call 
+        const config = {
+            headers: {
+                Authorization: `Bearer ${userAuth?.user?.token}`,
+                'Content-Type': 'application/json',
+            },
+        };
+       
+        try {
+            const { data } = await axios.get(
+                `${baseUrl}/${apiPrefix}/get-favourite-vacancies/${userAuth?.user?.userId}`,config);
             return data;
         } catch (error) {
             if (!error?.response) {
@@ -520,11 +577,11 @@ const vacanciesSlices = createSlice({
         },
     },
     extraReducers: (builder) => {
-            //get all vacancies
-            builder.addCase(getAllVacancies.pending, (state, action) => {
-                state.loading = true;
-                state.isSuccess2 = false
-            }),
+        //get all vacancies
+        builder.addCase(getAllVacancies.pending, (state, action) => {
+            state.loading = true;
+            state.isSuccess2 = false
+        }),
             builder.addCase(getAllVacancies.fulfilled, (state, action) => {
                 state.loading = false;
                 state.vacancies = action?.payload?.vacancies;
@@ -587,7 +644,7 @@ const vacanciesSlices = createSlice({
                 state.appErr = action?.payload?.message;
                 state.isSuccessUpd = false;
             }),
-            
+
             //get vacancy component
             builder.addCase(getVacancyComponent.pending, (state, action) => {
                 state.loading = true;
@@ -637,7 +694,7 @@ const vacanciesSlices = createSlice({
                 state.appErr = action?.payload?.message;
                 state.isSuccess2 = false;
 
-            })
+            }),
 
             //get current vacancy component
             builder.addCase(getCurrentVacanciesComponent.pending, (state, action) => {
@@ -743,7 +800,9 @@ const vacanciesSlices = createSlice({
                 state.isSuccessUpd = false;
                 state.isSuccessDL = false;
                 state.isSuccessAL = false;
-            })
+                state.isSuccessFvr = false;
+
+            }),
 
             //update status
 
@@ -755,7 +814,7 @@ const vacanciesSlices = createSlice({
                 state.loadingACAP = false;
                 state.appErr = null;
                 const a = state?.applicants?.find(item => item.userId === action?.payload?.id)
-                if(a){
+                if (a) {
                     state?.participants?.members.push(a)
                     state.applicants = state?.applicants?.filter(item => item.userId !== action.payload.id)
                 }
@@ -782,13 +841,13 @@ const vacanciesSlices = createSlice({
             builder.addCase(blockMemberVacancy.pending, (state, action) => {
                 state.loadingBLMB = true;
                 state.isSuccessAL = false;
-                
+
             }),
             builder.addCase(blockMemberVacancy.fulfilled, (state, action) => {
                 state.loadingBLMB = false;
                 state.appErr = null;
                 const a = state?.participants?.members?.find(item => item.userId === action?.payload?.id)
-                if(a){
+                if (a) {
                     state?.participants?.oldMembers.push(a)
                     state.participants.members = state?.participants?.members?.filter(item => item.userId !== action.payload.id)
                 }
@@ -806,7 +865,7 @@ const vacanciesSlices = createSlice({
                 state.loadingRCMB = false;
                 state.appErr = null;
                 const a = state?.participants?.oldMembers?.find(item => item.userId === action?.payload?.id)
-                if(a){
+                if (a) {
                     state?.participants?.members.push(a)
                     state.participants.oldMembers = state?.participants?.oldMembers?.filter(item => item.userId !== action.payload.id)
                 }
@@ -840,7 +899,57 @@ const vacanciesSlices = createSlice({
             builder.addCase(getAllParticipantsVacancy.rejected, (state, action) => {
                 state.loadingGA = false;
                 state.appErr = action?.payload?.message;
-            }) 
+            }),
+
+            //update Favourite Vacancy Action
+            builder.addCase(updateFavouriteVacancyAction.pending, (state, action) => {
+                state.loadingFvr = true;
+                state.appErr = undefined;
+                state.isSuccessFvr = false;
+            }),
+
+            builder.addCase(updateFavouriteVacancyAction.fulfilled, (state, action) => {
+                state.loadingFvr = false;
+                state.appErr = undefined;
+                state.isSuccessFvr = true;
+
+                var currentVacancy = state.vacancies.findIndex(vacancy => vacancy.vacancyId === action?.payload?.vacancyId)
+                if (currentVacancy !== -1) {
+                    if (action?.payload?.isPush) {
+                        state.vacancies[currentVacancy].favouriteUsers.push(action?.payload?.userId);
+                    }
+                    else {
+                        state.vacancies[currentVacancy].favouriteUsers.pop(action?.payload?.userId);
+                    }
+                }
+                else{
+                    state.favouriteVacancies.pop(item => item.vacancyId === action?.payload?.vacancyId)
+                }
+            }),
+            builder.addCase(updateFavouriteVacancyAction.rejected, (state, action) => {
+                state.loadingFvr = false;
+                state.appErr = action?.payload?.message;
+                state.isSuccessFvr = false;
+            })
+
+            //update Favourite Vacancy Action
+            builder.addCase(getAllFavouriteVacanciesAction.pending, (state, action) => {
+                state.loading = true;
+                state.appErr = undefined;
+                state.isSuccess2 = false;
+            }),
+
+            builder.addCase(getAllFavouriteVacanciesAction.fulfilled, (state, action) => {
+                state.loading = false;
+                state.appErr = undefined;
+                state.isSuccess2= true;
+                state.favouriteVacancies = action?.payload?.favouriteVacancies;
+            }),
+            builder.addCase(getAllFavouriteVacanciesAction.rejected, (state, action) => {
+                state.loading = false;
+                state.appErr = action?.payload?.message;
+                state.isSuccess2 = false;
+            })
     }
 });
 

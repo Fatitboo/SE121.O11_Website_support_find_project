@@ -44,10 +44,10 @@ public class Project {
     private String status;
     private String budget;
     private ObjectId[] participants;
-    private ObjectId[] favouriteUsers;
     private ObjectId[] vacancies;
     private String[] occupations;
     private List<String> reports;
+    private List<String> favouriteUsers;
     // date create and update
     @CreatedDate
     private LocalDateTime createdAt;

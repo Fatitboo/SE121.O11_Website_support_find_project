@@ -71,7 +71,8 @@ public class User implements UserDetails {
     private List<String> appliedVacancies;
     private List<String> receivedVacancies;
     private List<Notification> notifications;
-
+    private List<String> favoriteProjects;
+    private List<String> favoriteVacancies;
     // Organizer
     private String teamSize;
     private String[] fields;

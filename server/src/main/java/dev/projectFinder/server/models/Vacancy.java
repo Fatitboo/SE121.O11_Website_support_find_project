@@ -84,6 +84,8 @@ public class Vacancy {
 
     private List<String> reports;
 
+    private List<String> favouriteUsers;
+
     // admin approval
     // 1. pending
     // 2. fulfil

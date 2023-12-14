@@ -469,6 +469,8 @@ public class UserController {
                     cv.ifPresent(complete::add);
                 }
             }
+            response.put("fvrVacancies",  user.getFavoriteVacancies()!= null ? user.getFavoriteVacancies().size() : 0);
+            response.put("fvrProjects",  user.getFavoriteProjects()!= null ? user.getFavoriteProjects().size() : 0);
             response.put("notification",user.getNotifications());
             response.put("shortListed",  user.getShortListedUser()!= null ? user.getShortListedUser().size() : 0);
             response.put("postedVacancies",  user.getVacancies()!= null ? user.getVacancies().size() : 0);

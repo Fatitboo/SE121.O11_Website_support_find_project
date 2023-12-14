@@ -37,7 +37,7 @@ function DashboardSeeker() {
         dispatch(getDataStatisticalAction());
     }, [dispatch])
     const storeData = useSelector(store => store?.users);
-    const { viewsProfile, isSuccess, appErr, loading , userAuth, appliedVacancies,shortListed, notification} = storeData;
+    const { viewsProfile, isSuccess, appErr, loading , userAuth, appliedVacancies,shortListed, notification,fvrVacancies, fvrProjects} = storeData;
     useEffect(() => {
         if (isSuccess) {
             dispatch(resetSuccessAction());
@@ -189,25 +189,25 @@ function DashboardSeeker() {
                         <span className='text-sm text-[#202124]'>Favourite organizers</span>
                     </div>
                 </Link>
-                <Link to={'/Seeker/applied-jobs'} className="bg-white h-[120px] rounded-lg shadow flex p-6 cursor-pointer">
+                <Link to={'/Seeker/favourite-vacancies'} className="bg-white h-[120px] rounded-lg shadow flex p-6 cursor-pointer">
                     <div className='basis-1/3 place-content-center place-items-cent  items-center flex'>
                         <div className='rounded-lg bg-[rgba(249,171,0,.1)] h-[80px] w-[80px] text-[#f9ab00] flex items-center place-content-center'>
                             <IoCodeWorkingOutline fontSize={40} />
                         </div>
                     </div>
                     <div className='basis-2/3 flex flex-col justify-center items-end'>
-                        <span className='font-medium text-4xl  text-[#f9ab00] '>40</span>
+                        <span className='font-medium text-4xl  text-[#f9ab00] '>{fvrVacancies}</span>
                         <span className='text-sm text-[#202124]'>Favorite Vacancies</span>
                     </div>
                 </Link>
-                <Link to={'/Seeker/applied-jobs'} className="bg-white h-[120px] rounded-lg shadow flex p-6 cursor-pointer">
+                <Link to={'/Seeker/favourite-projects'} className="bg-white h-[120px] rounded-lg shadow flex p-6 cursor-pointer">
                     <div className='basis-1/3 place-content-center place-items-cent  items-center flex'>
                         <div className='rounded-lg bg-[rgba(52,168,83,.1)] h-[80px] w-[80px] text-[#34a853] flex items-center place-content-center'>
                             <LiaStar fontSize={40} />
                         </div>
                     </div>
                     <div className='basis-2/3 flex flex-col justify-center items-end'>
-                        <span className='font-medium text-4xl text-[#34a853]  '>40</span>
+                        <span className='font-medium text-4xl text-[#34a853]  '>{fvrProjects}</span>
                         <span className='text-sm text-[#202124]'>Favourite Projects</span>
                     </div>
                 </Link>

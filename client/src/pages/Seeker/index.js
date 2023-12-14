@@ -11,6 +11,9 @@ import CVManager from "./Setting/CvManager";
 import CompanyProfile from "./FindOrganizer/Profile";
 import ShortListedCors from "./ShortListedCors/ShortListedCors";
 import VacancyInfoSeeker from "./Setting/Dashboard/VacancyInfo/VacancyInfo";
+import FavouriteProjects from "./FavouriteProjects/FavouriteProjects";
+import FavouriteVacancies from "./FavouriteVacancies/FavouriteVacancies";
+import ProjectDetailSeeker from "./FindProjects/ProjectDetail/ProjectDetail";
 export {
     FindProjects, 
     Home, 
@@ -24,5 +27,8 @@ export {
     CVManager,
     CompanyProfile,
     ShortListedCors,
-    VacancyInfoSeeker
+    VacancyInfoSeeker,
+    FavouriteProjects,
+    FavouriteVacancies,
+    ProjectDetailSeeker
 }

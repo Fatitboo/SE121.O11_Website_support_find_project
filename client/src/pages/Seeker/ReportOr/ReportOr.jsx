@@ -44,7 +44,6 @@ export const ReportOr = ({ setopenReport, item, isVacancy }) => {
     const [reDes, setRpDes] = useState('')
     function handleCheckReports(e) {
         setRpType(e.name)
-
     }
     const handleCreateReport = () => {
         console.log(rpType === '', reDes === '')
@@ -55,16 +54,17 @@ export const ReportOr = ({ setopenReport, item, isVacancy }) => {
             dt.toId = item?.project?.userId;
             dt.vacOrProjId = item?.project?.projectId;
             vacProId = item?.project?.projectId;
-            dt.avt = item?.avatar;
-            
+            dt.avatar = item?.avatar;
             dt.reportType = rpType;
-            dt.additionalInformation = reDes;
+            dt.additionalInformation = reDes??'';
         }else{
             dt.isVacancy = true;
-            dt.toId = item?.userId;
-            dt.vacOrProjId = item?.project?.projectId;
+            dt.toId = item?.userInfo?.userId;
+            dt.vacOrProjId = item?.vacancyId;
+            vacProId =  item?.vacancyId;
             dt.reportType = rpType;
-            dt.additionalInformation = reDes;
+            dt.avatar = item?.userInfo?.avatar;
+            dt.additionalInformation = reDes??'';
         }
         const d = {
             id:vacProId,
@@ -95,7 +95,7 @@ export const ReportOr = ({ setopenReport, item, isVacancy }) => {
                 <div className='cursor-pointer' onClick={() => setopenReport(false)}><CgClose size={24} /></div>
             </div>
             <div >
-                <div className='whitespace-nowrap mt-6 font-medium'>{isVacancy ? "" : item?.project?.projectName}</div>
+                <div className='whitespace-nowrap mt-6 font-medium'>{isVacancy ? item?.vacancyName : item?.project?.projectName}</div>
                 <div className='text-sm mt-2 text-gray-600'>{item?.fullName}</div>
                 <div className='-ml-4'>
                     <CustomRadioButton listItem={Reportss} filterValueChecked={handleCheckReports} />
@@ -104,7 +104,7 @@ export const ReportOr = ({ setopenReport, item, isVacancy }) => {
                 <div className="mt-2">
                     <label htmlFor="description" className="block leading-8 text-gray-900 font-medium ">Additional information</label>
                     <div className="relative mt-2 rounded-md shadow-sm ">
-                        <textarea onChange={e => setRpDes(e.target.value)} rows={4} type="text" name="description" id="description" className="block bg-[#f7f9fa] focus:bg-white text-base w-full rounded-md border-0 py-2.5 pl-5 pr-5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400  sm:text-base sm:leading-8" />
+                        <textarea value={reDes}  onChange={e => setRpDes(e.target.value)} rows={4} type="text" name="description" id="description" className="block bg-[#f7f9fa] focus:bg-white text-base w-full rounded-md border-0 py-2.5 pl-5 pr-5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400  sm:text-base sm:leading-8" />
                     </div>
                 </div>
                 <div className='mt-4'>

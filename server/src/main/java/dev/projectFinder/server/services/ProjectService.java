@@ -8,9 +8,11 @@ import dev.projectFinder.server.models.Vacancy;
 import dev.projectFinder.server.repositories.ProjectRepository;
 import dev.projectFinder.server.repositories.UserRepository;
 import dev.projectFinder.server.repositories.VacancyRepository;
+import dev.projectFinder.server.utils.MessageKeys;
 import lombok.RequiredArgsConstructor;
 import org.bson.types.ObjectId;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -192,5 +194,83 @@ public class ProjectService {
             vacancies.add(vacancy);
         }
         return vacancies;
+    }
+    public Boolean updateFavoriteProject(String id, String projectId){
+        Optional<User> foundUser = userRepository.findById(new ObjectId(id));
+        if(foundUser.isEmpty()){
+            throw new DataIntegrityViolationException(MessageKeys.USER_NOT_FOUND);
+        }
+        User user = foundUser.get();
+        Optional<Project> projectOptional = projectRepository.findById(new ObjectId(projectId));
+        if(projectOptional.isEmpty()){
+            throw new DataIntegrityViolationException(MessageKeys.USER_NOT_FOUND);
+        }
+        Project project = projectOptional.get();
+        Boolean isPush = true;
+
+        // update favourite vacancy in user
+        List<String> fvrProjects = user.getFavoriteProjects();
+        if(fvrProjects==null){
+            fvrProjects = new ArrayList<>();
+        }
+        if(fvrProjects.contains(projectId)){
+            fvrProjects.remove(projectId);
+            isPush = false;
+        }
+        else {
+            fvrProjects.add(projectId);
+        }
+
+
+        // update favourite users in vacancy
+        List<String> fvrUsers = project.getFavouriteUsers();
+        if(fvrUsers==null){
+            fvrUsers = new ArrayList<>();
+        }
+        if(fvrUsers.contains(id)){
+            fvrUsers.remove(id);
+        }
+        else {
+            fvrUsers.add(id);
+        }
+        // set + save
+        project.setFavouriteUsers(fvrUsers);
+        user.setFavoriteProjects(fvrProjects);
+
+        userRepository.save(user);
+        projectRepository.save(project);
+        return isPush;
+    }
+    public List<HashMap<String, Object>> getAllFavouriteProjects(String userId){
+        Optional<User> foundUser = userRepository.findById(new ObjectId(userId));
+        if(foundUser.isEmpty()){
+            throw new DataIntegrityViolationException(MessageKeys.USER_NOT_FOUND);
+        }
+        User user = foundUser.get();
+        List<String> fvrProjects = user.getFavoriteProjects();
+        if(fvrProjects==null){
+            fvrProjects = new ArrayList<>();
+        }
+
+        List<HashMap<String, Object>> result = new ArrayList<>();
+
+        for(String projectId : fvrProjects){
+            Optional<Project> optionalProject = projectRepository.findById(new ObjectId(projectId));
+            if(optionalProject.isEmpty()) continue;
+            Project project = optionalProject.get();
+            HashMap<String, Object> item = new HashMap<>();
+
+            Optional<User> userOptional = userRepository.findById(project.getUserId());
+            if(userOptional.isEmpty()){
+                continue;
+            }
+            User user1 = userOptional.get();
+            item.put("project", project);
+            item.put("fullName", user1.getFullName());
+            item.put("avatar", user1.getAvatar().getFileUrl()!=null ? user1.getAvatar().getFileUrl():"https://pic.onlinewebfonts.com/thumbnails/icons_148020.svg");
+            result.add(item);
+        }
+
+        return result;
     }
 }

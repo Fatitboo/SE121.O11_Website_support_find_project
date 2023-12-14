@@ -27,7 +27,10 @@ import {
     CVManager,
     CompanyProfile,
     ShortListedCors,
-    VacancyInfoSeeker, 
+    VacancyInfoSeeker,
+    FavouriteVacancies,
+    FavouriteProjects,
+    ProjectDetailSeeker, 
 } from '../pages/Seeker'
 import { 
     CompanyProfileEdit, 
@@ -66,7 +69,8 @@ const publicRoutes = [
     {path:'/', component: Home, layout: LayoutNoSidebar},
     {path:'/Seeker/find-projects', component: FindProjects, layout: LayoutNoSidebar},
     {path:'/Seeker/find-vacancies', component: FindVacancies, layout: LayoutNoSidebar},
-    {path:'/Seeker/vacancy-info/:id', component: VacancyInfoSeeker, layout: LayoutHasSidebar},
+    {path:'/Seeker/vacancy-info/:id', component: VacancyInfoSeeker, layout: LayoutNoSidebar},
+    {path:'/Seeker/project-info/:id', component: ProjectDetailSeeker, layout: LayoutNoSidebar},
     {path:'/Seeker/my-profile', component: MyProfile, layout: LayoutHasSidebar},
     {path:'/Seeker/my-resume', component: MyResume, layout: LayoutHasSidebar},
     {path:'/Seeker/project-info', component: ProjectInfo, layout: LayoutNoSidebar},
@@ -76,6 +80,9 @@ const publicRoutes = [
     {path:'/Seeker/applied-jobs', component: AppliedJob, layout: LayoutHasSidebar},
     {path:'/Seeker/cv-manager', component: CVManager, layout: LayoutHasSidebar},
     {path:'/Seeker/short-listed-users', component: ShortListedCors, layout: LayoutHasSidebar},
+    {path:'/Seeker/favourite-vacancies', component: FavouriteVacancies, layout: LayoutHasSidebar},
+    {path:'/Seeker/favourite-projects', component: FavouriteProjects, layout: LayoutHasSidebar},
+
     
     //Company layout
     {path:'/Organizer/post-vacancy/:id', component: PostJob, layout: LayoutNoSidebar},

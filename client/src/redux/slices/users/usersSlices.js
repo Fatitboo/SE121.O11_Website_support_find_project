@@ -1082,7 +1082,8 @@ const usersSlices = createSlice({
             state.shortListed = action?.payload?.shortListed;
             state.postedProjects = action?.payload?.postedProjects;
             state.postedVacancies = action?.payload?.postedVacancies;
-
+            state.fvrProjects = action?.payload?.fvrProjects;
+            state.fvrVacancies = action?.payload?.fvrVacancies;
         });
         builder.addCase(getDataStatisticalAction.rejected, (state, action) => {
             state.loading = false;
