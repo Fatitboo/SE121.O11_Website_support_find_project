@@ -274,11 +274,12 @@ public class VacancyServices {
         Vacancy vacancy = vacancyOptional.get();
 
         List<Participant> userIds = vacancy.getParticipants();
+
         HashMap<String, List<User>> hm = new HashMap<>();
 
         List<User> members = new ArrayList<>();
         List<User> oldMembers = new ArrayList<>();
-        if(userIds!= null)
+        if(userIds != null)
             for (Participant userId : userIds) {
                 Optional<User> userOptional = userRepository.findById(new ObjectId(userId.getUserId()));
                 if (userOptional.isEmpty()) {
@@ -387,12 +388,14 @@ public class VacancyServices {
 
         //Xoa cau tra loi cua user
         JobPreScreen[] jobPreScreen = vacancy.getJobPreScreen();
-        for (JobPreScreen preScreen : jobPreScreen) {
-            HashMap<Object, Object> hm = preScreen.getAnswer();
-            hm.remove(user.getUserId().toString());
-            preScreen.setAnswer(hm);
+        if(jobPreScreen != null){
+            for (JobPreScreen preScreen : jobPreScreen) {
+                HashMap<Object, Object> hm = preScreen.getAnswer();
+                hm.remove(user.getUserId().toString());
+                preScreen.setAnswer(hm);
+            }
+            vacancy.setJobPreScreen(jobPreScreen);
         }
-        vacancy.setJobPreScreen(jobPreScreen);
 
         //Tạo notification
 

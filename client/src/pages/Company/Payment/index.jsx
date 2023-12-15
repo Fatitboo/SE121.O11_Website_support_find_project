@@ -65,7 +65,7 @@ function Payment({vacancy}) {
         })
         .then(response => {
            console.log(response);
-          //window.open(response.data.toString(),"_self")
+           window.open(response.data.toString(),"_self")
         })
         .catch(error => {
             console.error(error);

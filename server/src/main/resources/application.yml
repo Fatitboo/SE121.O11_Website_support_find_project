@@ -7,7 +7,6 @@ spring:
   # config to use .env file
   config:
     import: optional:file:.env[.properties]
-
   # config database mongodb
   data:
     mongodb:
@@ -32,3 +31,4 @@ paypal:
   client:
     id: ${API_KEY_PAYPAL_ID}
     secret: ${API_KEY_PAYPAL_SECRET}
+
