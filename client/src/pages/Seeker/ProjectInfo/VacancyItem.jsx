@@ -13,7 +13,7 @@ import { BsBookmarkCheckFill, BsEye } from "react-icons/bs";
 import { resetSuccessAction, updateFavouriteVacancyAction } from "../../../redux/slices/vacancies/vacanciesSlices";
 import { LoadingComponent } from "../../../components";
 
-const VacancyItem = ({ props, isAvatar, active, notify }) => {
+const VacancyItem = ({ props, isAvatar, active, notify, isEditProject }) => {
     // {vacancyName, skillsRequired, maxRequired, salary, registant, description, isAvatar, companyName, companyAvatar}
     const { userAuth } = useSelector(store => store.users);
     const { loadingFvr } = useSelector(store => store.vacancies)
@@ -50,18 +50,18 @@ const VacancyItem = ({ props, isAvatar, active, notify }) => {
                             <a href="#">{props?.vacancyName}</a>
                         </h4>
                         <div className="flex">
-                            <div className="item flex items-center justify-center w-[26px] rounded-[7px] bg-[rgba(25,210,145,0.07)] hover:bg-[rgba(15,51,25,0.07)] ml-5 cursor-pointer opacity-80">
+                            {isEditProject ? <></>: <><div className="item flex items-center justify-center w-[26px] rounded-[7px] bg-[rgba(25,210,145,0.07)] hover:bg-[rgba(15,51,25,0.07)] ml-5 cursor-pointer opacity-80">
                                 <Link to={`/Seeker/vacancy-info/${props?.vacancyId}`} >
                                     <HiEye className="w-full h-full p-[2px] rounded-[7px]" color="#1967d3" />
                                 </Link>
                             </div>
-                            <div className="item flex items-center justify-center w-[26px] rounded-[7px] bg-[rgba(25,103,210,.07)] hover:bg-[rgba(15,30,51,0.07)] ml-3 cursor-pointer opacity-80">
-                                <div onClick={() => handleUpdateFavourite()}>
-                                    {checkFavourite() ?
-                                        <BsBookmarkCheckFill className="w-full h-full p-[6px] rounded-[7px]" color="#1967d3" />
-                                        : <BiBookmark className="w-full h-full p-[6px] rounded-[7px]" color="#1967d3" />}
-                                </div>
-                            </div>
+                                <div className="item flex items-center justify-center w-[26px] rounded-[7px] bg-[rgba(25,103,210,.07)] hover:bg-[rgba(15,30,51,0.07)] ml-3 cursor-pointer opacity-80">
+                                    <div onClick={() => handleUpdateFavourite()}>
+                                        {checkFavourite() ?
+                                            <BsBookmarkCheckFill className="w-full h-full p-[6px] rounded-[7px]" color="#1967d3" />
+                                            : <BiBookmark className="w-full h-full p-[6px] rounded-[7px]" color="#1967d3" />}
+                                    </div>
+                                </div></>}
 
                         </div>
                     </div>

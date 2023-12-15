@@ -233,7 +233,7 @@ public class VacancyServices {
         }
         Vacancy vacancy=  vacancyOptional.get();
         vacancy.setApprovalStatus(status);
-        if(status.equals("rejected")){
+        if(status.equals("rejected") ||status.equals("blocked") ){
             vacancy.setPost(false);
         }
         Optional<User> userOptional = userRepository.findById(new ObjectId(vacancy.getUserInfo().getUserId()));
@@ -278,20 +278,20 @@ public class VacancyServices {
 
         List<User> members = new ArrayList<>();
         List<User> oldMembers = new ArrayList<>();
-
-        for (Participant userId : userIds) {
-            Optional<User> userOptional = userRepository.findById(new ObjectId(userId.getUserId()));
-            if (userOptional.isEmpty()) {
-                throw new DataIntegrityViolationException("Error when get user in database!");
+        if(userIds!= null)
+            for (Participant userId : userIds) {
+                Optional<User> userOptional = userRepository.findById(new ObjectId(userId.getUserId()));
+                if (userOptional.isEmpty()) {
+                    throw new DataIntegrityViolationException("Error when get user in database!");
+                }
+                if(Objects.equals(userId.getStatus(), "received")) members.add(userOptional.get());
+                if(Objects.equals(userId.getStatus(), "block")) oldMembers.add(userOptional.get());
             }
-            if(Objects.equals(userId.getStatus(), "received")) members.add(userOptional.get());
-            if(Objects.equals(userId.getStatus(), "block")) oldMembers.add(userOptional.get());
-        }
 
-        hm.put("members", members);
-        hm.put("oldMembers", oldMembers);
-        return hm;
-    }
+            hm.put("members", members);
+            hm.put("oldMembers", oldMembers);
+            return hm;
+        }
 
     //Thay doi trang thai participate vacancy
     public void acceptApplicantVacancy(String vacancyId, String id) throws Exception{

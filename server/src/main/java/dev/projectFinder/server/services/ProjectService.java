@@ -1,5 +1,6 @@
 package dev.projectFinder.server.services;
 
+import dev.projectFinder.server.components.Notification;
 import dev.projectFinder.server.components.RecentProject;
 import dev.projectFinder.server.dtos.ProjectDTO;
 import dev.projectFinder.server.models.Project;
@@ -15,6 +16,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -27,6 +29,7 @@ public class ProjectService {
     private final ProjectRepository projectRepository;
     private final VacancyRepository vacancyRepository;
     private final UserServices userServices;
+    private final VacancyServices vacancyServices;
     public List<HashMap<String, Object>> getAllProject ()throws Exception{
 
         List<Project> listProject = projectRepository.findAll();
@@ -151,6 +154,18 @@ public class ProjectService {
         }
         Project project=  projectOptional.get();
         project.setStatus(status);
+        // set notification
+        Optional<User> userOptional = userRepository.findById(project.getUserId());
+        if(userOptional.isEmpty()) throw new DataIntegrityViolationException("Error when get user info in database!");
+        User user = userOptional.get();
+        List<Notification> notifications =  user.getNotifications();
+        if(notifications == null) notifications = new ArrayList<>();
+        String contentNoti = "Admin has been "+ status +" project "+project.getProjectName();
+        notifications.add(new Notification(contentNoti, LocalDateTime.now()));
+        user.setNotifications(notifications);
+
+        // save to db
+        userRepository.save(user);
         projectRepository.save(project);
     }
 
@@ -272,5 +287,18 @@ public class ProjectService {
         }
 
         return result;
+    }
+
+    public List<User> getParticipantsProject (String projectId){
+        Optional<Project> projectOptional = projectRepository.findById(new ObjectId(projectId));
+        if(projectOptional.isEmpty())   throw new DataIntegrityViolationException("Error when get project in database");
+        Project project = projectOptional.get();
+        ObjectId[] vacancyIds = project.getVacancies();
+        List<User> participantsProject = new ArrayList<>();
+        for (ObjectId vccId: vacancyIds ) {
+            List<User> users = vacancyServices.getAllParticipantsVacancy(vccId.toString()).get("members");
+            participantsProject.addAll(users);
+        }
+        return participantsProject;
     }
 }

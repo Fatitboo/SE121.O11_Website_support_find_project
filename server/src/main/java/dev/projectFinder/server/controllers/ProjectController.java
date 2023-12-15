@@ -174,4 +174,17 @@ public class ProjectController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
     }
+    @GetMapping("/get-participants-project/{id}")
+    public ResponseEntity<?> getParticipantsProject( @PathVariable String id){
+        HashMap<String, Object> response = new HashMap<>();
+        try{
+            List<User> users = projectService.getParticipantsProject(id);
+
+            response.put("participantsProject", users);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        }catch (Exception e) {
+            response.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+    }
 }

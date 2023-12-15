@@ -6,7 +6,7 @@ import { AiOutlineSetting } from 'react-icons/ai';
 import { CalendarIcon, ExpiryIcon, SalaryIcon } from "../../../../assets/icons";
 import { ArrowLeftIcon } from "@heroicons/react/20/solid";
 import { useNavigate, useParams } from "react-router-dom";
-import { getProjectSingle, updateFavouriteProjectAction } from "../../../../redux/slices/projects/projectsSlices";
+import { getParticipantsProject, getProjectSingle, updateFavouriteProjectAction } from "../../../../redux/slices/projects/projectsSlices";
 import { useDispatch, useSelector } from "react-redux";
 import { CustomLoader, SmallItemLoader, VacancyItemLoader } from "../../../../components/Loader";
 import VacancyItem from "../../ProjectInfo/VacancyItem";
@@ -34,14 +34,18 @@ function ProjectDetailSeeker() {
     const dispatch = useDispatch()
 
     const project = useSelector((state) => state.projects.project?.project)
-    console.log(project)
+
     const vacancies = useSelector((state) => state.projects.project?.vacancies)
     const loading = useSelector((state) => state.projects.loading)
+    const projectparticipants = useSelector(state=>state.projects?.projectparticipants)
     let user = useSelector((state) => state.users.userAuth.user)
 
 
     useEffect(() => {
-        if (id) dispatch(getProjectSingle(id))
+        if (id) {
+            dispatch(getProjectSingle(id))
+            dispatch(getParticipantsProject(id))
+        }
     }, [id])
 
     const navigate = useNavigate()
@@ -56,12 +60,7 @@ function ProjectDetailSeeker() {
         dispatch(updateFavouriteProjectAction(project?.projectId))
     }
     return (<>
-        {/* <div className="mb-8 px-10" >
-            <div className="font-medium text-3xl text-gray-900 mb-2 leading-10 flex items-center">
-                <ArrowLeftIcon className="h-8 cursor-pointer mr-2" onClick={() => navigate(-1)} />
-                Project Info!
-            </div>
-        </div> */}
+
         <div className="mx-[8%] pt-[50px]">
             <div className="static grid grid-cols-12 gap-4 m-auto box-border">
                 {/* left infomation */}
@@ -114,13 +113,6 @@ function ProjectDetailSeeker() {
                     }
                     <></>
 
-                    {/* Video description */}
-                    <></>
-                    <div>
-                        <h4 className="text-base leading-6 text-[#202124] mb-5 font-semibold">Candidates About</h4>
-                        <img src="https://superio-nextjs.netlify.app/images/resource/job-post-img.jpg" alt="" />
-                    </div>
-                    <></>
                     {/* Share to social */}
                     <></>
                     <div>
@@ -169,9 +161,9 @@ function ProjectDetailSeeker() {
                 {/* category */}
                 <div className="col-span-4">
                     <div className="flex flex-row mb-5">
-                        <div className="flex items-center justify-center h-[53px] box-border bg-[#1967d3] px-[18px] py-[8px] w-full rounded-[8px] text-[#fff] hover:bg-[#0146a6] cursor-pointer">
+                        {/* <div className="flex items-center justify-center h-[53px] box-border bg-[#1967d3] px-[18px] py-[8px] w-full rounded-[8px] text-[#fff] hover:bg-[#0146a6] cursor-pointer">
                             <span className="text-[15px] leading-none font-[400]">Private Message</span>
-                        </div>
+                        </div> */}
                         <div className="item flex items-center justify-center w-[60px] h-[52px] rounded-[7px] bg-[rgba(25,103,210,.07)] ml-5 cursor-pointer opacity-80" color="#1967d3">
                             <div onClick={() => handleUpdateFavourite} className="item flex items-center justify-center w-full h-full">
                                 {
@@ -272,11 +264,11 @@ function ProjectDetailSeeker() {
                     </div>
                     <div>
                         <div className="p-6 bg-[#F5F6FC] rounded-lg mb-[30px]">
-                            <span className="text-[#202124] text-[18px] font-semibold">Participants ({participants.length})</span>
+                            <span className="text-[#202124] text-[18px] font-semibold">Participants ({projectparticipants.length})</span>
                             <div className="mt-3">
                                 {
-                                    participants.map((item, index) => {
-                                        return <ParticipantItem key={index} firstName={item.firstName} surName={item.surName} position={item.position} userAvatar={item.userAvatar} />
+                                    projectparticipants.map((item, index) => {
+                                        return <ParticipantItem key={index} firstName={item?.fullName}  position={item?.jobTitle??'Not information'} userAvatar={item?.avatar?.fileUrl ??'https://i.pinimg.com/564x/16/3e/39/163e39beaa36d1f9a061b0f0c5669750.jpg'} />
                                     })
                                 }
                             </div>

@@ -20,7 +20,7 @@ const ProjectItem = ({ props }) => {
     const [vacancies, setVacancies] = useState(null)
     const [loading, setLoading] = useState(false)
     const [moreDetail, setMoreDetail] = useState(false)
-    const [openReport, setopenReport] = useState(false)
+    // const [openReport, setopenReport] = useState(false)
     const dispatch = useDispatch();
     const { userAuth } = useSelector(store => store.users);
     const apiPrefix = 'api/v1/projects';
@@ -174,14 +174,14 @@ const ProjectItem = ({ props }) => {
                         </div>
 
                     </div>
-                    <div className="flex flex-row-reverse mr-2 mt-6 ">
+                    {/* <div className="flex flex-row-reverse mr-2 mt-6 ">
                         <div onClick={() => setopenReport(true)} className="bg-white border border-gray-500 p-2 rounded-md flex items-center cursor-pointer hover:bg-gray-200 hover:text-red-800"> <BiSolidFlag className="mr-1" /> Report this item</div>
-                    </div>
+                    </div> */}
                 </div>
             </div>
-            <Modal open={openReport}>
+            {/* <Modal open={openReport}>
                 <ReportOr setopenReport={setopenReport} item={props} isVacancy={false} />
-            </Modal>
+            </Modal> */}
         </>
     );
 };

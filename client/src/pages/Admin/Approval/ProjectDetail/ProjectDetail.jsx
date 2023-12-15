@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { BiLogoFacebook, BiLogoInstagram, BiLogoTwitter, BiLogoLinkedin, BiTimeFive} from "react-icons/bi";
 import {PiTargetLight} from 'react-icons/pi';
 import {GoHourglass} from "react-icons/go";
@@ -7,10 +7,11 @@ import { CalendarIcon, ExpiryIcon, SalaryIcon } from "../../../../assets/icons";
 import ParticipantItem from "../../../Seeker/ProjectInfo/ParticipantItem";
 import { ArrowLeftIcon } from "@heroicons/react/20/solid";
 import { useNavigate, useParams } from "react-router-dom";
-import { getProjectSingle } from "../../../../redux/slices/projects/projectsSlices";
+import { getProjectSingle, updateProjectStatus } from "../../../../redux/slices/projects/projectsSlices";
 import { useDispatch, useSelector } from "react-redux";
 import { CustomLoader, SmallItemLoader, VacancyItemLoader } from "../../../../components/Loader";
 import VacancyItem from "../VacancyItem";
+import Swal from "sweetalert2";
 
 const vacancies = [
     {
@@ -113,7 +114,7 @@ function ProjectDetailAdmin() {
 
     const id = useParams()
     const dispatch = useDispatch()
-
+    const [projectStatus, setProjectStatus] = useState('')
     const project = useSelector((state) => state.projects.project?.project)
     const vacancies = useSelector((state) => state.projects.project?.vacancies)
     const loading = useSelector((state) => state.projects.loading)  
@@ -123,7 +124,33 @@ function ProjectDetailAdmin() {
     useEffect(() => {
         if(id) dispatch(getProjectSingle(id))
     }, [id])
+    useEffect(() => {
+        if(project) {
+            setProjectStatus(project?.status)
+        }
+    }, [project])
 
+    const handleUpdateStatusProject = ( status, action) => {
+        // dispatch(deleteOccupationAction(id));
+        Swal.fire({
+            title: "Confirm " + action,
+            text: `Are you sure you want to ${action} this project?`,
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: action
+        }).then((result) => {
+            if (result.isConfirmed) {
+                const dt = {
+                    id: id.id,
+                    status: status
+                }
+                setProjectStatus(status)
+                dispatch(updateProjectStatus(dt))
+            }
+        });
+    }
     const navigate = useNavigate()
     return (<>
         <div className="mb-8 px-10" >
@@ -240,18 +267,48 @@ function ProjectDetailAdmin() {
                 {/* category */}
                 <div className="col-span-4">
                 <div className="grid grid-flow-row grid-cols-3 gap-6 mb-3">
-                        <div></div>
-                        <div className="flex items-center justify-center h-[53px] box-border bg-blue-700 px-[18px] py-[4px] w-full rounded-[8px] text-[#fff] hover:bg-blue-900 cursor-pointer">
-                            <span className="text-[15px] leading-none font-[400]">Approval</span>
-                        </div>
-                        <div className="flex items-center justify-center h-[53px] box-border bg-red-50 px-[18px] py-[4px] w-full rounded-[8px] text-red-900 border border-red-900 hover:text-white hover:bg-red-900 cursor-pointer">
-                            <span className="text-[15px] leading-none font-[400]">Reject</span>
-                        </div>
-                        
-            
-                        {/* <div className="item flex items-center justify-center w-[60px] h-[52px] rounded-[7px] bg-[rgba(25,103,210,.07)] ml-5 cursor-pointer opacity-80" color="#1967d3">
-                            <BiBookmark className="w-full h-full p-[14px] rounded-[7px]" color="#1967d3" />
-                        </div> */}
+                {
+                            projectStatus === 'waitPayment' ?
+                                <>
+                                    <div></div>
+                                    <div></div>
+                                    <div onClick={()=>handleUpdateStatusProject( 'rejected','Reject')} className="flex items-center justify-center h-[53px] box-border bg-red-50 px-[18px] w-full rounded-[8px] text-red-600 border border-red-600 hover:text-white hover:bg-red-600 cursor-pointer">
+                                        <span className="text-[15px] leading-none font-[400]">Reject</span>
+                                    </div>
+                                </>
+                                : projectStatus === 'rejected' ?
+                                    <>
+                                        <div></div>
+                                        <div></div>
+                                        <div onClick={()=>handleUpdateStatusProject( 'waitPayment','Accept')} className="flex items-center justify-center h-[53px] box-border bg-blue-700 px-[18px] w-full rounded-[8px] text-[#fff] hover:bg-blue-900 cursor-pointer">
+                                            <span className="text-[15px] leading-none font-[400]">Accept</span>
+                                        </div>
+                                    </>
+                                    : projectStatus === 'pending' ?
+                                        <>
+                                            <div></div>
+                                            <div onClick={()=>handleUpdateStatusProject( 'rejected','Reject')} className="flex items-center justify-center h-[53px] box-border bg-red-50 px-[18px] w-full rounded-[8px] text-red-600 border border-red-600 hover:text-white hover:bg-red-600 cursor-pointer">
+                                                <span className="text-[15px] leading-none font-[400]">Reject</span>
+                                            </div>
+                                            <div onClick={()=>handleUpdateStatusProject( 'waitPayment','Accept')} className="flex items-center justify-center h-[53px] box-border bg-blue-700 px-[18px] w-full rounded-[8px] text-[#fff] hover:bg-blue-900 cursor-pointer">
+                                                <span className="text-[15px] leading-none font-[400]">Accept</span>
+                                            </div>
+                                        
+                                        </>
+                                        : projectStatus === 'approved' ? <>
+                                            <div></div>
+                                            <div></div>
+                                            <div onClick={()=>handleUpdateStatusProject( 'blocked','Block')} className="flex items-center justify-center h-[53px] box-border bg-gray-700 px-[18px] w-full rounded-[8px] text-[#fff] hover:bg-gray-900 cursor-pointer">
+                                                <span className="text-[15px] leading-none font-[400]">Block</span>
+                                            </div>
+                                        </> : <>
+                                            <div></div>
+                                            <div></div>
+                                            <div onClick={()=>handleUpdateStatusProject( 'approved','Approve')} className="flex items-center justify-center h-[53px] box-border bg-green-700 px-[18px] w-full rounded-[8px] text-[#fff] hover:bg-green-900 cursor-pointer">
+                                                <span className="text-[15px] leading-none font-[400]">Approve</span>
+                                            </div>
+                                        </>
+                        }
                     </div>
                     <div className="p-6 bg-[#F5F6FC] rounded-lg mb-[30px]">
                         {
@@ -278,27 +335,67 @@ function ProjectDetailAdmin() {
                                 </div>
                             </div>
                         }
+                        
                         {
                             loading ? <SmallItemLoader/>: 
-                            <div className="flex flex-row mb-[30px]">
-                                <div className="min-w-[50px]">
-                                    <AiOutlineSetting color="#1967D2" className="w-6 h-6" strokeWidth={0}/>
-                                </div>
-                                <div>
-                                    <div className="text-4 text-[#202124] leading-[22px] font-semibold">Status:</div>
-                                    <span className="text-[15px] text-[#363636]">{project?.status}</span>
-                                </div>
-                            </div>
-                        }
-                        {
-                            loading ? <SmallItemLoader/>: 
-                            <div className="flex flex-row">
+                            <div className="flex flex-row mb-8">
                                 <div className="min-w-[50px]">
                                     <img src={SalaryIcon} alt="Calendar" />
                                 </div>
                                 <div>
                                     <div className="text-4 text-[#202124] leading-[22px] font-semibold">Expected budget:</div>
                                     <span className="text-[15px] text-[#363636]">${project?.budget}</span>
+                                </div>
+                            </div>
+                        }
+                        {
+                            loading ? <SmallItemLoader/>: 
+                            <div className="flex flex-row mb-[20px]">
+                                <div className="min-w-[50px]">
+                                    <AiOutlineSetting color="#1967D2" className="w-6 h-6" strokeWidth={0}/>
+                                </div>
+                                <div>
+                                    <div className="text-4 text-[#202124] leading-[22px] font-semibold">Status:</div>
+                                    <span className="text-[15px] text-[#363636]">
+                                    {
+                                        projectStatus === 'pending' ?
+                                            <div>
+                                                <div className="bg-blue-100 mt-2 border-blue-300 border rounded-xl text-center  text-blue-500 w-fit px-1">
+                                                    Pending
+                                                </div>
+                                                <div className="text-sm text-purple-700">* This project is awaiting for admin approval!</div>
+                                            </div>
+                                            : projectStatus === 'waitPayment' ?
+                                                <div>
+                                                    <div className="bg-orange-100 mt-2 border-orange-300 border rounded-xl text-center  text-orange-500 w-fit px-1">
+                                                        Wait Payment
+                                                    </div>
+                                                    <div className="text-sm text-purple-700">* This project is awaiting for payment to be posted!</div>
+                                                </div>
+                                                : projectStatus === 'rejected' ?
+                                                    <div>
+                                                        <div className="bg-orange-100 mt-2 border-orange-300 border rounded-xl text-center  text-orange-500 w-fit px-1">
+                                                            Rejected
+                                                        </div>
+                                                        <div className="text-sm text-purple-700">* This project has been rejected for approval but can be edited again!</div>
+                                                    </div>
+                                                    : projectStatus === 'approved' ?
+                                                        <div>
+                                                            <div className="bg-green-100 mt-2 border-green-300 border rounded-xl text-center  text-green-500 w-fit px-1">
+                                                                Approved
+                                                            </div>
+                                                            <div className="text-sm text-purple-700">* This project has been paid for and approved!</div>
+                                                        </div>
+                                                        :projectStatus === 'blocked' ?
+                                                        <div>
+                                                            <div className="bg-red-100 mt-2 border-red-300 border rounded-xl text-center  text-red-500 w-fit px-1">
+                                                                Blocked
+                                                            </div>
+                                                            <div className="text-sm text-purple-700">* This project has been blocked!</div>
+                                                        </div>
+                                                        : <>  </>
+                                    }
+                                    </span>
                                 </div>
                             </div>
                         }

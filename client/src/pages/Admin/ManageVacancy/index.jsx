@@ -8,6 +8,10 @@ import { getAllVacancies, resetSuccessAction, updateVacancyStatus } from "../../
 import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
 import { PiSuitcaseSimpleDuotone } from "react-icons/pi";
+import { BsLock } from "react-icons/bs";
+import { CgLock } from "react-icons/cg";
+import { FaUnlock } from "react-icons/fa";
+import { FiUnlock } from "react-icons/fi";
 
 const listPostedCbb = [{ id: 1, name: 'All' }, { id: 2, name: 'Pending' }, { id: 3, name: 'Approval' }, { id: 4, name: 'Rejected' }]
 
@@ -32,12 +36,35 @@ function ManageVacancy() {
         if (filterValue.name === 'Pending') {
             setVacancyList([...vacancies.filter(i => i.approvalStatus === 'pending')])
         }
-        if (filterValue.name === 'Approval') {
-            setVacancyList([...vacancies.filter(i => i.approvalStatus === 'approval')])
+        if (filterValue.name === 'Accepted') {
+            setVacancyList([...vacancies.filter(i => i.approvalStatus === 'accepted')])
         }
         if (filterValue.name === 'Rejected') {
             setVacancyList([...vacancies.filter(i => i.approvalStatus === 'rejected')])
         }
+        if (filterValue.name === 'Blocked') {
+            setVacancyList([...vacancies.filter(i => i.approvalStatus === 'blocked')])
+        }
+    }
+    const handleBlockVacancy = (id) => {
+        // dispatch(deleteOccupationAction(id));
+        Swal.fire({
+            title: "Confirm Block",
+            text: "Are you sure you want to block this vacancy?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Block"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                const dt = {
+                    id: id,
+                    status: 'blocked'
+                }
+                dispatch(updateVacancyStatus(dt))
+            }
+        });
     }
     const handleRejectVacancy = (id) => {
         // dispatch(deleteOccupationAction(id));
@@ -61,8 +88,27 @@ function ManageVacancy() {
     }
     const handleApprovalVacancy = (id) => {
         Swal.fire({
-            title: "Confirm Approval",
-            text: "Are you sure you want to approval this vacancy?",
+            title: "Confirm accepted",
+            text: "Are you sure you want to accepted this vacancy?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "accepted"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                const dt = {
+                    id: id,
+                    status: 'waitPayment'
+                }
+                dispatch(updateVacancyStatus(dt))
+            }
+        });
+    }
+    const handleOpenBlockVacancy = (id) => {
+        Swal.fire({
+            title: "Confirm Approval again",
+            text: "Are you sure you want to aproval again this vacancy?",
             icon: "warning",
             showCancelButton: true,
             confirmButtonColor: "#3085d6",
@@ -72,18 +118,18 @@ function ManageVacancy() {
             if (result.isConfirmed) {
                 const dt = {
                     id: id,
-                    status: 'approval'
+                    status: 'approved'
                 }
                 dispatch(updateVacancyStatus(dt))
             }
         });
     }
     useEffect(() => {
-        setPages([...vacancyList.filter(item => ((item?.vacancyName).toLowerCase().includes(filterKeyWord.toLowerCase()) 
+        setPages([...vacancyList.filter(item => ((item?.vacancyName).toLowerCase().includes(filterKeyWord.toLowerCase())
             || (item?.projectName ?? '').toLowerCase().includes(filterKeyWord.toLowerCase())
             || (item?.userInfo?.fullName ?? '').toLowerCase().includes(filterKeyWord.toLowerCase())
             || (item?.location ?? '').toLowerCase().includes(filterKeyWord.toLowerCase())
-            )).slice(currentPage * 10, (currentPage + 1) * 10)])
+        )).slice(currentPage * 10, (currentPage + 1) * 10)])
     }, [currentPage, vacancyList, filterKeyWord])
     useEffect(() => {
         if (isSuccess2) {
@@ -251,7 +297,7 @@ function ManageVacancy() {
                                                             <td className="relative pl-5 py-5 font-normal text-base w-3/12">
                                                                 <div className="mb-0 flex h-16 ">
                                                                     <div className=" w-11">
-                                                                        <img src={item?.userInfo?.avatar??'https://pic.onlinewebfonts.com/thumbnails/icons_148020.svg'} className="inline-block max-w-full h-auto align-middle" alt="logo" />
+                                                                        <img src={item?.userInfo?.avatar ?? 'https://pic.onlinewebfonts.com/thumbnails/icons_148020.svg'} className="inline-block max-w-full h-auto align-middle" alt="logo" />
                                                                     </div>
                                                                     <div className="pl-2">
                                                                         <div className="font-medium text-md text-ellipsis mb-1 line-clamp-2 ">{item.vacancyName}</div>
@@ -280,7 +326,39 @@ function ManageVacancy() {
                                                             </td>
 
                                                             <td className="w-3/24">
-                                                                {item?.approvalStatus ? <div className={`  border rounded-xl text-center text-sm  w-fit px-1 ${item?.approvalStatus === 'pending' ? 'bg-blue-100 text-blue-500 border-blue-300' : item?.approvalStatus === 'approval' ? 'bg-green-100 text-green-500 border-green-300' : 'bg-red-100 text-red-500 border-red-300'}`}>{item?.approvalStatus}</div> : <></>}
+                                                                {
+                                                                    item?.approvalStatus === 'pending' ?
+                                                                        <div>
+                                                                            <div className="bg-blue-100 mt-2 border-blue-300 border rounded-xl text-center  text-blue-500 w-fit px-1">
+                                                                                Pending
+                                                                            </div>
+                                                                        </div>
+                                                                        : item?.approvalStatus === 'waitPayment' ?
+                                                                            <div>
+                                                                                <div className="bg-orange-100 mt-2 border-orange-300 border rounded-xl text-center  text-orange-500 w-fit px-1">
+                                                                                    Wait Payment
+                                                                                </div>
+                                                                            </div>
+                                                                            : item?.approvalStatus === 'rejected' ?
+                                                                                <div>
+                                                                                    <div className="bg-orange-100 mt-2 border-orange-300 border rounded-xl text-center  text-orange-500 w-fit px-1">
+                                                                                        Rejected
+                                                                                    </div>
+                                                                                </div>
+                                                                                : item?.approvalStatus === 'approved' ?
+                                                                                    <div>
+                                                                                        <div className="bg-green-100 mt-2 border-green-300 border rounded-xl text-center  text-green-500 w-fit px-1">
+                                                                                            Approved
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    : item?.approvalStatus === 'blocked' ?
+                                                                                        <div>
+                                                                                            <div className="bg-red-100 mt-2 border-red-300 border rounded-xl text-center  text-red-500 w-fit px-1">
+                                                                                                Blocked
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        : <>  </>
+                                                                }
                                                             </td>
 
                                                             <td className="w-3/24" >
@@ -293,16 +371,27 @@ function ManageVacancy() {
                                                                             <li className="list-none relative mr-2 bg-[#f5f7fc] border rounded-md border-[#e9ecf9] px-1 pt-1 hover:bg-[#278646] hover:text-white">
                                                                                 <button onClick={() => handleApprovalVacancy(item?.vacancyId)}> <AiOutlineCheckCircle fontSize={18} /> </button>
                                                                             </li>
-                                                                            <li className="list-none relative bg-[#f5f7fc] border rounded-md border-[#e9ecf9] px-1 pt-1 hover:bg-[#ce3e37] hover:text-white">
+                                                                            <li className="list-none relative bg-[#f5f7fc] border rounded-md border-[#e9ecf9] px-1 pt-1 hover:bg-orange-300 hover:text-black">
                                                                                 <button onClick={() => handleRejectVacancy(item?.vacancyId)}> <LiaBanSolid fontSize={18} /> </button>
                                                                             </li>
-                                                                        </> : item?.approvalStatus === 'approval' ? <>
-                                                                            <li className="list-none relative bg-[#f5f7fc] border rounded-md border-[#e9ecf9] px-1 pt-1 hover:bg-[#ce3e37] hover:text-white">
+
+                                                                        </> : item?.approvalStatus === 'waitPayment' ? <>
+                                                                            <li className="list-none relative bg-[#f5f7fc] border rounded-md border-[#e9ecf9] px-1 pt-1 hover:bg-orange-300 hover:text-black">
                                                                                 <button onClick={() => handleRejectVacancy(item?.vacancyId)}> <LiaBanSolid fontSize={18} /> </button>
+                                                                            </li>
+
+                                                                        </> : item?.approvalStatus === 'rejected' ? <>
+                                                                            <li className="list-none relative mr-2 bg-[#f5f7fc] border rounded-md border-[#e9ecf9] px-1 pt-1 hover:bg-[#278646] hover:text-white">
+                                                                                <button onClick={() => handleApprovalVacancy(item?.vacancyId)}> <AiOutlineCheckCircle fontSize={18} /> </button>
+                                                                            </li>
+                                                                        </> : item?.approvalStatus === 'approved' ? <>
+
+                                                                            <li className="list-none relative mr-2 bg-red-300 border rounded-md border-red-300 px-1 pt-1 hover:bg-red-700 hover:text-white">
+                                                                                <button onClick={() => handleBlockVacancy(item?.vacancyId)}> <CgLock fontSize={18} /> </button>
                                                                             </li>
                                                                         </> : <>
                                                                             <li className="list-none relative mr-2 bg-[#f5f7fc] border rounded-md border-[#e9ecf9] px-1 pt-1 hover:bg-[#278646] hover:text-white">
-                                                                                <button onClick={() => handleApprovalVacancy(item?.vacancyId)}> <AiOutlineCheckCircle fontSize={18} /> </button>
+                                                                                <button onClick={() => handleOpenBlockVacancy(item?.vacancyId)}> <FiUnlock fontSize={18} /> </button>
                                                                             </li>
                                                                         </>
                                                                         }

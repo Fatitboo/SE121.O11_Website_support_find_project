@@ -36,7 +36,7 @@ function ShortListedCors() {
         if (isSuccess) {
             dispatch(resetSuccessAction());
             setShortList([...shortListUsers ?? []]);
-            const uniqueFields = shortListUsers.reduce((result, company) => {
+            const uniqueFields = shortListUsers?.reduce((result, company) => {
                 if (company.fields) {
                     company.fields.forEach(field => {
                         if (!result.find(item => item.name === field)) {
@@ -46,7 +46,7 @@ function ShortListedCors() {
                 }
                 return result;
             }, []);
-            setCategoryList([{ id: 0, name: 'All' }, ...uniqueFields]);
+            setCategoryList([{ id: 0, name: 'All' }, ...uniqueFields??[]]);
             setPages([...shortListUsers ?? [].slice(currentPage * 9, (currentPage + 1) * 9)])
         }
     }, [isSuccess])

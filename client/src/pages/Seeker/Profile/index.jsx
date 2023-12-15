@@ -123,7 +123,18 @@ function SeekerProfile() {
     const handleUpdateShortListed = () => {
         dispatch(updateShortlistedUsersAction(id));
     }
-
+    const handleEmailClick = (event) => {
+        // Ngăn chặn sự kiện mặc định để tránh chuyển đến địa chỉ mailto trực tiếp
+        event.preventDefault();
+        const email= 'ngxvanphat@gmail.com';
+        const subject="test sb";
+        const body="test test body"
+        // Tạo đường dẫn mailto với địa chỉ email đã chọn
+        const mailtoLink = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    
+        // Mở liên kết mailto trong một cửa sổ/ảnh mới
+        window.location.href = mailtoLink;
+      };
     return (<>
         {loading && <LoadingComponent />}
         <ToastContainer />
@@ -133,6 +144,8 @@ function SeekerProfile() {
                 <ArrowLeftIcon className="h-8 cursor-pointer mr-2" onClick={() => navigate(-1)}/>
                 Seeker Info!
             </div>
+            
+            <a  onClick={handleEmailClick}> ngxvanphat@gmail.com</a>
             <div className="text-sm leading-6 font-normal m-0 right-0 flex justify-between items-center ">Ready to jump back in?</div>
         </div>
         <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/uicons-regular-rounded/css/uicons-regular-rounded.css'></link>
@@ -143,14 +156,15 @@ function SeekerProfile() {
                     {/* quick info  */}
                     <></>
                     <div className="flex text-[#696969] mb-12">
-                        <div>
+                        <div className="w-20 h-20">
                             <img src={sltSeeker?.avatar?.fileUrl ?? 'https://superio-appdir.vercel.app/_next/image?url=%2Fimages%2Fresource%2Fcompany-logo%2F1-1.png&w=128&q=75'} alt="" className="w-20 h-20 rounded-full" />
                         </div>
                         <div className="ml-5">
+                       
                             <div>
                                 <div className="text-[26px] leading-[35px] text-[#202124] font-medium">{sltSeeker?.fullName}</div>
                             </div>
-                            <div className="flex flex-row text-[14px] font-thin my-[8px]">
+                            <div className="flex flex-row text-[14px] font-ligth my-[8px]">
                                 <span className="mr-7 text-[#1967d2]">{sltSeeker?.jobTitle}</span>
                                 <span className="flex flex-row items-center mr-7"><PiMapPin className="w-[18px] h-[18px] mr-1" />{sltSeeker?.address?.province ?? 'Not infor'}, {sltSeeker?.address?.country ?? 'not infor'}</span>
                                 <span className="flex flex-row items-center mr-7"><img src={MoneyIcon} alt="" className="w-[18px] h-[18px] mr-1" />{sltSeeker?.expectSalary ? sltSeeker?.expectSalary + '$/ hour' : 'Not infor'}</span>

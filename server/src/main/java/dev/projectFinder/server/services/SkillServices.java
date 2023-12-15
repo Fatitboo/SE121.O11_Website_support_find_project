@@ -95,6 +95,7 @@ public class SkillServices {
             Vacancy vacancy = optionalVacancy.get();
             List<String> reportIds = vacancy.getReports();
             for ( String reportId: reportIds){
+
                 reports.add(reportRepository.findById(new ObjectId(reportId)).get());
             }
         }
@@ -111,26 +112,20 @@ public class SkillServices {
     }
     public List<VacPro> getAllVacProHasReport(){
         List<Vacancy> vacancies = vacancyRepository.findByReportsNotNull();
-        List<Project> projects = projectRepository.findByReportsNotNull();
+
         List<VacPro> vacPros = new ArrayList<>();
         for (Vacancy v: vacancies) {
-            vacPros.add(new VacPro(v.getVacancyId().toString(),
-                    v.getUserInfo().getAvatar(), v.getUserInfo().getFullName(),
-                    true, v.getLocation(), v.getVacancyName(),
-                    v.getCreatedAt(), v.getHiringTimeline(), v.getSkillsRequired(),
-                    v.getDescription(),
-                    v.getReports()));
+            if(v.getApprovalStatus().equals("blocked")) continue;
+            if(v.getApprovalStatus().equals("approved")){
+                vacPros.add(new VacPro(v.getVacancyId().toString(),
+                        v.getUserInfo().getAvatar(), v.getUserInfo().getFullName(),
+                        true, v.getLocation(), v.getVacancyName(),
+                        v.getCreatedAt(), v.getHiringTimeline(), v.getSkillsRequired(),
+                        v.getDescription(),
+                        v.getReports()));
+            }
         }
-        for (Project p: projects) {
-            User u = userRepository.findById(p.getUserId()).get();
-            String avt = u.getAvatar() !=null? u.getAvatar().getFileUrl() : "https://pic.onlinewebfonts.com/thumbnails/icons_148020.svg";
-            vacPros.add(new VacPro(p.getProjectId().toString(),
-                    avt, u.getFullName(),
-                    false, u.getAddress().getProvince()!=null ?u.getAddress().getProvince():"No information" ,
-                    p.getProjectName(),
-                    p.getCreatedAt(), p.getDuration(), p.getOccupations(),
-                    p.getDescription(), p.getReports()));
-        }
+
         return vacPros;
     }
 

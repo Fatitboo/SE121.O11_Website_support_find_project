@@ -5,6 +5,7 @@ import { getAllProjectsAdmin, resetSuccessAction } from "../../../redux/slices/p
 import { ComboBox, LoadingComponent, PaginationButtons } from "../../../components";
 import { AiOutlineSearch } from "react-icons/ai";
 import ProjectItem from './ProjectItem'
+import Swal from "sweetalert2";
 const listItemCbb = [
     {
         id: 1,
@@ -17,20 +18,23 @@ const listItemCbb = [
     },
     {
         id: 3,
-        name: 'Processing',
+        name: 'Wait Payment',
     },
     {
         id: 4,
-        name: 'Finish',
+        name: 'Approved',
 
     },
     {
         id: 5,
-        name: 'Cancelled',
+        name: 'Rejected',
 
     },
+    {
+        id: 6,
+        name: 'Blocked',
 
-
+    },
 ]
 function Approval() {
     const dispatch = useDispatch();
@@ -44,10 +48,27 @@ function Approval() {
         dispatch(getAllProjectsAdmin());
     }, [dispatch])
     const storeData = useSelector(store => store?.projects);
-    const { loading, appErr, isSuccess, projectsAdmin } = storeData;
+    const { loading, appErr, isSuccess, projectsAdmin,isSuccessUpd } = storeData;
 
     const onFilterlistPostedCbb = (filterValue) => {
-
+        if(filterValue.name==='All'){
+            setProjectList([...projectsAdmin]);
+        }
+        if(filterValue.name==='Pending'){
+            setProjectList([...projectsAdmin.filter(item=>item?.project?.status==='pending')]);
+        }
+        if(filterValue.name==='Rejected'){
+            setProjectList([...projectsAdmin.filter(item=>item?.project?.status==='rejected')]);
+        }
+        if(filterValue.name==='Wait Payment'){
+            setProjectList([...projectsAdmin.filter(item=>item?.project?.status==='waitPayment')]);
+        }
+        if(filterValue.name==='Approved'){
+            setProjectList([...projectsAdmin.filter(item=>item?.project?.status==='approved')]);
+        }
+        if(filterValue.name==='Blocked'){
+            setProjectList([...projectsAdmin.filter(item=>item?.project?.status==='blocked')]);
+        }
     }
     useEffect(() => {
         setPages([...projectList.filter(item => ((item?.project?.projectName).toLowerCase().includes(filterKeyWord.toLowerCase()) 
@@ -61,7 +82,19 @@ function Approval() {
         }
     }, [isSuccess])
 
-
+    useEffect(() => {
+        if (isSuccessUpd) {
+            Swal.fire({
+                title: "Success!",
+                text: "This item has been updated.",
+                icon: "success",
+                confirmButtonColor: '#3085d6'
+            })
+            dispatch(resetSuccessAction());
+            setProjectList([...projectsAdmin]);
+            setPages([...projectsAdmin.slice(currentPage * 10, (currentPage + 1) * 10)])
+        }
+    }, [isSuccessUpd])
     return (
         <div className="px-10 pb-0">
             {/* Start title of page  */}

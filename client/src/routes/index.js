@@ -74,7 +74,7 @@ const publicRoutes = [
     {path:'/Seeker/project-info/:id', component: ProjectDetailSeeker, layout: LayoutNoSidebar},
     {path:'/Seeker/my-profile', component: MyProfile, layout: LayoutHasSidebar},
     {path:'/Seeker/my-resume', component: MyResume, layout: LayoutHasSidebar},
-    {path:'/Seeker/project-info', component: ProjectInfo, layout: LayoutNoSidebar},
+    // {path:'/Seeker/project-info', component: ProjectInfo, layout: LayoutNoSidebar},
     {path:'/Seeker/dashboard', component: DashboardSeeker, layout: LayoutHasSidebar},
     {path:'/Seeker/find-organizer', component: FindOrganizer, layout: LayoutNoSidebar},
     {path:'/Seeker/company-profile/:id', component: CompanyProfile, layout: LayoutNoSidebar},

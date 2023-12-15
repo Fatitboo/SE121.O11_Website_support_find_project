@@ -147,6 +147,7 @@ function DashboardCompany() {
     const dispatch = useDispatch();
     const [dataViews, setDataView] = useState([])
     const [currentLastMonths, setCurrentLastMonths] = useState(6)
+    const [noti, setNoti] = useState([])
     const onFilterValueSelected = (filterValue) => {
         setCurrentLastMonths(filterValue.id)
     }
@@ -158,6 +159,7 @@ function DashboardCompany() {
     useEffect(() => {
         if (isSuccess) {
             dispatch(resetSuccessAction());
+            setNoti([...notification??[]])
             var dt = [];
             const date = new Date();
             const year = date.getFullYear();
@@ -345,7 +347,7 @@ function DashboardCompany() {
                         <div className='mx-5 pt-6 font-bold '>Notifications</div>
                         <div className="pr-4 pl-5 mt-4 overflow-auto h-[470px] no-scrollbar">
                             {
-                                ([...notification].reverse())?.map((item, index) => {
+                                ([...noti]?.reverse())?.map((item, index) => {
                                     return <div key={index} className="flex mt-2 mb-6 ">
                                         <div className="flex items-center">
                                             <div className={`rounded-full p-2 mr-4  ${index % 2 === 0 ? 'bg-green-100 text-green-700' : 'bg-blue-100 text-blue-700'}`}><PiSuitcaseSimpleDuotone /></div>

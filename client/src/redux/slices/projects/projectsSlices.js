@@ -178,6 +178,31 @@ export const getProjectSingle = createAsyncThunk(
         }
     }
 )
+//get Participants project
+export const getParticipantsProject = createAsyncThunk(
+    'projects/getParticipantsProject',
+    async (payload, { rejectWithValue, getState, dispatch }) => {
+        try {
+            const user = getState()?.users;
+            const { userAuth } = user;
+            // http call 
+            const config = {
+                headers: {
+                    Authorization: `Bearer ${userAuth?.user?.token}`,
+                    'Content-Type': 'application/json',
+                },
+            };
+            console.log(payload.value)
+            const { data } = await axios.get(`${baseUrl}/${apiPrefix}/get-participants-project/${payload.id}`, config);
+            return data;
+        } catch (error) {
+            if (!error?.response) {
+                throw error;
+            }
+            return rejectWithValue(error?.response?.data);
+        }
+    }
+)
 //update Favourite Project
 export const updateFavouriteProjectAction = createAsyncThunk(
     "projects/updateFavouriteProject",
@@ -233,6 +258,32 @@ export const getAllFavouriteProjectsAction = createAsyncThunk(
         }
     }
 );
+//update Project Status
+export const updateProjectStatus = createAsyncThunk(
+    'projects/updateStatusProject',
+    async (dt, { rejectWithValue, getState, dispatch }) => {
+        try {
+            const user = getState()?.users;
+            const { userAuth } = user;
+            // http call 
+            const config = {
+                headers: {
+                    Authorization: `Bearer ${userAuth?.user?.token}`,
+                    'Content-Type': 'multipart/form-data',
+                },
+            };
+            const formData = new FormData();
+            formData.append('status', dt.status)
+            const { data } = await axios.put(`${baseUrl}/${apiPrefix}/update-status-project/${dt.id}`, formData, config);
+            return data;
+        } catch (error) {
+            if (!error?.response) {
+                throw error;
+            }
+            return rejectWithValue(error?.response?.data);
+        }
+    }
+)
 //Set success
 export const resetSuccessAction = createAsyncThunk(
     "projects/resetSuccess",
@@ -264,7 +315,9 @@ const projectsSlices = createSlice({
         isSuccessUD: false,
         loadingUD: false,
         loadingDL: false,
-        loadingCR: false
+        loadingCR: false,
+        projectsAdmin:[],
+        projectparticipants:[]
     },
     reducers: {
         setValueSuccess: (state, action) => {
@@ -377,9 +430,25 @@ const projectsSlices = createSlice({
                 state.loadingPr = false;
                 state.appErr = action?.payload?.message;
             }),
+            //get project single
+            builder.addCase(getParticipantsProject.pending, (state, action) => {
+                state.loading = true;
+                state.loadingPr = true;
+            }),
+            builder.addCase(getParticipantsProject.fulfilled, (state, action) => {
+                state.loading = false;
+                state.loadingPr = false;
+                state.projectparticipants = action.payload.participantsProject;
+            }),
+            builder.addCase(getParticipantsProject.rejected, (state, action) => {
+                state.loading = false;
+                state.loadingPr = false;
+                state.appErr = action?.payload?.message;
+            }),
             builder.addCase(resetSuccessAction.fulfilled, (state, action) => {
                 state.isSuccess = false;
                 state.isSuccessFvr = false;
+                state.isSuccessUpd = false;
             }),
             //update Favourite Project Action
             builder.addCase(updateFavouriteProjectAction.pending, (state, action) => {
@@ -429,6 +498,22 @@ const projectsSlices = createSlice({
                 state.loading = false;
                 state.appErr = action?.payload?.message;
                 state.isSuccess = false;
+            }),
+            //update vacancy status
+            builder.addCase(updateProjectStatus.pending, (state, action) => {
+                state.loading = true;
+            }),
+            builder.addCase(updateProjectStatus.fulfilled, (state, action) => {
+                state.loading = false;
+                state.appErr = null;
+                let currentProject = state.projectsAdmin.findIndex((p) => p.project.projectId === action?.payload?.updateProjectId);
+                if (currentProject !== -1) state.projectsAdmin[currentProject].project.status = action?.payload?.status;
+                state.isSuccessUpd = true;
+            }),
+            builder.addCase(updateProjectStatus.rejected, (state, action) => {
+                state.loading = false;
+                state.appErr = action?.payload?.message;
+                state.isSuccessUpd = false;
             })
     }
 });

@@ -684,7 +684,8 @@ const usersSlices = createSlice({
         cvUser: [],
         selectedCv: {},
         corList: [],
-        skrList: []
+        skrList: [],
+        shortListUsers:[],
     },
     reducers: {
         setSltCv: (state, action) => {
@@ -843,7 +844,7 @@ const usersSlices = createSlice({
             }),
             builder.addCase(updateUserCvAction.fulfilled, (state, action) => {
                 state.loading = false;
-                state.cvUser.push({ ...action?.payload?.cv });
+                state.cvUser.push(action?.payload?.cv );
                 state.appErr = undefined;
                 state.isSuccess = true;
             }),

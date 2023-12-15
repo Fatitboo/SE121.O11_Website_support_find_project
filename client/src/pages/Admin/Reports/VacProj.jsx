@@ -5,11 +5,15 @@ import { IoChevronDownOutline } from 'react-icons/io5'
 import { PiTargetLight } from 'react-icons/pi'
 import baseUrl from '../../../utils/baseUrl'
 import axios from 'axios'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { FiLock } from 'react-icons/fi'
+import Swal from 'sweetalert2'
+import { updateVacancyStatus } from '../../../redux/slices/vacancies/vacanciesSlices'
+import { Link } from 'react-router-dom'
 
 export const VacProj = ({ item }) => {
     let [dropDownTags, setDropDownTags] = useState(false)
+    const dispatch = useDispatch();
     const [loading, setLoading] = useState(false)
     const [reports, setReports] = useState(null)
     const [moreDetail, setMoreDetail] = useState(false)
@@ -54,10 +58,30 @@ export const VacProj = ({ item }) => {
         }
 
     }
+    const handleRejectVacancy = (id) => {
+        // dispatch(deleteOccupationAction(id));
+        Swal.fire({
+            title: "Confirm Block",
+            text: "Are you sure you want to block this vacancy?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Block"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                const dt = {
+                    id: id,
+                    status: 'blocked'
+                }
+                dispatch(updateVacancyStatus(dt))
+            }
+        });
+    }
     return (
         <tr>
             <td colSpan={2} className="p-7 rounded-[10px] border overflow-hidden border-[#ecedf2] hover:shadow-[0_7px_18px_rgba(64,79,104,.05)]  mb-[30px]">
-                <div className="flex flex-row">
+                <Link to={`/Admin/manage-vacancy/${item.vacProId}`} className="flex flex-row">
                     <div>
                         <div className="w-[50px] h-[50px] rounded-lg bg-slate-400">
                             <img src={item?.avt} className="w-full h-full" alt="Logo" />
@@ -86,7 +110,7 @@ export const VacProj = ({ item }) => {
                                 </div>
                             </div>
                             <div className='pr-[11%]'>
-                                <FiLock size={24} color='red' className='cursor-pointer'/>
+                                <FiLock onClick={()=>handleRejectVacancy(item?.vacProId)} size={24} color='red' className='cursor-pointer'/>
                             </div>
                         </div>
                         <div className="flex flex-row items-center mt-2">
@@ -108,7 +132,7 @@ export const VacProj = ({ item }) => {
                             </p>
                         </div>
                     </div>
-                </div>
+                </Link>
 
                 <div>
                     <div className="flex flex-col mt-3">

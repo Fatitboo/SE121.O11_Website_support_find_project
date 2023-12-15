@@ -4,10 +4,11 @@ import { LiaTrashAltSolid } from "react-icons/lia";
 import { CiEdit } from 'react-icons/ci';
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
-import { createNewSkillAction, deleteSkillAction, getAllReportsAdminAction, getAllSkillsAction, updateSkillAction } from '../../../redux/slices/skills/skillsSlices';
 import {LoadingComponent} from "../../../components";
 import { useForm } from "react-hook-form";
 import { VacProj } from "./VacProj";
+import { getAllReportsAdminAction, resetSuccessAction } from "../../../redux/slices/vacancies/vacanciesSlices";
+import Swal from "sweetalert2";
 
 function ManageReport() {
     const dispatch = useDispatch();
@@ -16,9 +17,19 @@ function ManageReport() {
     useEffect(() => {
         dispatch(getAllReportsAdminAction())
     }, []);
-    const skills = useSelector(store => store?.skills);
-    const { loading, vacProList, appErr } = skills
-
+    const vacancies = useSelector(store => store?.vacancies);
+    const { loading, vacProList, appErr,isSuccess2,isSuccessUpd } = vacancies
+    useEffect(()=>{
+        if(isSuccessUpd){
+            dispatch(resetSuccessAction());
+            Swal.fire({
+                title: "Success!",
+                text: "This item has been updated.",
+                icon: "success",
+                confirmButtonColor: '#3085d6'
+            })
+        }
+    }, [isSuccessUpd])
     return (
         <div className="px-10 pb-0">
             {loading && <LoadingComponent />}
@@ -48,7 +59,7 @@ function ManageReport() {
                                     
                                 </div>
                                 <div className="flex ">
-                                    <div className="mr-1">Reported: </div> <span>  {vacProList?.length}</span>
+                                    <div className="mr-1">Reported vacancies: </div> <span>  {vacProList?.length}</span>
                                 </div>
                             </div>
                             {/* table list skill information */}
@@ -57,9 +68,9 @@ function ManageReport() {
                                     <table className="relative w-full overflow-y-hidden overflow-x-hidden rounded-md mb-8 bg-white border-0">
                                         <thead className="bg-[#f5f7fc] color-white border-transparent border-0 w-full">
                                             <tr className="w-full">
-                                                <th className="relative text-[#3a60bf] font-normal py-6 text-base text-left pl-6" >Vacancy or Project has been reported</th>
+                                                <th className="relative text-[#3a60bf] font-normal py-6 text-base text-left pl-6" >Vacancies has been reported</th>
                                                
-                                                <th className="relative text-[#3a60bf] font-normal py-6 text-base text-left ">Actions</th>
+                                                <th className="relative text-[#3a60bf] font-normal py-6 text-base text-left ">Block</th>
                                             </tr>
                                         </thead>
                                         <tbody>

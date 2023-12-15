@@ -536,6 +536,34 @@ export const getAllFavouriteVacanciesAction = createAsyncThunk(
         }
     }
 );
+//getAllReportsAdminAction
+export const getAllReportsAdminAction = createAsyncThunk(
+    'vacancies/getAllReportsAdmin',
+    async (d, { rejectWithValue, getState, dispatch }) => {
+        try {
+            const user = getState()?.users;
+            const { userAuth } = user;
+            // http call 
+            const config = {
+                headers: {
+                    Authorization: `Bearer ${userAuth?.user?.token}`,
+                    'Content-Type': 'application/json',
+                },
+            };
+ 
+            const { data } = await axios.get(`${baseUrl}/api/v1/skills/get-all-report-admin`,  config);
+            console.log(data)
+            return data;
+        } catch (error) {
+            if (!error?.response) {      
+                console.log(error)
+
+                throw error;
+            }
+            return rejectWithValue(error?.response?.data);
+        }
+    }
+)
 export function setValueSuccess(value) {
     return function setValueSuccess(dispatch, getState) {
         dispatch(vacanciesSlices.actions.setValueSuccess(value))
@@ -637,6 +665,9 @@ const vacanciesSlices = createSlice({
                 state.appErr = null;
                 let currentVacancy = state.vacancies.findIndex((v) => v.vacancyId === action?.payload?.updateVacancyId);
                 if (currentVacancy !== -1) state.vacancies[currentVacancy].approvalStatus = action?.payload?.status;
+                else{
+                    state.vacProList.pop(item=>item.vacProId ===action?.payload?.updateVacancyId )
+                }
                 state.isSuccessUpd = true;
             }),
             builder.addCase(updateVacancyStatus.rejected, (state, action) => {
@@ -946,6 +977,23 @@ const vacanciesSlices = createSlice({
                 state.favouriteVacancies = action?.payload?.favouriteVacancies;
             }),
             builder.addCase(getAllFavouriteVacanciesAction.rejected, (state, action) => {
+                state.loading = false;
+                state.appErr = action?.payload?.message;
+                state.isSuccess2 = false;
+            }),
+
+            // get all rp
+            builder.addCase(getAllReportsAdminAction.pending, (state, action) => {
+                state.loading = true;
+                state.isSuccess2 = false;
+            }),
+            builder.addCase(getAllReportsAdminAction.fulfilled, (state, action) => {
+                state.loading = false;
+                state.vacProList = action?.payload.reports;
+                state.appErr = null;
+                state.isSuccess2 = true;
+            }),
+            builder.addCase(getAllReportsAdminAction.rejected, (state, action) => {
                 state.loading = false;
                 state.appErr = action?.payload?.message;
                 state.isSuccess2 = false;

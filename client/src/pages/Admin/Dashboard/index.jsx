@@ -463,7 +463,7 @@ function Dashboard() {
                                                     <div className="">
                                                         <ul className="list-none flex relative item-center ">
                                                             <li className="list-none relative mr-2 bg-[#f5f7fc] border rounded-md border-[#e9ecf9] px-1 pt-1 hover:bg-[#5f86e9] hover:text-white">
-                                                                <Link to={`/Organizer/vacancy-info/${item.vacancyId}`}> <LiaEyeSolid fontSize={18} /> </Link>
+                                                                <Link to={`/Admin/manage-vacancy/${item.vacancyId}`}> <LiaEyeSolid fontSize={18} /> </Link>
                                                             </li>
                                                             <li className="list-none relative mr-2 bg-[#f5f7fc] border rounded-md border-[#e9ecf9] px-1 pt-1 hover:bg-[#278646] hover:text-white">
                                                                 <button> <AiOutlineCheckCircle fontSize={18} /> </button>

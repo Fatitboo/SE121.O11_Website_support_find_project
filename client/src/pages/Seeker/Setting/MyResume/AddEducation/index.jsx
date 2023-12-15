@@ -176,10 +176,10 @@ function AddEducation({ educations, setEducations, initList, name, des, action, 
                                     educations.map((item, index) => {
                                         return (
                                             <div key={item.id} className="flex flex-row mb-3 w-full  group">
-                                                <div className="w-[15%] mr-3 flex text-[#05264e] flex-col">
+                                                <div className="w-[22%] mr-3 flex text-[#05264e] flex-col">
                                                     <CustomCbbResume filterValueSelected={(e) => filterValueSelected(e, item.id)} label={'Degree'} placeHolder={'Degree'} name={'degree'} type={'select'} selectItem={item.degree} listItem={DegreesCbb} />
                                                 </div>
-                                                <div className="w-[60%] mr-3 ">
+                                                <div className="w-[53%] mr-3 ">
                                                     <TextInput  {...register(`major${item.id}`, { required: "This field is required!", })} name={`major${item.id}`}
                                                         error={errors[`major${item.id}`] ? errors[`major${item.id}`].message : ""} value={item.major}
                                                         type='text' label='Major' placeholder='Software engineer' styles='text-[#05264e] mt-0.5 text-base  tw-bg-white' labelStyle='block leading-6 text-gray-900 text-base font-semibold ' />

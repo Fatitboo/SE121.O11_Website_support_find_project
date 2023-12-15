@@ -42,15 +42,15 @@ function Login() {
     useEffect(() => {
         if (userAuth) {
             if (userAuth?.isActive) {
-                console.log(userAuth?.user?.userType)
+                console.log(userAuth?.user?.userType==='organizer')
                 if (userAuth?.user?.userType === 'organizer') {
-                    
+                
                     navigate('/Organizer/dashboard') 
                 }
                 if (userAuth?.user?.userType === 'seeker') {
                     navigate('/') 
                 }
-                else {
+                if (userAuth?.user?.userType === 'admin')  {
                     navigate('/Admin') 
                 }
             }

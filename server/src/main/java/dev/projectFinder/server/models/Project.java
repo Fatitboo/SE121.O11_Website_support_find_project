@@ -41,6 +41,11 @@ public class Project {
     private Date startDate;
     private String duration;
     private String period;
+    // 1. first created : pending
+    // 2. Admin browser => rejected + waitPayment
+    // 3. Cor payment => success => approved
+    //                  fail => waitPayment
+    // Report => Admin set => cancel
     private String status;
     private String budget;
     private ObjectId[] participants;

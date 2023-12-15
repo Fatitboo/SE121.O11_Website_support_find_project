@@ -87,9 +87,10 @@ public class Vacancy {
     private List<String> favouriteUsers;
 
     // admin approval
-    // 1. pending
-    // 2. fulfil
-    // 3. rejected
+    // 1. first created: pending
+    // 2. Admin browser =>  accepted => post cor set true or false
+    // 3.                   rejected => post => false
+    // 4 report => cancel => post => false
     private String approvalStatus;
 
     // date create and update

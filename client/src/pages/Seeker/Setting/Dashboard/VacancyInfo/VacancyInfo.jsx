@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { BiBookmark, BiPackage } from "react-icons/bi";
+import { BiBookmark, BiLogoFacebook, BiLogoInstagram, BiLogoLinkedin, BiMoney, BiPackage } from "react-icons/bi";
 import { PiTargetLight } from 'react-icons/pi';
 import { GoHourglass, GoLocation } from "react-icons/go";
 import VacancyItem from "./VacancyItem";
@@ -10,10 +10,11 @@ import { ToastContainer, toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { BsBookmarkFill, BsClock } from "react-icons/bs";
-import { getVacancyInfoDetail, resetSuccessAction, updateFavouriteVacancyAction } from "../../../../../redux/slices/vacancies/vacanciesSlices";
+import { getAllParticipantsVacancy, getVacancyInfoDetail, resetSuccessAction, updateFavouriteVacancyAction } from "../../../../../redux/slices/vacancies/vacanciesSlices";
 import { CalendarIcon, ExpiryIcon, SalaryIcon } from "../../../../../assets/icons";
 import { LoadingComponent } from "../../../../../components";
 import { Candidate } from "../../../../../assets/images";
+import { HiOutlineLocationMarker } from "react-icons/hi";
 
 
 const participants = [
@@ -39,7 +40,7 @@ function VacancyInfo() {
     const navigate = useNavigate();
     const [sltVacancy, setSltVacancy] = useState({});
     const storeData = useSelector(store => store?.vacancies);
-    const { loading, appErr, vacancyInfo, isSuccess2 } = storeData;
+    const { loading, appErr, vacancyInfo, isSuccess2,loadingGAA,participants,loadingACAP, loadingBLMB, loadingRCMB } = storeData;
     const notify = (type, message) => toast(message, { type: type });
     useEffect(() => {
         dispatch(getVacancyInfoDetail(id))
@@ -47,6 +48,7 @@ function VacancyInfo() {
     useEffect(() => {
         if (isSuccess2) {
             dispatch(resetSuccessAction());
+            dispatch(getAllParticipantsVacancy(id))
             setSltVacancy({ ...vacancyInfo });
         }
     }, [isSuccess2])
@@ -121,7 +123,7 @@ function VacancyInfo() {
                             <img src={sltVacancy?.userInfo?.avatar ?? Candidate} className="w-full h-full rounded-xl border " alt="" />
                         </div>
                         <div className="ml-5">
-                            <div cl>
+                            <div >
                                 <div className="text-[24px] leading-[35px] text-[#202124] font-medium">{sltVacancy?.vacancyName}</div>
                             </div>
                             <div className="flex flex-row text-[14px] font-thin my-[8px]">
@@ -130,7 +132,7 @@ function VacancyInfo() {
                                 <span className="flex flex-row items-center mr-7"><GoHourglass className="w-[18px] h-[18px] mr-1" />{sltVacancy?.hiringTimeline ?? 'Not infor'}</span>
                                 <span className="flex flex-row items-center mr-7"><PiTargetLight className="w-[22px] h-[22px] mr-1" />{sltVacancy?.maxRequired} required</span>
                             </div>
-                            {/* skills */}
+                         
                             <div className="flex flex-row flex-wrap">
                                 {
                                     (!sltVacancy.timeRequires ? ['Not information'] : [...sltVacancy.timeRequires]).map((item, index) => {
@@ -160,7 +162,7 @@ function VacancyInfo() {
                     <></>
                     {/* Share to social */}
                     <></>
-                    {/* <div>
+                    <div>
                         <div className="flex flex-row items-center mt-6">
                             <h4 className="text-base leading-6 text-[#202124] font-semibold">Share this project</h4>
                             <a href={sltVacancy} target="_blank" className="flex flex-row items-center bg-[#3b5998] py-[10px] px-[25px] text-[14px] ml-[12px] rounded-lg">
@@ -176,19 +178,76 @@ function VacancyInfo() {
                                 <span className="text-[#fff] ml-1">Instagram</span>
                             </a>
                         </div>
-                    </div> */}
+                    </div>
                     <></>
 
                     {/* Project vacancy */}
                     <></>
                     <div className="mt-12">
-                        <h4 className="text-base leading-6 text-[#202124] mb-5 font-semibold">Applicants</h4>
-                        <div>
+                        <h4 className="text-base leading-6 text-[#202124] mb-5 font-semibold">Members ({participants?.members ? participants?.members.length : 0})</h4>
+                        <div className="flex flex-col gap-3">
                             {
-                                // vacancies.map((item, index) => {
-                                //     return <VacancyItem key={index} vacancyName={item.vacancyName} salary={item.salary} skillsRequired={item.skillsRequired} description={item.description} maxRequired={item.maxRequired} />;
-                                // })
+                                loadingGAA ?
+                                    [1, 2].map((item, index) => {
+                                        return <VacancyItemLoader key={index} />
+                                    })
+                                    :
+                                    participants?.members?.map((item, index) => {
+                                        return <div key={index} className="relative">
+                                            {item?.isVerify ?
+                                                <div className="absolute top-3 left-[-10px] w-[30px] z-10">
+                                                    <div className="bg-blue-600 text-white text-sm px-3 py-1 rounded-e w-fit">
+                                                        Verified
+                                                    </div>
+                                                    <svg height="10" width="10">
+                                                        <polygon points="0,0 100,0 100,100" fill="rgb(30 64 175)" />
+                                                    </svg>
+                                                </div>
+                                                :
+                                                <div className="absolute top-2.5 left-[-10px] w-[30px] z-10">
+                                                    <div className="bg-red-500 text-white text-sm px-3 py-1 rounded-e w-fit">
+                                                        UnVerified
+                                                    </div>
+                                                    <svg height="10" width="10" >
+                                                        <polygon points="0,0 100,0 100,100" fill="rgb(185 28 28)" />
+                                                    </svg>
+                                                </div>
+                                            }
+
+                                            <div className="col-span-1 border-[0.5px] rounded border-[#ccc] p-4 flex shadow hover:transition-all cursor-pointer hover:animate-[wiggle_0.3s_ease_0s_forwards] hover:bg-[#FFF]">
+                                                <img src={item?.avatar?.fileUrl ?? 'https://i.pinimg.com/564x/16/3e/39/163e39beaa36d1f9a061b0f0c5669750.jpg'} className="w-[80px] h-[80px] rounded-full my-2 mx-2 shadow"></img>
+                                                <div className="my-2 mx-2">
+                                                    <div className="font-medium text-base">{item?.fullName ?? 'Not information'}</div>
+                                                    <div className="flex my-2">
+                                                        <div className="text-blue-700 font-light text-sm mr-3">{item?.jobTitle ?? 'Not information'}</div>
+                                                        <span className="text-[#a0abb8] font-light col-span-2 text-sm flex flex-row items-center mb-1 mr-3"><HiOutlineLocationMarker color="#a0abb8" strokeWidth={"1.5px"} className="w-[18px] h-[18px] mr-1" />{item?.address?.province ?? 'Not infor'}, {item?.address?.country ?? 'not infor'}</span>
+                                                        <span className="text-[#a0abb8] font-light text-sm flex flex-row items-center mb-1"><BiMoney color="#a0abb8" strokeWidth={"1.5px"} className="w-[18px] h-[18px] mr-1" />{item?.expectSalary ? item?.expectSalary + '$/ hour' : 'Not infor'}</span>
+                                                    </div>
+
+                                                    <div className="text-[#a0abb8] text-sm flex flex-row items-start w-full pr-6 mt-4">
+                                                        <div className="flex flex-wrap line-clamp-2 w-full items-start" >
+                                                            {
+                                                                (item?.skillUsers ?? [{ skillName: 'Not information', skillLevel: 'Beginner' }]).map((i, index) => {
+                                                                    return (
+                                                                        <div key={index} className={`mr-3 items-center w-fit
+                                                                                    ${i.skillLevel === "Beginner" ? "bg-[rgba(25,103,210,.15)] text-[#1967d2]"
+                                                                                : i.skillLevel === "Intermediate" ? "bg-[rgba(52,168,83,.15)] text-[#34a853]"
+                                                                                    : "bg-[rgba(249,171,0,.15)] text-[#f9ab00]"} rounded-3xl flex`}>
+                                                                            <span className="text-[13px] px-[10px] py-[5px] leading-none">{i.skillName}</span>
+                                                                        </div>
+                                                                    )
+                                                                })
+                                                            }
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    })
+
                             }
+                            {(loadingACAP || loadingRCMB) && <VacancyItemLoader />}
                         </div>
                     </div>
                     <></>
