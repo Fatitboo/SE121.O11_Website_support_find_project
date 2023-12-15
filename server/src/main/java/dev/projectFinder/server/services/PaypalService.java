@@ -1,8 +1,13 @@
 package dev.projectFinder.server.services;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.paypal.api.payments.*;
 import com.paypal.base.rest.APIContext;
 import com.paypal.base.rest.PayPalRESTException;
+import dev.projectFinder.server.models.History;
+import dev.projectFinder.server.repositories.HistoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,6 +22,8 @@ import java.util.List;
 public class PaypalService {
     @Autowired
     private APIContext apiContext;
+    @Autowired
+    private HistoryRepository historyRepository;
 
     public Payment createPayment(
             Double total,
@@ -59,6 +66,14 @@ public class PaypalService {
         PaymentExecution paymentExecute = new PaymentExecution();
         paymentExecute.setPayerId(payerId);
         return payment.execute(apiContext, paymentExecute);
+    }
+
+    public void saveHistotyPayment(String paymentJson) throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+
+        JsonNode node = mapper.readTree(paymentJson);
+        History history = new History(node);
+        historyRepository.save(history);
     }
 
 }

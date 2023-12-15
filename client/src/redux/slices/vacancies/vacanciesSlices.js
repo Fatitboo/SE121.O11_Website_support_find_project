@@ -827,15 +827,19 @@ const vacanciesSlices = createSlice({
             builder.addCase(removeApplicantVacancy.pending, (state, action) => {
                 state.loadingRMAP = true;
                 state.isSuccessAL = false;
+                state.isSuccessRM = false;
             }),
             builder.addCase(removeApplicantVacancy.fulfilled, (state, action) => {
                 state.loadingRMAP = false;
                 state.appErr = null;
-                state.applicants = state.applicants.filter(item => item.userId !== action.payload.id)
+                state.isSuccessRM = true;
+                if(state.applicants)
+                    state.applicants = state.applicants.filter(item => item.userId !== action.payload.id)
             }),
             builder.addCase(removeApplicantVacancy.rejected, (state, action) => {
                 state.loadingRMAP = false;
                 state.appErr = action?.payload?.message;
+                state.isSuccessRM = false;
             }),
 
             builder.addCase(blockMemberVacancy.pending, (state, action) => {

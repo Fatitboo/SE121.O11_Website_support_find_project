@@ -69,6 +69,7 @@ public class Vacancy {
     private List<String> registants;
 
     private List<Participant> participants;
+    private List<Participant> rejectParticipants;
 
     //skill required
     private String[] skillsRequired;

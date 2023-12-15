@@ -23,6 +23,8 @@ export { default as emailVerifyImage } from './emailVerifyImage.png'
 export { default as verifiedSuccessfulImage } from './success_8006888.png'
 export { default as pleaseWaiting } from './preload_waiting_1.gif'
 export { default as lockAccount } from './lockAccount.png'
+export { default as SuccessPaymentIcon } from './success.jpg'
+export { default as CancelPaymentIcon } from './calcel.jpg'
 
 
 

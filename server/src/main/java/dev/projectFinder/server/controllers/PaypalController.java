@@ -1,5 +1,6 @@
 package dev.projectFinder.server.controllers;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.paypal.api.payments.Links;
 import com.paypal.api.payments.Payment;
 import com.paypal.base.rest.PayPalRESTException;
@@ -30,12 +31,11 @@ public class PaypalController {
         try {
             Payment payment = service.createPayment(order.getPrice(), order.getCurrency(), order.getMethod(),
                     order.getIntent(), order.getDescription(), "http://localhost:8088/api/v1/payment" + CANCEL_URL,
-                    "http://localhost:8088/api/v1/payment" + SUCCESS_URL);
+                    "http://localhost:5173/Organizer/payment/success");
             for(Links link:payment.getLinks()) {
                 if(link.getRel().equals("approval_url")) {
-                    return "redirect:/" + link.getHref();
+                    return "" + link.getHref();
                 }
-               // return payment.getLinks().get(1).getHref() + "";
             }
 
         } catch (PayPalRESTException e) {
@@ -50,17 +50,18 @@ public class PaypalController {
     }
 
     @GetMapping(value = SUCCESS_URL)
-    public String successPay(@RequestParam("paymentId") String paymentId, @RequestParam("payerID") String payerId) {
+    public String successPay(@RequestParam("paymentId") String paymentId, @RequestParam("PayerID") String payerId) {
         try {
             Payment payment = service.executePayment(paymentId, payerId);
-            System.out.println(payment.toJSON());
             if (payment.getState().equals("approved")) {
-                return payment.toJSON().toString();
+                service.saveHistotyPayment(payment.toJSON());
+                return payment.toJSON();
             }
         } catch (PayPalRESTException e) {
             System.out.println(e.getMessage());
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
         }
         return "redirect:/";
     }
-
 }

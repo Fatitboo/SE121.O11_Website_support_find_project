@@ -56,6 +56,9 @@ import {
 import CreateProject from "../pages/Company/ManageProject/CreateProject"
 import UpdateProject from "../pages/Company/ManageProject/UpdateProject"
 import Payment from "../pages/Company/Payment"
+import SuccessPayment from "../pages/Company/Payment/Sucess"
+import CancelPayment from "../pages/Company/Payment/Cancel"
+import Interview from "../pages/Company/Interview"
 
 
 const publicRoutes = [
@@ -99,6 +102,9 @@ const publicRoutes = [
     {path:'/Organizer/create-project', component: CreateProject, layout: LayoutHasSidebar},
     {path:'/Organizer/update-project/:id', component: UpdateProject, layout: LayoutHasSidebar},
     {path:'/Organizer/payment', component: Payment, layout: LayoutNoSidebar},
+    {path:'/Organizer/payment/success', component: SuccessPayment, layout: LayoutNoSidebar},
+    {path:'/Organizer/payment/cancel', component: CancelPayment, layout: LayoutNoSidebar},
+    {path:'/Organizer/interview', component: Interview, layout: LayoutHasSidebar},
 
 
     //Admin Layout
