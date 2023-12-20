@@ -14,8 +14,9 @@ import { BsBookmarkCheckFill } from "react-icons/bs";
 import { useDispatch, useSelector } from "react-redux";
 import { updateFavouriteProjectAction } from "../../../redux/slices/projects/projectsSlices";
 import { Link } from "react-router-dom";
+import Swal from "sweetalert2";
 
-const ProjectItem = ({ props }) => {
+const ProjectItem = ({ props,notify }) => {
     let [dropDownTags, setDropDownTags] = useState(false)
     const [vacancies, setVacancies] = useState(null)
     const [loading, setLoading] = useState(false)
@@ -61,7 +62,17 @@ const ProjectItem = ({ props }) => {
         return isFvr;
     }
     const handleUpdateFavourite = () => {
-        dispatch(updateFavouriteProjectAction(props?.project?.projectId))
+        if (userAuth)
+            dispatch(updateFavouriteProjectAction({projectId: props?.project?.projectId, notify:null}))
+
+        else {
+            Swal.fire({
+                title: "Login request!",
+                text: "You have to login to use function.",
+                icon: "warning",
+                confirmButtonColor: '#3085d6'
+            })
+        }
     }
     return (
         <>
@@ -79,20 +90,20 @@ const ProjectItem = ({ props }) => {
                                     <a href="#">{props?.project?.projectName}</a>
                                 </h4>
                                 <div className="flex">
-                            <div className="item flex items-center justify-center w-[26px] rounded-[7px] bg-[rgba(25,210,145,0.07)] hover:bg-[rgba(15,51,25,0.07)] ml-5 cursor-pointer opacity-80">
-                                <Link to={'/Seeker/project-info/'+ props?.project?.projectId} >
-                                    <HiEye className="w-full h-full p-[2px] rounded-[7px]" color="#1967d3" />
-                                </Link>
-                            </div>
-                            <div className="item flex items-center justify-center w-[26px] rounded-[7px] bg-[rgba(25,103,210,.07)] hover:bg-[rgba(15,30,51,0.07)] ml-3 cursor-pointer opacity-80">
-                                <div onClick={() => handleUpdateFavourite()}>
-                                    {checkFavourite() ?
-                                        <BsBookmarkCheckFill className="w-full h-full p-[6px] rounded-[7px]" color="#1967d3" />
-                                        : <BiBookmark className="w-full h-full p-[6px] rounded-[7px]" color="#1967d3" />}
-                                </div>
-                            </div>
+                                    <div className="item flex items-center justify-center w-[26px] rounded-[7px] bg-[rgba(25,210,145,0.07)] hover:bg-[rgba(15,51,25,0.07)] ml-5 cursor-pointer opacity-80">
+                                        <Link to={'/Seeker/project-info/' + props?.project?.projectId} >
+                                            <HiEye className="w-full h-full p-[2px] rounded-[7px]" color="#1967d3" />
+                                        </Link>
+                                    </div>
+                                    <div className="item flex items-center justify-center w-[26px] rounded-[7px] bg-[rgba(25,103,210,.07)] hover:bg-[rgba(15,30,51,0.07)] ml-3 cursor-pointer opacity-80">
+                                        <div onClick={() => handleUpdateFavourite()}>
+                                            {checkFavourite() ?
+                                                <BsBookmarkCheckFill className="w-full h-full p-[6px] rounded-[7px]" color="#1967d3" />
+                                                : <BiBookmark className="w-full h-full p-[6px] rounded-[7px]" color="#1967d3" />}
+                                        </div>
+                                    </div>
 
-                        </div>
+                                </div>
                             </div>
                             <div className="flex flex-row items-center mt-2">
                                 <div className="mr-3 bg-[rgba(25,103,210,.15)] text-[#1967d2] rounded-3xl flex">
@@ -160,12 +171,12 @@ const ProjectItem = ({ props }) => {
                                     {
                                         vacancies?.map((item, index) => {
                                             return <div key={index} className="mx-1 relative">
-                                                <div className="absolute top-6 right-28">
+                                                {userAuth && <div className="absolute top-6 right-28">
                                                     <div className="text-sm text-center cursor-pointer text-[white] hover:bg-[#0146a6] bg-[#1967d3] flex items-center leading-7 font-normal rounded-lg " onClick={() => { setSelected(selected.filter(i => i.vacancyId !== item.vacancyId)) }}>
                                                         <div className="m-1 mx-2 font-semibold">Apply now</div>
                                                     </div>
-                                                </div>
-                                                <VacancyItem props={item} isAvatar={false} />
+                                                </div>}
+                                                <VacancyItem props={item} isAvatar={false} setFunc={setVacancies} notify={notify}/>
                                             </div>
                                         })
                                     }

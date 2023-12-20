@@ -44,7 +44,7 @@ public class WebSecurityConfig {
                                     "api/v1/users/login"
                             ).permitAll()
                             .requestMatchers("api/v1/skills**").permitAll()
-                            .requestMatchers("api/v1/occupations**").hasAnyRole(ADMIN, SEEKER)
+                            .requestMatchers("api/v1/occupations**").permitAll()
                             .requestMatchers("api/v1/users**").permitAll()
                             .requestMatchers("api/v1/vacancies**").permitAll()
                             .requestMatchers("api/v1/payment**").permitAll()

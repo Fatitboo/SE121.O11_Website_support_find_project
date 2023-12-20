@@ -12,8 +12,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { BsBookmarkCheckFill, BsEye } from "react-icons/bs";
 import { resetSuccessAction, updateFavouriteVacancyAction } from "../../../redux/slices/vacancies/vacanciesSlices";
 import { LoadingComponent } from "../../../components";
+import Swal from "sweetalert2";
 
-const VacancyItem = ({ props, isAvatar, active, notify, isEditProject }) => {
+const VacancyItem = ({ props, isAvatar, active, notify, isEditProject, setFunc }) => {
     // {vacancyName, skillsRequired, maxRequired, salary, registant, description, isAvatar, companyName, companyAvatar}
     const { userAuth } = useSelector(store => store.users);
     const { loadingFvr } = useSelector(store => store.vacancies)
@@ -27,7 +28,22 @@ const VacancyItem = ({ props, isAvatar, active, notify, isEditProject }) => {
         return isFvr;
     }
     const handleUpdateFavourite = () => {
-        dispatch(updateFavouriteVacancyAction(props?.vacancyId))
+        if (userAuth) {
+            const obj = {
+                vacancyId: props?.vacancyId,
+                setFunc: setFunc ? setFunc : null,
+                notify: notify
+            }
+            dispatch(updateFavouriteVacancyAction(obj))
+        }
+        else {
+            Swal.fire({
+                title: "Login request!",
+                text: "You have to login to use function.",
+                icon: "warning",
+                confirmButtonColor: '#3085d6'
+            })
+        }
     }
 
     return (
@@ -50,7 +66,7 @@ const VacancyItem = ({ props, isAvatar, active, notify, isEditProject }) => {
                             <a href="#">{props?.vacancyName}</a>
                         </h4>
                         <div className="flex">
-                            {isEditProject ? <></>: <><div className="item flex items-center justify-center w-[26px] rounded-[7px] bg-[rgba(25,210,145,0.07)] hover:bg-[rgba(15,51,25,0.07)] ml-5 cursor-pointer opacity-80">
+                            {isEditProject ? <></> : <><div className="item flex items-center justify-center w-[26px] rounded-[7px] bg-[rgba(25,210,145,0.07)] hover:bg-[rgba(15,51,25,0.07)] ml-5 cursor-pointer opacity-80">
                                 <Link to={`/Seeker/vacancy-info/${props?.vacancyId}`} >
                                     <HiEye className="w-full h-full p-[2px] rounded-[7px]" color="#1967d3" />
                                 </Link>

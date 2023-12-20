@@ -35,7 +35,7 @@ const SeekerItem = ({ item }) => {
                     <div className="flex flex-col items-center mt-4">
                         <img src={item.avatar?.fileUrl ?? 'https://i.pinimg.com/564x/16/3e/39/163e39beaa36d1f9a061b0f0c5669750.jpg'} className="w-[80px] h-[80px] rounded-full my-2 shadow"></img>
                         <div className="flex flex-col items-center mb-2">
-                            <a href="" className="text-base leading-[26px] text-[#05264e] font-bold">{item.fullName ?? 'Not information'}</a>
+                            <div className="text-base leading-[26px] text-[#05264e] font-bold">{item.fullName ?? 'Not information'}</div>
                             <div className="text-blue-700 font-light text-sm">{item?.jobTitle ?? 'Not information'}</div>
                         </div>
                         <div className="grid grid-cols-3 gap-2 px-4">

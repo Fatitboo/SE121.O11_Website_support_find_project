@@ -15,6 +15,7 @@ import { CalendarIcon, ExpiryIcon, SalaryIcon } from "../../../../../assets/icon
 import { LoadingComponent } from "../../../../../components";
 import { Candidate } from "../../../../../assets/images";
 import { HiOutlineLocationMarker } from "react-icons/hi";
+import Swal from "sweetalert2";
 
 
 const participants = [
@@ -75,7 +76,6 @@ function VacancyInfo() {
     }
     const pickSalary = () => {
         var str = ''
-        console.log(sltVacancy?.salaryType)
         if (sltVacancy?.salaryType === 'Range') {
             str += sltVacancy?.salaryFirst + ' - ' + sltVacancy?.salarySecond + '$ ' + sltVacancy?.salaryRate
         }
@@ -91,15 +91,25 @@ function VacancyInfo() {
         return str;
     }
     const { userAuth } = useSelector(store => store.users);
-    const userId = userAuth?.user?.userId;
     const checkFavourite = () => {
+        const userId = userAuth?.user?.userId;
         var isFvr = false;
         if (!sltVacancy?.favouriteUsers) return isFvr;
         if (sltVacancy?.favouriteUsers.filter(item => item === userId).length === 1) isFvr = true;
         return isFvr;
     }
     const handleUpdateFavourite = () => {
-        dispatch(updateFavouriteVacancyAction(sltVacancy?.vacancyId))
+
+        if(userAuth)
+            dispatch(updateFavouriteVacancyAction(sltVacancy?.vacancyId))
+        else {
+            Swal.fire({
+                title: "Login request!",
+                text: "You have to login to use function.",
+                icon: "warning",
+                confirmButtonColor: '#3085d6'
+            })
+        }
     }
     return (<>
         {loading && <LoadingComponent />}
@@ -260,7 +270,7 @@ function VacancyInfo() {
                        
                         
                         <div className="item flex self-end items-center justify-center w-[50px] h-[52px] rounded-[7px] bg-[rgba(25,103,210,.07)]  cursor-pointer opacity-80" color="#1967d3">
-                            <div onClick={()=>handleUpdateFavourite} className="item flex items-center justify-center w-full h-full">
+                            <div onClick={()=>handleUpdateFavourite()} className="item flex items-center justify-center w-full h-full">
                                 {
                                     !checkFavourite() ? <BiBookmark className="w-full h-full  p-2.5 rounded-[7px]" color="#1967d3" />
                                         : <BsBookmarkFill className="w-full h-full p-2.5 rounded-[7px]" color="#1967d3" />
@@ -367,7 +377,7 @@ function VacancyInfo() {
                             </div>
                         </div>
                     </div>
-                    <div>
+                    {/* <div>
                         <div className="p-6 bg-[#F5F6FC] rounded-lg mb-[30px]">
                             <h4 className="text-[#202124] text-[18px] font-semibold mb-[30px]">Contact Us</h4>
                             <div>
@@ -375,23 +385,21 @@ function VacancyInfo() {
                                     <form>
                                         <div>
                                             <div className="w-full">
-                                                <input className="px-5 w-full mb-5 py-[15px] text-[15px] leading-[30px] text-[dimgray] rounded-lg border-[#ecedf2] border outline-none" type="text" name="username" placeholder="Your Name" required="" />
+                                                <input  className="px-5 w-full mb-5 py-[15px] text-[15px] leading-[30px] text-[dimgray] rounded-lg border-[#ecedf2] border outline-none" type="text" name="username" placeholder="Subject" required="" />
                                             </div>
-                                            <div className="w-full">
-                                                <input className="px-5 w-full mb-5 py-[15px] text-[15px] leading-[30px] text-[dimgray] rounded-lg border-[#ecedf2] border outline-none" type="email" name="email" placeholder="Email Address" required="" />
-                                            </div>
+                                           
                                             <div className="w-full h-[160px] mb-5">
                                                 <textarea className="px-5 h-full w-full mb-5 py-[15px] text-[15px] leading-[30px] text-[dimgray] rounded-lg border-[#ecedf2] border outline-none" name="message" placeholder="Message"></textarea>
                                             </div>
                                             <div>
-                                                <button className="flex items-center justify-center h-[53px] box-border bg-[#1967d3] px-[18px] py-[8px] w-full rounded-[8px] text-[#fff] hover:bg-[#0d6efd]" type="submit" name="submit-form">Send Message</button>
+                                                <button className="flex items-center justify-center h-[53px] box-border bg-[#1967d3] px-[18px] py-[8px] w-full rounded-[8px] text-[#fff] hover:bg-[#0d6efd]" type="submit" name="submit-form">Open send Message</button>
                                             </div>
                                         </div>
                                     </form>
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div> */}
                 </div>
             </div>
         </div>

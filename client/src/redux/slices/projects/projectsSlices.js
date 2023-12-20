@@ -206,7 +206,7 @@ export const getParticipantsProject = createAsyncThunk(
 //update Favourite Project
 export const updateFavouriteProjectAction = createAsyncThunk(
     "projects/updateFavouriteProject",
-    async (userId, { rejectWithValue, getState, dispatch }) => {
+    async (obj, { rejectWithValue, getState, dispatch }) => {
         const user = getState()?.users;
         const { userAuth } = user;
         // http call 
@@ -217,13 +217,17 @@ export const updateFavouriteProjectAction = createAsyncThunk(
             },
         };
         const formData = new FormData();
-        formData.append('projectId', userId);
+        formData.append('projectId', obj.projectId);
         try {
             const { data } = await axios.put(
                 `${baseUrl}/${apiPrefix}/update-favourite-project/${userAuth?.user?.userId}`,
                 formData,
                 config
             );
+            if(obj.notify){
+                
+                obj.notify('success', 'Update favourite project successfully!');
+            }
             return data;
         } catch (error) {
             if (!error?.response) {
@@ -347,7 +351,7 @@ const projectsSlices = createSlice({
             }),
             builder.addCase(getAllProjectsUser.fulfilled, (state, action) => {
                 state.loading = false;
-                state.projects = action?.payload?.projects;
+                state.projectsOfCor = action?.payload?.projects;
             }),
             builder.addCase(getAllProjectsUser.rejected, (state, action) => {
                 state.loading = false;
@@ -460,19 +464,32 @@ const projectsSlices = createSlice({
             builder.addCase(updateFavouriteProjectAction.fulfilled, (state, action) => {
                 state.loading = false;
                 state.appErr = undefined;
-                state.isSuccessFvr = true;
-                var currentProject = state.projects.findIndex(project => project.project.projectId === action?.payload?.projectId)
-                console.log(currentProject)
-                if (currentProject !== -1) {
-                    if (action?.payload?.isPush) {
-                        state.projects[currentProject].project.favouriteUsers.push(action?.payload?.userId);
+                
+                if(typeof(state.projectsOfCor) === 'undefined'){
+                    state.isSuccessFvr = true;
+                    var currentProject = state.projects.findIndex(project => project.project.projectId === action?.payload?.projectId)
+                    if (currentProject !== -1) {
+                        if (action?.payload?.isPush) {
+                            state.projects[currentProject].project.favouriteUsers.push(action?.payload?.userId);
+                        }
+                        else {
+                            state.projects[currentProject].project.favouriteUsers.pop(action?.payload?.userId);
+                        }
                     }
                     else {
-                        state.projects[currentProject].project.favouriteUsers.pop(action?.payload?.userId);
+                        state.favouriteProjects.pop(item => item.project.projectId === action?.payload?.projectId)
                     }
-                }
-                else {
-                    state.favouriteProjects.pop(item => item.project.projectId === action?.payload?.projectId)
+                }else{
+                    var currentProject = state.projectsOfCor.findIndex(project => project.projectId === action?.payload?.projectId)
+
+                    if (currentProject !== -1) {
+                        if (action?.payload?.isPush) {
+                            state.projectsOfCor[currentProject].favouriteUsers.push(action?.payload?.userId);
+                        }
+                        else {
+                            state.projectsOfCor[currentProject].favouriteUsers.pop(action?.payload?.userId);
+                        }
+                    }
                 }
                 // state.isShorted = !state.isShorted;
             }),

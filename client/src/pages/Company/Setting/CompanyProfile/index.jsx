@@ -5,6 +5,7 @@ import { getUserProfileAction, updateAvatarAction, updateUserProfileAction } fro
 import { useEffect, useRef, useState } from "react";
 import { IoIosClose } from "react-icons/io";
 import fetchSkillApikey from "../../../../utils/fetchSkillApiKey";
+import { AiFillExclamationCircle } from "react-icons/ai";
 
 
 function CompanyProfile() {

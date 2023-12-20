@@ -15,11 +15,7 @@ function MenuList({ user, onClick }) {
         dispatch(logoutUserAction())
         window.location.href = '/user-auth/login';
     }
-    const getName = (fullname) => {
-        const parts = fullname.split(" ");
-        const lastName = parts[parts.length - 1];
-        return lastName
-    }
+
     return (
         <div>
             <Menu as="div" className='inline-block text-left'>
@@ -32,7 +28,7 @@ function MenuList({ user, onClick }) {
                         />
                         <div className='leading[80px] flex flex-col items-start'>
                             <p className='text-sm font-semibold '>
-                                {getName(user?.fullName)}
+                                {user?.fullName}
                             </p>
                         </div>
                         <BiChevronDown

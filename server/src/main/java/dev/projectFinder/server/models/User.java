@@ -79,6 +79,7 @@ public class User implements UserDetails {
     private List<String> vacancies;
     private List<String> projects;
     private List<String> unCompletedVacancies;
+    private List<AppliedVacancy> appliedVacancyList;    
     private List<String> historyPayment;
 
 

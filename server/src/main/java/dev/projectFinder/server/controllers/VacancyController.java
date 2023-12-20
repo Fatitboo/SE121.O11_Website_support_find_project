@@ -281,4 +281,17 @@ public class VacancyController
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
     }
+    @GetMapping("/get-applied-vacancies/{id}")
+    public ResponseEntity<?> getAppliedVacancies(@PathVariable String id){
+        HashMap<String, Object> response = new HashMap<>();
+        try{
+            List<HashMap<String, Object>> vacancies = vacancyServices.getAllAppliedVacancies(id);
+            response.put("message","Get favourite vacancies successfully" );
+            response.put("appliedVacancies",vacancies );
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        }catch (Exception e) {
+            response.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+    }
 }

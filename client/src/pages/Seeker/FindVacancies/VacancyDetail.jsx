@@ -13,6 +13,7 @@ import { IoClose } from "react-icons/io5";
 import { updateFavouriteVacancyAction } from "../../../redux/slices/vacancies/vacanciesSlices";
 import { BsBookmarkCheckFill } from "react-icons/bs";
 import { ReportOr } from "../ReportOr/ReportOr";
+import Swal from "sweetalert2";
 
 const VacancyDetail = ({ props }) => {
     let [modal, setModal] = useState(false)
@@ -21,8 +22,8 @@ const VacancyDetail = ({ props }) => {
 
     const { loading, isSuccessApplied } = useSelector((state) => state.users)
     const [listQuestion, setListQuestion] = useState(null)
-    let user = useSelector((state) => state.users.userAuth.user)
-    let seletedUser = useSelector((state) => state.users.seletedUser)
+    let user = useSelector((state) => state?.users?.userAuth?.user)
+    let seletedUser = useSelector((state) => state?.users?.seletedUser)
 
 
     useEffect(() => {
@@ -31,18 +32,28 @@ const VacancyDetail = ({ props }) => {
 
     useEffect(() => {
         if (isSuccessApplied) {
-            user && dispatch(getDetailUserAction(user.userId))
+            user && dispatch(getDetailUserAction(user?.userId))
             setModal(false)
         }
     }, [isSuccessApplied])
 
     useEffect(() => {
-        user && dispatch(getDetailUserAction(user.userId))
+        user && dispatch(getDetailUserAction(user?.userId))
     }, [])
     const handleApplied = () => {
-        listQuestion ? setModal(true)
-            :
-            props?.vacancyId && dispatch(applyVacancyAction(props.vacancyId))
+        if(user){
+            listQuestion ? setModal(true)
+                :
+                props?.vacancyId && dispatch(applyVacancyAction(props.vacancyId))
+        }
+        else {
+            Swal.fire({
+                title: "Login request!",
+                text: "You have to login to use function.",
+                icon: "warning",
+                confirmButtonColor: '#3085d6'
+            })
+        }
     }
 
     const handleApplyWithAnswers = () => {
@@ -74,11 +85,20 @@ const VacancyDetail = ({ props }) => {
     const checkFavourite = () => {
         var isFvr = false;
         if (!props?.favouriteUsers) return isFvr;
-        if (props?.favouriteUsers.filter(item => item === user.userId).length === 1) isFvr = true;
+        if (props?.favouriteUsers.filter(item => item === user?.userId).length === 1) isFvr = true;
         return isFvr;
     }
     const handleUpdateFavourite = () => {
-        dispatch(updateFavouriteVacancyAction(props?.vacancyId))
+        if (user)
+            dispatch(updateFavouriteVacancyAction(props?.vacancyId))
+        else {
+            Swal.fire({
+                title: "Login request!",
+                text: "You have to login to use function.",
+                icon: "warning",
+                confirmButtonColor: '#3085d6'
+            })
+        }
     }
     return (
         <>
@@ -222,7 +242,7 @@ const VacancyDetail = ({ props }) => {
                         </div>
                     </div>
                     <div className="flex mr-2 mt-6 mb-4">
-                        <div onClick={()=>setopenReport(true)} className="bg-white border border-gray-500 p-2 rounded-md flex items-center cursor-pointer hover:bg-gray-200 hover:text-red-800"> <BiSolidFlag className="mr-1"/> Report this item</div>
+                        <div onClick={() => setopenReport(true)} className="bg-white border border-gray-500 p-2 rounded-md flex items-center cursor-pointer hover:bg-gray-200 hover:text-red-800"> <BiSolidFlag className="mr-1" /> Report this item</div>
                     </div>
                 </div>
                 {
@@ -266,7 +286,7 @@ const VacancyDetail = ({ props }) => {
                 }
             </div>
             <Modal open={openReport}>
-                <ReportOr setopenReport={setopenReport} item={props} isVacancy={true}/>
+                <ReportOr setopenReport={setopenReport} item={props} isVacancy={true} />
             </Modal>
         </>
     );

@@ -140,8 +140,8 @@ function FindProjects() {
     const handleSearch = (a, b, c) => {
         if(!projects) return;
         let list = Array.from(projects)
-        list = list?.filter((item) => item?.project?.projectName.toLowerCase().trim().includes(a.toLowerCase().trim())
-                                || item?.fullName.toLowerCase().trim().includes(a.toLowerCase().trim()))
+        list = list?.filter((item) => item?.project?.projectName?.toLowerCase().trim().includes(a.toLowerCase().trim())
+                                || item?.fullName?.toLowerCase().trim().includes(a.toLowerCase().trim()))
                                 console.log(list)
         if(b.type !== 'none' && b.value !== false)
             list = list?.filter(item => {
@@ -336,7 +336,7 @@ function FindProjects() {
                 <div className="mt-5">
                     {
                         currentPrs?.map((item, index) => {
-                            return <ProjectItem key={index} props={item}/>;
+                            return <ProjectItem key={index} props={item} notify={notify}/>;
                         })
                     }
                 </div>

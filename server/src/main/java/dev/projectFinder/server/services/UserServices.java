@@ -3,15 +3,10 @@ package dev.projectFinder.server.services;
 
 import dev.projectFinder.server.components.*;
 import dev.projectFinder.server.components.Vacancy.JobPreScreen;
+import dev.projectFinder.server.components.Vacancy.UserInfo;
 import dev.projectFinder.server.dtos.*;
-import dev.projectFinder.server.models.Project;
-import dev.projectFinder.server.models.Report;
-import dev.projectFinder.server.models.User;
-import dev.projectFinder.server.models.Vacancy;
-import dev.projectFinder.server.repositories.ProjectRepository;
-import dev.projectFinder.server.repositories.ReportRepository;
-import dev.projectFinder.server.repositories.UserRepository;
-import dev.projectFinder.server.repositories.VacancyRepository;
+import dev.projectFinder.server.models.*;
+import dev.projectFinder.server.repositories.*;
 import dev.projectFinder.server.responses.UserResponse;
 import dev.projectFinder.server.utils.MessageKeys;
 import lombok.RequiredArgsConstructor;
@@ -46,6 +41,7 @@ public class UserServices {
     private final EmailService emailService;
     private final ProjectRepository projectRepository;
     private final ReportRepository reportRepository;
+    private final UnCompletedVacancyRepository unCompletedVacancyRepository;
 
     public UserResponse createUser(UserDTO userDTO) throws Exception {
         if (!userDTO.getPassword().equals(userDTO.getCPassword())){
@@ -169,6 +165,31 @@ public class UserServices {
         }
         User user = foundUser.get();
         user.setFullName(userInforDTO.getFullName());
+        if(user.getUnCompletedVacancies()!=null){
+            for (String unCompleteId:user.getUnCompletedVacancies()) {
+                Optional<UnCompletedVacancy> fuo = unCompletedVacancyRepository.findById(new ObjectId(unCompleteId));
+                if(fuo.isPresent()) {
+                    UnCompletedVacancy ucv = fuo.get();
+                    UserInfo u = ucv.getUserInfo();
+                    u.setFullName(userInforDTO.getFullName());
+                    ucv.setUserInfo(u);
+                    unCompletedVacancyRepository.save(ucv);
+                }
+            }
+        }
+
+        if(user.getVacancies()!=null){
+            for (String completeId:user.getVacancies()) {
+                Optional<Vacancy> cvo = vacancyRepository.findById(new ObjectId(completeId));
+                if(cvo.isPresent()) {
+                    Vacancy cv = cvo.get();
+                    UserInfo u = cv.getUserInfo();
+                    u.setFullName(userInforDTO.getFullName());
+                    cv.setUserInfo(u);
+                    vacancyRepository.save(cv);
+                }
+            }
+        }
         user.setPhoneNumber(userInforDTO.getPhoneNumber());
         user.setEmail(userInforDTO.getEmail());
         user.setDayOfBirth(userInforDTO.getDob());
@@ -255,6 +276,32 @@ public class UserServices {
             uploadServices.deleteFile(publicId);
         }
         user.setAvatar(new CVLink(UUID.randomUUID().toString(), file.getOriginalFilename(), (String) uploadResult.get("url"), (String) uploadResult.get("public_id"), false));
+
+        if(user.getUnCompletedVacancies()!=null){
+            for (String unCompleteId:user.getUnCompletedVacancies()) {
+                Optional<UnCompletedVacancy> fuo = unCompletedVacancyRepository.findById(new ObjectId(unCompleteId));
+                if(fuo.isPresent()) {
+                    UnCompletedVacancy ucv = fuo.get();
+                    UserInfo u = ucv.getUserInfo();
+                    u.setAvatar((String) uploadResult.get("url"));
+                    ucv.setUserInfo(u);
+                    unCompletedVacancyRepository.save(ucv);
+                }
+            }
+        }
+
+        if(user.getVacancies()!=null){
+            for (String completeId:user.getVacancies()) {
+                Optional<Vacancy> cvo = vacancyRepository.findById(new ObjectId(completeId));
+                if(cvo.isPresent()) {
+                    Vacancy cv = cvo.get();
+                    UserInfo u = cv.getUserInfo();
+                    u.setAvatar((String) uploadResult.get("url"));
+                    cv.setUserInfo(u);
+                    vacancyRepository.save(cv);
+                }
+            }
+        }
         return userRepository.save(user);
     }
     public void deleteSeekerCV(String id, String publicId) throws Exception {
@@ -494,12 +541,34 @@ public class UserServices {
 
         if(user.getAppliedVacancies().contains(vacancy.getVacancyId().toString())) return;
 
+        // add applied vacancies list
+        List<AppliedVacancy> appliedVacancyList = user.getAppliedVacancyList();
+        if(appliedVacancyList == null){
+            appliedVacancyList = new ArrayList<>();
+        }
+        boolean isHas = false;
+        for (AppliedVacancy a: appliedVacancyList) {
+            if(a.getVacancyId().equals(vacancyId)){
+                isHas = true;
+                if(a.getStatus().equals("rejected")){
+                    a.setAppliedDate(LocalDateTime.now());
+                    a.setStatus("pending");
+                }
+
+            }
+        }
+        if(!isHas) {
+            appliedVacancyList.add(new AppliedVacancy(vacancyId,LocalDateTime.now(),"pending"));
+            List<String> appliedVacancies = user.getAppliedVacancies();
+            if(appliedVacancies.isEmpty()) appliedVacancies = new ArrayList<>();
+            if(!appliedVacancies.contains(vacancy.getVacancyId().toString()))
+                appliedVacancies.add(vacancy.getVacancyId().toString());
+            user.setAppliedVacancies(appliedVacancies);
+        }
+        user.setAppliedVacancyList(appliedVacancyList);
+
         // set list applied vacancy
-        List<String> appliedVacancies = user.getAppliedVacancies();
-        if(appliedVacancies.isEmpty()) appliedVacancies = new ArrayList<>();
-        if(!appliedVacancies.contains(vacancy.getVacancyId().toString()))
-            appliedVacancies.add(vacancy.getVacancyId().toString());
-        user.setAppliedVacancies(appliedVacancies);
+
         userRepository.save(user);
 
         // set notification for this applied

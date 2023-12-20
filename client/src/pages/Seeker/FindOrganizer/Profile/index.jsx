@@ -12,18 +12,22 @@ import { LoadingComponent } from "../../../../components";
 import { ToastContainer, toast } from "react-toastify";
 import { getAllProjectsUser } from "../../../../redux/slices/projects/projectsSlices";
 import ProjectItem from "./ProjectItem";
+import Swal from "sweetalert2";
+import handleEmailClick from "../../../../utils/handleEmailClick";
 
 function CompanyProfile() {
     const { id } = useParams();
     const navigate = useNavigate();
     const dispatch = useDispatch()
+    const [ctName, setCtName] = useState('')
+    const [ctMssg, setCtMssg] = useState('')
     useEffect(() => {
         dispatch(getAllProjectsUser({ id: id }))
         dispatch(getDetailUserAction(id))
     }, [dispatch])
     const notify = (type, message) => toast(message, { type: type });
-    const projects = useSelector((state) => state.projects.projects)
-
+    const projects = useSelector((state) => state.projects.projectsOfCor)
+    const userAuth = useSelector(store => store?.users?.userAuth);
     const storeData = useSelector(store => store?.users);
     const { loading, appErr, seletedUser, isSuccess, isShorted } = storeData;
     const [sltCor, setSltCor] = useState({ ...seletedUser })
@@ -42,7 +46,17 @@ function CompanyProfile() {
         setSltCor({ ...seletedUser })
     }, [seletedUser])
     const handleUpdateShortListed = () => {
-        dispatch(updateShortlistedUsersAction(id));
+        if (userAuth) {
+            dispatch(updateShortlistedUsersAction(id));
+        }
+        else {
+            Swal.fire({
+                title: "Login request!",
+                text: "You have to login to use function.",
+                icon: "warning",
+                confirmButtonColor: '#3085d6'
+            })
+        }
     }
     useEffect(() => {
         if (isSuccess) {
@@ -54,7 +68,7 @@ function CompanyProfile() {
         {loading && <LoadingComponent />}
         <ToastContainer />
         {/* Start title of page  */}
-        
+
         <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/uicons-regular-rounded/css/uicons-regular-rounded.css'></link>
         <div className=" pt-12 grid grid-cols-12 gap-4 min-h-[263px] bg-[#f2f7fb] items-center">
             <div className="col-span-8 pl-40">
@@ -85,15 +99,15 @@ function CompanyProfile() {
             </div>
             <div className="col-span-4 pr-40">
                 <div className="flex flex-row-reverse mb-5">
-                    <div onClick={()=>handleUpdateShortListed()} className="item flex items-center justify-center w-[60px] h-[52px] rounded-[7px] bg-[rgba(25,103,210,.07)] ml-5 cursor-pointer opacity-80" color="#1967d3">
+                    <div onClick={() => handleUpdateShortListed()} className="item flex items-center justify-center w-[60px] h-[52px] rounded-[7px] bg-[rgba(25,103,210,.07)] ml-5 cursor-pointer opacity-80" color="#1967d3">
                         {
                             isShorted
                                 ? <BsBookmarkCheckFill className="w-full h-full p-[10px] rounded-[7px]" color="#1967d3" />
                                 : <BiBookmark className="w-full h-full p-[10px] rounded-[7px]" color="#1967d3" />
                         }
                     </div>
-                    <div className="flex items-center justify-center h-[53px] box-border bg-[#1967d3] px-[18px] py-[8px] w-[150px] rounded-[8px] text-[#fff] hover:bg-[#0146a6] cursor-pointer">
-                        <span className="text-[15px] leading-none font-[400]">Get in touch</span>
+                    <div onClick={(e) => handleEmailClick(e, sltCor?.email ?? 'vanphat16032003@gmail.com')} className="flex items-center justify-center h-[53px] box-border bg-[#1967d3] px-[18px] py-[8px] w-[150px] rounded-[8px] text-[#fff] hover:bg-[#0146a6] cursor-pointer">
+                        <span className="text-[15px] leading-none font-[400]">Open send mail</span>
                     </div>
                 </div>
             </div>
@@ -127,7 +141,7 @@ function CompanyProfile() {
                         <div className="mt-5">
                             {
                                 projects?.map((item, index) => {
-                                    return <ProjectItem key={index} props={item} fullName={sltCor?.fullName} />;
+                                    return <ProjectItem key={index} props={item} fullName={sltCor?.fullName} notify={notify}/>;
                                 })
                             }
                         </div>
@@ -167,24 +181,18 @@ function CompanyProfile() {
                             <span className="text-4 leading-[26px] text-[#202124] font-semibold">Social media:</span>
                             <div className="flex flex-row items-center">
                                 <div className="w-7 h-7 flex justify-end items-center">
-                                    <BiLogoFacebook color="dimgray" className="cursor-pointer">
-                                        <a href={sltCor?.fbLink}></a>
-                                    </BiLogoFacebook>
+                                    <a href={sltCor?.fbLink} target="_blank"><BiLogoFacebook color="dimgray" className="cursor-pointer" /></a>
                                 </div>
                                 <div className="w-7 h-7 flex justify-end items-center">
-                                    <BiLogoInstagram color="dimgray" className="cursor-pointer">
-                                        <a href={sltCor?.insLink}></a>
-                                    </BiLogoInstagram>
+                                    <a href={sltCor?.insLink} target="_blank"><BiLogoInstagram color="dimgray" className="cursor-pointer" /></a>
                                 </div>
                                 <div className="w-7 h-7 flex justify-end items-center">
-                                    <BiLogoTwitter color="dimgray" className="cursor-pointer">
-                                        <a href={sltCor?.twLink}></a>
-                                    </BiLogoTwitter>
+                                    <a href={sltCor?.twLink} target="_blank"><BiLogoTwitter color="dimgray" className="cursor-pointer" /></a>
                                 </div>
                             </div>
                         </div>
                         <div className="w-full h-[53px]">
-                            <a href="www.udemy.com" className="flex items-center justify-center rounded-lg text-center text-[#1967d2] h-full w-full link text-[15px] leading-none font-[400] bg-[rgba(25,103,210,.15)] cursor-pointer px-[18px] py-[8px]">{sltCor?.website ?? 'Not found'}</a>
+                            <a href={sltCor?.website??'#'} target="_blank" className="flex items-center justify-center rounded-lg text-center text-[#1967d2] h-full w-full link text-[15px] leading-none font-[400] bg-[rgba(25,103,210,.15)] cursor-pointer px-[18px] py-[8px]">{sltCor?.website ?? 'Not found'}</a>
                         </div>
                     </div>
                     <div>
@@ -201,6 +209,27 @@ function CompanyProfile() {
                         </div>
                     </div>
                     <div>
+                        <div className="p-6 bg-[#F5F6FC] rounded-lg mb-[30px]">
+                            <h4 className="text-[#202124] text-[18px] font-semibold mb-[30px]">Contact Us</h4>
+                            <div>
+                                <div >
+                                    <form>
+                                        <div>
+                                            <div className="w-full">
+                                                <input onChange={e => setCtName(e.target.value)} className="px-5 w-full mb-5 py-[15px] text-[15px] leading-[30px] text-[dimgray] rounded-lg border-[#ecedf2] border outline-none" type="text" name="username" placeholder="Subject" required="" />
+                                            </div>
+
+                                            <div className="w-full h-[160px] mb-5">
+                                                <textarea onChange={e => setCtMssg(e.target.value)} className="px-5 h-full w-full mb-5 py-[15px] text-[15px] leading-[30px] text-[dimgray] rounded-lg border-[#ecedf2] border outline-none" name="message" placeholder="Message"></textarea>
+                                            </div>
+                                            <div onClick={(e) => { handleEmailClick(e, sltCor?.email ?? 'vanphat16032003asd@gmail.com', userAuth?.user?.fullName + ' want to contact you with the subject ' + ctName, 'Message: ' + ctMssg); setCtMssg(''); setCtName(''); }}>
+                                                <div className="flex items-center justify-center h-[53px] box-border bg-[#1967d3] px-[18px] py-[8px] w-full rounded-[8px] text-[#fff] hover:bg-[#0d6efd]" type="submit" name="submit-form">Open Send Message</div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

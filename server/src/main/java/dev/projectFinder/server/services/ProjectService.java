@@ -101,15 +101,15 @@ public class ProjectService {
         List<Project> listProjects = new ArrayList<>();
 
         List<String> listProjectIds = user.getProjects();
-
-        for (String listProjectId : listProjectIds) {
-            Optional<Project> projectOptional = projectRepository.findById(new ObjectId(listProjectId));
-            if (projectOptional.isEmpty()) {
-                throw new DataIntegrityViolationException("Error when get project in database");
+        if(listProjectIds != null)
+            for (String listProjectId : listProjectIds) {
+                Optional<Project> projectOptional = projectRepository.findById(new ObjectId(listProjectId));
+                if (projectOptional.isEmpty()) {
+                    throw new DataIntegrityViolationException("Error when get project in database");
+                }
+                Project project = projectOptional.get();
+                listProjects.add(project);
             }
-            Project project = projectOptional.get();
-            listProjects.add(project);
-        }
 
         return listProjects;
     }
@@ -129,9 +129,13 @@ public class ProjectService {
             Vacancy vacancy = vacancyOptional.get();
             vacancies.add(vacancy);
         }
+        Optional<User> corInfoOpt = userRepository.findById(project.getUserId());
+
+
         HashMap<String, Object> hashMap = new HashMap<>();
         hashMap.put("project", project);
         hashMap.put("vacancies", vacancies);
+        hashMap.put("corInfo", corInfoOpt.get());
         return hashMap;
     }
 

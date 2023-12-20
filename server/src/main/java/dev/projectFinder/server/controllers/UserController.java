@@ -333,17 +333,21 @@ public class UserController {
             if (principal instanceof UserDetails userDetails) {
                 username= userDetails.getUsername();
             }
+
+            // get user detail
+            User user = userServices.getUserDetail(id);
+
             Optional<User> foundUser = userRepository.findByUsername(username);
             if(foundUser.isEmpty()){
-                throw new DataIntegrityViolationException(MessageKeys.USER_NOT_FOUND);
+                response.put("isShorted",false);
+                response.put("message","Get detail user successfully" );
+                response.put("userDetail",user);
+                return ResponseEntity.status(HttpStatus.OK).body(response);
             }
             User userFoundRequest = foundUser.get();
 
             // increase views
             if(!userFoundRequest.getUserType().equals("admin")) userServices.increaseViews(id);
-            // get user detail
-            User user = userServices.getUserDetail(id);
-
 
             boolean isShorted = false;
             if(userFoundRequest.getShortListedUser() != null) {
