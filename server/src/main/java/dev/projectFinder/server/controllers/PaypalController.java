@@ -12,6 +12,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.view.RedirectView;
+
 @CrossOrigin("*")
 @RestController
 @RequestMapping("api/v1/payment")
@@ -26,13 +28,15 @@ public class PaypalController {
         return "home";
     }
     //@PostMapping("/pay")
-    @RequestMapping(value = "/pay", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseBody
+//    @RequestMapping(value = "/pay", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+//    @ResponseBody
+    @PostMapping("/pay")
     public String payment(@Valid @RequestBody Order order) {
         try {
+                System.out.println("[POST_VACANCY_ID]: " + order.getVacancyId());
             Payment payment = service.createPayment(order.getPrice(), order.getCurrency(), order.getMethod(),
                     order.getIntent(), order.getDescription(), "http://localhost:8088/api/v1/payment" + CANCEL_URL,
-                    "http://localhost:5173/Organizer/payment/success/" + order.getVacancyId());
+                     "http://localhost:8088/api/v1/payment" + SUCCESS_URL + "/" + order.getVacancyId());
             for(Links link:payment.getLinks()) {
                 if(link.getRel().equals("approval_url")) {
                     return "" + link.getHref();
@@ -46,23 +50,34 @@ public class PaypalController {
     }
 
     @GetMapping(value = CANCEL_URL)
-    public String cancelPay() {
-        return "cancel";
+    public RedirectView cancelPay() {
+        RedirectView redirectView = new RedirectView();
+        redirectView.setUrl("http://localhost:5173/Organizer/payment/cancel");
+        return redirectView;
     }
 
-    @PostMapping(value = SUCCESS_URL)
-    public String successPay(@RequestParam("paymentId") String paymentId, @RequestParam("PayerID") String payerId, @RequestBody Vacancy vacancy) {
+    @GetMapping("/pay/success/{vacancyId}")
+    public RedirectView successPay(@RequestParam("paymentId") String paymentId, @RequestParam("PayerID") String payerId, @PathVariable String vacancyId) {
         try {
-            if(vacancy.getVacancyId() != null){
+            System.out.println("[VACANCY_ID]: " + vacancyId);
+            if(vacancyId != null){
                 Payment payment = service.executePayment(paymentId, payerId);
                 if (payment.getState().equals("approved")) {
-                    service.saveHistotyPayment(payment.toJSON(), vacancy);
-                    return payment.toJSON();
+                    service.saveHistotyPayment(payment.toJSON(), vacancyId);
+                    RedirectView redirectView = new RedirectView();
+                    redirectView.setUrl("http://localhost:5173/Organizer/payment/success");
+
+                    return redirectView;
                 }
             }
         } catch (PayPalRESTException e) {
             System.out.println(e.getMessage());
         }
-        return "redirect:/";
+        catch (Exception ex){
+            System.out.println(ex.getMessage());
+        }
+        RedirectView redirectView = new RedirectView();
+        redirectView.setUrl("http://localhost:5173/Organizer/payment/cancel");
+        return redirectView;
     }
 }

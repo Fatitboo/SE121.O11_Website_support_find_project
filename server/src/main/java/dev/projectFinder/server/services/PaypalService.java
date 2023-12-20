@@ -80,17 +80,26 @@ public class PaypalService {
         return payment.execute(apiContext, paymentExecute);
     }
 
-    public void saveHistotyPayment(String paymentJson, Vacancy vacancy) {
+    public void saveHistotyPayment(String paymentJson, String vacancyId) {
         try{
+            Optional<Vacancy> vacancyOptional = vacancyRepository.findById(new ObjectId(vacancyId));
+            if(vacancyOptional.isEmpty()){
+                throw new DataIntegrityViolationException("Error when get job in database");
+            }
+
+            Vacancy vacancy = vacancyOptional.get();
+
             ObjectMapper mapper = new ObjectMapper();
 
             JsonNode node = mapper.readTree(paymentJson);
             History history = new History(node);
+
             history.response = paymentJson;
             history.setVacancy(vacancy);
             ObjectId id = historyRepository.save(history).getHistoryId();
 
             vacancy.setApprovalStatus("approved");
+            vacancy.setPost(true);
 
             Optional<User> userOptional = userRepository.findById(new ObjectId(vacancy.getUserInfo().getUserId()));
             if(userOptional.isEmpty()){
@@ -111,6 +120,12 @@ public class PaypalService {
             vacancyRepository.save(vacancy);
         }
         catch(JsonProcessingException e){
+            Optional<Vacancy> vacancyOptional = vacancyRepository.findById(new ObjectId(vacancyId));
+            if(vacancyOptional.isEmpty()){
+                throw new DataIntegrityViolationException("Error when get job in database");
+            }
+
+            Vacancy vacancy = vacancyOptional.get();
             History history = new History();
             history.response = paymentJson;
             history.setVacancy(vacancy);

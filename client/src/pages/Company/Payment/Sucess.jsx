@@ -1,42 +1,10 @@
-import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { CustomButton } from "../../../components";
 import { SuccessPaymentIcon } from "../../../assets/images";
-import { useEffect } from "react";
-import axios from "axios";
-import baseUrl from "../../../utils/baseUrl";
-import { useDispatch, useSelector } from "react-redux";
-import { getVacancyInfoDetail } from "../../../redux/slices/vacancies/vacanciesSlices";
 
 function SuccessPayment() {
     const {id} = useParams();
     const navigate = useNavigate();
-    const dispatch = useDispatch();
-    const location = useLocation();
-    const queryParams = new URLSearchParams(location.search);
-    const vacancyInfo = useSelector((state) => state.vacancies.vacancyInfo)
-    let user = useSelector((state) => state.users.userAuth.user)
-
-
-    useEffect(() => {
-        if(vacancyInfo)
-            axios.post(`${baseUrl}/api/v1/payment/pay/success${location.search}`, vacancyInfo, {
-                headers: {
-                    Authorization: `Bearer ${user?.token}`,
-                    'Content-Type': 'application/json',
-                },
-            })
-            .then(response => {
-                console.error(response);
-            })
-            .catch(error => {
-                console.error(error);
-            });
-    }, [vacancyInfo])
-
-    useEffect(() => {
-        if(id)
-            dispatch(getVacancyInfoDetail(id))
-    }, [id])
     return (<>
     <button onClick={() => {console.log(id)}}>click me</button>
         <div className="w-full h-[70vh] flex pt-24 items-center flex-col relative mb-10">

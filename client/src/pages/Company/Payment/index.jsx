@@ -102,9 +102,16 @@ function Payment({vacancy}) {
                     return false
             })
             if(a){
-                const per = take_decimal_number(a.length / skrList.length, 2)
-                setSkrsMatchPerc(per * 100)
-                setBaseMoney(take_decimal_number(1 * per, 2))
+                const per = a.length / skrList.length
+                console.log(per)
+                if(per < 0.01){
+                    setSkrsMatchPerc(10)
+                    setBaseMoney(take_decimal_number(1 * 0.1, 2))
+                }
+                else{
+                    setSkrsMatchPerc(take_decimal_number(per * 100, 2))
+                    setBaseMoney(take_decimal_number(1 * per, 2))
+                }
             }
         }
     }, [vacancyInfo, skrList])
@@ -135,6 +142,7 @@ function Payment({vacancy}) {
             "description": "Thanh toan qua paypal",
             "vacancyId": vacancyInfo.vacancyId
         }
+        console.log(vacancyInfo.vacancyId)
         axios.post(`${baseUrl}/api/v1/payment/pay`, order,{
             headers: {
                 'Authorization': 'Bearer ' + user?.token,
