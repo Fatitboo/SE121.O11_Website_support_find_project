@@ -167,6 +167,7 @@ public class VacancyServices {
 
         User user = userOptional.get();
         Vacancy vacancy = new Vacancy(unCompletedVacancy);
+        vacancy.setApprovalStatus("pending");
 
         //remove unComplete vacancies
 

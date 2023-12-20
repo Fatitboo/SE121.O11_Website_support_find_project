@@ -7,15 +7,22 @@ import com.paypal.api.payments.*;
 import com.paypal.base.rest.APIContext;
 import com.paypal.base.rest.PayPalRESTException;
 import dev.projectFinder.server.models.History;
+import dev.projectFinder.server.models.User;
+import dev.projectFinder.server.models.Vacancy;
 import dev.projectFinder.server.repositories.HistoryRepository;
+import dev.projectFinder.server.repositories.UserRepository;
+import dev.projectFinder.server.repositories.VacancyRepository;
 import lombok.RequiredArgsConstructor;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -24,6 +31,11 @@ public class PaypalService {
     private APIContext apiContext;
     @Autowired
     private HistoryRepository historyRepository;
+    @Autowired
+    private final VacancyRepository vacancyRepository;
+    @Autowired
+    private final UserRepository userRepository;
+
 
     public Payment createPayment(
             Double total,
@@ -68,12 +80,59 @@ public class PaypalService {
         return payment.execute(apiContext, paymentExecute);
     }
 
-    public void saveHistotyPayment(String paymentJson) throws JsonProcessingException {
-        ObjectMapper mapper = new ObjectMapper();
+    public void saveHistotyPayment(String paymentJson, Vacancy vacancy) {
+        try{
+            ObjectMapper mapper = new ObjectMapper();
 
-        JsonNode node = mapper.readTree(paymentJson);
-        History history = new History(node);
-        historyRepository.save(history);
+            JsonNode node = mapper.readTree(paymentJson);
+            History history = new History(node);
+            history.response = paymentJson;
+            history.setVacancy(vacancy);
+            ObjectId id = historyRepository.save(history).getHistoryId();
+
+            vacancy.setApprovalStatus("approved");
+
+            Optional<User> userOptional = userRepository.findById(new ObjectId(vacancy.getUserInfo().getUserId()));
+            if(userOptional.isEmpty()){
+                throw new DataIntegrityViolationException("Error when get user in database!");
+            }
+
+            User user = userOptional.get();
+
+            List<String> historyPayment = user.getHistoryPayment();
+            if(historyPayment == null || historyPayment.isEmpty()){
+                historyPayment = new ArrayList<>();
+            }
+            historyPayment.add(id.toString());
+
+            user.setHistoryPayment(historyPayment);
+
+            userRepository.save(user);
+            vacancyRepository.save(vacancy);
+        }
+        catch(JsonProcessingException e){
+            History history = new History();
+            history.response = paymentJson;
+            history.setVacancy(vacancy);
+            ObjectId id = historyRepository.save(history).getHistoryId();
+            vacancy.setApprovalStatus("approved");
+
+            Optional<User> userOptional = userRepository.findById(new ObjectId(vacancy.getUserInfo().getUserId()));
+            if(userOptional.isEmpty()){
+                throw new DataIntegrityViolationException("Error when get user in database!");
+            }
+
+            User user = userOptional.get();
+
+            List<String> historyPayment = user.getHistoryPayment();
+            if(historyPayment == null || historyPayment.isEmpty()){
+                historyPayment = new ArrayList<>();
+            }
+            historyPayment.add(id.toString());
+
+            userRepository.save(user);
+            vacancyRepository.save(vacancy);
+        }
     }
 
 }

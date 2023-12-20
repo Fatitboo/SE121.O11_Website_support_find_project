@@ -27,7 +27,6 @@ import java.util.Map;
 public class History {
     @Id
     @JsonSerialize(using = ToStringSerializer.class)
-    public String response;
     public ObjectId historyId;
     public String cart;
     public String create_time;
@@ -37,6 +36,8 @@ public class History {
     public String state;
     public Transaction transactions;
     public String update_time;
+    public Vacancy vacancy;
+    public String response;
     public History(JsonNode node){
         response = node.asText();
         cart = node.get("cart").asText();

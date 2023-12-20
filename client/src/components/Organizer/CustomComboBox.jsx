@@ -49,7 +49,7 @@ export default function CustomComboBox({label, listItem, filterValueSelected, er
                 </div>
                 <ul ref={dropDownTag} style={{display: `${visible}` }} className='absolute mt-2 z-[50] w-full overflow-y-auto max-h-56 ring-1 ring-black ring-opacity-5 rounded-md'>
                     {
-                        listItem.map((item, index) => {
+                        listItem?.map((item, index) => {
                             return (
                                 <li key={index} value={index} onClick={() => {setSelected(item);}} className='flex flex-row items-center justify-between bg-white py-3 px-5 shadow-lg focus:outline-none text-base hover:bg-[#f3f9ff] text-[#636363]'>
                                     {

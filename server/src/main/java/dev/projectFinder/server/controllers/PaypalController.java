@@ -5,6 +5,7 @@ import com.paypal.api.payments.Links;
 import com.paypal.api.payments.Payment;
 import com.paypal.base.rest.PayPalRESTException;
 import dev.projectFinder.server.models.Order;
+import dev.projectFinder.server.models.Vacancy;
 import dev.projectFinder.server.services.PaypalService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -31,7 +32,7 @@ public class PaypalController {
         try {
             Payment payment = service.createPayment(order.getPrice(), order.getCurrency(), order.getMethod(),
                     order.getIntent(), order.getDescription(), "http://localhost:8088/api/v1/payment" + CANCEL_URL,
-                    "http://localhost:5173/Organizer/payment/success");
+                    "http://localhost:5173/Organizer/payment/success/" + order.getVacancyId());
             for(Links link:payment.getLinks()) {
                 if(link.getRel().equals("approval_url")) {
                     return "" + link.getHref();
@@ -49,18 +50,18 @@ public class PaypalController {
         return "cancel";
     }
 
-    @GetMapping(value = SUCCESS_URL)
-    public String successPay(@RequestParam("paymentId") String paymentId, @RequestParam("PayerID") String payerId) {
+    @PostMapping(value = SUCCESS_URL)
+    public String successPay(@RequestParam("paymentId") String paymentId, @RequestParam("PayerID") String payerId, @RequestBody Vacancy vacancy) {
         try {
-            Payment payment = service.executePayment(paymentId, payerId);
-            if (payment.getState().equals("approved")) {
-                service.saveHistotyPayment(payment.toJSON());
-                return payment.toJSON();
+            if(vacancy.getVacancyId() != null){
+                Payment payment = service.executePayment(paymentId, payerId);
+                if (payment.getState().equals("approved")) {
+                    service.saveHistotyPayment(payment.toJSON(), vacancy);
+                    return payment.toJSON();
+                }
             }
         } catch (PayPalRESTException e) {
             System.out.println(e.getMessage());
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
         }
         return "redirect:/";
     }
