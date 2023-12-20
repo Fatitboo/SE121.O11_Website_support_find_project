@@ -615,7 +615,6 @@ export const applyVacancyAction = createAsyncThunk(
             },
         };
         try {
-            console.log(typeof vacanciesId)
             const { data } = await axios.post(
                 `${baseUrl}/api/v1/users/apply-vacancies/${userAuth?.user?.userId}/${vacanciesId}`, {}, config
             );

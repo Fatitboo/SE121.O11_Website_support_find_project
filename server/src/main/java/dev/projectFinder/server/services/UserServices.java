@@ -539,7 +539,9 @@ public class UserServices {
         }
         User cor = foundCor.get();
 
-        if(user.getAppliedVacancies().contains(vacancy.getVacancyId().toString())) return;
+        List<String> appVacancies = user.getAppliedVacancies();
+        if(appVacancies == null || appVacancies.isEmpty())  appVacancies = new ArrayList<>();
+        if(appVacancies.contains(vacancy.getVacancyId().toString())) return;
 
         // add applied vacancies list
         List<AppliedVacancy> appliedVacancyList = user.getAppliedVacancyList();

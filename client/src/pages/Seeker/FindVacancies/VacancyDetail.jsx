@@ -27,7 +27,12 @@ const VacancyDetail = ({ props }) => {
 
 
     useEffect(() => {
-        if (props && props.jobPreScreen) setListQuestion([...props.jobPreScreen])
+        if (props && props.jobPreScreen){
+            setListQuestion([...props.jobPreScreen])
+        } 
+        else{
+            setListQuestion(null)
+        }
     }, [props])
 
     useEffect(() => {
@@ -258,7 +263,6 @@ const VacancyDetail = ({ props }) => {
                             <hr className="block h-1 w-full bg-[rgb(212, 210, 208)] mt-3" />
                             <div className="max-h-[400px] w-[600px] overflow-y-auto overflow-x-hidden mb-4 px-3">
                                 <button onClick={() => console.log(listQuestion)}>Click me</button>
-
                                 {
                                     listQuestion.map((item, index) => {
                                         return <div key={index}>
