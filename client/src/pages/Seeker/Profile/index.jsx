@@ -116,25 +116,47 @@ function SeekerProfile() {
         var publicId = '';
         var name = ''
         sltSeeker?.cvLinks.forEach(item => {
-            if (item.isDefault) { publicId = item.publicId; }
+            if (item.isDefault) { publicId = item.publicId; name = item.filename }
         })
-        return { publicId, name: 'CV_Seeker' + sltSeeker?.userId.slice(12) }
+        return { publicId, name: name }
     }
     const handleUpdateShortListed = () => {
         dispatch(updateShortlistedUsersAction(id));
     }
-    
+    const handleDownloadClick = () => {
+        const obj = {...linkCV()} 
+        var arr = []
+        if(obj.name.includes('.')){       
+             arr = obj.name.split('.')          
+        }
+        const fileUrl = `https://res.cloudinary.com/dvnxdtrzn/raw/upload/f_auto/fl_attachment:CV_Seeker_${obj.publicId.slice(18)}${arr[arr.length-1]}/v1700816040/${obj.publicId}`;
+
+        // Tạo một phần tử a ẩn
+        const hiddenLink = document.createElement('a');
+        hiddenLink.style.display = 'none';
+        document.body.appendChild(hiddenLink);
+
+        // Đặt thuộc tính tải xuống và tên file
+        hiddenLink.href = fileUrl;
+
+
+        // Kích hoạt sự kiện click để bắt đầu tải xuống
+        hiddenLink.click();
+
+        // Loại bỏ phần tử a ẩn khỏi DOM
+        document.body.removeChild(hiddenLink);
+    };
     return (<>
         {loading && <LoadingComponent />}
         <ToastContainer />
         {/* Start title of page  */}
         <div className="mb-8 px-10">
             <div className="font-medium text-3xl text-gray-900 mb-2 leading-10 flex items-center">
-                <ArrowLeftIcon className="h-8 cursor-pointer mr-2" onClick={() => navigate(-1)}/>
+                <ArrowLeftIcon className="h-8 cursor-pointer mr-2" onClick={() => navigate(-1)} />
                 Seeker Info!
             </div>
-            
-            
+
+
             <div className="text-sm leading-6 font-normal m-0 right-0 flex justify-between items-center ">Ready to jump back in?</div>
         </div>
         <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/uicons-regular-rounded/css/uicons-regular-rounded.css'></link>
@@ -149,7 +171,7 @@ function SeekerProfile() {
                             <img src={sltSeeker?.avatar?.fileUrl ?? 'https://superio-appdir.vercel.app/_next/image?url=%2Fimages%2Fresource%2Fcompany-logo%2F1-1.png&w=128&q=75'} alt="" className="w-20 h-20 rounded-full" />
                         </div>
                         <div className="ml-5">
-                       
+
                             <div>
                                 <div className="text-[26px] leading-[35px] text-[#202124] font-medium">{sltSeeker?.fullName}</div>
                             </div>
@@ -229,9 +251,14 @@ function SeekerProfile() {
                     <div className="flex flex-row mb-5">
                         {
                             sltSeeker?.cvLinks ?
-                                <a href={`https://res.cloudinary.com/dvnxdtrzn/raw/upload/f_auto/fl_attachment:${linkCV().name}/v1700816040/${linkCV().publicId}`} target="_blank" className="flex items-center justify-center h-[53px] box-border bg-[#1967d3] px-[18px] py-[8px] w-full rounded-[8px] text-[#fff] hover:bg-[#0146a6] cursor-pointer">
+                                <>
+                                    {/* <a href={`https://res.cloudinary.com/dvnxdtrzn/raw/upload/f_auto/fl_attachment:${linkCV().name}/v1700816040/${linkCV().publicId}`} target="_blank" className="flex items-center justify-center h-[53px] box-border bg-[#1967d3] px-[18px] py-[8px] w-full rounded-[8px] text-[#fff] hover:bg-[#0146a6] cursor-pointer">
                                     <span className="text-[15px] leading-none font-[400]">Download CV</span>
-                                </a>
+                                </a> */}
+                                    <div onClick={handleDownloadClick} className="flex items-center justify-center h-[53px] box-border bg-[#1967d3] px-[18px] py-[8px] w-full rounded-[8px] text-[#fff] hover:bg-[#0146a6] cursor-pointer">
+                                        <span className="text-[15px] leading-none font-[400]">Download CV</span>
+                                    </div>
+                                </>
                                 : <div className="flex items-center justify-center h-[53px] box-border bg-[#85878a] px-[18px] py-[8px] w-full rounded-[8px] text-[#fff] hover:bg-[#0146a6] cursor-pointer">
                                     <span className="text-[15px] leading-none font-[400]">Not have any CV</span>
                                 </div>
@@ -309,10 +336,10 @@ function SeekerProfile() {
                             <span className="text-[#202124] text-[18px] font-semibold">Social Media</span>
                             <div className="flex flex-row items-center">
                                 <div className="w-7 h-7 flex justify-end items-center">
-                                        <a href={sltSeeker?.fbLink} target="_blank" rel="noreferrer">
-                                            <BiLogoFacebook color="dimgray" >
-                                            </BiLogoFacebook>
-                                        </a>
+                                    <a href={sltSeeker?.fbLink} target="_blank" rel="noreferrer">
+                                        <BiLogoFacebook color="dimgray" >
+                                        </BiLogoFacebook>
+                                    </a>
                                 </div>
                                 <div className="w-7 h-7 flex justify-end items-center">
                                     <BiLogoInstagram color="dimgray" className="cursor-pointer">
