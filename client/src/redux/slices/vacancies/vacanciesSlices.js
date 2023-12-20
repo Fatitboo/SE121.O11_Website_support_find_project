@@ -482,7 +482,7 @@ export const resetSuccessAction = createAsyncThunk(
 //update Favourite vacancy
 export const updateFavouriteVacancyAction = createAsyncThunk(
     "vacancies/updateFavouriteVacancy",
-    async (vacancyId, { rejectWithValue, getState, dispatch }) => {
+    async (obj, { rejectWithValue, getState, dispatch }) => {
         const user = getState()?.users;
         const { userAuth } = user;
         // http call 
@@ -493,13 +493,29 @@ export const updateFavouriteVacancyAction = createAsyncThunk(
             },
         };
         const formData = new FormData();
-        formData.append('vacancyId', vacancyId);
+        formData.append('vacancyId', obj.vacancyId);
         try {
             const { data } = await axios.put(
                 `${baseUrl}/${apiPrefix}/update-favourite-vacancy/${userAuth?.user?.userId}`,
                 formData,
                 config
             );
+            if (obj.setFunc) {
+                obj.setFunc(prev => {
+                    const arr = [...prev];
+                    const currentVacancy = arr.findIndex(item => item.vacancyId === data.vacancyId);
+                    if (currentVacancy !== -1) {
+                        if (data.isPush) {
+                            arr[currentVacancy].favouriteUsers.push(data.userId)
+                        }
+                        else {
+                            arr[currentVacancy].favouriteUsers.pop(data.userId)
+                        }
+                    }
+                    return arr;
+                })
+                obj.notify('success', 'Update favourite vacancy successfully!')
+            }
             return data;
         } catch (error) {
             if (!error?.response) {
@@ -523,10 +539,36 @@ export const getAllFavouriteVacanciesAction = createAsyncThunk(
                 'Content-Type': 'application/json',
             },
         };
-       
+
         try {
             const { data } = await axios.get(
-                `${baseUrl}/${apiPrefix}/get-favourite-vacancies/${userAuth?.user?.userId}`,config);
+                `${baseUrl}/${apiPrefix}/get-favourite-vacancies/${userAuth?.user?.userId}`, config);
+            return data;
+        } catch (error) {
+            if (!error?.response) {
+                throw error;
+            }
+            return rejectWithValue(error?.response?.data);
+        }
+    }
+);
+//get all applied vacancy
+export const getAllAppliedVacanciesAction = createAsyncThunk(
+    "vacancies/getAllAppliedVacancies",
+    async (vacancyId, { rejectWithValue, getState, dispatch }) => {
+        const user = getState()?.users;
+        const { userAuth } = user;
+        // http call 
+        const config = {
+            headers: {
+                Authorization: `Bearer ${userAuth?.user?.token}`,
+                'Content-Type': 'application/json',
+            },
+        };
+
+        try {
+            const { data } = await axios.get(
+                `${baseUrl}/${apiPrefix}/get-applied-vacancies/${userAuth?.user?.userId}`, config);
             return data;
         } catch (error) {
             if (!error?.response) {
@@ -550,12 +592,12 @@ export const getAllReportsAdminAction = createAsyncThunk(
                     'Content-Type': 'application/json',
                 },
             };
- 
-            const { data } = await axios.get(`${baseUrl}/api/v1/skills/get-all-report-admin`,  config);
+
+            const { data } = await axios.get(`${baseUrl}/api/v1/skills/get-all-report-admin`, config);
             console.log(data)
             return data;
         } catch (error) {
-            if (!error?.response) {      
+            if (!error?.response) {
                 console.log(error)
 
                 throw error;
@@ -589,7 +631,8 @@ const vacanciesSlices = createSlice({
         complete: [],
         incomplete: [],
         vacancyInfo: {},
-        vacancies: []
+        vacancies: [],
+        appliedVacancies:[]
     },
     reducers: {
         setValueSuccess: (state, action) => {
@@ -665,8 +708,8 @@ const vacanciesSlices = createSlice({
                 state.appErr = null;
                 let currentVacancy = state.vacancies.findIndex((v) => v.vacancyId === action?.payload?.updateVacancyId);
                 if (currentVacancy !== -1) state.vacancies[currentVacancy].approvalStatus = action?.payload?.status;
-                else{
-                    state.vacProList.pop(item=>item.vacProId ===action?.payload?.updateVacancyId )
+                else {
+                    state.vacProList.pop(item => item.vacProId === action?.payload?.updateVacancyId)
                 }
                 state.isSuccessUpd = true;
             }),
@@ -864,7 +907,7 @@ const vacanciesSlices = createSlice({
                 state.loadingRMAP = false;
                 state.appErr = null;
                 state.isSuccessRM = true;
-                if(state.applicants)
+                if (state.applicants)
                     state.applicants = state.applicants.filter(item => item.userId !== action.payload.id)
             }),
             builder.addCase(removeApplicantVacancy.rejected, (state, action) => {
@@ -946,10 +989,11 @@ const vacanciesSlices = createSlice({
             builder.addCase(updateFavouriteVacancyAction.fulfilled, (state, action) => {
                 state.loadingFvr = false;
                 state.appErr = undefined;
-                state.isSuccessFvr = true;
+
 
                 var currentVacancy = state.vacancies.findIndex(vacancy => vacancy.vacancyId === action?.payload?.vacancyId)
                 if (currentVacancy !== -1) {
+                    state.isSuccessFvr = true;
                     if (action?.payload?.isPush) {
                         state.vacancies[currentVacancy].favouriteUsers.push(action?.payload?.userId);
                     }
@@ -957,8 +1001,11 @@ const vacanciesSlices = createSlice({
                         state.vacancies[currentVacancy].favouriteUsers.pop(action?.payload?.userId);
                     }
                 }
-                else{
-                    state.favouriteVacancies.pop(item => item.vacancyId === action?.payload?.vacancyId)
+                else {
+                    if (typeof (state.favouriteVacancies) !== 'undefined') {
+                        state.isSuccessFvr = true;
+                        state.favouriteVacancies.pop(item => item.vacancyId === action?.payload?.vacancyId)
+                    }
                 }
             }),
             builder.addCase(updateFavouriteVacancyAction.rejected, (state, action) => {
@@ -967,17 +1014,17 @@ const vacanciesSlices = createSlice({
                 state.isSuccessFvr = false;
             })
 
-            //update Favourite Vacancy Action
-            builder.addCase(getAllFavouriteVacanciesAction.pending, (state, action) => {
-                state.loading = true;
-                state.appErr = undefined;
-                state.isSuccess2 = false;
-            }),
+        //update Favourite Vacancy Action
+        builder.addCase(getAllFavouriteVacanciesAction.pending, (state, action) => {
+            state.loading = true;
+            state.appErr = undefined;
+            state.isSuccess2 = false;
+        }),
 
             builder.addCase(getAllFavouriteVacanciesAction.fulfilled, (state, action) => {
                 state.loading = false;
                 state.appErr = undefined;
-                state.isSuccess2= true;
+                state.isSuccess2 = true;
                 state.favouriteVacancies = action?.payload?.favouriteVacancies;
             }),
             builder.addCase(getAllFavouriteVacanciesAction.rejected, (state, action) => {
@@ -985,7 +1032,24 @@ const vacanciesSlices = createSlice({
                 state.appErr = action?.payload?.message;
                 state.isSuccess2 = false;
             }),
+            //update Favourite Vacancy Action
+            builder.addCase(getAllAppliedVacanciesAction.pending, (state, action) => {
+                state.loading = true;
+                state.appErr = undefined;
+                state.isSuccess2 = false;
+            }),
 
+            builder.addCase(getAllAppliedVacanciesAction.fulfilled, (state, action) => {
+                state.loading = false;
+                state.appErr = undefined;
+                state.isSuccess2 = true;
+                state.appliedVacancies = action?.payload?.appliedVacancies;
+            }),
+            builder.addCase(getAllAppliedVacanciesAction.rejected, (state, action) => {
+                state.loading = false;
+                state.appErr = action?.payload?.message;
+                state.isSuccess2 = false;
+            }),
             // get all rp
             builder.addCase(getAllReportsAdminAction.pending, (state, action) => {
                 state.loading = true;

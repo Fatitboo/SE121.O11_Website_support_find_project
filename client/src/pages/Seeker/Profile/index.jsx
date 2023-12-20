@@ -123,18 +123,7 @@ function SeekerProfile() {
     const handleUpdateShortListed = () => {
         dispatch(updateShortlistedUsersAction(id));
     }
-    const handleEmailClick = (event) => {
-        // Ngăn chặn sự kiện mặc định để tránh chuyển đến địa chỉ mailto trực tiếp
-        event.preventDefault();
-        const email= 'ngxvanphat@gmail.com';
-        const subject="test sb";
-        const body="test test body"
-        // Tạo đường dẫn mailto với địa chỉ email đã chọn
-        const mailtoLink = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
     
-        // Mở liên kết mailto trong một cửa sổ/ảnh mới
-        window.location.href = mailtoLink;
-      };
     return (<>
         {loading && <LoadingComponent />}
         <ToastContainer />
@@ -145,7 +134,7 @@ function SeekerProfile() {
                 Seeker Info!
             </div>
             
-            <a  onClick={handleEmailClick}> ngxvanphat@gmail.com</a>
+            
             <div className="text-sm leading-6 font-normal m-0 right-0 flex justify-between items-center ">Ready to jump back in?</div>
         </div>
         <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/uicons-regular-rounded/css/uicons-regular-rounded.css'></link>

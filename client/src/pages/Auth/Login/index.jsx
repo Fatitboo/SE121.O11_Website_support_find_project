@@ -69,12 +69,12 @@ function Login() {
                     <div className="text-sm text-blue-700">Welcome back!</div>
                     <div className="text-4xl font-bold mt-3 mb-2">Member Login</div>
                     <div className="text-sm mb-8 text-[#6c757d]">Access to all features. No credit card required.</div>
-                    <CustomButton title={'Sign in with Google'} containerStyles={'flex justify-center py-3 rounded items-center font-medium border border-[#ccc] w-full mb-5'}>
+                    {/* <CustomButton title={'Sign in with Google'} containerStyles={'flex justify-center py-3 rounded items-center font-medium border border-[#ccc] w-full mb-5'}>
                         <img src="https://jobbox-nextjs-v3.vercel.app/assets/imgs/template/icons/icon-google.svg" alt="logo Google" className="mr-1" />
-                    </CustomButton>
+                    </CustomButton> */}
                     <div className="flex w-full items-center ">
                         <div className="h-[0.5px] w-[32%] bg-[#ccc]"></div>
-                        <div className="w-[35%] flex justify-center font-light text-[#05264e] text-base">Or continue with</div>
+                        <div className="w-[35%] flex justify-center font-light text-[#05264e] text-base">Continue with</div>
                         <div className="h-[0.5px] w-[33%] bg-[#ccc]"></div>
                     </div>
                     <form className="mt-2 w-full" onSubmit={handleSubmit(onSubmit)}>

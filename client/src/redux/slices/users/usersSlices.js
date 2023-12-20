@@ -79,7 +79,11 @@ export const updateAvatarAction = createAsyncThunk(
             formData.append('file', avatar.file);
             formData.append('publicId', avatar.publicId);
             const { data } = await axios.post(`${baseUrl}/${apiPrefix}/update-image-user/${userAuth?.user?.userId}`, formData, config);
+            var getUserAuth =  JSON.parse(localStorage.getItem('userInfo'));
+
             console.log(data)
+            getUserAuth.user.avatar = data.image;
+            localStorage.setItem('userInfo', JSON.stringify(getUserAuth))
             return data;
         } catch (error) {
             if (!error?.response) {
@@ -104,7 +108,12 @@ export const getUserProfileAction = createAsyncThunk(
                 },
             };
             const { data } = await axios.get(`${baseUrl}/${apiPrefix}/get-profile-user/${userAuth?.user?.userId}`, config);
+            var getUserAuth =  JSON.parse(localStorage.getItem('userInfo'));
+
             console.log(data)
+            getUserAuth.user.fullName = data.userProfile.fullName;
+            localStorage.setItem('userInfo', JSON.stringify(getUserAuth))
+            
             return data;
         } catch (error) {
             if (!error?.response) {
@@ -156,6 +165,7 @@ export const updateUserProfileAction = createAsyncThunk(
             };
 
             const { data } = await axios.put(`${baseUrl}/${apiPrefix}/update-user-information/${userAuth?.user?.userId}`, info, config);
+            console.log(data)
             return data;
         } catch (error) {
             if (!error?.response) {
@@ -747,6 +757,7 @@ const usersSlices = createSlice({
             builder.addCase(getUserProfileAction.fulfilled, (state, action) => {
                 state.loading = false;
                 state.userProfile = action?.payload?.userProfile;
+                state.userAuth.user.fullName = action?.payload?.userProfile.fullName;
                 state.appErr = undefined;
             }),
             builder.addCase(getUserProfileAction.rejected, (state, action) => {
@@ -777,6 +788,7 @@ const usersSlices = createSlice({
             builder.addCase(updateAvatarAction.fulfilled, (state, action) => {
                 state.loading = false;
                 state.userProfile = { ...state.userProfile, avatar: action?.payload?.image };
+                state.userAuth.user.avatar = action?.payload?.image ;
                 state.appErr = undefined;
             }),
             builder.addCase(updateAvatarAction.rejected, (state, action) => {
@@ -844,7 +856,11 @@ const usersSlices = createSlice({
             }),
             builder.addCase(updateUserCvAction.fulfilled, (state, action) => {
                 state.loading = false;
-                state.cvUser.push(action?.payload?.cv );
+                if(state.cvUser){
+                    state.cvUser.push(action?.payload?.cv);
+                }else{
+                    state.cvUser = [{...action?.payload?.cv}]
+                }
                 state.appErr = undefined;
                 state.isSuccess = true;
             }),

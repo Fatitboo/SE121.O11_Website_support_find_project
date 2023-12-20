@@ -173,7 +173,7 @@ function Sidebar({user}) {
                     (
                         <div className="relative w-full l-0 m-0 p-0">
                             <div className={classNames(isActive === 'Post a job' ? 'bg-[#E9EFFB] text-blue-600' : '', postJobStyle)}>
-                                <Link onClick={()=>{dispatch(isActiveSidebarActione('Post a job')); dispatch(createVacancyId({"userId": userAuth?.userId, "avatar": userAuth?.avatar?.fileUrl, "fullName": userAuth?.fullName}))}} className="relative text-sm text-center p-3  flex items-center leading-7 font-normal rounded-lg ">
+                                <Link onClick={()=>{ dispatch(createVacancyId({"userId": userAuth?.userId, "avatar": userAuth?.avatar?.fileUrl, "fullName": userAuth?.fullName}))}} className="relative text-sm text-center p-3  flex items-center leading-7 font-normal rounded-lg ">
                                     <HiPlus className='relative mr-4 ml-4 text-2xl text-center ' />
                                     Post a job
                                 </Link>

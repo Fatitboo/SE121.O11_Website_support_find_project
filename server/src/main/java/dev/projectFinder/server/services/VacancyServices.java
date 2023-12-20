@@ -1,5 +1,6 @@
 package dev.projectFinder.server.services;
 
+import dev.projectFinder.server.components.AppliedVacancy;
 import dev.projectFinder.server.components.Notification;
 import dev.projectFinder.server.components.Participant;
 import dev.projectFinder.server.components.Vacancy.JobPreScreen;
@@ -325,7 +326,22 @@ public class VacancyServices {
         registerVacancy.remove(user.getUserId().toString());
         vacancy.setRegistants(registerVacancy);
 
-
+        // update status applied vacancies list
+        List<AppliedVacancy> appliedVacancyList = user.getAppliedVacancyList();
+        if(appliedVacancyList == null){
+            appliedVacancyList = new ArrayList<>();
+        }
+        boolean isHas = false;
+        for (AppliedVacancy a: appliedVacancyList) {
+            if(a.getVacancyId().equals(vacancyId)){
+                isHas= true;
+                a.setStatus("received");
+            }
+        }
+        if(!isHas) {
+            appliedVacancyList.add(new AppliedVacancy(vacancyId,LocalDateTime.now(),"received"));
+        }
+        user.setAppliedVacancyList(appliedVacancyList);
         // Them moi mot recreived vacancy -> user
         List<String> listReceivedVacancy = user.getReceivedVacancies();
         if(listReceivedVacancy == null || listReceivedVacancy.isEmpty()) {
@@ -334,19 +350,21 @@ public class VacancyServices {
         listReceivedVacancy.add(vacancy.getVacancyId().toString());
         user.setReceivedVacancies(listReceivedVacancy);
 
-        // Xoa di mot applicant vacancy -> use
-        List<String> listApplicantVacancy = user.getAppliedVacancies();
-        listApplicantVacancy.remove(vacancy.getVacancyId().toString());
-        user.setAppliedVacancies(listApplicantVacancy);
+//        // Xoa di mot applicant vacancy -> use
+//        List<String> listApplicantVacancy = user.getAppliedVacancies();
+//        listApplicantVacancy.remove(vacancy.getVacancyId().toString());
+//        user.setAppliedVacancies(listApplicantVacancy);
 
         //Xoa cau tra loi cua user
         JobPreScreen[] jobPreScreen = vacancy.getJobPreScreen();
-        for (JobPreScreen preScreen : jobPreScreen) {
-            HashMap<Object, Object> hm = preScreen.getAnswer();
-            hm.remove(user.getUserId().toString());
-            preScreen.setAnswer(hm);
+        if(jobPreScreen!=null){
+            for (JobPreScreen preScreen : jobPreScreen) {
+                HashMap<Object, Object> hm = preScreen.getAnswer();
+                hm.remove(user.getUserId().toString());
+                preScreen.setAnswer(hm);
+            }
+            vacancy.setJobPreScreen(jobPreScreen);
         }
-        vacancy.setJobPreScreen(jobPreScreen);
 
         //Tạo notification
 
@@ -379,7 +397,22 @@ public class VacancyServices {
         List<String> registerVacancy = vacancy.getRegistants();
         registerVacancy.remove(user.getUserId().toString());
         vacancy.setRegistants(registerVacancy);
-
+        // update status applied vacancies list
+        List<AppliedVacancy> appliedVacancyList = user.getAppliedVacancyList();
+        if(appliedVacancyList == null){
+            appliedVacancyList = new ArrayList<>();
+        }
+        boolean isHas = false;
+        for (AppliedVacancy a: appliedVacancyList) {
+            if(a.getVacancyId().equals(vacancyId)){
+                isHas = true;
+                a.setStatus("rejected");
+            }
+        }
+        if(!isHas) {
+            appliedVacancyList.add(new AppliedVacancy(vacancyId,LocalDateTime.now(),"rejected"));
+        }
+        user.setAppliedVacancyList(appliedVacancyList);
 
         // Xoa di mot applicant vacancy -> user
         List<String> listApplicantVacancy = user.getAppliedVacancies();
@@ -435,6 +468,23 @@ public class VacancyServices {
         }
         vacancy.setParticipants(listParticipantsVacancy);
 
+        // update status applied vacancies list
+        List<AppliedVacancy> appliedVacancyList = user.getAppliedVacancyList();
+        if(appliedVacancyList == null){
+            appliedVacancyList = new ArrayList<>();
+        }
+        boolean isHas = false;
+        for (AppliedVacancy a: appliedVacancyList) {
+            if(a.getVacancyId().equals(vacancyId)){
+                isHas=true;
+                a.setStatus("blocked");
+            }
+        }
+        if(!isHas) {
+            appliedVacancyList.add(new AppliedVacancy(vacancyId,LocalDateTime.now(),"blocked"));
+        }
+        user.setAppliedVacancyList(appliedVacancyList);
+
         //Tạo notification
 
         Notification noti = new Notification();
@@ -472,6 +522,23 @@ public class VacancyServices {
             }
         }
         vacancy.setParticipants(listParticipantsVacancy);
+
+        // update status applied vacancies list
+        List<AppliedVacancy> appliedVacancyList = user.getAppliedVacancyList();
+        if(appliedVacancyList == null){
+            appliedVacancyList = new ArrayList<>();
+        }
+        boolean isHas = false;
+        for (AppliedVacancy a: appliedVacancyList) {
+            if(a.getVacancyId().equals(vacancyId)){
+                isHas = true;
+                a.setStatus("received");
+            }
+        }
+        if(!isHas) {
+            appliedVacancyList.add(new AppliedVacancy(vacancyId,LocalDateTime.now(),"received"));
+        }
+        user.setAppliedVacancyList(appliedVacancyList);
 
         //Noti
         Notification noti = new Notification();
@@ -513,6 +580,11 @@ public class VacancyServices {
         listReceivedVacancy.remove(vacancy.getVacancyId().toString());
         user.setReceivedVacancies(listReceivedVacancy);
 
+        // Xoa di mot applicant vacancy -> user
+        List<String> listApplicantVacancy = user.getAppliedVacancies();
+        listApplicantVacancy.remove(vacancy.getVacancyId().toString());
+        user.setAppliedVacancies(listApplicantVacancy);
+        
         //Noti
         Notification noti = new Notification();
         noti.setNotiTime(LocalDateTime.now());
@@ -588,5 +660,28 @@ public class VacancyServices {
             vacancies.add(optionalVacancy.get());
         }
         return vacancies;
+    }
+    public List<HashMap<String, Object>> getAllAppliedVacancies(String userId){
+        Optional<User> foundUser = userRepository.findById(new ObjectId(userId));
+        if(foundUser.isEmpty()){
+            throw new DataIntegrityViolationException(MessageKeys.USER_NOT_FOUND);
+        }
+        User user = foundUser.get();
+        List<AppliedVacancy> fvrVacancies = user.getAppliedVacancyList();
+        if(fvrVacancies==null){
+            fvrVacancies = new ArrayList<>();
+        }
+        List<HashMap<String, Object>> listAppliedVacancies = new ArrayList<>();
+
+        for (AppliedVacancy vacancyapplied: fvrVacancies) {
+            Optional<Vacancy> optionalVacancy = vacancyRepository.findById(new ObjectId(vacancyapplied.getVacancyId()));
+            if(optionalVacancy.isEmpty()) continue;
+            HashMap<String, Object> hm = new HashMap<>();
+            hm.put("status", vacancyapplied.getStatus());
+            hm.put("appliedDate", vacancyapplied.getAppliedDate());
+            hm.put("appliedVacancy", optionalVacancy.get());
+            listAppliedVacancies.add(hm);
+        }
+        return listAppliedVacancies;
     }
 }

@@ -33,7 +33,7 @@ const OrganizerItem = ({ item }) => {
                     <div className="flex flex-col items-center">
                         <img src={item.avatar?.fileUrl ?? 'https://i.pinimg.com/564x/16/3e/39/163e39beaa36d1f9a061b0f0c5669750.jpg'} className="w-[60px] h-[60px] rounded-full my-2 shadow"></img>
                         <div className="flex flex-col items-center mb-3">
-                            <a href="" className="text-[18px] leading-[26px] text-[#05264e] font-bold">{item.fullName}</a>
+                            <div  className="text-[18px] leading-[26px] text-[#05264e] font-bold">{item.fullName}</div>
                             <div className="text-[#a0abb8] text-[14px]">Team size: {item?.teamSize ?? 0}</div>
                             {/* <div>
                                     {[...Array(5)].map((star, index) => {
@@ -52,7 +52,7 @@ const OrganizerItem = ({ item }) => {
                         <span className="text-[#a0abb8] text-[14px] flex flex-row items-center mb-1"><HiOutlineLocationMarker color="#a0abb8" strokeWidth={"1.5px"} className="w-[18px] h-[18px] mr-1" />{item?.address?.province ?? 'Not found'}, {item?.address?.country ?? 'not found'}</span>
                         <span className="text-[#a0abb8] text-[14px] flex flex-row items-start mb-3 w-full px-3">
                             <PiSuitcase color="#a0abb8" className="w-[18px] h-[18px] mr-1.5 mt-0.5 " />
-                            <div className="flex flex-wrap line-clamp-2 w-full items-start  min-h-[40px]">
+                            <div className="flex flex-wrap line-clamp-2 w-full items-start overflow-y-auto h-[40px] text-ellipsis">
                                 {
                                     (item?.fields ?? ['Nothing']).map((i, index) => {
                                         return <div key={index} className="mr-1.5 whitespace-nowrap">{i} </div>

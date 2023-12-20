@@ -16,11 +16,7 @@ function MenuList({ user, onClick }) {
         dispatch(logoutUserAction())
         window.location.href = '/user-auth/login';
     }
-    const getName = (fullname) => {
-        const parts = fullname.split(" ");
-        const lastName = parts[parts.length - 1];
-        return lastName
-    }
+
 
     return (
         <div>
@@ -34,7 +30,7 @@ function MenuList({ user, onClick }) {
                         />
                         <div className='leading[40px] flex flex-col items-start'>
                             <p className='text-sm font-semibold '>
-                                {getName(user?.fullName)}
+                                {user?.fullName}
                             </p>
                         </div>
                         <BiChevronDown
@@ -56,7 +52,7 @@ function MenuList({ user, onClick }) {
                         <div className='p-1 '>
                             <Menu.Item>
                                 {({ active }) => (
-                                    <Link
+                                    <Link 
                                         to={"/Seeker/dashboard"}
                                         className={`${active ? "bg-blue-500 text-white" : "text-gray-900"
                                             } group flex w-full items-center rounded-md p-2 text-sm`}
@@ -74,7 +70,7 @@ function MenuList({ user, onClick }) {
 
                             <Menu.Item>
                                 {({ active }) => (
-                                    <div 
+                                    <div
                                         onClick={() => handlerLogOut()}
                                         className={`${active ? "bg-blue-500 text-white" : "text-gray-900"
                                             } group flex w-full items-center rounded-md px-2 py-2 text-sm cursor-pointer`}
@@ -133,10 +129,10 @@ function NavbarUser({ user }) {
                             <Link to='/Seeker/find-organizer' >Organizer</Link>
                         </li>
                         <li>
-                            <Link to='/' >About us</Link>
+                            <Link to='/Seeker/about-us' >About us</Link>
                         </li>
                         <li>
-                            <Link to='/' >Contract</Link>
+                            <Link to='/Seeker/contact' >Contract</Link>
                         </li>
                     </ul>
                     <div className="hidden lg:block">
