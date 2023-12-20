@@ -14,6 +14,7 @@ import dev.projectFinder.server.responses.UserResponse;
 import dev.projectFinder.server.responses.UserResumeResponse;
 import dev.projectFinder.server.services.EmailService;
 import dev.projectFinder.server.services.UserServices;
+import dev.projectFinder.server.services.VacancyServices;
 import dev.projectFinder.server.utils.MessageKeys;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -45,6 +46,7 @@ public class UserController {
     private final UserRepository userRepository;
     private final VacancyRepository vacancyRepository;
     private final UnCompletedVacancyRepository unCompletedVacancyRepository;
+    private final VacancyServices vacancyServices;
     //  localhost:8088/api/v1/users/register/page=5&record=10
     @PostMapping("/register")
     public ResponseEntity<?> createUser(@Valid @RequestBody UserDTO userDTO,
@@ -326,40 +328,10 @@ public class UserController {
     public ResponseEntity<?> getUserById(@PathVariable String id){
         HashMap<String, Object> response = new HashMap<>();
         try{
-            // get user detail
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            Object principal = authentication.getPrincipal();
-            String username = "";
-            if (principal instanceof UserDetails userDetails) {
-                username= userDetails.getUsername();
-            }
-
-            // get user detail
+            // get cor detail
             User user = userServices.getUserDetail(id);
+            userServices.increaseViews(id);
 
-            Optional<User> foundUser = userRepository.findByUsername(username);
-            if(foundUser.isEmpty()){
-                response.put("isShorted",false);
-                response.put("message","Get detail user successfully" );
-                response.put("userDetail",user);
-                return ResponseEntity.status(HttpStatus.OK).body(response);
-            }
-            User userFoundRequest = foundUser.get();
-
-            // increase views
-            if(!userFoundRequest.getUserType().equals("admin")) userServices.increaseViews(id);
-
-            boolean isShorted = false;
-            if(userFoundRequest.getShortListedUser() != null) {
-//                isShorted= user.getShortListedUser().stream().anyMatch(u-> u.getUserId().equals(new ObjectId(id)));
-                for(User u : userFoundRequest.getShortListedUser()){
-                    if(u.getUserId().equals(new ObjectId(id))){
-                        isShorted=true;
-                        break;
-                    }
-                }
-            }
-            response.put("isShorted",isShorted);
             response.put("message","Get detail user successfully" );
             response.put("userDetail",user);
             return ResponseEntity.status(HttpStatus.OK).body(response);
@@ -373,8 +345,15 @@ public class UserController {
         HashMap<String, Object> response = new HashMap<>();
         try{
             User user = userServices.getUserDetail(id);
+            List<String> userIds = user.getShortListedUser();
+            List<User> users = new ArrayList<>();
+            if(userIds == null) userIds = new ArrayList<>();
+            for(String uid : userIds){
+                Optional<User> ou = userRepository.findById(new ObjectId(uid));
+                ou.ifPresent(users::add);
+            }
             response.put("message","Get short listed users successfully" );
-            response.put("shortListed",user.getShortListedUser());
+            response.put("shortListed",users);
             return ResponseEntity.status(HttpStatus.OK).body(response);
         }catch (Exception e) {
             response.put("message", e.getMessage());
@@ -473,6 +452,15 @@ public class UserController {
                     cv.ifPresent(complete::add);
                 }
             }
+            List<String> vacanciesId = user.getVacancies();
+            List<User> recentApplicants = new ArrayList<>();
+            if(vacanciesId!=null) {
+                for(String vid: vacanciesId) {
+                    List<User> users = vacancyServices.getAllApplicantsVacancy(vid);
+                    recentApplicants.addAll(users);
+                }
+            }
+            response.put("recentApplicants",  recentApplicants);
             response.put("fvrVacancies",  user.getFavoriteVacancies()!= null ? user.getFavoriteVacancies().size() : 0);
             response.put("fvrProjects",  user.getFavoriteProjects()!= null ? user.getFavoriteProjects().size() : 0);
             response.put("notification",user.getNotifications());

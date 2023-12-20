@@ -258,13 +258,14 @@ public class VacancyServices {
 
         List<String> userIds = vacancy.getRegistants();
         List<User> users = new ArrayList<>();
-        for(int i = 0; i < userIds.size(); i++){
-            Optional<User> userOptional = userRepository.findById(new ObjectId(userIds.get(i)));
-            if(userOptional.isEmpty()){
-                throw new DataIntegrityViolationException("Error when get user in database!");
+        if(userIds!=null)
+            for(int i = 0; i < userIds.size(); i++){
+                Optional<User> userOptional = userRepository.findById(new ObjectId(userIds.get(i)));
+                if(userOptional.isEmpty()){
+                    throw new DataIntegrityViolationException("Error when get user in database!");
+                }
+                users.add(userOptional.get());
             }
-            users.add(userOptional.get());
-        }
 
         return users;
     }

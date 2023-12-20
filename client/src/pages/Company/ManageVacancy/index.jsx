@@ -192,7 +192,7 @@ function ManageVacancy() {
                             </div>
 
                             {/* Start table */}
-                            <div onClick={() => console.log(incomplete)}>click me</div>
+                           
                             <div className="px-6 relative">
                                 <div className="overflow-x-auto overflow-y-auto">
 

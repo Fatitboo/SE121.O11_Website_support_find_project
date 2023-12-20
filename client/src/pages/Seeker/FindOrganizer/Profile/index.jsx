@@ -29,7 +29,7 @@ function CompanyProfile() {
     const projects = useSelector((state) => state.projects.projectsOfCor)
     const userAuth = useSelector(store => store?.users?.userAuth);
     const storeData = useSelector(store => store?.users);
-    const { loading, appErr, seletedUser, isSuccess, isShorted } = storeData;
+    const { loading, appErr, seletedUser, isSuccess } = storeData;
     const [sltCor, setSltCor] = useState({ ...seletedUser })
     const convertDate = (tt) => {
         const date = new Date(tt);
@@ -41,6 +41,13 @@ function CompanyProfile() {
         // Tạo chuỗi ngày theo định dạng 'yyyy-MM-dd'
         const formattedDate = `${day}-${month}-${year}`;
         return formattedDate
+    }
+    const checkFavourite = () => {
+        const userId = userAuth?.user?.userId;
+        var isFvr = false;
+        if (!sltCor?.favouriteUser) return isFvr;
+        if (sltCor?.favouriteUser.filter(item => item === userId).length === 1) isFvr = true;
+        return isFvr;
     }
     useEffect(() => {
         setSltCor({ ...seletedUser })
@@ -101,7 +108,7 @@ function CompanyProfile() {
                 <div className="flex flex-row-reverse mb-5">
                     <div onClick={() => handleUpdateShortListed()} className="item flex items-center justify-center w-[60px] h-[52px] rounded-[7px] bg-[rgba(25,103,210,.07)] ml-5 cursor-pointer opacity-80" color="#1967d3">
                         {
-                            isShorted
+                            checkFavourite()
                                 ? <BsBookmarkCheckFill className="w-full h-full p-[10px] rounded-[7px]" color="#1967d3" />
                                 : <BiBookmark className="w-full h-full p-[10px] rounded-[7px]" color="#1967d3" />
                         }

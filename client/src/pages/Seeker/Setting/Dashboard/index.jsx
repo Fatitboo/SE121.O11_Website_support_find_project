@@ -248,8 +248,8 @@ function DashboardSeeker() {
                             {
                                 notification && [...notification].reverse()?.map((item, index) => {
                                     return <div key={index} className="flex mt-2 mb-6 ">
-                                        <div className="flex items-center">
-                                            <div className={`rounded-full p-2 mr-4  ${index % 2 === 0 ? 'bg-green-100 text-green-700' : 'bg-blue-100 text-blue-700'}`}><PiSuitcaseSimpleDuotone /></div>
+                                        <div className="flex items-start">
+                                            <div className={`rounded-full p-2 mr-4 mt-1.5  ${index % 2 === 0 ? 'bg-green-100 text-green-700' : 'bg-blue-100 text-blue-700'}`}><PiSuitcaseSimpleDuotone /></div>
                                             <div className="flex flex-wrap ">
                                                 <div className="font-medium  flex flex-nowrap mr-1 text-sm ">{displayNoti(item?.contentNoti)[0]} </div>
                                                 <div className="font-normal flex-wrap flex mr-1 text-sm text-gray-500 ">{displayNoti(item?.contentNoti)[1]} </div>

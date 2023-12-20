@@ -22,11 +22,13 @@ function SeekerProfile() {
         dispatch(getDetailUserAction(id))
     }, [dispatch])
     const storeData = useSelector(store => store?.users);
-    const { loading, appErr, seletedUser, isSuccess, isShorted } = storeData;
-    const [sltSeeker, setSltSeeker] = useState({ ...seletedUser })
+    const { loading, appErr, seletedUser, isSuccess } = storeData;
+    const [sltSeeker, setSltSeeker] = useState({  })
+    const { userAuth } = useSelector(store => store.users);
 
     useEffect(() => {
-        setSltSeeker({ ...seletedUser })
+
+        setSltSeeker({ ...seletedUser })    
     }, [seletedUser])
     useEffect(() => {
         if (isSuccess) {
@@ -34,6 +36,7 @@ function SeekerProfile() {
             notify('success', 'Update shorted list users successfully!')
         }
     }, [isSuccess])
+    
     function getEducateList(Educations) {
         if (!Educations) return;
         const reversedArray = [...Educations].reverse();
@@ -81,7 +84,6 @@ function SeekerProfile() {
             return <BackgroundItem key={index} index={index} type={'award'} initList={Awards} isLast={false} title={title} subtitle={item.certifiedBy} description={item.description} textColor={"#f9ab00"} bgColor={"#fef2d1"} />;
         })
     }
-
     const getYearOld = (dob) => {
         const date = new Date(dob);
         const yearBirth = date.getFullYear();
@@ -124,12 +126,12 @@ function SeekerProfile() {
         dispatch(updateShortlistedUsersAction(id));
     }
     const handleDownloadClick = () => {
-        const obj = {...linkCV()} 
+        const obj = { ...linkCV() }
         var arr = []
-        if(obj.name.includes('.')){       
-             arr = obj.name.split('.')          
+        if (obj.name.includes('.')) {
+            arr = obj.name.split('.')
         }
-        const fileUrl = `https://res.cloudinary.com/dvnxdtrzn/raw/upload/f_auto/fl_attachment:CV_Seeker_${obj.publicId.slice(18)}${arr[arr.length-1]}/v1700816040/${obj.publicId}`;
+        const fileUrl = `https://res.cloudinary.com/dvnxdtrzn/raw/upload/f_auto/fl_attachment:CV_Seeker_${obj.publicId.slice(18)}${arr[arr.length - 1]}/v1700816040/${obj.publicId}`;
 
         // Tạo một phần tử a ẩn
         const hiddenLink = document.createElement('a');
@@ -146,6 +148,13 @@ function SeekerProfile() {
         // Loại bỏ phần tử a ẩn khỏi DOM
         document.body.removeChild(hiddenLink);
     };
+    const checkFavourite = () => {
+        const userId = userAuth?.user?.userId;
+        var isFvr = false;
+        if (!sltSeeker?.favouriteUser) return isFvr;
+        if (sltSeeker?.favouriteUser.filter(item => item === userId).length === 1) isFvr = true;
+        return isFvr;
+    }
     return (<>
         {loading && <LoadingComponent />}
         <ToastContainer />
@@ -265,7 +274,7 @@ function SeekerProfile() {
                         }
                         <div onClick={handleUpdateShortListed} className="item flex items-center justify-center w-[60px] h-[52px] rounded-[7px] bg-[rgba(25,103,210,.07)] ml-5 cursor-pointer opacity-80" color="#1967d3">
                             {
-                                isShorted
+                                checkFavourite()
                                     ? <BsBookmarkCheckFill className="w-full h-full p-[10px] rounded-[7px]" color="#1967d3" />
                                     : <BiBookmark className="w-full h-full p-[10px] rounded-[7px]" color="#1967d3" />
                             }

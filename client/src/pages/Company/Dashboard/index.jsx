@@ -24,124 +24,6 @@ const cbb = [
     },
 ]
 
-const recentApplicants = [
-    {
-        applicantName: 'Nguyen Van Phat',
-        skillsRequired: [
-            {
-                skillName: "Manager",
-                level: "Advanced",
-            },
-            {
-                skillName: "Python",
-                level: "Medium",
-            },
-            {
-                skillName: "Bootstrap",
-                level: "Basic",
-            },
-            {
-                skillName: "Android",
-                level: "Basic",
-            },
-            {
-                skillName: "C++",
-                level: "Advanced",
-            },
-        ],
-        salary: "$45k-$100k",
-        vacancyName: 'Technical Leader',
-        applicantAvatar: 'https://superio-appdir.vercel.app/_next/image?url=%2Fimages%2Fresource%2Fcandidate-1.png&w=256&q=75',
-        address: 'London, UK'
-    },
-    {
-        applicantName: 'Nguyen Van Phat',
-        skillsRequired: [
-            {
-                skillName: "Manager",
-                level: "Advanced",
-            },
-            {
-                skillName: "Python",
-                level: "Medium",
-            },
-            {
-                skillName: "Bootstrap",
-                level: "Basic",
-            },
-            {
-                skillName: "Android",
-                level: "Basic",
-            },
-            {
-                skillName: "C++",
-                level: "Advanced",
-            },
-        ],
-        salary: "$45k-$100k",
-        vacancyName: 'Technical Leader',
-        applicantAvatar: 'https://superio-appdir.vercel.app/_next/image?url=%2Fimages%2Fresource%2Fcandidate-1.png&w=256&q=75',
-        address: 'London, UK'
-    },
-    {
-        applicantName: 'Nguyen Van Phat',
-        skillsRequired: [
-            {
-                skillName: "Manager",
-                level: "Advanced",
-            },
-            {
-                skillName: "Python",
-                level: "Medium",
-            },
-            {
-                skillName: "Bootstrap",
-                level: "Basic",
-            },
-            {
-                skillName: "Android",
-                level: "Basic",
-            },
-            {
-                skillName: "C++",
-                level: "Advanced",
-            },
-        ],
-        salary: "$45k-$100k",
-        vacancyName: 'Technical Leader',
-        applicantAvatar: 'https://superio-appdir.vercel.app/_next/image?url=%2Fimages%2Fresource%2Fcandidate-1.png&w=256&q=75',
-        address: 'London, UK'
-    },
-    {
-        applicantName: 'Nguyen Van Phat',
-        skillsRequired: [
-            {
-                skillName: "Manager",
-                level: "Advanced",
-            },
-            {
-                skillName: "Python",
-                level: "Medium",
-            },
-            {
-                skillName: "Bootstrap",
-                level: "Basic",
-            },
-            {
-                skillName: "Android",
-                level: "Basic",
-            },
-            {
-                skillName: "C++",
-                level: "Advanced",
-            },
-        ],
-        salary: "$45k-$100k",
-        vacancyName: 'Technical Leader',
-        applicantAvatar: 'https://superio-appdir.vercel.app/_next/image?url=%2Fimages%2Fresource%2Fcandidate-1.png&w=256&q=75',
-        address: 'London, UK'
-    },
-]
 
 function DashboardCompany() {
     const dispatch = useDispatch();
@@ -155,7 +37,7 @@ function DashboardCompany() {
         dispatch(getDataStatisticalAction());
     }, [dispatch])
     const storeData = useSelector(store => store?.users);
-    const { viewsProfile, isSuccess, appErr, loading, shortListed, postedProjects, postedVacancies, notification } = storeData;
+    const { viewsProfile, isSuccess, appErr, loading, shortListed, postedProjects, postedVacancies, notification,recentApplicants } = storeData;
     useEffect(() => {
         if (isSuccess) {
             dispatch(resetSuccessAction());
@@ -266,6 +148,13 @@ function DashboardCompany() {
             arrNoti[2] = arr[1];
             return arrNoti;
         }
+        if (content.includes('has been waitPayment')) {
+            const arr = content.split('has been waitPayment')
+            arrNoti[0] = arr[0];
+            arrNoti[1] = 'has been accepted';
+            arrNoti[2] = arr[1];
+            return arrNoti;
+        }
         const arr = content.split('has been')
         arrNoti[0] = arr[0];
         arrNoti[1] = 'has been';
@@ -295,15 +184,15 @@ function DashboardCompany() {
                         <span className='text-sm text-[#202124]'>Posted Vacancies</span>
                     </div>
                 </Link>
-                <Link to={'/Organizer/'}  className="bg-white h-[120px] rounded-lg shadow flex p-6 cursor-pointer">
+                <Link to={'/Organizer/interview'}  className="bg-white h-[120px] rounded-lg shadow flex p-6 cursor-pointer">
                     <div className='basis-1/3 place-content-center place-items-cent  items-center flex'>
                         <div className='rounded-lg bg-[rgba(217,48,37,.1)] h-[80px] w-[80px] text-[#d93025] flex items-center place-content-center'>
                             <IoDocumentTextOutline fontSize={40} className="text-[#d93025]" />
                         </div>
                     </div>
                     <div className='basis-2/3 flex flex-col justify-center items-end'>
-                        <span className='font-medium text-4xl   text-[#d93025]'>23</span>
-                        <span className='text-sm text-[#202124]'>Application</span>
+                        <span className='font-medium text-4xl   text-[#d93025]'>{recentApplicants?.length}</span>
+                        <span className='text-sm text-[#202124]'>Applicants</span>
                     </div>
                 </Link>
                 <Link to={'/Organizer/manage-project'} onClick={()=>dispatch(isActiveSidebarAction('Manage Project'))} className="bg-white h-[120px] rounded-lg shadow flex p-6 cursor-pointer">
@@ -349,8 +238,8 @@ function DashboardCompany() {
                             {
                                 ([...noti]?.reverse())?.map((item, index) => {
                                     return <div key={index} className="flex mt-2 mb-6 ">
-                                        <div className="flex items-center">
-                                            <div className={`rounded-full p-2 mr-4  ${index % 2 === 0 ? 'bg-green-100 text-green-700' : 'bg-blue-100 text-blue-700'}`}><PiSuitcaseSimpleDuotone /></div>
+                                        <div className="flex items-start">
+                                            <div className={`rounded-full p-2 mr-4 mt-1.5 ${index % 2 === 0 ? 'bg-green-100 text-green-700' : 'bg-blue-100 text-blue-700'}`}><PiSuitcaseSimpleDuotone /></div>
                                             <div className="flex flex-wrap ">
                                                 <div className="font-medium  flex flex-nowrap mr-1 text-sm ">{displayNoti(item?.contentNoti)[0]} </div>
                                                 <div className="font-normal flex-wrap flex mr-1 text-sm text-gray-500 ">{displayNoti(item?.contentNoti)[1]} </div>
@@ -372,8 +261,8 @@ function DashboardCompany() {
                         <div className='pt-6 px-4 font-bold mt-4'>Recent Applicants: </div>
                         <div className="relative overflow-y-hidden overflow-x-hidden rounded-md mb-8 pt-8 px-4 bg-white border-0 text-sm h-fit w-full grid grid-cols-2 gap-x-8" >
                             {
-                                recentApplicants.map((item, index) => {
-                                    return <Applicants key={index} vacancyName={item.vacancyName} skillsRequired={item.skillsRequired} salary={item.salary} applicantAvatar={item.applicantAvatar} applicantName={item.applicantName} address={item.address} />;
+                                recentApplicants?.map((item, index) => {
+                                    return <Applicants key={index} item={item} />;
                                 })
                             }
                         </div>

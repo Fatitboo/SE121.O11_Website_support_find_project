@@ -50,7 +50,9 @@ public class User implements UserDetails {
     private String twLink;
     private String lkLink;
     private String insLink;
-    private List<User> shortListedUser;
+    private List<String> shortListedUser;
+    private List<String> favouriteUser;
+
     private Boolean isActive;
     private List<ViewsProfile> viewsProfiles;
     // token + expired
