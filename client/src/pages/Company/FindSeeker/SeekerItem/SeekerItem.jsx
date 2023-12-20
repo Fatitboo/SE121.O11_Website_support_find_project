@@ -36,17 +36,17 @@ const SeekerItem = ({ item }) => {
                         <img src={item.avatar?.fileUrl ?? 'https://i.pinimg.com/564x/16/3e/39/163e39beaa36d1f9a061b0f0c5669750.jpg'} className="w-[80px] h-[80px] rounded-full my-2 shadow"></img>
                         <div className="flex flex-col items-center mb-2">
                             <div className="text-base leading-[26px] text-[#05264e] font-bold">{item.fullName ?? 'Not information'}</div>
-                            <div className="text-blue-700 font-light text-sm">{item?.jobTitle ?? 'Not information'}</div>
+                            <div className="text-blue-700 font-normal text-sm">{item?.jobTitle ?? 'Not information'}</div>
                         </div>
                         <div className="grid grid-cols-3 gap-2 px-4">
-                            <span className="text-[#a0abb8] font-light col-span-2 text-sm flex flex-row items-center mb-1"><HiOutlineLocationMarker color="#a0abb8" strokeWidth={"1.5px"} className="w-[18px] h-[18px] mr-1" />{item?.address?.province ?? 'Not infor'}, {item?.address?.country ?? 'not infor'}</span>
-                            <span className="text-[#a0abb8] font-light text-sm flex flex-row items-center mb-1"><BiMoney color="#a0abb8" strokeWidth={"1.5px"} className="w-[18px] h-[18px] mr-1" />{item?.expectSalary ? item?.expectSalary + '$/ hour' : 'Not infor'}</span>
+                            <span className="text-[#7a7f86] font-light col-span-2 text-sm flex flex-row items-center mb-1"><HiOutlineLocationMarker color="#7a7f86" strokeWidth={"1.5px"} className="w-[18px] h-[18px] mr-1" />{item?.address?.province ?? 'Not infor'}, {item?.address?.country ?? 'not infor'}</span>
+                            <span className="text-[#7a7f86] font-light text-sm flex flex-row items-center mb-1"><BiMoney color="#7a7f86" strokeWidth={"1.5px"} className="w-[18px] h-[18px] mr-1" />{item?.expectSalary ? item?.expectSalary + '$/ hour' : 'Not infor'}</span>
                         </div>
-                        <div className="text-[#a0abb8] text-sm flex flex-row items-start mb-3 w-full px-6 mt-4">
-                            <div className="flex flex-wrap line-clamp-2 w-full items-start  min-h-[70px]">
+                        <div className="text-[#7a7f86] text-sm flex flex-row items-start mb-3 w-full px-6 mt-4">
+                            <div className="flex flex-wrap line-clamp-2 w-full items-start h-[70px] overflow-y-auto no-scrollbar">
                                 {
                                     (item.skillUsers ?? [{ skillName: 'Not information' }]).map((i, index) => {
-                                        return <div key={index} className="mr-1.5 whitespace-nowrap bg-[#f0f5f7] rounded-xl px-4 py-1 m-1 font-light">{i.skillName} </div>
+                                        return <div key={index} className="mr-1.5 whitespace-nowrap bg-[#f0f5f7] rounded-xl px-4 py-1 m-1 font-light text-black">{i.skillName} </div>
                                     })
                                 }
                             </div>

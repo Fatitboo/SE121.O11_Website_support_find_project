@@ -41,7 +41,7 @@ function VacancyInfo() {
     const navigate = useNavigate();
     const [sltVacancy, setSltVacancy] = useState({});
     const storeData = useSelector(store => store?.vacancies);
-    const { loading, appErr, vacancyInfo, isSuccess2,loadingGAA,participants,loadingACAP, loadingBLMB, loadingRCMB } = storeData;
+    const { loading, appErr, vacancyInfo, isSuccess2, loadingGAA, participants, loadingACAP, loadingBLMB, loadingRCMB } = storeData;
     const notify = (type, message) => toast(message, { type: type });
     useEffect(() => {
         dispatch(getVacancyInfoDetail(id))
@@ -54,9 +54,7 @@ function VacancyInfo() {
         }
     }, [isSuccess2])
     useEffect(() => {
-        
-            setSltVacancy({ ...vacancyInfo });
-        
+        setSltVacancy({ ...vacancyInfo });
     }, [vacancyInfo])
     const pickHours = (ip) => {
         var str = '- ' + ip
@@ -105,8 +103,8 @@ function VacancyInfo() {
     }
     const handleUpdateFavourite = () => {
 
-        if(userAuth)
-            dispatch(updateFavouriteVacancyAction({vacancyId: sltVacancy?.vacancyId, setFunc:null, notify:notify}))
+        if (userAuth)
+            dispatch(updateFavouriteVacancyAction({ vacancyId: sltVacancy?.vacancyId, setFunc: null, notify: notify }))
         else {
             Swal.fire({
                 title: "Login request!",
@@ -147,7 +145,7 @@ function VacancyInfo() {
                                 <span className="flex flex-row items-center mr-7"><GoHourglass className="w-[18px] h-[18px] mr-1" />{sltVacancy?.hiringTimeline ?? 'Not infor'}</span>
                                 <span className="flex flex-row items-center mr-7"><PiTargetLight className="w-[22px] h-[22px] mr-1" />{sltVacancy?.maxRequired} required</span>
                             </div>
-                         
+
                             <div className="flex flex-row flex-wrap">
                                 {
                                     (!sltVacancy.timeRequires ? ['Not information'] : [...sltVacancy.timeRequires]).map((item, index) => {
@@ -184,7 +182,7 @@ function VacancyInfo() {
                                 <BiLogoFacebook color="#fff" className="w-5 h-5" />
                                 <span className="text-[#fff] ml-1">Facebook</span>
                             </a>
-                            <a href="https://www.linkedin.com"  target="_blank" className="flex flex-row items-center bg-[#007bb5] py-[10px] px-[25px] text-[14px] ml-[9px] rounded-lg">
+                            <a href="https://www.linkedin.com" target="_blank" className="flex flex-row items-center bg-[#007bb5] py-[10px] px-[25px] text-[14px] ml-[9px] rounded-lg">
                                 <BiLogoLinkedin color="#fff" className="w-5 h-5" />
                                 <span className="text-[#fff] ml-1">Linked in</span>
                             </a>
@@ -272,10 +270,10 @@ function VacancyInfo() {
                 {/* category */}
                 <div className="col-span-4">
                     <div className="flex flex-row-reverse gap-6 mb-3">
-                       
-                        
+
+
                         <div className="item flex self-end items-center justify-center w-[50px] h-[52px] rounded-[7px] bg-[rgba(25,103,210,.07)]  cursor-pointer opacity-80" color="#1967d3">
-                            <div onClick={()=>handleUpdateFavourite()} className="item flex items-center justify-center w-full h-full">
+                            <div onClick={() => handleUpdateFavourite()} className="item flex items-center justify-center w-full h-full">
                                 {
                                     !checkFavourite() ? <BiBookmark className="w-full h-full  p-2.5 rounded-[7px]" color="#1967d3" />
                                         : <BsBookmarkFill className="w-full h-full p-2.5 rounded-[7px]" color="#1967d3" />

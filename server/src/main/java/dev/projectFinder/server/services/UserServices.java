@@ -418,37 +418,39 @@ public class UserServices {
         user.setPassword(encodedPassword);
         return userRepository.save(user);
     }
-    public void updateShortListedUser(String id, String userId){
-        Optional<User> foundUser = userRepository.findById(new ObjectId(id));
+    public void updateShortListedUser(String requestId, String favouriteId){
+        Optional<User> foundUser = userRepository.findById(new ObjectId(requestId));
         if(foundUser.isEmpty()){
             throw new DataIntegrityViolationException(MessageKeys.USER_NOT_FOUND);
         }
         User user = foundUser.get();
-        List<User> users = user.getShortListedUser();
-        if(users==null){
-            users = new ArrayList<>();
-        }
-        Optional<User> addUserFound = userRepository.findById(new ObjectId(userId));
+
+        Optional<User> addUserFound = userRepository.findById(new ObjectId(favouriteId));
         if(addUserFound.isEmpty()){
             throw new DataIntegrityViolationException(MessageKeys.USER_NOT_FOUND);
         }
-        User addUser = addUserFound.get();
-        boolean isShorted = false;
-        //                isShorted= user.getShortListedUser().stream().anyMatch(u-> u.getUserId().equals(new ObjectId(id)));
-        for(User u : users){
-            if(u.getUserId().equals(new ObjectId(userId))){
-                isShorted=true;
-                break;
-            }
+        User fvriteUser = addUserFound.get();
+        // update list shortListed user request
+        List<String> usersId = user.getShortListedUser();
+        if(usersId==null){
+            usersId = new ArrayList<>();
         }
-        if(isShorted){
-            users.removeIf(u->u.getUserId().equals(new ObjectId(userId)));
+        if(usersId.contains(favouriteId)) usersId.remove(favouriteId);
+        else usersId.add(favouriteId);
+        user.setShortListedUser(usersId);
+
+        // update list favourite user of favourited user
+        List<String> fvrusersId = fvriteUser.getFavouriteUser();
+        if(fvrusersId==null){
+            fvrusersId = new ArrayList<>();
         }
-        else {
-            users.add(addUser);
-        }
-        user.setShortListedUser(users);
+        if(fvrusersId.contains(requestId)) fvrusersId.remove(requestId);
+        else fvrusersId.add(requestId);
+        fvriteUser.setFavouriteUser(fvrusersId);
+
         userRepository.save(user);
+        userRepository.save(fvriteUser);
+
     }
     public void increaseViews(String id  ){
 

@@ -34,7 +34,7 @@ export const loginUserAction = createAsyncThunk(
                 },
             };
             const { data } = await axios.post(`${baseUrl}/${apiPrefix}/login`, userData, config);
-            if(data.isActive){
+            if (data.isActive) {
                 localStorage.setItem('userInfo', JSON.stringify(data))
             }
             return data;
@@ -79,7 +79,7 @@ export const updateAvatarAction = createAsyncThunk(
             formData.append('file', avatar.file);
             formData.append('publicId', avatar.publicId);
             const { data } = await axios.post(`${baseUrl}/${apiPrefix}/update-image-user/${userAuth?.user?.userId}`, formData, config);
-            var getUserAuth =  JSON.parse(localStorage.getItem('userInfo'));
+            var getUserAuth = JSON.parse(localStorage.getItem('userInfo'));
 
             console.log(data)
             getUserAuth.user.avatar = data.image;
@@ -108,12 +108,12 @@ export const getUserProfileAction = createAsyncThunk(
                 },
             };
             const { data } = await axios.get(`${baseUrl}/${apiPrefix}/get-profile-user/${userAuth?.user?.userId}`, config);
-            var getUserAuth =  JSON.parse(localStorage.getItem('userInfo'));
+            var getUserAuth = JSON.parse(localStorage.getItem('userInfo'));
 
             console.log(data)
             getUserAuth.user.fullName = data.userProfile.fullName;
             localStorage.setItem('userInfo', JSON.stringify(getUserAuth))
-            
+
             return data;
         } catch (error) {
             if (!error?.response) {
@@ -694,7 +694,7 @@ const usersSlices = createSlice({
         selectedCv: {},
         corList: [],
         skrList: [],
-        shortListUsers:[],
+        shortListUsers: [],
     },
     reducers: {
         setSltCv: (state, action) => {
@@ -787,7 +787,7 @@ const usersSlices = createSlice({
             builder.addCase(updateAvatarAction.fulfilled, (state, action) => {
                 state.loading = false;
                 state.userProfile = { ...state.userProfile, avatar: action?.payload?.image };
-                state.userAuth.user.avatar = action?.payload?.image ;
+                state.userAuth.user.avatar = action?.payload?.image;
                 state.appErr = undefined;
             }),
             builder.addCase(updateAvatarAction.rejected, (state, action) => {
@@ -855,10 +855,10 @@ const usersSlices = createSlice({
             }),
             builder.addCase(updateUserCvAction.fulfilled, (state, action) => {
                 state.loading = false;
-                if(state.cvUser){
+                if (state.cvUser) {
                     state.cvUser.push(action?.payload?.cv);
-                }else{
-                    state.cvUser = [{...action?.payload?.cv}]
+                } else {
+                    state.cvUser = [{ ...action?.payload?.cv }]
                 }
                 state.appErr = undefined;
                 state.isSuccess = true;
@@ -972,7 +972,7 @@ const usersSlices = createSlice({
             builder.addCase(getDetailUserAction.fulfilled, (state, action) => {
                 state.loading = false;
                 state.seletedUser = action?.payload?.userDetail;
-                state.isShorted = action?.payload?.isShorted;
+
                 state.appErr = undefined;
 
             }),
@@ -1024,7 +1024,7 @@ const usersSlices = createSlice({
             state.isSuccessApplied = false;
         });
         builder.addCase(resetUserAuthAction.fulfilled, (state, action) => {
-           
+
             state.userAuth = null;
         });
         //change pass account
@@ -1056,7 +1056,11 @@ const usersSlices = createSlice({
             state.loading = false;
             state.appErr = undefined;
             state.isSuccess = true;
-            state.isShorted = !state.isShorted;
+            if (state.seletedUser.favouriteUser) {
+                if (state.seletedUser.favouriteUser.filter(item => item === state.userAuth.user.userId).length === 1) {
+                    state.seletedUser.favouriteUser.pop(state.userAuth.user.userId)
+                } else state.seletedUser.favouriteUser.push(state.userAuth.user.userId)
+            } else state.seletedUser.favouriteUser = [state.userAuth.user.userId]
         });
         builder.addCase(updateShortlistedUsersAction.rejected, (state, action) => {
             state.loading = false;
@@ -1100,6 +1104,7 @@ const usersSlices = createSlice({
             state.postedVacancies = action?.payload?.postedVacancies;
             state.fvrProjects = action?.payload?.fvrProjects;
             state.fvrVacancies = action?.payload?.fvrVacancies;
+            state.recentApplicants = action?.payload?.recentApplicants;
         });
         builder.addCase(getDataStatisticalAction.rejected, (state, action) => {
             state.loading = false;
