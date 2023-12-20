@@ -540,4 +540,17 @@ public class UserController {
         }
     }
 
+    @PostMapping("/apply-vacancy-and-answers/{id}/{vacancyId}")
+    public ResponseEntity<?> applyVacancyWithAnswer(@PathVariable String id, @PathVariable String vacancyId, @RequestBody JobPreScreen[] jobPreScreen){
+        HashMap<String, Object> response = new HashMap<>();
+        try{
+            userServices.applyVacancyAndAnswers(id, vacancyId, jobPreScreen);
+            response.put("message", "Your applied has been send to corporator!");
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        }catch (Exception e) {
+            response.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+    }
+
 }

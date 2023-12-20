@@ -514,8 +514,9 @@ export const updateFavouriteVacancyAction = createAsyncThunk(
                     }
                     return arr;
                 })
-                obj.notify('success', 'Update favourite vacancy successfully!')
             }
+            if(obj.notify)
+                obj.notify('success', 'Update favourite vacancy successfully!')
             return data;
         } catch (error) {
             if (!error?.response) {
@@ -989,8 +990,18 @@ const vacanciesSlices = createSlice({
             builder.addCase(updateFavouriteVacancyAction.fulfilled, (state, action) => {
                 state.loadingFvr = false;
                 state.appErr = undefined;
+                if (typeof (state.vacancyInfo) !== 'undefined'){
+                    if (action?.payload?.isPush) {
+                        console.log('cc')
+                        state.vacancyInfo.favouriteUsers.push(action?.payload?.userId);
+                    }
+                    else {
+                        console.log('cc')
 
-
+                        state.vacancyInfo.favouriteUsers.pop(action?.payload?.userId);
+                    }
+                }
+                
                 var currentVacancy = state.vacancies.findIndex(vacancy => vacancy.vacancyId === action?.payload?.vacancyId)
                 if (currentVacancy !== -1) {
                     state.isSuccessFvr = true;

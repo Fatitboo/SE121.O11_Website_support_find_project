@@ -94,8 +94,10 @@ const VacancyDetail = ({ props }) => {
         return isFvr;
     }
     const handleUpdateFavourite = () => {
-        if (user)
-            dispatch(updateFavouriteVacancyAction(props?.vacancyId))
+        if (user){
+            dispatch(updateFavouriteVacancyAction({vacancyId:props?.vacancyId, setFunc: null,notify:null}))
+
+        }
         else {
             Swal.fire({
                 title: "Login request!",
@@ -251,7 +253,7 @@ const VacancyDetail = ({ props }) => {
                     </div>
                 </div>
                 {
-                    listQuestion &&
+                    listQuestion && listQuestion.length !== 0 &&
                     <Modal open={modal} setModal={setModal}>
                         <div>
                             <div className="flex flex-row items-center justify-between mx-2">
