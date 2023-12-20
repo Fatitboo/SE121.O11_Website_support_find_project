@@ -28,16 +28,16 @@ function PostJob() {
     const params = useParams()
     const dispatch = useDispatch()
     const nextJobRef = () => {
-        console.log(jobRefKey, jobRef.length)
+        if(jobRefKey === 6){
+            dispatch(postFullVacancy(params.id))
+        }
         if(jobRefKey < jobRef.length){
             window.scrollTo({top: 0, behavior: 'smooth'});
             jobRefKey > 1 ? setIsPreview(true) : setIsPreview(false)
             setJobRefKey(++jobRefKey)
             setJobProgress(jobRefKey / jobRef.length * 100 + '%')
         }
-        if(jobRefKey === 6){
-            dispatch(postFullVacancy(params.id))
-        }
+        
     }
     const [modal, setModal] = useState(false)
     var [jobRefKey, setJobRefKey] = useState(0)
