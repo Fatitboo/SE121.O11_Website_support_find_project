@@ -3,7 +3,7 @@ import {TbArrowLeft, TbArrowRight} from 'react-icons/tb'
 import {MdRemoveRedEye} from 'react-icons/md'
 import { JobBasic, JobBenefit, JobDes, JobDetail, JobPreferences, JobPreScreen, JobReview } from "./JobRef";
 import { useDispatch, useSelector } from "react-redux";
-import { getCurrentVacanciesComponent, resetComponent } from "../../../redux/slices/vacancies/vacanciesSlices";
+import { getCurrentVacanciesComponent, postFullVacancy, resetComponent } from "../../../redux/slices/vacancies/vacanciesSlices";
 import { useNavigate, useParams } from "react-router-dom";
 import { Modal } from "../../../components";
 import { IoClose } from "react-icons/io5";
@@ -28,11 +28,15 @@ function PostJob() {
     const params = useParams()
     const dispatch = useDispatch()
     const nextJobRef = () => {
+        console.log(jobRefKey, jobRef.length)
         if(jobRefKey < jobRef.length){
             window.scrollTo({top: 0, behavior: 'smooth'});
             jobRefKey > 1 ? setIsPreview(true) : setIsPreview(false)
             setJobRefKey(++jobRefKey)
             setJobProgress(jobRefKey / jobRef.length * 100 + '%')
+        }
+        if(jobRefKey === 6){
+            dispatch(postFullVacancy(params.id))
         }
     }
     const [modal, setModal] = useState(false)

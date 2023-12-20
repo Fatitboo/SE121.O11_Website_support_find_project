@@ -79,6 +79,7 @@ public class User implements UserDetails {
     private List<String> vacancies;
     private List<String> projects;
     private List<String> unCompletedVacancies;
+    private List<String> historyPayment;
 
 
     // date create and update

@@ -101,8 +101,8 @@ const publicRoutes = [
     {path:'/Organizer/vacancy-info/:id', component: VacancyInfo, layout: LayoutHasSidebar},
     {path:'/Organizer/create-project', component: CreateProject, layout: LayoutHasSidebar},
     {path:'/Organizer/update-project/:id', component: UpdateProject, layout: LayoutHasSidebar},
-    {path:'/Organizer/payment', component: Payment, layout: LayoutNoSidebar},
-    {path:'/Organizer/payment/success', component: SuccessPayment, layout: LayoutNoSidebar},
+    {path:'/Organizer/payment/:id', component: Payment, layout: LayoutNoSidebar},
+    {path:'/Organizer/payment/success/:id', component: SuccessPayment, layout: LayoutNoSidebar},
     {path:'/Organizer/payment/cancel', component: CancelPayment, layout: LayoutNoSidebar},
     {path:'/Organizer/interview', component: Interview, layout: LayoutHasSidebar},
 
