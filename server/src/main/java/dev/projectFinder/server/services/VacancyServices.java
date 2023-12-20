@@ -580,6 +580,22 @@ public class VacancyServices {
         List<String> listReceivedVacancy = user.getReceivedVacancies();
         listReceivedVacancy.remove(vacancy.getVacancyId().toString());
         user.setReceivedVacancies(listReceivedVacancy);
+        // update status applied vacancies list
+        List<AppliedVacancy> appliedVacancyList = user.getAppliedVacancyList();
+        if(appliedVacancyList == null){
+            appliedVacancyList = new ArrayList<>();
+        }
+        boolean isHas = false;
+        for (AppliedVacancy a: appliedVacancyList) {
+            if(a.getVacancyId().equals(vacancyId)){
+                isHas = true;
+                a.setStatus("rejected");
+            }
+        }
+        if(!isHas) {
+            appliedVacancyList.add(new AppliedVacancy(vacancyId,LocalDateTime.now(),"rejected"));
+        }
+        user.setAppliedVacancyList(appliedVacancyList);
 
         // Xoa di mot applicant vacancy -> user
         List<String> listApplicantVacancy = user.getAppliedVacancies();

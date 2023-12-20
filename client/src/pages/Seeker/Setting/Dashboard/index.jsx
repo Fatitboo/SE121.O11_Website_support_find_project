@@ -149,6 +149,22 @@ function DashboardSeeker() {
             arrNoti[2] = arr[1];
             return arrNoti;
         }
+
+        if (content.includes('has chased you from vacancy')) {
+            const arr = content.split('has chased you from vacancy')
+            arrNoti[0] = arr[0];
+            arrNoti[1] = 'has chased you from vacancy';
+            arrNoti[2] = arr[1];
+            return arrNoti;
+        }
+        
+        if (content.includes('has refused you to join vacancy')) {
+            const arr = content.split('has refused you to join vacancy')
+            arrNoti[0] = arr[0];
+            arrNoti[1] = 'has refused you to join vacancy';
+            arrNoti[2] = arr[1];
+            return arrNoti;
+        }
        
         const arr = content.split('has been')
         arrNoti[0] = arr[0];
@@ -226,11 +242,11 @@ function DashboardSeeker() {
                         </div>
                         <ProjectChart data={dataViews} />
                     </div>
-                    <div className="relative rounded-lg mb-8 bg-white shadow max-w-full pt-1 shrink-0 col-span-2">
+                    <div className="relative rounded-lg mb-8 bg-white shadow max-w-full pt-1 shrink-0 col-span-2 ">
                     <div className='mx-5 pt-6 font-bold '>Notifications</div>
-                        <div className="pr-4 pl-5 mt-4">
+                        <div className="pr-4 pl-5 mt-4 overflow-auto h-[470px] no-scrollbar">
                             {
-                                notification?.map((item, index) => {
+                                notification && [...notification].reverse()?.map((item, index) => {
                                     return <div key={index} className="flex mt-2 mb-6 ">
                                         <div className="flex items-center">
                                             <div className={`rounded-full p-2 mr-4  ${index % 2 === 0 ? 'bg-green-100 text-green-700' : 'bg-blue-100 text-blue-700'}`}><PiSuitcaseSimpleDuotone /></div>

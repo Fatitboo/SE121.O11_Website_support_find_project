@@ -27,7 +27,12 @@ const VacancyDetail = ({ props }) => {
 
 
     useEffect(() => {
-        if (props && props.jobPreScreen) setListQuestion([...props.jobPreScreen])
+        if (props && props.jobPreScreen){
+            setListQuestion([...props.jobPreScreen])
+        } 
+        else{
+            setListQuestion(null)
+        }
     }, [props])
 
     useEffect(() => {
@@ -89,8 +94,10 @@ const VacancyDetail = ({ props }) => {
         return isFvr;
     }
     const handleUpdateFavourite = () => {
-        if (user)
-            dispatch(updateFavouriteVacancyAction(props?.vacancyId))
+        if (user){
+            dispatch(updateFavouriteVacancyAction({vacancyId:props?.vacancyId, setFunc: null,notify:null}))
+
+        }
         else {
             Swal.fire({
                 title: "Login request!",
@@ -246,7 +253,7 @@ const VacancyDetail = ({ props }) => {
                     </div>
                 </div>
                 {
-                    listQuestion &&
+                    listQuestion && listQuestion.length !== 0 &&
                     <Modal open={modal} setModal={setModal}>
                         <div>
                             <div className="flex flex-row items-center justify-between mx-2">
@@ -258,7 +265,6 @@ const VacancyDetail = ({ props }) => {
                             <hr className="block h-1 w-full bg-[rgb(212, 210, 208)] mt-3" />
                             <div className="max-h-[400px] w-[600px] overflow-y-auto overflow-x-hidden mb-4 px-3">
                                 <button onClick={() => console.log(listQuestion)}>Click me</button>
-
                                 {
                                     listQuestion.map((item, index) => {
                                         return <div key={index}>

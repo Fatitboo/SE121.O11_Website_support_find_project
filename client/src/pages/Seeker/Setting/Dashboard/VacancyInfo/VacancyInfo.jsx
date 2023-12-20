@@ -53,6 +53,11 @@ function VacancyInfo() {
             setSltVacancy({ ...vacancyInfo });
         }
     }, [isSuccess2])
+    useEffect(() => {
+        
+            setSltVacancy({ ...vacancyInfo });
+        
+    }, [vacancyInfo])
     const pickHours = (ip) => {
         var str = '- ' + ip
         if (ip === 'Part-time') {
@@ -101,7 +106,7 @@ function VacancyInfo() {
     const handleUpdateFavourite = () => {
 
         if(userAuth)
-            dispatch(updateFavouriteVacancyAction(sltVacancy?.vacancyId))
+            dispatch(updateFavouriteVacancyAction({vacancyId: sltVacancy?.vacancyId, setFunc:null, notify:notify}))
         else {
             Swal.fire({
                 title: "Login request!",

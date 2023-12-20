@@ -539,8 +539,11 @@ public class UserServices {
         }
         User cor = foundCor.get();
 
-        if(user.getAppliedVacancies().contains(vacancy.getVacancyId().toString())) return;
+        List<String> appVacancies = user.getAppliedVacancies();
+        if(appVacancies == null || appVacancies.isEmpty())  appVacancies = new ArrayList<>();
+        if(appVacancies.contains(vacancy.getVacancyId().toString())) return;
 
+        //Phát
         // add applied vacancies list
         List<AppliedVacancy> appliedVacancyList = user.getAppliedVacancyList();
         if(appliedVacancyList == null){
@@ -553,6 +556,11 @@ public class UserServices {
                 if(a.getStatus().equals("rejected")){
                     a.setAppliedDate(LocalDateTime.now());
                     a.setStatus("pending");
+                    List<String> appliedVacancies = user.getAppliedVacancies();
+                    if(appliedVacancies == null || appliedVacancies.isEmpty()) appliedVacancies = new ArrayList<>();
+                    if(!appliedVacancies.contains(vacancy.getVacancyId().toString()))
+                        appliedVacancies.add(vacancy.getVacancyId().toString());
+                    user.setAppliedVacancies(appliedVacancies);
                 }
 
             }
@@ -560,7 +568,7 @@ public class UserServices {
         if(!isHas) {
             appliedVacancyList.add(new AppliedVacancy(vacancyId,LocalDateTime.now(),"pending"));
             List<String> appliedVacancies = user.getAppliedVacancies();
-            if(appliedVacancies.isEmpty()) appliedVacancies = new ArrayList<>();
+            if(appliedVacancies == null || appliedVacancies.isEmpty()) appliedVacancies = new ArrayList<>();
             if(!appliedVacancies.contains(vacancy.getVacancyId().toString()))
                 appliedVacancies.add(vacancy.getVacancyId().toString());
             user.setAppliedVacancies(appliedVacancies);
@@ -612,13 +620,43 @@ public class UserServices {
 
 
         // set list applied vacancy
-        List<String> appliedVacancies = user.getAppliedVacancies();
-        if(appliedVacancies != null && user.getAppliedVacancies().contains(vacancy.getVacancyId().toString())) return;
+        List<String> appVacancies = user.getAppliedVacancies();
+        if(appVacancies == null || appVacancies.isEmpty())  appVacancies = new ArrayList<>();
+        if(appVacancies.contains(vacancy.getVacancyId().toString())) return;
 
-        if(user.getAppliedVacancies() == null || appliedVacancies.isEmpty()) appliedVacancies = new ArrayList<>();
-        if(!appliedVacancies.contains(vacancy.getVacancyId().toString()))
-            appliedVacancies.add(vacancy.getVacancyId().toString());
-        user.setAppliedVacancies(appliedVacancies);
+
+        // add applied vacancies list
+        List<AppliedVacancy> appliedVacancyList = user.getAppliedVacancyList();
+        if(appliedVacancyList == null){
+            appliedVacancyList = new ArrayList<>();
+        }
+        boolean isHas = false;
+        for (AppliedVacancy a: appliedVacancyList) {
+            if(a.getVacancyId().equals(vacancyId)){
+                isHas = true;
+                if(a.getStatus().equals("rejected")){
+                    a.setAppliedDate(LocalDateTime.now());
+                    a.setStatus("pending");
+                    List<String> appliedVacancies = user.getAppliedVacancies();
+                    if(appliedVacancies == null || appliedVacancies.isEmpty()) appliedVacancies = new ArrayList<>();
+                    if(!appliedVacancies.contains(vacancy.getVacancyId().toString()))
+                        appliedVacancies.add(vacancy.getVacancyId().toString());
+                    user.setAppliedVacancies(appliedVacancies);
+                }
+
+            }
+        }
+        if(!isHas) {
+            appliedVacancyList.add(new AppliedVacancy(vacancyId,LocalDateTime.now(),"pending"));
+            List<String> appliedVacancies = user.getAppliedVacancies();
+            if(appliedVacancies.isEmpty()) appliedVacancies = new ArrayList<>();
+            if(!appliedVacancies.contains(vacancy.getVacancyId().toString()))
+                appliedVacancies.add(vacancy.getVacancyId().toString());
+            user.setAppliedVacancies(appliedVacancies);
+        }
+        user.setAppliedVacancyList(appliedVacancyList);
+
+        // set list applied vacancy
         userRepository.save(user);
 
         // set notification for this applied
