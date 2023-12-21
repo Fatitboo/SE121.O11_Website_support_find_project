@@ -11,28 +11,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { CustomLoader, SmallItemLoader, VacancyItemLoader } from "../../../../components/Loader";
 import VacancyItem from "../../ProjectInfo/VacancyItem";
 import ParticipantItem from "../../ProjectInfo/ParticipantItem";
-import { BsBookmarkFill } from "react-icons/bs";
+import { BsBookmarkFill, BsTwitter } from "react-icons/bs";
 import Swal from "sweetalert2";
 import { Candidate } from "../../../../assets/images";
 import handleEmailClick from "../../../../utils/handleEmailClick";
-
+import {FacebookShareButton, LinkedinShareButton, TwitterShareButton} from 'react-share'
 function ProjectDetailSeeker() {
-    const participants = [
-        {
-            userId: 1,
-            userAvatar: 'https://scontent.fsgn19-1.fna.fbcdn.net/v/t39.30808-6/305117982_819079809468330_6882772732131573332_n.jpg?_nc_cat=105&ccb=1-7&_nc_sid=a2f6c7&_nc_ohc=_tz73DXI83kAX8-wZsI&_nc_ht=scontent.fsgn19-1.fna&oh=00_AfCo2vH4GN6Tt7KXpVymIL9tEGH-MCebjb2VZfZjP_w6Xw&oe=651DF1E8',
-            firstName: 'Le Quang',
-            surName: 'Nhan',
-            position: 'CEO'
-        },
-        {
-            userId: 2,
-            userAvatar: 'https://scontent.fsgn19-1.fna.fbcdn.net/v/t39.30808-6/305117982_819079809468330_6882772732131573332_n.jpg?_nc_cat=105&ccb=1-7&_nc_sid=a2f6c7&_nc_ohc=_tz73DXI83kAX8-wZsI&_nc_ht=scontent.fsgn19-1.fna&oh=00_AfCo2vH4GN6Tt7KXpVymIL9tEGH-MCebjb2VZfZjP_w6Xw&oe=651DF1E8',
-            firstName: 'Nguyen Van',
-            surName: 'Phat',
-            position: 'Assistant'
-        }
-    ];
+    
     const id = useParams()
     const dispatch = useDispatch()
     const [ctName, setCtName] = useState('')
@@ -45,7 +30,7 @@ function ProjectDetailSeeker() {
     const loading = useSelector((state) => state.projects.loading)
     const projectparticipants = useSelector(state => state.projects?.projectparticipants)
     let userAuth = useSelector((state) => state?.users?.userAuth)
-
+    
 
     useEffect(() => {
         if (id) {
@@ -141,18 +126,28 @@ function ProjectDetailSeeker() {
                     <div>
                         <div className="flex flex-row items-center mt-6">
                             <h4 className="text-base leading-6 text-[#202124] font-semibold">Share this project</h4>
-                            <a href="https://www.facebook.com/" className="flex flex-row items-center bg-[#3b5998] py-[10px] px-[25px] text-[14px] ml-[12px] rounded-lg">
-                                <BiLogoFacebook color="#fff" className="w-5 h-5" />
-                                <span className="text-[#fff] ml-1">Facebook</span>
-                            </a>
-                            <a href="https://www.linkedin.com" className="flex flex-row items-center bg-[#007bb5] py-[10px] px-[25px] text-[14px] ml-[9px] rounded-lg">
-                                <BiLogoLinkedin color="#fff" className="w-5 h-5" />
-                                <span className="text-[#fff] ml-1">Linked in</span>
-                            </a>
-                            <a href="https://www.instagram.com" className="flex flex-row items-center bg-[#ea3ca4] py-[10px] px-[25px] text-[14px] ml-[9px] rounded-lg">
-                                <BiLogoInstagram color="#fff" className="w-5 h-5" />
-                                <span className="text-[#fff] ml-1">Instagram</span>
-                            </a>
+                            <FacebookShareButton 
+                            url={window.location.href}
+                            >
+                                <div className="flex flex-row items-center bg-[#3b5998] py-[10px] px-[25px] text-[14px] ml-[12px] rounded-lg">
+                                    <BiLogoFacebook color="#fff" className="w-5 h-5" />
+                                    <span className="text-[#fff] ml-1">Facebook</span>
+                                </div>
+                               
+                            </FacebookShareButton>
+                            <LinkedinShareButton url={window.location.href}>
+                                <div className="flex flex-row items-center bg-[#007bb5] py-[10px] px-[25px] text-[14px] ml-[9px] rounded-lg">
+                                    <BiLogoLinkedin color="#fff" className="w-5 h-5" />
+                                    <span className="text-[#fff] ml-1">Linked in</span>
+                                </div>
+                            </LinkedinShareButton>
+                            <TwitterShareButton url={window.location.href}>
+                                <div className="flex flex-row items-center bg-[#ea3ca4] py-[10px] px-[25px] text-[14px] ml-[9px] rounded-lg">
+                                    <BsTwitter color="#fff" className="w-5 h-5" />
+                                    <span className="text-[#fff] ml-1">Twitter</span>
+                                </div>
+
+                            </TwitterShareButton>
                         </div>
                     </div>
                     <></>

@@ -695,6 +695,7 @@ const usersSlices = createSlice({
         corList: [],
         skrList: [],
         shortListUsers: [],
+        histories:[]
     },
     reducers: {
         setSltCv: (state, action) => {
@@ -1130,6 +1131,8 @@ const usersSlices = createSlice({
             state.numVacancies = action?.payload?.numVacancies;
             state.viewsProfile = action?.payload?.viewsProfile;
             state.numProjects = action?.payload?.numProjects;
+            state.histories = action?.payload?.histories;
+
         });
         builder.addCase(getDataStatisticalAdminAction.rejected, (state, action) => {
             state.loading = false;

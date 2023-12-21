@@ -3,9 +3,11 @@ package dev.projectFinder.server.controllers;
 import dev.projectFinder.server.components.CVLink;
 import dev.projectFinder.server.components.Vacancy.JobPreScreen;
 import dev.projectFinder.server.dtos.*;
+import dev.projectFinder.server.models.History;
 import dev.projectFinder.server.models.UnCompletedVacancy;
 import dev.projectFinder.server.models.User;
 import dev.projectFinder.server.models.Vacancy;
+import dev.projectFinder.server.repositories.HistoryRepository;
 import dev.projectFinder.server.repositories.UnCompletedVacancyRepository;
 import dev.projectFinder.server.repositories.UserRepository;
 import dev.projectFinder.server.repositories.VacancyRepository;
@@ -460,6 +462,7 @@ public class UserController {
                     recentApplicants.addAll(users);
                 }
             }
+
             response.put("recentApplicants",  recentApplicants);
             response.put("fvrVacancies",  user.getFavoriteVacancies()!= null ? user.getFavoriteVacancies().size() : 0);
             response.put("fvrProjects",  user.getFavoriteProjects()!= null ? user.getFavoriteProjects().size() : 0);

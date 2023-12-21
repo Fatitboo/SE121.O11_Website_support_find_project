@@ -42,6 +42,7 @@ public class UserServices {
     private final ProjectRepository projectRepository;
     private final ReportRepository reportRepository;
     private final UnCompletedVacancyRepository unCompletedVacancyRepository;
+    private final HistoryRepository historyRepository;
 
     public UserResponse createUser(UserDTO userDTO) throws Exception {
         if (!userDTO.getPassword().equals(userDTO.getCPassword())){
@@ -499,7 +500,7 @@ public class UserServices {
         List<User> seekers = users.stream().filter(u-> u.getUserType().equals("seeker")).toList();
         List<Vacancy> vacancies = vacancyRepository.findAll();
         List<Project> projects = projectRepository.findAll();
-
+        List<History> histories = historyRepository.findAll();
         cors.sort(Comparator.comparing(User::getCreatedAt).reversed());
         vacancies.sort(Comparator.comparing(Vacancy::getCreatedAt).reversed());
         projects.sort(Comparator.comparing(Project::getCreatedAt).reversed());
@@ -519,7 +520,7 @@ public class UserServices {
         hashMap.put("numOrganizers", cors.size());
         hashMap.put("numVacancies", vacancies.size());
         hashMap.put("numProjects", projects.size());
-
+        hashMap.put("histories", histories);
         return hashMap;
     }
     public void applyVacancy(String id, String vacancyId){

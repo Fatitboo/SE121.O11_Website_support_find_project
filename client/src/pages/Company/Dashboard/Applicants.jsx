@@ -57,11 +57,11 @@ const Applicants = ({ item }) => {
                                     <img src={MoneyIcon} className="w-[18px] h-[18px] mr-[5px]" />
                                     {item?.expectSalary} $/hour
                                 </div>
-                                {/* <div className="flex end-1">
-                                    <div className="list-none relative mr-2 bg-[white] border rounded-md border-[#e9ecf9] h-[30px] w-[30px] px-0.5 justify-center flex py-0.5  hover:bg-blue-400 ">
-                                        <button> <BsEye fontSize={15} /> </button>
-                                    </div>
-                                    <div className="list-none relative mr-2 bg-[white] border rounded-md border-[#e9ecf9] h-[30px] w-[30px] px-0.5 justify-center flex py-0.5 hover:bg-blue-400 ">
+                                <div className="flex end-1">
+                                    <Link to={'/Organizer/seeker-profile/'+item?.userId}  className="list-none relative mr-2 bg-[white] border rounded-md border-[#e9ecf9] h-[30px] w-[30px] px-0.5 justify-center flex py-0.5  hover:bg-blue-400 ">
+                                        <div> <BsEye fontSize={15} /> </div>
+                                    </Link>
+                                    {/* <div className="list-none relative mr-2 bg-[white] border rounded-md border-[#e9ecf9] h-[30px] w-[30px] px-0.5 justify-center flex py-0.5 hover:bg-blue-400 ">
                                         <button > <BiCheck fontSize={20} /> </button>
                                     </div>
                                     <div className="list-none relative mr-2 bg-[white] border rounded-md border-[#e9ecf9] h-[30px] w-[30px] px-0.5 justify-center flex py-0.5 hover:bg-blue-400 ">
@@ -69,8 +69,8 @@ const Applicants = ({ item }) => {
                                     </div>
                                     <div className="list-none relative bg-[white] border rounded-md border-[#e9ecf9] h-[30px] w-[30px] px-0.5 justify-center flex py-0.5 hover:bg-blue-400 ">
                                         <button > <LiaTrashAltSolid fontSize={20} /> </button>
-                                    </div>
-                                </div> */}
+                                    </div> */}
+                                </div>
                             </div>
                         </div>
                         <div className="mt-3"></div>
