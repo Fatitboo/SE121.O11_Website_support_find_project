@@ -6,6 +6,7 @@ import { LiaTrashAltSolid } from "react-icons/lia";
 import { BsEye } from "react-icons/bs";
 import { MdCancel, MdOutlineCancel } from "react-icons/md";
 import { Candidate } from "../../../assets/images";
+import { Link } from "react-router-dom";
 
 
 const Applicants = ({ item }) => {
