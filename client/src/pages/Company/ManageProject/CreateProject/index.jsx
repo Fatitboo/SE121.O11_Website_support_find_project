@@ -23,16 +23,17 @@ import { IoIosClose } from "react-icons/io";
 import baseUrl from "../../../../utils/baseUrl";
 import axios from "axios";
 
-const period = [{ id: 1, name:"month(s)"}, { id: 2, name: "week(s)"}, { id: 3, name: "day(s)"}, { id: 4, name:"year(s)"},]
 function CreateProject() {
-    const { register, handleSubmit, formState: { errors } } = useForm({ mode: 'onChange' });
+    const period = [{ id: 1, name:"month(s)", value: 30}, { id: 2, name: "week(s)", value: 7}, { id: 3, name: "day(s)", value: 1}, { id: 4, name:"year(s)", value: 365},]
+    const rates = [{ id: 1, name:"per hour"}, { id: 2, name: "per day"}, { id: 3, name: "per week"}, { id: 4, name: "per month"}, { id: 5, name: "per year"}]
+    const { register, handleSubmit, setValue, getValues, formState: { errors } } = useForm({ mode: 'onChange' });
     const dispatch = useDispatch()
     const navigate = useNavigate()
     let vacancies = useSelector((state) => state.vacancies.complete)
     let isSuccess = useSelector((state) => state.projects.isSuccess)
     let user = useSelector((state) => state.users.userAuth.user)
     const [selected, setSelected] = useState([])
-    const [value, setValue] = useState([])
+    const [value, setValueDes] = useState([])
     const [dateValue, setDateValue] = useState("")    
     const [durationType, setDurationType] = useState(period[0])    
     const [occupations, setOccupations] = useState([])
@@ -44,6 +45,8 @@ function CreateProject() {
     
     useEffect(() => {
         dispatch(getVacancyCor())
+        setValue("duration", 1)
+        setValue("maxParticipants", 0)
     }, [])
 
     useEffect(() => {
@@ -61,7 +64,7 @@ function CreateProject() {
             startDate: dateValue,
             vacancies: selected.map(item => item.vacancyId),
             period: durationType.name,
-            status: "Pending",
+            status: "pending",
             occupations: occupationSelected
         }
         dispatch(createProject({"id": user.userId, "value": main}))
@@ -72,6 +75,7 @@ function CreateProject() {
     }
     const filterValuePeriod = (e) => {
         setDurationType(e)
+        calculateBudgetAndParticipants(selected, e)
     }
 
     const fetchDataOccupation = (value) => {
@@ -97,6 +101,40 @@ function CreateProject() {
                 console.error(error);
             });
         }
+    }
+
+    const calculateBudgetAndParticipants = (list, selectDuration) => {
+        const duration = Number(getValues("duration"))
+
+        const newBudget = list.reduce((acc, itemVacancy) => {
+            let salary = itemVacancy.salaryFirst
+            if(itemVacancy.salarySecond !== 0){
+                salary = (salary + itemVacancy.salarySecond) / 2
+            }
+    
+            switch(itemVacancy.salaryRate){
+                case rates[0]:
+                    salary = salary * 24 
+                    break;
+                case rates[1]:
+                    break;
+                case rates[2]:
+                    salary = salary / 7
+                    break;
+                case rates[3]:
+                    salary = salary / 30
+                    break;
+                case rates[4]:
+                    salary = salary / 365
+                    break;
+            }
+
+            return acc + salary * itemVacancy.maxRequired * duration * selectDuration.value
+        }, 0)
+
+        setValue("budget", newBudget)
+
+        setValue("maxParticipants", list.reduce((acc, item) => acc + item.maxRequired, 0))
     }
 
     return (
@@ -133,6 +171,7 @@ function CreateProject() {
                                         <div className="col-span-2">
                                             <TextInput name={"duration"} register={register("duration", {
                                                 required: "Duration is required!",
+                                                onChange: (e) => { if(!e.target.value.match(/^\d+$/)) setValue("duration", e.target.value.substring(0, e.target.value.length - 1)); calculateBudgetAndParticipants(selected, durationType)},
                                                 valueAsNumber: true,
                                             })} error={errors.duration ? errors.duration.message : ""} label="Duration*" type="text" />
                                         </div>
@@ -145,16 +184,20 @@ function CreateProject() {
                                         <div>
                                             <TextInput name={"maxParticipants"} register={register("maxParticipants", {
                                                 required: "Max participants is required!",
-                                            })} error={errors.maxParticipants ? errors.maxParticipants.message : ""} label="Max Participants*" type="text" />
+                                                onChange: (e) => { setValue("maxParticipants", e.target.value.substring(0, e.target.value.length - 1))},
+                                            })} error={errors.maxParticipants ? errors.maxParticipants.message : ""} label="Max Participants" type="text" />
                                         </div>
+                                           
                                         <div>
                                             <TextInput name={"budget"} register={register("budget", {
                                                 required: "Budget is required!",
                                                 valueAsNumber: true,
-                                            })} error={errors.budget ? errors.budget.message : ""} label="Budget($)*" type="text" />
+                                                onChange: (e) => { if(!e.target.value.match(/^\d+$/)) {setValue("budget", e.target.value.substring(0, e.target.value.length - 1)); }}
+                                            })} error={errors.budget ? errors.budget.message : ""} label="Budget($)" type="text"/>
+
                                         </div>
                                         <div className="col-span-2">
-                                            <p className="block leading-8 text-gray-900 font-medium mb-[6px]">Fields</p>   
+                                            <p className="block leading-8 text-gray-900 font-medium mb-[6px]">Fields*</p>   
                                             <div tabIndex={0} onBlur={() => setOccupations([])} className={`relative flex flex-row gap-1 flex-wrap items-center w-full bg-white focus:bg-white focus:border-gray-900 text-base shadow-sm rounded-md pl-5 py-2 text-gray-900 border border-gray-300 placeholder:text-gray-400 sm:text-base sm:leading-8`}>
                                                 {
                                                     occupationSelected?.map((item, index) => {
@@ -192,26 +235,62 @@ function CreateProject() {
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="grid grid-cols-2 gap-x-7 mt-5">
-                                        <div>
-                                            <TextInput name='fbLink' register={register("fbLink")} type='text' label='Facebook' placeholder='www.facebook.com/Nguyenvana' styles='bg-[#f0f5f7]' />
-                                        </div>
-                                        <div>
-                                            <TextInput name='twLink' register={register("twLink")} type='text' label='Twitter' placeholder='www.twitter.com/@Nguyenvana' styles='bg-[#f0f5f7]' />
-                                        </div>
-                                        <div>
-                                            <TextInput name='lkLink'  register={register("lkLink")} type='text' label='Linkedin' placeholder='www.linkedin.com/Nguyenvana' styles='bg-[#f0f5f7]' />
-                                        </div>
-                                        <div>
-                                            <TextInput name='insLink'  register={register("insLink")} type='text' label='Instagram' placeholder='www.instagram.com/Nguyenvana' styles='bg-[#f0f5f7]' />
-                                        </div>
+                                    <div className="mt-6">
+                                        <p className="block leading-8 text-gray-900 font-medium mb-1">Vacancies</p>
+                                        <div className="mt-5 flex flex-row gap-x-3">
+                                            <div className="w-1/2">
+                                                <p className="block leading-8 text-gray-900 font-medium mb-1">Selected list</p>
+                                                <div className="h-[500px] overflow-auto">
+                                                    {
+                                                        selected?.map((item, index) => {
+                                                            return <div key={index} className="relative">
+                                                                <div className="absolute top-6 right-5">
+                                                                    <div className="text-sm text-center cursor-pointer text-[white] hover:bg-[#0146a6] bg-[#1967d3] flex items-center leading-7 font-normal rounded-lg " onClick={() => {calculateBudgetAndParticipants(selected.filter(i => i.vacancyId !== item.vacancyId), durationType); setSelected(selected.filter(i => i.vacancyId !== item.vacancyId));}}>
+                                                                        <div className="m-1 mx-2">Remove</div>
+                                                                    </div>
+                                                                </div>
+                                                                <VacancyItem props={item} isAvatar={false} isHideFunc/>
+                                                            </div>                  
+                                                        })
+                                                    }
+                                                </div>
+                                            </div>
+                                            <div className="w-1/2" >
+                                                <p className="block leading-8 text-gray-900 font-medium mb-1">Your Vacancies</p>
+                                                <div className="h-[500px] overflow-auto">
+                                                    {
+                                                        loading?
+                                                        [1, 2 ,3].map((item, index)=> {
+                                                            return (
+                                                                <div key={index}>
+                                                                    <VacancyItemLoader/>
+                                                                </div>
+                                                            )
+                                                        })
+                                                        :
+                                                        vacancies?.filter((item) => !item.post && item.approvalStatus === "pending")?.map((item, index) => {
+                                                            return <div key={index} className="relative mb-2">
+                                                                {
+                                                                    selected.find(i => i.vacancyId === item.vacancyId) ? null :
+                                                                        <div className="absolute top-6 right-5">
+                                                                            <div className="text-sm text-center cursor-pointer text-[white] hover:bg-[#0146a6] bg-[#1967d3] flex items-center leading-7 font-normal rounded-lg " onClick={() => {if(!selected.find(i => i.vacancyId === item.vacancyId)); calculateBudgetAndParticipants([...selected, item], durationType); setSelected([...selected, item])}}>
+                                                                                <HiPlus className='relative m-2 text-xl text-center ' />
+                                                                            </div>
+                                                                        </div>                                                                    
+                                                                }
+                                                                <VacancyItem props={item} isAvatar={false} isHideFunc/>
+                                                            </div>                  
+                                                        })
+                                                    }
+                                                </div>
+                                            </div>
                                     </div>
-                                        <div className="h-7"></div>
+                                    </div>
                                     <div>
-                                        <p className="block leading-8 text-gray-900 font-medium">Project descriptions*</p>
+                                        <p className="block leading-8 text-gray-900 font-medium mt-6">Project descriptions*</p>
                                         <FroalaEditor
                                             model={value}
-                                            onModelChange={( event, editor ) => {setValue(event)}}
+                                            onModelChange={( event, editor ) => {setValueDes(event)}}
                                             config={{
                                                 placeholderText: 'Provide a comprehensive job description, outlining the roles, responsibilities, qualifications, and any additional information relevant to the job.',    
                                                 charCounterCount: true,
@@ -239,57 +318,24 @@ function CreateProject() {
                                             }}
                                         />
                                     </div>
-                                    <div className="mt-6">
-                                        <p className="block leading-8 text-gray-900 font-medium mb-1">Vacancies</p>
-                                        <div className="mt-5 flex flex-row gap-x-3">
-                                            <div className="w-1/2">
-                                                <p className="block leading-8 text-gray-900 font-medium mb-1">Selected list</p>
-                                                <div className="h-[500px] overflow-auto">
-                                                    {
-                                                        selected?.map((item, index) => {
-                                                            return <div key={index} className="relative">
-                                                                <div className="absolute top-6 right-5">
-                                                                    <div className="text-sm text-center cursor-pointer text-[white] hover:bg-[#0146a6] bg-[#1967d3] flex items-center leading-7 font-normal rounded-lg " onClick={() => {setSelected(selected.filter(i => i.vacancyId !== item.vacancyId))}}>
-                                                                        <div className="m-1 mx-2">Remove</div>
-                                                                    </div>
-                                                                </div>
-                                                                <VacancyItem props={item} isAvatar={false}/>
-                                                            </div>                  
-                                                        })
-                                                    }
-                                                </div>
-                                            </div>
-                                            <div className="w-1/2" >
-                                                <p className="block leading-8 text-gray-900 font-medium mb-1">Your Vacancies</p>
-                                                <div className="h-[500px] overflow-auto">
-                                                    {
-                                                        loading?
-                                                        [1, 2 ,3].map((item, index)=> {
-                                                            return (
-                                                                <div key={index}>
-                                                                    <VacancyItemLoader/>
-                                                                </div>
-                                                            )
-                                                        })
-                                                        :
-                                                        vacancies?.map((item, index) => {
-                                                            return <div key={index} className="relative">
-                                                                {
-                                                                    selected.find(i => i.vacancyId === item.vacancyId) ? null :
-                                                                        <div className="absolute top-6 right-5">
-                                                                            <div className="text-sm text-center cursor-pointer text-[white] hover:bg-[#0146a6] bg-[#1967d3] flex items-center leading-7 font-normal rounded-lg " onClick={() => {if(!selected.find(i => i.vacancyId === item.vacancyId)) setSelected([...selected, item])}}>
-                                                                                <HiPlus className='relative m-2 text-xl text-center ' />
-                                                                            </div>
-                                                                        </div>                                                                    
-                                                                }
-                                                                <VacancyItem props={item} isAvatar={false}/>
-                                                            </div>                  
-                                                        })
-                                                    }
-                                                </div>
-                                            </div>
+                                    
+                                    <div className="grid grid-cols-2 gap-x-7 mt-5">
+                                        <div>
+                                            <TextInput name='fbLink' register={register("fbLink")} type='text' label='Facebook' placeholder='www.facebook.com/Nguyenvana' styles='bg-[#f0f5f7]' />
+                                        </div>
+                                        <div>
+                                            <TextInput name='twLink' register={register("twLink")} type='text' label='Twitter' placeholder='www.twitter.com/@Nguyenvana' styles='bg-[#f0f5f7]' />
+                                        </div>
+                                        <div>
+                                            <TextInput name='lkLink'  register={register("lkLink")} type='text' label='Linkedin' placeholder='www.linkedin.com/Nguyenvana' styles='bg-[#f0f5f7]' />
+                                        </div>
+                                        <div>
+                                            <TextInput name='insLink'  register={register("insLink")} type='text' label='Instagram' placeholder='www.instagram.com/Nguyenvana' styles='bg-[#f0f5f7]' />
+                                        </div>
                                     </div>
-                                    </div>
+                                        <div className="h-7"></div>
+                                    
+                                    
                                     <div>
                                         <div className="flex justify-end mt-10">
                                         <button className="flex-row w-36 text-sm text-center justify-center px-4 p-3 text-[white] hover:bg-[#0146a6] bg-[#1967d3] flex items-center leading-7 font-bold rounded-lg " type="submit" >

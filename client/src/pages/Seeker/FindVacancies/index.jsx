@@ -6,7 +6,6 @@ import {BsCheck} from "react-icons/bs";
 import {ComboBox} from "../../../components/index"
 import VacancyItem from "../ProjectInfo/VacancyItem";
 import CustomButton from "../../../components/CustomButton";
-import { BagIcon, KeyboardIcon } from "../../../assets/icons";
 import { PiBriefcaseLight } from "react-icons/pi";
 import VacancyDetail from "./VacancyDetail";
 import "./style.css"
@@ -24,6 +23,7 @@ function FindVacancies() {
     function onfilterValueSelected(){}
 
     let {vacancies, loading} = useSelector((state) => state.vacancies)
+    
 
     useEffect(() => {
         dispatch(getAllVacancies())
@@ -33,6 +33,8 @@ function FindVacancies() {
         if(vacancies) setSelected(vacancies[0])
     }, [vacancies])
 
+    
+
     const isSuccessFvr = useSelector(store=>store.vacancies.isSuccessFvr)
     useEffect(()=>{
         if(isSuccessFvr) {
@@ -40,6 +42,67 @@ function FindVacancies() {
             notify('success', 'Update favourite vacancy successfully!')
         }
     },[isSuccessFvr])
+
+    const isExpired = (date, item) => {
+        if(date === null) return false
+        if(item.length){
+            const current = Date.now()
+            const datePost = new Date(date[0], date[1] - 1, date[2], date[3], date[4], date[5]).getTime()
+            return ((current - datePost) / (1000 * 60 * 60 * 24)) > item.length
+        } 
+        else{
+            return false
+        }
+    }
+
+    const getLength = (date) => {
+        // new Date(year, monthIndex, day, hours, minutes, seconds, milliseconds)
+        if(date === null) return "" 
+        const current = Date.now()
+        const datePost = new Date(date[0], date[1] - 1, date[2], date[3], date[4], date[5]).getTime()
+
+        const seconds = (current - datePost) / 1000 
+        console.log(seconds, date)
+
+
+        if(seconds < 60){
+            return `Posted ${Math.round(seconds)} seconds ago`
+        }
+        
+        const minutes = seconds / 60
+        console.log(minutes, date)
+
+
+        if(minutes < 60){
+            return `Posted ${Math.round(minutes)} minutes ago`
+        }
+
+        const hours = minutes / 60
+        console.log(hours, date)
+
+
+        if(hours < 24){
+            return `Posted ${Math.round(hours)} hours ago`
+        }
+
+        const days = hours / 24
+        console.log(days, date)
+
+
+        if(days < 30){
+            return `Posted ${Math.round(days)} days ago`
+        }
+
+        const months = days / 30
+        console.log(months, date)
+
+
+        if(months < 30){
+            return `Posted ${Math.round(months)} months ago`
+        }
+
+        return `Posted ${Math.round(months)} months ago`
+    }
 
     return (<>
       <div className="flex flex-col">
@@ -106,13 +169,14 @@ function FindVacancies() {
                                 )
                             })
                             :
-                            vacancies?.map((item, index) => {
-                                return <div key={index} onClick={() => setSelected(item)}>
+                            vacancies?.filter((item) => item.post && !isExpired(item.datePost, item)).map((item, index) => {
+                                return <div key={index} onClick={() => setSelected(item)} className="relative">
                                     <VacancyItem props={item} active={selected ? selected == item ? true : false: false} isAvatar={true} notify={notify}/>
+                                    <div className="absolute bottom-3 right-7 text-[#5e6d55] text-[11px]">{getLength(item.datePost, item)}</div>
                                 </div>                  
                             })
                         }
-                    </div>
+                    </div>  
                 </div>
 
                 {/* Login search */}

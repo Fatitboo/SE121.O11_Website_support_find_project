@@ -137,6 +137,66 @@ function FindProjects() {
         handleSearch(searchObject.keyWord, e, searchObject.occupations);
     }
 
+    const isExpired = (date, item) => {
+        if(item.length){
+            const current = Date.now()
+            const datePost = new Date(date[0], date[1] - 1, date[2], date[3], date[4], date[5]).getTime()
+            return ((current - datePost) / (1000 * 60 * 60 * 24)) > item.length
+        } 
+        else{
+            return false
+        }
+    }
+
+    const getLength = (date) => {
+        // new Date(year, monthIndex, day, hours, minutes, seconds, milliseconds)
+        if(date === null) return "" 
+        const current = Date.now()
+        const datePost = new Date(date[0], date[1] - 1, date[2], date[3], date[4], date[5]).getTime()
+
+        const seconds = (current - datePost) / 1000 
+        console.log(seconds, date)
+
+
+        if(seconds < 60){
+            return `Posted ${Math.round(seconds)} seconds ago`
+        }
+        
+        const minutes = seconds / 60
+        console.log(minutes, date)
+
+
+        if(minutes < 60){
+            return `Posted ${Math.round(minutes)} minutes ago`
+        }
+
+        const hours = minutes / 60
+        console.log(hours, date)
+
+
+        if(hours < 24){
+            return `Posted ${Math.round(hours)} hours ago`
+        }
+
+        const days = hours / 24
+        console.log(days, date)
+
+
+        if(days < 30){
+            return `Posted ${Math.round(days)} days ago`
+        }
+
+        const months = days / 30
+        console.log(months, date)
+
+
+        if(months < 30){
+            return `Posted ${Math.round(months)} months ago`
+        }
+
+        return `Posted ${Math.round(months)} months ago`
+    }
+
     const handleSearch = (a, b, c) => {
         if(!projects) return;
         let list = Array.from(projects)
@@ -214,88 +274,6 @@ function FindProjects() {
                         {/* search by time post project */}
                         <div className="mb-[30px]">
                             <h1 className="text-lg leading-[24px] text-[#202124] mb-4 font-medium">Date Posted</h1>
-                            {/* <RadioGroup value={plan} onChange={setPlan}>
-                                <RadioGroup.Option value="all" checked>
-                                    {({ checked }) => (
-                                        <>
-                                            <div className="flex flex-row items-center cursor-pointer">
-                                                <div>
-                                                    <div className="relative h-7 flex items-center">
-                                                        <div className="absolute bg-[#FFF] border border-[#ecedf2] w-[18px] h-[18px] rounded-[10px]" color="#FFF"></div>
-                                                        <div className={`${checked ? "": "hidden"} z-10 flex items-center justify-center absolute bg-[#1967d2] w-[18px] h-[18px] rounded-[10px]`} color="#FFF"><BsCheck color="#FFF"/></div>
-                                                    </div>
-                                                </div>
-                                                <span className="pl-7 text-[13px] select-none text-[#696969]">All</span>
-                                            </div>
-                                        </>
-                                    )}
-                                </RadioGroup.Option>
-                                <RadioGroup.Option value="lasthour">
-                                    {({ checked }) => (
-                                        <div className="flex flex-row items-center cursor-pointer">
-                                            <div>
-                                                <div className="relative h-7 flex items-center">
-                                                    <div className="absolute bg-[#FFF] border border-[#ecedf2] w-[18px] h-[18px] rounded-[10px]" color="#FFF"></div>
-                                                    <div className={`${checked ? "": "hidden"} z-10 flex items-center justify-center absolute bg-[#1967d2] w-[18px] h-[18px] rounded-[10px]`} color="#FFF"><BsCheck color="#FFF"/></div>
-                                                </div>
-                                            </div>
-                                            <span className="pl-7 text-[13px] select-none text-[#696969]">Last Hour</span>
-                                        </div>
-                                    )}
-                                </RadioGroup.Option>
-                                <RadioGroup.Option value="last24hour">
-                                    {({ checked }) => (
-                                        <div className="flex flex-row items-center cursor-pointer">
-                                            <div>
-                                                <div className="relative h-7 flex items-center">
-                                                    <div className="absolute bg-[#FFF] border border-[#ecedf2] w-[18px] h-[18px] rounded-[10px]" color="#FFF"></div>
-                                                    <div className={`${checked ? "": "hidden"} z-10 flex items-center justify-center absolute bg-[#1967d2] w-[18px] h-[18px] rounded-[10px]`} color="#FFF"><BsCheck color="#FFF"/></div>
-                                                </div>
-                                            </div>
-                                            <span className="pl-7 text-[13px] select-none text-[#696969]">Last 24 Hour</span>
-                                        </div>
-                                    )}
-                                </RadioGroup.Option>
-                                <RadioGroup.Option value="last7days">
-                                    {({ checked }) => (
-                                        <div className="flex flex-row items-center cursor-pointer">
-                                            <div>
-                                                <div className="relative h-7 flex items-center">
-                                                    <div className="absolute bg-[#FFF] border border-[#ecedf2] w-[18px] h-[18px] rounded-[10px]" color="#FFF"></div>
-                                                    <div className={`${checked ? "": "hidden"} z-10 flex items-center justify-center absolute bg-[#1967d2] w-[18px] h-[18px] rounded-[10px]`} color="#FFF"><BsCheck color="#FFF"/></div>
-                                                </div>
-                                            </div>
-                                            <span className="pl-7 text-[13px] select-none text-[#696969]">Last 7 Days</span>
-                                        </div>
-                                    )}
-                                </RadioGroup.Option>
-                                <RadioGroup.Option value="last14days">
-                                    {({ checked }) => (
-                                        <div className="flex flex-row items-center cursor-pointer">
-                                            <div>
-                                                <div className="relative h-7 flex items-center">
-                                                    <div className="absolute bg-[#FFF] border border-[#ecedf2] w-[18px] h-[18px] rounded-[10px]" color="#FFF"></div>
-                                                    <div className={`${checked ? "": "hidden"} z-10 flex items-center justify-center absolute bg-[#1967d2] w-[18px] h-[18px] rounded-[10px]`} color="#FFF"><BsCheck color="#FFF"/></div>
-                                                </div>
-                                            </div>
-                                            <span className="pl-7 text-[13px] select-none text-[#696969]">Last 14 Days</span>
-                                        </div>
-                                    )}
-                                </RadioGroup.Option>
-                                <RadioGroup.Option value="last30days">
-                                    {({ checked }) => (
-                                        <div className="flex flex-row items-center cursor-pointer">
-                                            <div>
-                                                <div className="relative h-7 flex items-center">
-                                                    <div className="absolute bg-[#FFF] border border-[#ecedf2] w-[18px] h-[18px] rounded-[10px]" color="#FFF"></div>
-                                                    <div className={`${checked ? "": "hidden"} z-10 flex items-center justify-center absolute bg-[#1967d2] w-[18px] h-[18px] rounded-[10px]`} color="#FFF"><BsCheck color="#FFF"/></div>
-                                                </div>
-                                            </div>
-                                            <span className="pl-7 text-[13px] select-none text-[#696969]">Last 30 Days</span>
-                                        </div>
-                                    )}
-                                </RadioGroup.Option>
-                            </RadioGroup> */}
                             <CustomRadioButton listItem={datePosts} filterValueChecked={handleCheckDatePost}/>
                         </div>
 
@@ -335,8 +313,11 @@ function FindProjects() {
                 </div>
                 <div className="mt-5">
                     {
-                        currentPrs?.map((item, index) => {
-                            return <ProjectItem key={index} props={item} notify={notify}/>;
+                        currentPrs?.filter((item) => item.project?.status === "approved" && !isExpired(item?.project?.datePost, item?.project)).map((item, index) => {
+                            return <div key={index} className="relative">
+                                <div className="absolute top-[68px] right-7 text-[#5e6d55] text-[11px]">{getLength(item.project?.datePost, item?.project)}</div>
+                                <ProjectItem props={item} notify={notify}/>;
+                            </div>
                         })
                     }
                 </div>

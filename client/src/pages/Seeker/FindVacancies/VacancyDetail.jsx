@@ -20,10 +20,9 @@ const VacancyDetail = ({ props }) => {
     const dispatch = useDispatch();
     const [openReport, setopenReport] = useState(false)
 
-    const { loading, isSuccessApplied } = useSelector((state) => state.users)
     const [listQuestion, setListQuestion] = useState(null)
     let user = useSelector((state) => state?.users?.userAuth?.user)
-    let seletedUser = useSelector((state) => state?.users?.seletedUser)
+    const { isSuccessApplied, seletedUser, loadingAL, loadingGD } = useSelector((state) => state.users)
 
 
     useEffect(() => {
@@ -39,6 +38,7 @@ const VacancyDetail = ({ props }) => {
         if (isSuccessApplied) {
             user && dispatch(getDetailUserAction(user?.userId))
             setModal(false)
+            setListQuestion(false)
         }
     }, [isSuccessApplied])
 
@@ -126,7 +126,7 @@ const VacancyDetail = ({ props }) => {
                                 seletedUser?.appliedVacancies?.includes(props?.vacancyId) ?
                                     <div className="flex items-center justify-center w-[120px] box-border bg-[#1967d3] px-[10px] py-[3px] rounded-[8px] text-[#fff] cursor-not-allowed">
                                         {
-                                            !loading ? <span className="text-[14px] leading-none font-bold">Applied</span>
+                                            !(loadingAL && loadingGD) ? <span className="text-[14px] leading-none font-bold">Applied</span>
                                                 : <svg className="right-1 animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 24 24">
                                                     <circle className="opacity-0" cx="12" cy="12" r="10" stroke="white" strokeWidth="4"></circle>
                                                     <path className="opacity-90" fill="white" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
@@ -136,7 +136,7 @@ const VacancyDetail = ({ props }) => {
                                     </div> :
                                     <div className="flex items-center justify-center w-[120px] box-border bg-[#1967d3] px-[10px] py-[3px] rounded-[8px] text-[#fff] hover:bg-[#0146a6] cursor-pointer" onClick={handleApplied} >
                                         {
-                                            !loading ? <span className="text-[14px] leading-none font-bold">Apply now</span>
+                                            !(loadingAL && loadingGD) ? <span className="text-[14px] leading-none font-bold">Apply now</span>
                                                 : <svg className="right-1 animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 24 24">
                                                     <circle className="opacity-0" cx="12" cy="12" r="10" stroke="white" strokeWidth="4"></circle>
                                                     <path className="opacity-90" fill="white" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
@@ -258,7 +258,7 @@ const VacancyDetail = ({ props }) => {
                         <div>
                             <div className="flex flex-row items-center justify-between mx-2">
                                 <p className='block leading-8 text-gray-900 text-xl font-bold'>Prescreen Question</p>
-                                <div className="hover:bg-slate-100 rounded-sm p-2 cursor-pointer opacity-90" onClick={() => setModal(false)}>
+                                <div className="hover:bg-slate-100 rounded-sm p-2 cursor-pointer opacity-90" onClick={() => {setModal(false); setListQuestion(null)}}>
                                     <IoClose size={20} />
                                 </div>
                             </div>
@@ -274,12 +274,12 @@ const VacancyDetail = ({ props }) => {
                                 }
                             </div>
                             <div className="flex flex-row items-center gap-2 float-right">
-                                <div className="flex items-center justify-center box-border bg-[white] border px-[18px] py-[14px] rounded-[8px] text-[#1967d3] hover:bg-[#eef1fe] hover:border-[#1967d3] cursor-pointer" onClick={() => setModal(false)}>
+                                <div className="flex items-center justify-center box-border bg-[white] border px-[18px] py-[14px] rounded-[8px] text-[#1967d3] hover:bg-[#eef1fe] hover:border-[#1967d3] cursor-pointer" onClick={() => {setModal(false); setListQuestion(null)}}>
                                     <span className="text-[15px] leading-none font-bold">Close</span>
                                 </div>
                                 <button className="w-[90px] flex items-center justify-center box-border bg-[#1967d3] px-[18px] py-[14px] rounded-[8px] text-[#fff] hover:bg-[#0146a6] cursor-pointer" onClick={() => handleApplyWithAnswers()}>
                                     {
-                                        loading ? <svg className="right-1 animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 24 24">
+                                        loadingAL ? <svg className="right-1 animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 24 24">
                                             <circle className="opacity-0" cx="12" cy="12" r="10" stroke="white" strokeWidth="4"></circle>
                                             <path className="opacity-90" fill="white" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                                         </svg> :

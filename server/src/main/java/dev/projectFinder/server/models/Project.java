@@ -3,6 +3,7 @@ package dev.projectFinder.server.models;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
+import dev.projectFinder.server.components.Payment.PaymentProjectDetail;
 import dev.projectFinder.server.dtos.ProjectDTO;
 import lombok.*;
 import org.bson.types.ObjectId;
@@ -53,6 +54,10 @@ public class Project {
     private String[] occupations;
     private List<String> reports;
     private List<String> favouriteUsers;
+    private int length;
+    private LocalDateTime datePost;
+    //Dung cho payment
+    private List<PaymentProjectDetail> detail;
     // date create and update
     @CreatedDate
     private LocalDateTime createdAt;

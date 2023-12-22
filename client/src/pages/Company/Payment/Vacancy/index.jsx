@@ -1,15 +1,15 @@
 import { FiMinus, FiPlus } from "react-icons/fi";
-import { JobPaymentImage, JobReviewImage } from "../../../assets/images";
-import { CustomComboBox } from "../../../components";
+import { JobPaymentImage, JobReviewImage } from "../../../../assets/images";
+import { CustomComboBox } from "../../../../components";
 import { useEffect, useState } from "react";
 import { AiFillExclamationCircle } from "react-icons/ai";
-import { PaypalIcon } from "../../../assets/icons";
+import { PaypalIcon } from "../../../../assets/icons";
 import axios from "axios";
-import baseUrl from "../../../utils/baseUrl";
+import baseUrl from "../../../../utils/baseUrl";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import { getVacancyInfoDetail } from "../../../redux/slices/vacancies/vacanciesSlices";
-import { getAllSeekersAction } from "../../../redux/slices/users/usersSlices";
+import { getVacancyInfoDetail } from "../../../../redux/slices/vacancies/vacanciesSlices";
+import { getAllSeekersAction } from "../../../../redux/slices/users/usersSlices";
 
 function Payment({vacancy}) {
     const {id} = useParams();
@@ -49,6 +49,7 @@ function Payment({vacancy}) {
     const [loadingToPay, setLoadingToPay] = useState(false)
     const filterValueSelected = (e) => {
         setTotal(e.value * hires * baseMoney)
+        setTime(e.value)
     }
 
     const changeEndDate = (e) => {
@@ -60,7 +61,7 @@ function Payment({vacancy}) {
         else{
             setErrors(false)
             console.log(duration, Math.round(duration))
-            setTime(Math.round(duration))
+           // setTime(Math.round(duration))
         }
     }
 
@@ -102,9 +103,16 @@ function Payment({vacancy}) {
                     return false
             })
             if(a){
-                const per = take_decimal_number(a.length / skrList.length, 2)
-                setSkrsMatchPerc(per * 100)
-                setBaseMoney(take_decimal_number(1 * per, 2))
+                const per = a.length / skrList.length
+                console.log(a)
+                if(per < 0.01){
+                    setSkrsMatchPerc(50)
+                    setBaseMoney(take_decimal_number(5 * 0.5, 2))
+                }
+                else{
+                    setSkrsMatchPerc(take_decimal_number(per * 100, 2))
+                    setBaseMoney(take_decimal_number(5 * per, 2))
+                }
             }
         }
     }, [vacancyInfo, skrList])
@@ -133,8 +141,10 @@ function Payment({vacancy}) {
             "method": "paypal",
             "intent": "sale",
             "description": "Thanh toan qua paypal",
-            "vacancyId": vacancyInfo.vacancyId
+            "vacancyId": vacancyInfo.vacancyId,
+            "length": time
         }
+        console.log(vacancyInfo.vacancyId)
         axios.post(`${baseUrl}/api/v1/payment/pay`, order,{
             headers: {
                 'Authorization': 'Bearer ' + user?.token,
@@ -177,16 +187,9 @@ function Payment({vacancy}) {
                                 <div className="mr-3">
                                     <p className='block leading-8 text-gray-900 text-base font-semibold'>How many hires do you need to make?</p>
                                     <div className="flex flex-row gap-2 items-center mt-2">
-                                        {/* <div className="flex justify-center items-center bg-[#2557a7] rounded-full w-4 h-4 cursor-pointer hover:opacity-90 active:opacity-80" onClick={() => {setHires(hires > 1 ? --hires : 1)}}>
-                                            <FiMinus color="white" size={14}/>   
-                                        </div> */}
                                         <div>
                                             Your selection: <span className="text-[#2557a7] font-semibold">{vacancyInfo?.maxRequired}</span>
                                         </div>
-                                        {/* <input type="text" value={hires} onChange={() => {}} className="border w-11 rounded-lg flex justify-center h-9 text-center outline-none focus:border-[#2d2d2d]"/> */}
-                                        {/* <div className="flex justify-center items-center bg-[#2557a7] rounded-full w-4 h-4 cursor-pointer hover:opacity-90 active:opacity-80" onClick={() => {setHires(++hires)}}>
-                                            <FiPlus color="white" size={14}/>   
-                                        </div> */}
                                     </div>
                                     <div className="flex flex-col mt-5">
                                         {/* <p className='block leading-8 text-gray-900 text-base font-semibold'>Job Duration</p> */}

@@ -203,6 +203,57 @@ export const getVacancyCor = createAsyncThunk(
         }
     }
 )
+//get complete vacancy component
+export const getCompleteVacancyCor = createAsyncThunk(
+    'vacancies/getCompleteVacancyCor',
+    async (payload, { rejectWithValue, getState, dispatch }) => {
+        try {
+            const user = getState()?.users;
+            const { userAuth } = user;
+            // http call
+            const config = {
+                headers: {
+                    Authorization: `Bearer ${userAuth?.user?.token}`,
+                    'Content-Type': 'application/json',
+                },
+            };
+
+            const { data } = await axios.get(`${baseUrl}/api/v1/users/get-complete-vacancy-cor/${userAuth?.user?.userId}`, config);
+            return data;
+        } catch (error) {
+            if (!error?.response) {
+                throw error;
+            }
+            return rejectWithValue(error?.response?.data);
+        }
+    }
+)
+//get complete vacancy component
+export const getInCompleteVacancyCor = createAsyncThunk(
+    'vacancies/getInCompleteVacancyCor',
+    async (payload, { rejectWithValue, getState, dispatch }) => {
+        try {
+            const user = getState()?.users;
+            const { userAuth } = user;
+            // http call
+            const config = {
+                headers: {
+                    Authorization: `Bearer ${userAuth?.user?.token}`,
+                    'Content-Type': 'application/json',
+                },
+            };
+
+            const { data } = await axios.get(`${baseUrl}/api/v1/users/get-incomplete-vacancy-cor/${userAuth?.user?.userId}`, config);
+            return data;
+        } catch (error) {
+            if (!error?.response) {
+                throw error;
+            }
+            return rejectWithValue(error?.response?.data);
+        }
+    }
+)
+
 //get uncompleted vacancy
 export const getFullUnCompletedVacancy = createAsyncThunk(
     'vacancies/getUnVacancy',
@@ -464,7 +515,6 @@ export const deleteBlockMemberVacancy = createAsyncThunk(
         }
     }
 )
-
 //Set success
 export const resetSuccessAction = createAsyncThunk(
     "vacancies/resetSuccess",
@@ -526,7 +576,6 @@ export const updateFavouriteVacancyAction = createAsyncThunk(
         }
     }
 );
-
 //get all Favourite vacancy
 export const getAllFavouriteVacanciesAction = createAsyncThunk(
     "vacancies/getAllFavouriteVacancies",
@@ -750,6 +799,40 @@ const vacanciesSlices = createSlice({
                 state.loading = false;
                 state.appErr = action?.payload?.message;
                 state.isSuccess2 = false;
+            }),
+
+            //get vacancy cor
+            builder.addCase(getCompleteVacancyCor.pending, (state, action) => {
+                state.loadingC = true;
+                state.isSuccess2C = false;
+            }),
+            builder.addCase(getCompleteVacancyCor.fulfilled, (state, action) => {
+                state.loadingC = false;
+                state.appErr = null;
+                state.isSuccess2C = true;
+                state.complete = action?.payload?.complete;
+            }),
+            builder.addCase(getCompleteVacancyCor.rejected, (state, action) => {
+                state.loadingC = false;
+                state.appErr = action?.payload?.message;
+                state.isSuccess2C = false;
+            }),
+
+             //get vacancy cor
+             builder.addCase(getInCompleteVacancyCor.pending, (state, action) => {
+                state.loadingU = true;
+                state.isSuccess2U = false;
+            }),
+            builder.addCase(getInCompleteVacancyCor.fulfilled, (state, action) => {
+                state.loadingU = false;
+                state.appErr = null;
+                state.isSuccess2U = true;
+                state.incomplete = action?.payload?.incomplete;
+            }),
+            builder.addCase(getInCompleteVacancyCor.rejected, (state, action) => {
+                state.loadingU = false;
+                state.appErr = action?.payload?.message;
+                state.isSuccess2U = false;
             }),
 
 

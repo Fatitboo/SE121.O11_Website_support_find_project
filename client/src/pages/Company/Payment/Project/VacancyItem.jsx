@@ -1,24 +1,20 @@
-import React, { useEffect, useRef } from "react";
-import { HiEye, HiOutlineLocationMarker } from "react-icons/hi";
-import { PiSuitcaseSimpleThin, PiTargetLight } from 'react-icons/pi';
+import { HiEye } from "react-icons/hi";
+import {  PiTargetLight } from 'react-icons/pi';
 import { GoHourglass } from "react-icons/go";
-import { BiBookmark, BiTimeFive } from 'react-icons/bi';
-import { Candidate } from "../../../assets/images";
-import { MoneyIcon } from "../../../assets/icons";
-import "./VacancyItemStyle.css"
+import { BiBookmark } from 'react-icons/bi';
 import { CiLocationOn } from "react-icons/ci";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { BsBookmarkCheckFill, BsEye } from "react-icons/bs";
-import { resetSuccessAction, updateFavouriteVacancyAction } from "../../../redux/slices/vacancies/vacanciesSlices";
-import { LoadingComponent } from "../../../components";
+import { BsBookmarkCheckFill } from "react-icons/bs";
 import Swal from "sweetalert2";
+import { LoadingComponent } from "../../../../components";
+import { updateFavouriteVacancyAction } from "../../../../redux/slices/vacancies/vacanciesSlices";
+import { MoneyIcon } from "../../../../assets/icons";
 
 const VacancyItem = ({ props, isAvatar, active, notify, isEditProject, setFunc, isHideFunc }) => {
     // {vacancyName, skillsRequired, maxRequired, salary, registant, description, isAvatar, companyName, companyAvatar}
     const { userAuth } = useSelector(store => store.users);
     const { loadingFvr } = useSelector(store => store.vacancies)
-    const { loading } = useSelector(store => store.vacancies)
 
     const dispatch = useDispatch();
     const userId = userAuth?.user?.userId;
@@ -33,7 +29,7 @@ const VacancyItem = ({ props, isAvatar, active, notify, isEditProject, setFunc, 
             const obj = {
                 vacancyId: props?.vacancyId,
                 setFunc: setFunc ? setFunc : null,
-                notify: notify ? notify : null
+                notify: notify
             }
             dispatch(updateFavouriteVacancyAction(obj))
         }
@@ -49,7 +45,7 @@ const VacancyItem = ({ props, isAvatar, active, notify, isEditProject, setFunc, 
 
     return (
         <>
-            {loading && <LoadingComponent />}
+            {loadingFvr && <LoadingComponent />}
             {/* <Link to={`/Organizer/vacancy-info/${props?.vacancyId}`}> */}
             <div style={{ backgroundColor: active ? "#f6faff" : '' }} className="flex flex-row p-7 rounded-[4px] border border-[#ecedf2] hover:bg-[#f6faff] bg-white hover:shadow-[0_7px_18px_rgba(64,79,104,.05)] cursor-pointer">
                 {
@@ -110,15 +106,15 @@ const VacancyItem = ({ props, isAvatar, active, notify, isEditProject, setFunc, 
                             <PiTargetLight className="w-[18px] h-[18px] mr-[5px]" />
                             {props?.maxRequired} candidates
                         </div>
+                        <div className="flex flex-row items-center text-[14px] text-[dimgray] leading-[22px] font-normal mr-3 mt-1">
+                            <CiLocationOn className="w-[18px] h-[18px] mr-[5px]" />
+                            {props?.location}
+                        </div>
                     </div>
-                    <div className="flex flex-row items-center text-[14px] text-[dimgray] leading-[22px] font-normal mr-3 mt-1">
-                        <CiLocationOn className="w-[18px] h-[18px] mr-[5px]" />
-                        {props?.location}
-                    </div>
-                    <div className="mt-2 min-h-[60px] w-[96%]">
+                    {/* <div className="mt-2 min-h-[60px] w-[96%]">
                         <p className="line-clamp-3 bg-transparent text-ellipsis " dangerouslySetInnerHTML={{ __html: props?.description }}>
                         </p>
-                    </div>
+                    </div> */}
                     <div className="flex flex-row items-center mt-2">
                         {props?.skillsRequired?.map((item, index) => {
                             // ${item.level === "Advanced" ? "bg-[rgba(25,103,210,.15)] text-[#1967d2]"

@@ -6,10 +6,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.paypal.api.payments.*;
 import com.paypal.base.rest.APIContext;
 import com.paypal.base.rest.PayPalRESTException;
+import dev.projectFinder.server.components.Payment.PaymentProjectDetail;
 import dev.projectFinder.server.models.History;
+import dev.projectFinder.server.models.Project;
 import dev.projectFinder.server.models.User;
 import dev.projectFinder.server.models.Vacancy;
 import dev.projectFinder.server.repositories.HistoryRepository;
+import dev.projectFinder.server.repositories.ProjectRepository;
 import dev.projectFinder.server.repositories.UserRepository;
 import dev.projectFinder.server.repositories.VacancyRepository;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +23,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -33,6 +37,8 @@ public class PaypalService {
     private HistoryRepository historyRepository;
     @Autowired
     private final VacancyRepository vacancyRepository;
+    @Autowired
+    private final ProjectRepository projectRepository;
     @Autowired
     private final UserRepository userRepository;
 
@@ -80,18 +86,28 @@ public class PaypalService {
         return payment.execute(apiContext, paymentExecute);
     }
 
-    public void saveHistotyPayment(String paymentJson, Vacancy vacancy) {
+    public void saveHistotyPayment(String paymentJson, String vacancyId, int length) {
         try{
+            Optional<Vacancy> vacancyOptional = vacancyRepository.findById(new ObjectId(vacancyId));
+            if(vacancyOptional.isEmpty()){
+                throw new DataIntegrityViolationException("Error when get job in database");
+            }
+
+            Vacancy vacancy = vacancyOptional.get();
+
             ObjectMapper mapper = new ObjectMapper();
 
             JsonNode node = mapper.readTree(paymentJson);
             History history = new History(node);
+
             history.response = paymentJson;
             history.setVacancy(vacancy);
             ObjectId id = historyRepository.save(history).getHistoryId();
 
             vacancy.setApprovalStatus("approved");
-
+            vacancy.setPost(true);
+            vacancy.setLength(length);
+            vacancy.setDatePost(LocalDateTime.now());
             Optional<User> userOptional = userRepository.findById(new ObjectId(vacancy.getUserInfo().getUserId()));
             if(userOptional.isEmpty()){
                 throw new DataIntegrityViolationException("Error when get user in database!");
@@ -111,6 +127,12 @@ public class PaypalService {
             vacancyRepository.save(vacancy);
         }
         catch(JsonProcessingException e){
+            Optional<Vacancy> vacancyOptional = vacancyRepository.findById(new ObjectId(vacancyId));
+            if(vacancyOptional.isEmpty()){
+                throw new DataIntegrityViolationException("Error when get job in database");
+            }
+
+            Vacancy vacancy = vacancyOptional.get();
             History history = new History();
             history.response = paymentJson;
             history.setVacancy(vacancy);
@@ -135,4 +157,101 @@ public class PaypalService {
         }
     }
 
+    public void saveHistotyProjectPayment(String paymentJson, String projectId, int length) {
+        try{
+            Optional<Project> projectOptional = projectRepository.findById(new ObjectId(projectId));
+            if(projectOptional.isEmpty()){
+                throw new DataIntegrityViolationException("Error when get project in database");
+            }
+
+            Project project = projectOptional.get();
+
+            ObjectMapper mapper = new ObjectMapper();
+
+            JsonNode node = mapper.readTree(paymentJson);
+            History history = new History(node);
+
+            history.response = paymentJson;
+            history.setProject(project);
+            ObjectId id = historyRepository.save(history).getHistoryId();
+
+            project.setStatus("approved");
+            project.setLength(length);
+            project.setDatePost(LocalDateTime.now());
+            project.setDetail(null);
+            Optional<User> userOptional = userRepository.findById(project.getUserId());
+            if(userOptional.isEmpty()){
+                throw new DataIntegrityViolationException("Error when get user in database!");
+            }
+
+            User user = userOptional.get();
+
+            List<String> historyPayment = user.getHistoryProjectPayment();
+            if(historyPayment == null || historyPayment.isEmpty()){
+                historyPayment = new ArrayList<>();
+            }
+            historyPayment.add(id.toString());
+
+            user.setHistoryProjectPayment(historyPayment);
+
+            userRepository.save(user);
+            projectRepository.save(project);
+        }
+        catch(JsonProcessingException e){
+            Optional<Project> projectOptional = projectRepository.findById(new ObjectId(projectId));
+            if(projectOptional.isEmpty()){
+                throw new DataIntegrityViolationException("Error when get project in database");
+            }
+
+            Project project = projectOptional.get();
+            History history = new History();
+
+            history.response = paymentJson;
+            history.setProject(project);
+            ObjectId id = historyRepository.save(history).getHistoryId();
+
+            project.setStatus("approved");
+            project.setLength(length);
+            project.setDatePost(LocalDateTime.now());
+            Optional<User> userOptional = userRepository.findById(project.getUserId());
+            if(userOptional.isEmpty()){
+                throw new DataIntegrityViolationException("Error when get user in database!");
+            }
+
+            User user = userOptional.get();
+
+            List<String> historyPayment = user.getHistoryProjectPayment();
+            if(historyPayment == null || historyPayment.isEmpty()){
+                historyPayment = new ArrayList<>();
+            }
+            historyPayment.add(id.toString());
+
+            user.setHistoryProjectPayment(historyPayment);
+
+            userRepository.save(user);
+            projectRepository.save(project);
+        }
+    }
+
+    public void updateProject(List<PaymentProjectDetail> list, String projectId){
+        Optional<Project> projectOptional = projectRepository.findById(new ObjectId(projectId));
+        if(projectOptional.isEmpty()){
+            throw new DataIntegrityViolationException("Error when get project in database");
+        }
+
+        Project project = projectOptional.get();
+        project.setDetail(list);
+        projectRepository.save(project);
+    }
+
+    public void removeDetailPayment(String projectId){
+        Optional<Project> projectOptional = projectRepository.findById(new ObjectId(projectId));
+        if(projectOptional.isEmpty()){
+            throw new DataIntegrityViolationException("Error when get project in database");
+        }
+
+        Project project = projectOptional.get();
+        project.setDetail(null);
+        projectRepository.save(project);
+    }
 }

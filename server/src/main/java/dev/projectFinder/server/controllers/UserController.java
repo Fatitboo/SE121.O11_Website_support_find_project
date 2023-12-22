@@ -32,6 +32,8 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -308,6 +310,65 @@ public class UserController {
         }
     }
 
+    @GetMapping("/get-complete-vacancy-cor/{id}")
+    public ResponseEntity<?> getCompleteVacancyCor(@PathVariable String id){
+        HashMap<String, Object> response = new HashMap<>();
+        try{
+            User user = userServices.getUserDetail(id);
+            List<Vacancy> complete = new ArrayList<>();
+
+            if(user.getVacancies()!=null){
+                for (String completeId:user.getVacancies()) {
+                    Optional<Vacancy> cv = vacancyRepository.findById(new ObjectId(completeId));
+                    if(!cv.isEmpty()){
+                        Vacancy vc = cv.get();
+                        if(vc.getPost()){
+                            float hours = ChronoUnit.HOURS.between(vc.getDatePost(), LocalDateTime.now());
+                            System.out.println("HOURS: " + hours/ 24 + "   LENGTH: " + vc.getLength());
+                            if(hours / 24 > vc.getLength()){
+                                vc.setPost(false);
+                                vc.setLength(0);
+                                vc.setApprovalStatus("pending");
+                                vc.setDatePost(null);
+                            }
+                        }
+                        complete.add(vc);
+                    }
+
+                }
+                vacancyRepository.saveAll(complete);
+            }
+            response.put("message","Get all vacancy company successfully!");
+            response.put("complete",complete);
+
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        }catch (Exception e) {
+            response.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+    }
+
+    @GetMapping("/get-incomplete-vacancy-cor/{id}")
+    public ResponseEntity<?> getUnCompleteVacancyCor(@PathVariable String id){
+        HashMap<String, Object> response = new HashMap<>();
+        try{
+            User user = userServices.getUserDetail(id);
+            List<UnCompletedVacancy> incomplete = new ArrayList<>();
+            if(user.getUnCompletedVacancies()!=null){
+                for (String unCompleteId:user.getUnCompletedVacancies()) {
+                    Optional<UnCompletedVacancy> fu = unCompletedVacancyRepository.findById(new ObjectId(unCompleteId));
+                    fu.ifPresent(incomplete::add);
+                }
+            }
+
+            response.put("message","Get all vacancy company successfully!" );
+            response.put("incomplete",incomplete);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        }catch (Exception e) {
+            response.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+    }
     @GetMapping("/get-all-users")
     public ResponseEntity<?> getAllUser() {
         HashMap<String, Object> response = new HashMap<>();

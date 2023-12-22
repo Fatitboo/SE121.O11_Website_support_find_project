@@ -23,10 +23,11 @@ import { IoIosClose } from "react-icons/io";
 import baseUrl from "../../../../utils/baseUrl";
 import axios from "axios";
 
-const period = [{ id: 1, name:"month(s)"}, { id: 2, name: "week(s)"}, { id: 3, name: "day(s)"}, { id: 4, name:"year(s)"},]
 function UpdateProject() {
+    const period = [{ id: 1, name:"month(s)", value: 30}, { id: 2, name: "week(s)", value: 7}, { id: 3, name: "day(s)", value: 1}, { id: 4, name:"year(s)", value: 365},]
+    const rates = [{ id: 1, name:"per hour"}, { id: 2, name: "per day"}, { id: 3, name: "per week"}, { id: 4, name: "per month"}, { id: 5, name: "per year"}]
     const id = useParams()
-    const { register, handleSubmit, setValue, formState: { errors } } = useForm({ mode: 'onChange' });
+    const { register, handleSubmit, setValue, getValues, formState: { errors } } = useForm({ mode: 'onChange' });
     const project = useSelector((state) => state.projects.project?.project)
     const loadingPr = useSelector((state) => state.projects.loading)
     const dispatch = useDispatch()
@@ -114,6 +115,40 @@ function UpdateProject() {
         setDurationType(e)
     }
 
+    const calculateBudgetAndParticipants = (list, selectDuration) => {
+        const duration = Number(getValues("duration"))
+
+        const newBudget = list.reduce((acc, itemVacancy) => {
+            let salary = itemVacancy.salaryFirst
+            if(itemVacancy.salarySecond !== 0){
+                salary = (salary + itemVacancy.salarySecond) / 2
+            }
+    
+            switch(itemVacancy.salaryRate){
+                case rates[0]:
+                    salary = salary * 24 
+                    break;
+                case rates[1]:
+                    break;
+                case rates[2]:
+                    salary = salary / 7
+                    break;
+                case rates[3]:
+                    salary = salary / 30
+                    break;
+                case rates[4]:
+                    salary = salary / 365
+                    break;
+            }
+
+            return acc + salary * itemVacancy.maxRequired * duration * selectDuration.value
+        }, 0)
+
+        setValue("budget", newBudget)
+
+        setValue("maxParticipants", list.reduce((acc, item) => acc + item.maxRequired, 0))
+    }
+
     const fetchDataOccupation = (value) => {
         if (value === '')
         {
@@ -184,8 +219,9 @@ function UpdateProject() {
                                                 loadingPr ? <CustomLoader type={"title-input"}/> :
                                                 <TextInput name={"duration"} register={register("duration", {
                                                     required: "Duration is required!",
+                                                    onChange: (e) => { if(!e.target.value.match(/^\d+$/)) setValue("duration", e.target.value.substring(0, e.target.value.length - 1)); calculateBudgetAndParticipants(selected, durationType)},
                                                     valueAsNumber: true,
-                                                })} error={errors.duration ? errors.duration.message : ""} label="Duration*" type="text" value={project?.duration}/>
+                                                })} error={errors.duration ? errors.duration.message : ""} label="Duration*" type="text" />
                                             }
                                         </div>
                                         <div className="col-span-1">
@@ -204,7 +240,8 @@ function UpdateProject() {
                                                 loadingPr ? <CustomLoader type={"title-input"}/> :
                                                 <TextInput name={"maxParticipants"} register={register("maxParticipants", {
                                                     required: "Max participants is required!",
-                                                })} error={errors.maxParticipants ? errors.maxParticipants.message : ""} label="Max Participants*" type="text" value={project?.maxParticipants}/>
+                                                    onChange: (e) => { setValue("maxParticipants", e.target.value.substring(0, e.target.value.length - 1))},
+                                                })} error={errors.maxParticipants ? errors.maxParticipants.message : ""} label="Max Participants" type="text" />
                                             }
                                         </div>
                                         <div>
@@ -213,7 +250,8 @@ function UpdateProject() {
                                                 <TextInput name={"budget"} register={register("budget", {
                                                     required: "Budget is required!",
                                                     valueAsNumber: true,
-                                                })} error={errors.budget ? errors.budget.message : ""} label="Budget($)*" type="text" value={project?.budget}/>
+                                                    onChange: (e) => { if(!e.target.value.match(/^\d+$/)) {setValue("budget", e.target.value.substring(0, e.target.value.length - 1)); }}
+                                                })} error={errors.budget ? errors.budget.message : ""} label="Budget($)" type="text"/>
                                             }
                                         </div>
                                         <div className="col-span-2">
@@ -260,34 +298,66 @@ function UpdateProject() {
                                             }
                                         </div>
                                     </div>
-                                    <div className="grid grid-cols-2 gap-x-7 mt-5">
-                                        <div>
-                                        {
-                                            loadingPr ? <CustomLoader type={"title-input"}/> :
-                                            <TextInput name='fbLink' register={register("fbLink")} type='text' label='Facebook' placeholder='www.facebook.com/Nguyenvana' styles='bg-[#f0f5f7]' value={project?.fbLink}/>
-                                        }
-                                        </div>
-                                        <div>
-                                        {
-                                            loadingPr ? <CustomLoader type={"title-input"}/> :
-                                            <TextInput name='twLink' register={register("twLink")} type='text' label='Twitter' placeholder='www.twitter.com/@Nguyenvana' styles='bg-[#f0f5f7]' value={project?.twLink}/>
-                                        }
-                                        </div>
-                                        <div>
-                                        {
-                                            loadingPr ? <CustomLoader type={"title-input"}/> :
-                                            <TextInput name='lkLink'  register={register("lkLink")} type='text' label='Linkedin' placeholder='www.linkedin.com/Nguyenvana' styles='bg-[#f0f5f7]' value={project?.lkLink}/>
-                                        }
-                                        </div>
-                                        <div>
-                                        {
-                                            loadingPr ? <CustomLoader type={"title-input"}/> :
-                                            <TextInput name='insLink'  register={register("insLink")} type='text' label='Instagram' placeholder='www.instagram.com/Nguyenvana' styles='bg-[#f0f5f7]'value={project?.insLink} />
-                                        }
-                                        </div>
+                                    <div className="mt-6">
+                                        <p className="block leading-8 text-gray-900 font-medium mb-1">Vacancies</p>
+                                        <div className="mt-5 flex flex-row gap-x-3">
+                                            <div className="w-1/2">
+                                                <p className="block leading-8 text-gray-900 font-medium mb-1">Selected list</p>
+                                                <div className="h-[500px] overflow-auto">
+                                                    {
+                                                        loading?
+                                                        [1, 2 ,3].map((item, index)=> {
+                                                            return (
+                                                                <div key={index}>
+                                                                    <VacancyItemLoader/>
+                                                                </div>
+                                                            )
+                                                        })
+                                                        :
+                                                        selected?.map((item, index) => {
+                                                            return <div key={index} className="relative">
+                                                                <div className="absolute top-6 right-5">
+                                                                    <div className="text-sm text-center cursor-pointer text-[white] hover:bg-[#0146a6] bg-[#1967d3] flex items-center leading-7 font-normal rounded-lg " onClick={() => {calculateBudgetAndParticipants(selected.filter(i => i.vacancyId !== item.vacancyId), durationType); setSelected(selected.filter(i => i.vacancyId !== item.vacancyId));}}>
+                                                                        <div className="m-1 mx-2">Remove</div>
+                                                                    </div>
+                                                                </div>
+                                                                <VacancyItem props={item} isAvatar={false} isEditProject={true}/>
+                                                            </div>                  
+                                                        })
+                                                    }
+                                                </div>
+                                            </div>
+                                            <div className="w-1/2" >
+                                                <p className="block leading-8 text-gray-900 font-medium mb-1">Your Vacancies</p>
+                                                <div className="h-[500px] overflow-auto">
+                                                    {
+                                                        loading?
+                                                        [1, 2 ,3].map((item, index)=> {
+                                                            return (
+                                                                <div key={index}>
+                                                                    <VacancyItemLoader/>
+                                                                </div>
+                                                            )
+                                                        })
+                                                        :
+                                                        vacancies?.filter((item) => !item.post && item.approvalStatus === "pending")?.map((item, index) => {
+                                                            return <div key={index} className="relative">
+                                                                {
+                                                                    selected.find(i => i.vacancyId === item.vacancyId) ? null :
+                                                                        <div className="absolute top-6 right-5">
+                                                                            <div className="text-sm text-center cursor-pointer text-[white] hover:bg-[#0146a6] bg-[#1967d3] flex items-center leading-7 font-normal rounded-lg "  onClick={() => {if(!selected.find(i => i.vacancyId === item.vacancyId)); calculateBudgetAndParticipants([...selected, item], durationType); setSelected([...selected, item])}}>
+                                                                                <HiPlus className='relative m-2 text-xl text-center ' />
+                                                                            </div>
+                                                                        </div>                                                                    
+                                                                }
+                                                                <VacancyItem props={item} isAvatar={false} isEditProject={true}/>
+                                                            </div>                  
+                                                        })
+                                                    }
+                                                </div>
+                                            </div>
                                     </div>
-                                        <div className="h-7"></div>
-                                        
+                                    </div>
                                     {
                                         loadingPr ? <CustomLoader type={"title-paragraph"}/> :
                                         <div>
@@ -323,66 +393,36 @@ function UpdateProject() {
                                             />
                                         </div>
                                     }
-                                    <div className="mt-6">
-                                        <p className="block leading-8 text-gray-900 font-medium mb-1">Vacancies</p>
-                                        <div className="mt-5 flex flex-row gap-x-3">
-                                            <div className="w-1/2">
-                                                <p className="block leading-8 text-gray-900 font-medium mb-1">Selected list</p>
-                                                <div className="h-[500px] overflow-auto">
-                                                    {
-                                                        loading?
-                                                        [1, 2 ,3].map((item, index)=> {
-                                                            return (
-                                                                <div key={index}>
-                                                                    <VacancyItemLoader/>
-                                                                </div>
-                                                            )
-                                                        })
-                                                        :
-                                                        selected?.map((item, index) => {
-                                                            return <div key={index} className="relative">
-                                                                <div className="absolute top-6 right-5">
-                                                                    <div className="text-sm text-center cursor-pointer text-[white] hover:bg-[#0146a6] bg-[#1967d3] flex items-center leading-7 font-normal rounded-lg " onClick={() => {setSelected(selected.filter(i => i.vacancyId !== item.vacancyId))}}>
-                                                                        <div className="m-1 mx-2">Remove</div>
-                                                                    </div>
-                                                                </div>
-                                                                <VacancyItem props={item} isAvatar={false} isEditProject={true}/>
-                                                            </div>                  
-                                                        })
-                                                    }
-                                                </div>
-                                            </div>
-                                            <div className="w-1/2" >
-                                                <p className="block leading-8 text-gray-900 font-medium mb-1">Your Vacancies</p>
-                                                <div className="h-[500px] overflow-auto">
-                                                    {
-                                                        loading?
-                                                        [1, 2 ,3].map((item, index)=> {
-                                                            return (
-                                                                <div key={index}>
-                                                                    <VacancyItemLoader/>
-                                                                </div>
-                                                            )
-                                                        })
-                                                        :
-                                                        vacancies?.map((item, index) => {
-                                                            return <div key={index} className="relative">
-                                                                {
-                                                                    selected.find(i => i.vacancyId === item.vacancyId) ? null :
-                                                                        <div className="absolute top-6 right-5">
-                                                                            <div className="text-sm text-center cursor-pointer text-[white] hover:bg-[#0146a6] bg-[#1967d3] flex items-center leading-7 font-normal rounded-lg " onClick={() => {if(!selected.find(i => i.vacancyId === item.vacancyId)) setSelected([...selected, item])}}>
-                                                                                <HiPlus className='relative m-2 text-xl text-center ' />
-                                                                            </div>
-                                                                        </div>                                                                    
-                                                                }
-                                                                <VacancyItem props={item} isAvatar={false} isEditProject={true}/>
-                                                            </div>                  
-                                                        })
-                                                    }
-                                                </div>
-                                            </div>
+                                    <div className="grid grid-cols-2 gap-x-7 mt-5">
+                                        <div>
+                                        {
+                                            loadingPr ? <CustomLoader type={"title-input"}/> :
+                                            <TextInput name='fbLink' register={register("fbLink")} type='text' label='Facebook' placeholder='www.facebook.com/Nguyenvana' styles='bg-[#f0f5f7]' value={project?.fbLink}/>
+                                        }
+                                        </div>
+                                        <div>
+                                        {
+                                            loadingPr ? <CustomLoader type={"title-input"}/> :
+                                            <TextInput name='twLink' register={register("twLink")} type='text' label='Twitter' placeholder='www.twitter.com/@Nguyenvana' styles='bg-[#f0f5f7]' value={project?.twLink}/>
+                                        }
+                                        </div>
+                                        <div>
+                                        {
+                                            loadingPr ? <CustomLoader type={"title-input"}/> :
+                                            <TextInput name='lkLink'  register={register("lkLink")} type='text' label='Linkedin' placeholder='www.linkedin.com/Nguyenvana' styles='bg-[#f0f5f7]' value={project?.lkLink}/>
+                                        }
+                                        </div>
+                                        <div>
+                                        {
+                                            loadingPr ? <CustomLoader type={"title-input"}/> :
+                                            <TextInput name='insLink'  register={register("insLink")} type='text' label='Instagram' placeholder='www.instagram.com/Nguyenvana' styles='bg-[#f0f5f7]'value={project?.insLink} />
+                                        }
+                                        </div>
                                     </div>
-                                    </div>
+                                        <div className="h-7"></div>
+                                        
+                                    
+                                    
                                     <div>
                                         <div className="flex justify-end mt-10">
                                             <button className="flex-row w-52 text-sm text-center justify-center px-4 p-3 text-[white] hover:bg-[#0146a6] bg-[#1967d3] flex items-center leading-7 font-bold rounded-lg " type="submit" >

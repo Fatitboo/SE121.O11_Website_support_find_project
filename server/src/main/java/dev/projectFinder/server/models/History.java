@@ -37,6 +37,7 @@ public class History {
     public Transaction transactions;
     public String update_time;
     public Vacancy vacancy;
+    public Project project;
     public String response;
     public History(JsonNode node){
         response = node.asText();
