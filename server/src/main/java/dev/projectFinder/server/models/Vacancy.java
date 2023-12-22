@@ -64,6 +64,7 @@ public class Vacancy {
     private boolean canContactViaEmail;
     private boolean requireResume;
     private String hiringTimeline;
+    private int length;
 
     //Registants
     private List<String> registants;
@@ -82,10 +83,12 @@ public class Vacancy {
 
     //can post
     private Boolean post;
+    private LocalDateTime datePost;
 
     private List<String> reports;
 
     private List<String> favouriteUsers;
+    private String project;
 
     // admin approval
     // 1. first created: pending

@@ -59,8 +59,20 @@ public class ProjectService {
         Project project = Project.builder().build();
 
         project.initValue(projectDTO, id);
-
         String projecId = projectRepository.save(project).getProjectId().toString();
+
+        String[] vacanciesIds = projectDTO.getVacancies();
+        List<Vacancy> listUpdateVacancies = new ArrayList<>();
+        for(int i = 0 ; i < vacanciesIds.length; i++){
+            Optional<Vacancy> vacancyOptional = vacancyRepository.findById(new ObjectId(vacanciesIds[i]));
+            if(vacancyOptional.isEmpty()){
+                throw new DataIntegrityViolationException("Error when get vacancy in database");
+            }
+            Vacancy vacancy = vacancyOptional.get();
+            vacancy.setProject(projecId);
+            listUpdateVacancies.add(vacancy);
+
+        }
 
         List<String> projectIds = user.getProjects();
 
@@ -73,6 +85,7 @@ public class ProjectService {
         user.setProjects(projectIds);
 
         userRepository.save(user);
+        vacancyRepository.saveAll(listUpdateVacancies);
         userServices.increaseViews("6556ca3b5e265815afd0ffca");
 
         return project;

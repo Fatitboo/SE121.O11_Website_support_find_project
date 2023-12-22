@@ -1,13 +1,13 @@
 import { AiFillExclamationCircle, AiOutlineSearch } from "react-icons/ai";
 import { ComboBox, CustomButton, LoadingComponent, PaginationButtons } from "../../../components";
-import { BiDotsVerticalRounded, BiEdit, BiMap, BiPackage, BiTrash } from "react-icons/bi";
+import { BiDotsVerticalRounded, BiEdit, BiMap, BiPackage, BiPencil, BiTrash } from "react-icons/bi";
 import { CiDollar } from "react-icons/ci";
 import { LiaEyeSolid, LiaTrashAltSolid } from "react-icons/lia";
 import { Menu, Transition } from "@headlessui/react";
 import { Fragment, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Swal from "sweetalert2";
-import { deleteuncompletedVacancyAction, getVacancyCor, resetSuccessAction } from "../../../redux/slices/vacancies/vacanciesSlices";
+import { deleteuncompletedVacancyAction, getCompleteVacancyCor, getInCompleteVacancyCor, getVacancyCor, resetSuccessAction } from "../../../redux/slices/vacancies/vacanciesSlices";
 import { Link, useNavigate } from "react-router-dom";
 
 const listPostedCbb = [ { id: 1,name: 'All'},{id: 2,name: 'Posted'},{id: 3, name: 'UnPosted' }]
@@ -23,13 +23,16 @@ function ManageVacancy() {
 
     
     useEffect(() => {
-        dispatch(getVacancyCor());
-    }, [dispatch])
+        dispatch(getCompleteVacancyCor());
+        dispatch(getInCompleteVacancyCor());
+    }, [])
+
     const storeData = useSelector(store => store?.vacancies);
-    const { loading, appErr, isSuccess2, incomplete, complete,isSuccessDL } = storeData;
+    const { loading, appErr, isSuccess2C, isSuccess2U, loadingC, incomplete, complete, isSuccessDL, loadingU } = storeData;
     const onFilterlistApprovedCbb = (filterValue) => {
         // console.log(filterValue)
     }
+
     const onFilterlistPostedCbb = (filterValue) => {
         if(filterValue.name === 'All'){
             setCompleteList([...complete])
@@ -55,12 +58,12 @@ function ManageVacancy() {
         setPages([...completeList.filter(item => ((item?.vacancyName).toLowerCase().includes(filterKeyWord.toLowerCase()) || (item?.projectName ?? '').toLowerCase().includes(filterKeyWord.toLowerCase())) ).slice(currentPage * 10, (currentPage + 1) * 10)])
     }, [currentPage, completeList, filterKeyWord])
     useEffect(() => {
-        if (isSuccess2) {
+        if (isSuccess2C) {
             dispatch(resetSuccessAction());
             setCompleteList([...complete]);
             setPages([...complete.slice(currentPage * 10, (currentPage + 1) * 10)])
         }
-    }, [isSuccess2])
+    }, [isSuccess2C])
     useEffect(() => {
         if (isSuccessDL) {
             dispatch(resetSuccessAction());
@@ -105,88 +108,90 @@ function ManageVacancy() {
 
                             {/* Start header of content */}
                             <div className="relative flex justify-between items-center flex-wrap bg-transparent px-6 pt-8">
-                                {incomplete?.length !== 0 ?
-                                    <table className="relative w-full overflow-y overflow-x-hidden rounded-md mb-8 bg-white border-0 ">
-                                        <thead className=" color-white border-transparent border-0 w-full">
-                                            <tr className="bg-red-50 w-full border-b border-solid border-[#ecedf2]">
-                                                <th className="relative  font-medium py-6 text-base text-left w-4/12 pl-6 ">InComplete vacancy</th>
-                                                <th className="relative  font-medium py-6 text-base text-left w-6/12 pl-6 "></th>
-                                                <th className="relative  font-medium py-6 text-base text-left w-2/12 pl-10 ">Status</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {
-                                                incomplete?.map((item, index) => {
-                                                    return (
-                                                        <tr key={index} className="relative border-b border-solid border-[#ecedf2] w-full hover:bg-[#f4f2f2] cursor-pointer px-5 ">
-                                                            <td className="relative pl-5 py-5 font-normal text-base w-4/12">
-                                                                <div className="mb-0 relative h-16 ">
-                                                                    <div className="pl-2">
-                                                                        <div className="font-medium text-md text-ellipsis mb-1 line-clamp-2 ">{item?.jobBasic?.jobTitle ?? 'vacncy' + item.vacancyId.slice(10)}</div>
-                                                                        <div className="flex font-light text-sm mb-0">
+                                {
+                                    incomplete?.length !== 0 ?
+                                        <table className="relative w-full overflow-y overflow-x-hidden rounded-md mb-8 bg-white border-0 ">
+                                            <thead className=" color-white border-transparent border-0 w-full">
+                                                <tr className="bg-red-50 w-full border-b border-solid border-[#ecedf2]">
+                                                    <th className="relative  font-medium py-6 text-base text-left w-4/12 pl-6 ">InComplete vacancy</th>
+                                                    <th className="relative  font-medium py-6 text-base text-left w-6/12 pl-6 "></th>
+                                                    <th className="relative  font-medium py-6 text-base text-left w-2/12 pl-10 ">Status</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {
+                                                    
+                                                    incomplete?.map((item, index) => {
+                                                        return (
+                                                            <tr key={index} className="relative border-b border-solid border-[#ecedf2] w-full hover:bg-[#f4f2f2] cursor-pointer px-5 ">
+                                                                <td className="relative pl-5 py-5 font-normal text-base w-4/12">
+                                                                    <div className="mb-0 relative h-16 ">
+                                                                        <div className="pl-2">
+                                                                            <div className="font-medium text-md text-ellipsis mb-1 line-clamp-2 ">{item?.jobBasic?.jobTitle ?? 'vacncy' + item.vacancyId.slice(10)}</div>
+                                                                            <div className="flex font-light text-sm mb-0">
 
-                                                                            <div className="flex">
-                                                                                <BiMap className="mt-1 mr-1" />  {item?.jobBasic?.location ?? 'Not information'}
+                                                                                <div className="flex">
+                                                                                    <BiMap className="mt-1 mr-1" />  {item?.jobBasic?.location ?? 'Not information'}
+                                                                                </div>
                                                                             </div>
                                                                         </div>
                                                                     </div>
-                                                                </div>
-                                                            </td>
-                                                            <td className="relative pl-5 py-5 font-normal text-base w-6/12">
-                                                                <div className="mb-0 relative h-16 flex rounded border border-red-300 items-center justify-between px-3 bg-red-50">
-                                                                    <AiFillExclamationCircle size={20} className="text-red-600" />
-                                                                    <div>Your vacancy posting is incomplete.</div>
-                                                                    <CustomButton onClick={() => handleToPosting(item)} title={'Finish posting'} containerStyles="text-white justify-center w-fit flex py-2  px-4  focus:outline-none bg-blue-700 hover:bg-blue-900 rounded-md text-base " />
-                                                                </div>
-                                                            </td>
-                                                            <td className=" flex items-center justify-between mt-8 pr-4 pl-8">
-                                                                <div >Incomplete</div>
-                                                                <Menu as="div" className="relative z-10">
-                                                                    <div>
-                                                                        <Menu.Button className="mt-2 rounded-md text-black text-sm font-medium hover:bg-black/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/75">
-                                                                            <BiDotsVerticalRounded size={20} />
-                                                                        </Menu.Button>
+                                                                </td>
+                                                                <td className="relative pl-5 py-5 font-normal text-base w-6/12">
+                                                                    <div className="mb-0 relative h-16 flex rounded border border-red-300 items-center justify-between px-3 bg-red-50">
+                                                                        <AiFillExclamationCircle size={20} className="text-red-600" />
+                                                                        <div>Your vacancy posting is incomplete.</div>
+                                                                        <CustomButton onClick={() => handleToPosting(item)} title={'Finish posting'} containerStyles="text-white justify-center w-fit flex py-2  px-4  focus:outline-none bg-blue-700 hover:bg-blue-900 rounded-md text-base " />
                                                                     </div>
-                                                                    <Transition
-                                                                        as={Fragment}
-                                                                        enter="transition ease-out duration-100"
-                                                                        enterFrom="transform opacity-0 scale-95"
-                                                                        enterTo="transform opacity-100 scale-100"
-                                                                        leave="transition ease-in duration-75"
-                                                                        leaveFrom="transform opacity-100 scale-100"
-                                                                        leaveTo="transform opacity-0 scale-95" >
-                                                                        <Menu.Items className="absolute right-1 top-4 mt-2 w-32 origin-top-right divide-y z-10  divide-gray-100 rounded-sm bg-white shadow-lg ring-1 ring-black/5 focus:outline-none">
-                                                                            <div className="px-1 py-1 ">
-                                                                                <Menu.Item>
-                                                                                    {({ active }) => (
-                                                                                        <button className={`${active ? 'bg-blue-500 text-white' : 'text-gray-900'} group flex w-full items-center rounded-md px-2 py-2 text-sm`} onClick={() => handleToPosting(item)}>
-                                                                                            <BiEdit className="mr-2 h-5 w-5" aria-hidden="true" />
-                                                                                            Continue
-                                                                                        </button>
-                                                                                    )}
-                                                                                </Menu.Item>
-                                                                            </div>
-                                                                            <div className="px-1 py-1">
-                                                                                <Menu.Item>
-                                                                                    {({ active }) => (
-                                                                                        <button onClick={() => {handleDeleteincompleteVacancy(item)}} className={`${active ? 'bg-blue-500 text-white' : 'text-gray-900'} group flex w-full items-center rounded-md px-2 py-2 text-sm`} >
-                                                                                            <BiTrash className="mr-2 h-5 w-5 text-red-400" aria-hidden="true" />
-                                                                                            Delete
-                                                                                        </button>
-                                                                                    )}
-                                                                                </Menu.Item>
-                                                                            </div>
-                                                                        </Menu.Items>
-                                                                    </Transition>
-                                                                </Menu>
-                                                            </td>
-                                                        </tr>
-                                                    );
-                                                })
-                                            }
+                                                                </td>
+                                                                <td className=" flex items-center justify-between mt-8 pr-4 pl-8">
+                                                                    <div >Incomplete</div>
+                                                                    <Menu as="div" className="relative z-10">
+                                                                        <div>
+                                                                            <Menu.Button className="mt-2 rounded-md text-black text-sm font-medium hover:bg-black/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/75">
+                                                                                <BiDotsVerticalRounded size={20} />
+                                                                            </Menu.Button>
+                                                                        </div>
+                                                                        <Transition
+                                                                            as={Fragment}
+                                                                            enter="transition ease-out duration-100"
+                                                                            enterFrom="transform opacity-0 scale-95"
+                                                                            enterTo="transform opacity-100 scale-100"
+                                                                            leave="transition ease-in duration-75"
+                                                                            leaveFrom="transform opacity-100 scale-100"
+                                                                            leaveTo="transform opacity-0 scale-95" >
+                                                                            <Menu.Items className="absolute right-1 top-4 mt-2 w-32 origin-top-right divide-y z-10  divide-gray-100 rounded-sm bg-white shadow-lg ring-1 ring-black/5 focus:outline-none">
+                                                                                <div className="px-1 py-1 ">
+                                                                                    <Menu.Item>
+                                                                                        {({ active }) => (
+                                                                                            <button className={`${active ? 'bg-blue-500 text-white' : 'text-gray-900'} group flex w-full items-center rounded-md px-2 py-2 text-sm`} onClick={() => handleToPosting(item)}>
+                                                                                                <BiEdit className="mr-2 h-5 w-5" aria-hidden="true" />
+                                                                                                Continue
+                                                                                            </button>
+                                                                                        )}
+                                                                                    </Menu.Item>
+                                                                                </div>
+                                                                                <div className="px-1 py-1">
+                                                                                    <Menu.Item>
+                                                                                        {({ active }) => (
+                                                                                            <button onClick={() => {handleDeleteincompleteVacancy(item)}} className={`${active ? 'bg-blue-500 text-white' : 'text-gray-900'} group flex w-full items-center rounded-md px-2 py-2 text-sm`} >
+                                                                                                <BiTrash className="mr-2 h-5 w-5 text-red-400" aria-hidden="true" />
+                                                                                                Delete
+                                                                                            </button>
+                                                                                        )}
+                                                                                    </Menu.Item>
+                                                                                </div>
+                                                                            </Menu.Items>
+                                                                        </Transition>
+                                                                    </Menu>
+                                                                </td>
+                                                            </tr>
+                                                        );
+                                                    })
+                                                }
 
-                                        </tbody>
-                                    </table> : <></>
+                                            </tbody>
+                                        </table> : <></>
                                 }
 
                             </div>
@@ -232,6 +237,104 @@ function ManageVacancy() {
                                         </thead>
                                         <tbody>
                                             {
+                                                loadingC ?
+                                                [1, 2 ,3, 4].map((item, index)=> {
+                                                     return (
+                                                         <tr key={index} className="animate-pulse relative shadow rounded-md p-4 w-full mx-auto gap-2">
+                                                             <td className="space-x-4 py-2.5 px-0.5 w-full flex items-center">
+                                                                 {/* <div className="rounded-full bg-slate-200 h-12 w-12"></div> */}
+                                                                 <div className="flex-1 space-y-6 py-1">
+                                                                 <div className="h-2 bg-slate-200 rounded"></div>
+                                                                 <div className="space-y-3">
+                                                                     <div className="grid grid-cols-3 gap-4">
+                                                                         <div className="h-2 bg-slate-200 rounded col-span-2"></div>
+                                                                         <div className="h-2 bg-slate-200 rounded col-span-1"></div>
+                                                                     </div>
+                                                                     <div className="h-2 bg-slate-200 rounded"></div>
+                                                                 </div>
+                                                                 </div>
+                                                             </td>
+                                                             <td className="space-x-4 py-2.5 px-0.5 w-1/12">
+                                                                 {/* <div className="rounded-full bg-slate-200 h-10 w-10"></div> */}
+                                                                 <div className="flex-1 space-y-6 py-1">
+                                                                 <div className="h-2 bg-slate-200 rounded"></div>
+                                                                 <div className="space-y-3">
+                                                                     <div className="grid grid-cols-3 gap-4">
+                                                                         <div className="h-2 bg-slate-200 rounded col-span-2"></div>
+                                                                         <div className="h-2 bg-slate-200 rounded col-span-1"></div>
+                                                                     </div>
+                                                                     <div className="h-2 bg-slate-200 rounded"></div>
+                                                                 </div>
+                                                                 </div>
+                                                             </td>
+                                                             <td className="space-x-4 py-2.5 px-0.5 w-1/12">
+                                                                 {/* <div className="rounded-full bg-slate-200 h-10 w-10"></div> */}
+                                                                 <div className="flex-1 space-y-6 py-1">
+                                                                 <div className="h-2 bg-slate-200 rounded"></div>
+                                                                 <div className="space-y-3">
+                                                                     <div className="grid grid-cols-3 gap-4">
+                                                                         <div className="h-2 bg-slate-200 rounded col-span-2"></div>
+                                                                         <div className="h-2 bg-slate-200 rounded col-span-1"></div>
+                                                                     </div>
+                                                                     <div className="h-2 bg-slate-200 rounded"></div>
+                                                                 </div>
+                                                                 </div>
+                                                             </td>
+                                                             <td className="space-x-4 py-2.5 px-0.5 w-[14%]">
+                                                                 {/* <div className="rounded-full bg-slate-200 h-10 w-10"></div> */}
+                                                                 <div className="flex-1 space-y-6 py-1">
+                                                                 <div className="h-2 bg-slate-200 rounded"></div>
+                                                                 <div className="space-y-3">
+                                                                     <div className="grid grid-cols-3 gap-4">
+                                                                         <div className="h-2 bg-slate-200 rounded col-span-2"></div>
+                                                                         <div className="h-2 bg-slate-200 rounded col-span-1"></div>
+                                                                     </div>
+                                                                     <div className="h-2 bg-slate-200 rounded"></div>
+                                                                 </div>
+                                                                 </div>
+                                                             </td>
+                                                             <td className="space-x-4 py-2.5 px-0.5 w-1/12">
+                                                                 {/* <div className="rounded-full bg-slate-200 h-10 w-10"></div> */}
+                                                                 <div className="flex-1 space-y-6 py-1">
+                                                                 <div className="h-2 bg-slate-200 rounded"></div>
+                                                                 <div className="space-y-3">
+                                                                     <div className="grid grid-cols-3 gap-4">
+                                                                         <div className="h-2 bg-slate-200 rounded col-span-2"></div>
+                                                                         <div className="h-2 bg-slate-200 rounded col-span-1"></div>
+                                                                     </div>
+                                                                     <div className="h-2 bg-slate-200 rounded"></div>
+                                                                 </div>
+                                                                 </div>
+                                                             </td>
+                                                             <td className="space-x-4 py-2.5 px-0.5 w-1/12">
+                                                                 {/* <div className="rounded-full bg-slate-200 h-10 w-10"></div> */}
+                                                                 <div className="flex-1 space-y-6 py-1">
+                                                                 <div className="h-2 bg-slate-200 rounded"></div>
+                                                                 <div className="space-y-3">
+                                                                     <div className="grid grid-cols-3 gap-4">
+                                                                         <div className="h-2 bg-slate-200 rounded col-span-2"></div>
+                                                                         <div className="h-2 bg-slate-200 rounded col-span-1"></div>
+                                                                     </div>
+                                                                     <div className="h-2 bg-slate-200 rounded"></div>
+                                                                 </div>
+                                                                 </div>
+                                                             </td>
+                                                             <td className="space-x-4 py-2.5 px-0.5 w-full">
+                                                                 {/* <div className="rounded-full bg-slate-200 h-10 w-10"></div> */}
+                                                                 <div className="flex-1 space-y-6 py-1">
+                                                                 <div className="h-2 bg-slate-200 rounded"></div>
+                                                                 <div className="space-y-3">
+                                                                     <div className="grid grid-cols-3 gap-4">
+                                                                         <div className="h-2 bg-slate-200 rounded col-span-2"></div>
+                                                                         <div className="h-2 bg-slate-200 rounded col-span-1"></div>
+                                                                     </div>
+                                                                     <div className="h-2 bg-slate-200 rounded"></div>
+                                                                 </div>
+                                                                 </div>
+                                                             </td>
+                                                         </tr>
+                                                     )
+                                                 }) :
                                                 pages?.map((item, index) => {
                                                     return (
                                                         <tr key={index} className="relative border-b border-solid border-[#ecedf2] w-full hover:bg-[#f4f2f2] cursor-pointer px-5  ">
@@ -252,11 +355,16 @@ function ManageVacancy() {
                                                                 </div>
                                                             </td>
                                                             <td className=" w-2/12">
-                                                                {item?.projectName ? <div className="font-medium text-ellipsis w-full line-clamp-2">{item?.projectName} </div> : <div className="font-light text-sm text-red-500 text-ellipsis w-full line-clamp-2 ">{'Not belong to any project'}  </div>}
+                                                                {item?.project ? <div className="font-medium text-ellipsis w-full line-clamp-2">{item?.project} </div> : <div className="font-light text-sm text-red-500 text-ellipsis w-full line-clamp-2 ">{'Not belong to any project'}  </div>}
                                                             </td>
                                                             <td className="pl-9 w-2/12 font-light text-gray-700 text-base">
                                                                 <div>{item?.createdAt ? `${item?.createdAt[2]}/${item?.createdAt[1]}/${item?.createdAt[0]}` : ''}</div>
-                                                                <div>{item?.hiringTimeline ?? '1 to 2 weeks'}</div>
+                                                                {
+                                                                    item.post ? 
+                                                                    <div>{item?.length + ' days' ?? '1 to 2 weeks'}</div>
+                                                                    :
+                                                                    <div>{item?.hiringTimeline ?? '1 to 2 weeks'}</div>
+                                                                }
                                                             </td>
                                                             <td className="font-light text-blue-700 w-1/24  ">
                                                                 <div className="flex h-full items-center pl-8">
@@ -310,6 +418,9 @@ function ManageVacancy() {
                                                                         <li className="list-none relative mr-2 bg-[#f5f7fc] border rounded-md border-[#e9ecf9] px-1 pt-1 hover:bg-[#5f86e9] hover:text-white">
                                                                             <Link to={`/Organizer/vacancy-info/${item.vacancyId}`}> <LiaEyeSolid fontSize={18}  /> </Link>
                                                                         </li>
+                                                                        <Link to={`/Organizer/update-vacancy/${item.projectId}`} className="list-none relative mr-2 bg-[#f5f7fc] border rounded-md border-[#e9ecf9] px-1 pt-1 hover:bg-[#278646] hover:text-white">
+                                                                            <button> <BiPencil fontSize={18} /> </button>
+                                                                        </Link>
                                                                         <li className={`list-none ${item?.approvalStatus === 'waitPayment' ? 'opacity-100 cursor-pointer hover:bg-[#278646] hover:text-white' : 'opacity-50 cursor-default'} relative mr-2 bg-[#f5f7fc] border rounded-md border-[#e9ecf9] px-1 pt-1 `} onClick={() => {item?.approvalStatus === 'waitPayment' && handlePaymentVacancy(item)}}>
                                                                             <div> <CiDollar fontSize={18} strokeWidth={0.5}/> </div>
                                                                         </li>

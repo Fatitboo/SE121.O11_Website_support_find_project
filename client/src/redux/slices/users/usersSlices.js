@@ -965,12 +965,14 @@ const usersSlices = createSlice({
             // get detail user
             builder.addCase(getDetailUserAction.pending, (state, action) => {
                 state.loading = true;
+                state.loadingGD = true;
                 state.appErr = undefined;
                 state.isSuccess = false;
 
             }),
             builder.addCase(getDetailUserAction.fulfilled, (state, action) => {
                 state.loading = false;
+                state.loadingGD = false;
                 state.seletedUser = action?.payload?.userDetail;
 
                 state.appErr = undefined;
@@ -978,6 +980,7 @@ const usersSlices = createSlice({
             }),
             builder.addCase(getDetailUserAction.rejected, (state, action) => {
                 state.loading = false;
+                state.loadingGD = false;
                 state.appErr = action?.payload?.message;
 
             }),
@@ -1139,30 +1142,30 @@ const usersSlices = createSlice({
 
         //applied vacancies
         builder.addCase(applyVacancyAction.pending, (state, action) => {
-            state.loading = true;
+            state.loadingAL = true;
             state.isSuccessApplied = false;
         });
 
         builder.addCase(applyVacancyAction.fulfilled, (state, action) => {
-            state.loading = false;
+            state.loadingAL = false;
             state.isSuccessApplied = true;
         });
         builder.addCase(applyVacancyAction.rejected, (state, action) => {
-            state.loading = false;
+            state.loadingAL = false;
             state.isSuccessApplied = false
         });
         //applied vacancies
         builder.addCase(applyVacancyWithAnswersAction.pending, (state, action) => {
-            state.loading = true;
+            state.loadingAL = true;
             state.isSuccessApplied = false;
         });
 
         builder.addCase(applyVacancyWithAnswersAction.fulfilled, (state, action) => {
-            state.loading = false;
+            state.loadingAL = false;
             state.isSuccessApplied = true;
         });
         builder.addCase(applyVacancyWithAnswersAction.rejected, (state, action) => {
-            state.loading = false;
+            state.loadingAL = false;
             state.isSuccessApplied = false
         });
     }

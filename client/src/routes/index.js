@@ -55,13 +55,16 @@ import {
 } from '../pages/Auth'
 import CreateProject from "../pages/Company/ManageProject/CreateProject"
 import UpdateProject from "../pages/Company/ManageProject/UpdateProject"
-import Payment from "../pages/Company/Payment"
-import SuccessPayment from "../pages/Company/Payment/Sucess"
-import CancelPayment from "../pages/Company/Payment/Cancel"
+import Payment from "../pages/Company/Payment/Vacancy"
+import SuccessPayment from "../pages/Company/Payment/Vacancy/Sucess"
+import CancelPayment from "../pages/Company/Payment/Vacancy/Cancel"
 import Interview from "../pages/Company/Interview"
 import unAuthoPage from "../pages/Auth/unAuthoPage/unAuthoPage"
 import { AboutUs } from "../pages/Seeker/AboutUs/AboutUs"
 import { Contact } from "../pages/Seeker/Contact/Contact"
+import PaymentProject from "../pages/Company/Payment/Project"
+import SuccessPaymentProject from "../pages/Company/Payment/Project/Sucess"
+import CancelPaymentProject from "../pages/Company/Payment/Project/Cancel"
 
 
 const publicRoutes = [
@@ -116,6 +119,10 @@ const corRoutes = [
     { path:'/Organizer/payment/:id', component: Payment, layout: LayoutNoSidebar},
     { path:'/Organizer/payment/success', component: SuccessPayment, layout: LayoutNoSidebar},
     { path: '/Organizer/payment/cancel', component: CancelPayment, layout: LayoutNoSidebar },
+
+    { path:'/Organizer/payment/project/:id', component: PaymentProject, layout: LayoutNoSidebar},
+    { path:'/Organizer/payment/project/success', component: SuccessPaymentProject, layout: LayoutNoSidebar},
+    { path: '/Organizer/payment/project/cancel', component: CancelPaymentProject, layout: LayoutNoSidebar },
     
 ]
 const AdminRoutes = [

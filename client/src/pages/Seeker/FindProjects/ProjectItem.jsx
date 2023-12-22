@@ -1,11 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { HiEye, HiOutlineLocationMarker } from "react-icons/hi";
 import { PiSuitcaseSimpleThin, PiTargetLight } from 'react-icons/pi';
 import { GoHourglass } from "react-icons/go";
 import { BiBookmark, BiFlag, BiSolidFlag, BiTimeFive } from 'react-icons/bi';
 import { Candidate } from "../../../assets/images";
 import VacancyItem from "../ProjectInfo/VacancyItem";
-import { IoChevronDownOutline } from "react-icons/io5";
+import { IoChevronDownOutline, IoClose } from "react-icons/io5";
 import baseUrl from "../../../utils/baseUrl";
 import axios from "axios";
 import { Modal } from "../../../components";
@@ -15,15 +15,21 @@ import { useDispatch, useSelector } from "react-redux";
 import { updateFavouriteProjectAction } from "../../../redux/slices/projects/projectsSlices";
 import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
+import AnswerQuestion from "../FindVacancies/AnswerQuestion";
+import { applyVacancyAction, applyVacancyWithAnswersAction, getDetailUserAction } from "../../../redux/slices/users/usersSlices";
 
 const ProjectItem = ({ props,notify }) => {
     let [dropDownTags, setDropDownTags] = useState(false)
     const [vacancies, setVacancies] = useState(null)
     const [loading, setLoading] = useState(false)
     const [moreDetail, setMoreDetail] = useState(false)
+    const [listQuestion, setListQuestion] = useState(null)
     // const [openReport, setopenReport] = useState(false)
+    const [selectedVacancy, setSelectedVacancy] = useState(null)
+    const [modal, setModal] = useState(false)
     const dispatch = useDispatch();
-    const { userAuth } = useSelector(store => store.users);
+    const { userAuth, isSuccessApplied, loadingAL, loadingGD } = useSelector(store => store.users);
+    let seletedUser = useSelector((state) => state?.users?.seletedUser)
     const apiPrefix = 'api/v1/projects';
     const handleGetVacancies = async () => {
         try {
@@ -54,6 +60,20 @@ const ProjectItem = ({ props,notify }) => {
         }
 
     }
+    useEffect(() => {
+        userAuth && dispatch(getDetailUserAction(userAuth?.user?.userId))
+    }, [])
+    useEffect(() => {
+        if (isSuccessApplied) {
+            userAuth && dispatch(getDetailUserAction(userAuth?.user?.userId))
+            setModal(false)
+            setListQuestion(null)
+        }
+    }, [isSuccessApplied])
+
+    useEffect(() => {
+        userAuth && dispatch(getDetailUserAction(userAuth?.user?.userId))
+    }, [])
     const checkFavourite = () => {
         const userId = userAuth?.user?.userId;
         var isFvr = false;
@@ -74,6 +94,48 @@ const ProjectItem = ({ props,notify }) => {
             })
         }
     }
+
+    
+
+    const handleApplied = (ques, selected) => {
+        if(userAuth){
+            ques ? setModal(true)
+                :
+                selected?.vacancyId && dispatch(applyVacancyAction(selected.vacancyId))
+        }
+        else {
+            Swal.fire({
+                title: "Login request!",
+                text: "You have to login to use function.",
+                icon: "warning",
+                confirmButtonColor: '#3085d6'
+            })
+        }
+    }
+
+    const handleApplyWithAnswers = () => {
+        selectedVacancy?.vacancyId && dispatch(applyVacancyWithAnswersAction({ "vacanciesId": selectedVacancy.vacancyId, "jobPreScreen": listQuestion }))
+    }
+
+    const handleChangeText = (e, item, index) => {
+        const newArr = [...listQuestion]
+        newArr.splice(index, 1, { ...item, 'answer': item.answer ? { ...item.answer, [userAuth?.user?.userId]: e } : { [userAuth?.user?.userId]: e } })
+        setListQuestion([...newArr])
+    }
+
+    const onCheckedRadio = (e, item, index) => {
+        const newArr = [...listQuestion]
+        newArr.splice(index, 1, { ...item, 'answer': item.answer ? { ...item.answer, [userAuth?.user?.userId]: e } : { [userAuth?.user?.userId]: e } })
+        setListQuestion([...newArr])
+    }
+
+    const setDateTimeSelect = (e, item, index) => {
+        const newArr = [...listQuestion]
+        newArr.splice(index, 1, { ...item, 'answer': item.answer ? { ...item.answer, [userAuth?.user?.userId]: e } : { [userAuth?.user?.userId]: e } })
+        setListQuestion([...newArr])
+    }
+
+
     return (
         <>
             <div>
@@ -87,7 +149,7 @@ const ProjectItem = ({ props,notify }) => {
                         <div className="ml-6 w-full">
                             <div className="flex flex-row items-center justify-between w-[96%]">
                                 <h4 className="text-[18px] text-[#202124] hover:text-[#1967d2] leading-6 font-medium">
-                                    <a href="#">{props?.project?.projectName}</a>
+                                    <a href={`/Seeker/project-info/${props?.project?.projectId}`}>{props?.project?.projectName}</a>
                                 </h4>
                                 <div className="flex">
                                     <div className="item flex items-center justify-center w-[26px] rounded-[7px] bg-[rgba(25,210,145,0.07)] hover:bg-[rgba(15,51,25,0.07)] ml-5 cursor-pointer opacity-80">
@@ -171,11 +233,39 @@ const ProjectItem = ({ props,notify }) => {
                                     {
                                         vacancies?.map((item, index) => {
                                             return <div key={index} className="mx-1 relative">
-                                                {userAuth && <div className="absolute top-6 right-28">
-                                                    <div className="text-sm text-center cursor-pointer text-[white] hover:bg-[#0146a6] bg-[#1967d3] flex items-center leading-7 font-normal rounded-lg " onClick={() => { setSelected(selected.filter(i => i.vacancyId !== item.vacancyId)) }}>
-                                                        <div className="m-1 mx-2 font-semibold">Apply now</div>
+                                                {
+                                                  
+                                                    userAuth &&
+                                                    <div className="absolute top-6 right-28">
+                                                        {
+                                                        seletedUser?.appliedVacancies?.includes(item?.vacancyId) ?
+                                                            <div className="flex items-center justify-center w-[120px] box-border bg-[#1967d3] px-[10px] py-3 opacity-75 rounded-[8px] text-[#fff] cursor-not-allowed">
+                                                                {
+                                                                    (loadingAL || loadingGD) && selectedVacancy?.vacancyId === item.vacancyId ? 
+                                                                        <svg className="right-1 animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 24 24">
+                                                                            <circle className="opacity-0" cx="12" cy="12" r="10" stroke="white" strokeWidth="4"></circle>
+                                                                            <path className="opacity-90" fill="white" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                                                        </svg>
+                                                                        :
+                                                                        <span className="text-[14px] leading-none font-bold">Applied</span>
+                                                                }
+                        
+                                                            </div> :
+                                                            <div className="flex items-center justify-center w-[120px] box-border bg-[#1967d3] px-[10px] py-3 rounded-[8px] text-[#fff] hover:bg-[#0146a6] cursor-pointer" onClick={() => {setSelectedVacancy(item); setListQuestion(item.jobPreScreen); handleApplied(item.jobPreScreen, item)}} >
+                                                                {
+                                                                    (loadingAL || loadingGD) && selectedVacancy?.vacancyId === item.vacancyId ? 
+                                                                        <svg className="right-1 animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 24 24">
+                                                                            <circle className="opacity-0" cx="12" cy="12" r="10" stroke="white" strokeWidth="4"></circle>
+                                                                            <path className="opacity-90" fill="white" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                                                        </svg>
+                                                                        :
+                                                                        <span className="text-[14px] leading-none font-bold text-center">Apply now</span>
+                                                                }
+                        
+                                                            </div>
+                                                        }
                                                     </div>
-                                                </div>}
+                                                }
                                                 <VacancyItem props={item} isAvatar={false} setFunc={setVacancies} notify={notify}/>
                                             </div>
                                         })
@@ -185,16 +275,48 @@ const ProjectItem = ({ props,notify }) => {
                         </div>
 
                     </div>
-                    {/* <div className="flex flex-row-reverse mr-2 mt-6 ">
-                        <div onClick={() => setopenReport(true)} className="bg-white border border-gray-500 p-2 rounded-md flex items-center cursor-pointer hover:bg-gray-200 hover:text-red-800"> <BiSolidFlag className="mr-1" /> Report this item</div>
-                    </div> */}
                 </div>
+                {
+                    listQuestion && listQuestion.length !== 0 &&
+                    <Modal open={modal} setModal={setModal}>
+                        <div>
+                            <div className="flex flex-row items-center justify-between mx-2">
+                                <p className='block leading-8 text-gray-900 text-xl font-bold'>Prescreen Question</p>
+                                <div className="hover:bg-slate-100 rounded-sm p-2 cursor-pointer opacity-90" onClick={() => {setModal(false); setListQuestion(null)}}>
+                                    <IoClose size={20} />
+                                </div>
+                            </div>
+                            <hr className="block h-1 w-full bg-[rgb(212, 210, 208)] mt-3" />
+                            <div className="max-h-[400px] w-[600px] overflow-y-auto overflow-x-hidden mb-4 px-3">
+                                <button onClick={() => console.log(listQuestion)}>Click me</button>
+                                {
+                                    listQuestion.map((item, index) => {
+                                        return <div key={index}>
+                                            <AnswerQuestion userId={userAuth?.user?.userId} onCheckedRadio={(e) => onCheckedRadio(e, item, index)} onTextChanged={(e) => handleChangeText(e, item, index)} setDateTimeSelect={(e) => setDateTimeSelect(e, item, index)} props={item} />
+                                        </div>
+                                    })
+                                }
+                            </div>
+                            <div className="flex flex-row items-center gap-2 float-right">
+                                <div className="flex items-center justify-center box-border bg-[white] border px-[18px] py-[14px] rounded-[8px] text-[#1967d3] hover:bg-[#eef1fe] hover:border-[#1967d3] cursor-pointer" onClick={() => {setListQuestion(null); setModal(false)}}>
+                                    <span className="text-[15px] leading-none font-bold">Close</span>
+                                </div>
+                                <button className="w-[90px] flex items-center justify-center box-border bg-[#1967d3] px-[18px] py-[14px] rounded-[8px] text-[#fff] hover:bg-[#0146a6] cursor-pointer" onClick={() => {handleApplyWithAnswers()}}>
+                                    {
+                                        loadingAL ? <svg className="right-1 animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 24 24">
+                                            <circle className="opacity-0" cx="12" cy="12" r="10" stroke="white" strokeWidth="4"></circle>
+                                            <path className="opacity-90" fill="white" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                        </svg> :
+                                            <span className="text-[15px] leading-none font-bold">Done</span>
+                                    }
+                                </button>
+                            </div>
+                        </div>
+                    </Modal>
+                }
             </div>
-            {/* <Modal open={openReport}>
-                <ReportOr setopenReport={setopenReport} item={props} isVacancy={false} />
-            </Modal> */}
         </>
-    );
+    )
 };
 export default ProjectItem;
 

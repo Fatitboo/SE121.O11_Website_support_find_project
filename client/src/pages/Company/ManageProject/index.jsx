@@ -7,6 +7,7 @@ import { HiPlus } from "react-icons/hi";
 import { useEffect, useState } from "react";
 import { deleteProjectAction, getAllProjectsUser, setValueSuccess } from "../../../redux/slices/projects/projectsSlices";
 import { useDispatch, useSelector } from "react-redux";
+import { CiDollar } from "react-icons/ci";
 
 const vacancyList = [
     {
@@ -72,29 +73,33 @@ function ManageProject() {
     let [selectId, setSelectedId] = useState()
     let [currentProjects, setCurrentProjects] = useState(null)
     let user = useSelector((state) => state.users.userAuth.user)
-    let projects = useSelector((state) => state.projects.projects)
+    let projectsOfCor = useSelector((state) => state.projects.projectsOfCor)
     let loading = useSelector((state) => state.projects.loading)
     let loadingDL = useSelector((state) => state.projects.loadingDL)
     useEffect(() => {   
         dispatch(getAllProjectsUser({id: user.userId}))
     }, [])
     const onFilterValueSelected = (filterValue) => {
-        if(filterValue.name === 'All') setCurrentProjects(projects)
+        if(filterValue.name === 'All') setCurrentProjects(projectsOfCor)
         else
-            setCurrentProjects(projects.filter((item) => item.status === filterValue.name));
+            setCurrentProjects(projectsOfCor.filter((item) => item.status === filterValue.name));
     }
 
     const handleSearch = (e) => {
-        setCurrentProjects(projects.filter((item) => item.projectName.toLowerCase().trim().includes(e.target.value.toLowerCase().trim()) ||
+        setCurrentProjects(projectsOfCor.filter((item) => item.projectName.toLowerCase().trim().includes(e.target.value.toLowerCase().trim()) ||
                                                      item.status.toLowerCase().trim().includes(e.target.value.toLowerCase().trim())));
     }
 
     useEffect(() => {
-        if(projects) setCurrentProjects(projects)
-    }, [projects])
+        if(projectsOfCor) setCurrentProjects(projectsOfCor)
+    }, [projectsOfCor])
 
     const handleDeleteProject = (item) => {
         dispatch(deleteProjectAction({id: item.projectId}))
+    }
+
+    const handlePaymentProject = (item) => {
+        navigate(`/Organizer/payment/project/${item.projectId}`)
     }
 
     return (
@@ -291,8 +296,40 @@ function ManageProject() {
                                                             <td className="text-center w-1/12 font-light text-gray-700 text-base">
                                                                 <div>{item.duration} {item.period}</div>
                                                             </td>
-                                                            <td className="w-1/12 text-center">
-                                                                <div className="">{item?.status}</div>
+                                                            <td className="w-1/24 text-center">
+                                                                {
+                                                                    item?.status === 'pending' ?
+                                                                        <div className="flex justify-center">
+                                                                            <div className="bg-blue-100 border-blue-300 border rounded-xl text-center text-blue-500 w-fit px-1">
+                                                                                Pending
+                                                                            </div>
+                                                                        </div>
+                                                                        : item?.status === 'waitPayment' ?
+                                                                            <div className="flex justify-center">
+                                                                                <div className="bg-orange-100 border-orange-300 border rounded-xl text-center  text-orange-500 w-fit px-1">
+                                                                                    Wait Payment
+                                                                                </div>
+                                                                            </div>
+                                                                            : item?.status === 'rejected' ?
+                                                                                <div className="flex justify-center">
+                                                                                    <div className="bg-orange-100 border-orange-300 border rounded-xl text-center  text-orange-500 w-fit px-1">
+                                                                                        Rejected
+                                                                                    </div>
+                                                                                </div>
+                                                                                : item?.status === 'approved' ?
+                                                                                    <div className="flex justify-center">
+                                                                                        <div className="bg-green-100 border-green-300 border rounded-xl text-center  text-green-500 w-fit px-1">
+                                                                                            Approved
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    : item?.status === 'blocked' ?
+                                                                                        <div className="flex justify-center">
+                                                                                            <div className="bg-red-100 border-red-300 border rounded-xl text-center  text-red-500 w-fit px-1">
+                                                                                                Blocked
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        : <>  </>
+                                                                }
                                                             </td>
                                                             <td >
                                                                 <div className="">
@@ -303,6 +340,11 @@ function ManageProject() {
                                                                         <Link to={`/Organizer/update-project/${item.projectId}`} className="list-none relative mr-2 bg-[#f5f7fc] border rounded-md border-[#e9ecf9] px-1 pt-1 hover:bg-[#278646] hover:text-white">
                                                                             <button> <BiPencil fontSize={18} /> </button>
                                                                         </Link>
+                                                                        {item?.status === 'waitPayment' &&
+                                                                            <li className={`opacity-100 cursor-pointer hover:bg-[#278646] hover:text-white relative mr-2 bg-[#f5f7fc] border rounded-md border-[#e9ecf9] px-1 pt-1 `} onClick={() => {handlePaymentProject(item)}}>
+                                                                                <div> <CiDollar fontSize={18} strokeWidth={0.5}/> </div>
+                                                                            </li>
+                                                                        }
                                                                         <li className="list-none relative bg-[#f5f7fc] border rounded-md border-[#e9ecf9] px-1 pt-1 hover:bg-[#ce3e37] hover:text-white" style={{backgroundColor: loadingDL && item.projectId === selectId ? '#ce3e37': ''}} onClick={() => {setSelectedId(item.projectId); handleDeleteProject(item)}}>
                                                                             <button > 
                                                                                 {
