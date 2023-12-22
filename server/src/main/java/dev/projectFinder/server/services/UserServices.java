@@ -523,6 +523,9 @@ public class UserServices {
         hashMap.put("histories", histories);
         return hashMap;
     }
+    public List<History> getAllHistoryTransaction(){
+        return historyRepository.findAll();
+    }
     public void applyVacancy(String id, String vacancyId){
         Optional<User> foundUser = userRepository.findById(new ObjectId(id));
         if(foundUser.isEmpty()){

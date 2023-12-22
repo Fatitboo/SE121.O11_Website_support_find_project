@@ -10,6 +10,7 @@ import ManageVacancyAdmin from "./ManageVacancy";
 import VacancyInfoAdmin from "./ManageVacancy/VacancyInfo/VacancyInfo";
 import ProjectDetailAdmin from "./Approval/ProjectDetail/ProjectDetail";
 import ManageReport from "./Reports";
+import HistoryTransaction from "./HistoryTransaction/HistoryTransaction";
 export {
     Approval,
     Dashboard,
@@ -22,5 +23,6 @@ export {
     ManageVacancyAdmin,
     VacancyInfoAdmin,
     ProjectDetailAdmin,
-    ManageReport
+    ManageReport,
+    HistoryTransaction
 }

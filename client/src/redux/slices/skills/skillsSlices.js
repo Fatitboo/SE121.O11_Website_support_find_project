@@ -149,7 +149,7 @@ export const createNewReportAction = createAsyncThunk(
             };
             const dt = {
                 ...d.report,
-                orgName:userAuth?.user?.fullName,
+                orgName: userAuth?.user?.fullName,
                 fromId: userAuth?.user?.userId
             }
             console.log(dt)
@@ -157,7 +157,7 @@ export const createNewReportAction = createAsyncThunk(
             console.log(data)
             return data;
         } catch (error) {
-            if (!error?.response) {      
+            if (!error?.response) {
                 console.log(error)
 
                 throw error;
@@ -180,12 +180,12 @@ export const getAllReportsAdminAction = createAsyncThunk(
                     'Content-Type': 'application/json',
                 },
             };
- 
-            const { data } = await axios.get(`${baseUrl}/${apiPrefix}/get-all-report-admin`,  config);
+
+            const { data } = await axios.get(`${baseUrl}/${apiPrefix}/get-all-report-admin`, config);
             console.log(data)
             return data;
         } catch (error) {
-            if (!error?.response) {      
+            if (!error?.response) {
                 console.log(error)
 
                 throw error;
@@ -194,14 +194,39 @@ export const getAllReportsAdminAction = createAsyncThunk(
         }
     }
 )
-
+// get All Histories
+export const getAllHistoriesAction = createAsyncThunk(
+    'skills/getAllHistories',
+    async (payload, { rejectWithValue, getState, dispatch }) => {
+        try {
+            const user = getState()?.users;
+            const { userAuth } = user;
+            // http call 
+            const config = {
+                headers: {
+                    Authorization: `Bearer ${userAuth?.user?.token}`,
+                    'Content-Type': 'application/json',
+                },
+            };
+            const { data } = await axios.get(`${baseUrl}/api/v1/users/get-all-histories`, config);
+            console.log(data)
+            return data;
+        } catch (error) {
+            if (!error?.response) {
+                throw error;
+            }
+            return rejectWithValue(error?.response?.data);
+        }
+    }
+)
 const skillsSlices = createSlice({
     name: 'skills',
     initialState: {
         loading: false,
         skillsList: [],
         appErr: null,
-        isActive: 'Dashboard'
+        isActive: 'Dashboard',
+        histories: []
     },
     reducers: {
     },
@@ -211,6 +236,7 @@ const skillsSlices = createSlice({
         }),
             builder.addCase(resetSuccessAction.fulfilled, (state, action) => {
                 state.isSuccessRp = false;
+                state.isSuccess =false;
             }),
             // get all skills
             builder.addCase(getAllSkillsAction.pending, (state, action) => {
@@ -225,7 +251,22 @@ const skillsSlices = createSlice({
                 state.loading = false;
                 state.appErr = action?.payload?.message;
             }),
-
+            // get all skills
+            builder.addCase(getAllHistoriesAction.pending, (state, action) => {
+                state.loading = true;
+                state.isSuccess = false;
+            }),
+            builder.addCase(getAllHistoriesAction.fulfilled, (state, action) => {
+                state.loading = false;
+                state.histories = action?.payload?.histories;
+                state.appErr = null;
+                state.isSuccess = true;
+            }),
+            builder.addCase(getAllHistoriesAction.rejected, (state, action) => {
+                state.loading = false;
+                state.appErr = action?.payload?.message;
+                state.isSuccess = false;
+            }),
             // get all skills
             builder.addCase(getAllReportsAdminAction.pending, (state, action) => {
                 state.loading = true;

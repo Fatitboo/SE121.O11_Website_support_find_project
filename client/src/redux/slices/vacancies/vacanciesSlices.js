@@ -985,44 +985,51 @@ const vacanciesSlices = createSlice({
                 state.loadingFvr = true;
                 state.appErr = undefined;
                 state.isSuccessFvr = false;
+                state.loading = true;
+
             }),
 
             builder.addCase(updateFavouriteVacancyAction.fulfilled, (state, action) => {
                 state.loadingFvr = false;
+                state.loading = false;
                 state.appErr = undefined;
-                if (typeof (state.vacancyInfo) !== 'undefined'){
+                if(Object.keys(state.vacancyInfo).length === 0 && state.vacancyInfo.constructor === Object){
+                    var currentVacancy = state.vacancies.findIndex(vacancy => vacancy.vacancyId === action?.payload?.vacancyId)
+                    if (currentVacancy !== -1) {
+                        // state.isSuccessFvr = true;
+                        if (action?.payload?.isPush) {
+                            if(state.vacancies[currentVacancy].favouriteUsers)
+                                state.vacancies[currentVacancy].favouriteUsers.push(action?.payload?.userId);
+                            else state.vacancies[currentVacancy].favouriteUsers=[action?.payload?.userId]
+                        }
+                        else {
+                            state.vacancies[currentVacancy].favouriteUsers.pop(action?.payload?.userId);
+                        }
+                    }
+                    else {
+                        if (state.favouriteVacancies) {
+                            state.isSuccessFvr = true;
+                            state.favouriteVacancies.pop(item => item.vacancyId === action?.payload?.vacancyId)
+                        }
+                    }
+                }
+                else{
                     if (action?.payload?.isPush) {
-                        console.log('cc')
                         state.vacancyInfo.favouriteUsers.push(action?.payload?.userId);
                     }
                     else {
-                        console.log('cc')
-
                         state.vacancyInfo.favouriteUsers.pop(action?.payload?.userId);
                     }
                 }
                 
-                var currentVacancy = state.vacancies.findIndex(vacancy => vacancy.vacancyId === action?.payload?.vacancyId)
-                if (currentVacancy !== -1) {
-                    state.isSuccessFvr = true;
-                    if (action?.payload?.isPush) {
-                        state.vacancies[currentVacancy].favouriteUsers.push(action?.payload?.userId);
-                    }
-                    else {
-                        state.vacancies[currentVacancy].favouriteUsers.pop(action?.payload?.userId);
-                    }
-                }
-                else {
-                    if (typeof (state.favouriteVacancies) !== 'undefined') {
-                        state.isSuccessFvr = true;
-                        state.favouriteVacancies.pop(item => item.vacancyId === action?.payload?.vacancyId)
-                    }
-                }
+                
             }),
             builder.addCase(updateFavouriteVacancyAction.rejected, (state, action) => {
                 state.loadingFvr = false;
                 state.appErr = action?.payload?.message;
                 state.isSuccessFvr = false;
+                state.loading = false ;
+
             })
 
         //update Favourite Vacancy Action

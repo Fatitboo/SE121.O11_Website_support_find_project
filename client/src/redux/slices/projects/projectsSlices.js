@@ -464,30 +464,39 @@ const projectsSlices = createSlice({
             builder.addCase(updateFavouriteProjectAction.fulfilled, (state, action) => {
                 state.loading = false;
                 state.appErr = undefined;
-                
-                if(typeof(state.projectsOfCor) === 'undefined'){
-                    state.isSuccessFvr = true;
-                    var currentProject = state.projects.findIndex(project => project.project.projectId === action?.payload?.projectId)
-                    if (currentProject !== -1) {
-                        if (action?.payload?.isPush) {
-                            state.projects[currentProject].project.favouriteUsers.push(action?.payload?.userId);
-                        }
-                        else {
-                            state.projects[currentProject].project.favouriteUsers.pop(action?.payload?.userId);
-                        }
+                if(state.project){
+                    if (action?.payload?.isPush) {
+                        state.project.project.favouriteUsers.push(action?.payload?.userId);
                     }
                     else {
-                        state.favouriteProjects.pop(item => item.project.projectId === action?.payload?.projectId)
+                        state.project.project.favouriteUsers.pop(action?.payload?.userId);
                     }
-                }else{
-                    var currentProject = state.projectsOfCor.findIndex(project => project.projectId === action?.payload?.projectId)
-
-                    if (currentProject !== -1) {
-                        if (action?.payload?.isPush) {
-                            state.projectsOfCor[currentProject].favouriteUsers.push(action?.payload?.userId);
+                }
+                else{
+                    if(typeof(state.projectsOfCor) === 'undefined'){
+                        state.isSuccessFvr = true;
+                        var currentProject = state.projects.findIndex(project => project.project.projectId === action?.payload?.projectId)
+                        if (currentProject !== -1) {
+                            if (action?.payload?.isPush) {
+                                state.projects[currentProject].project.favouriteUsers.push(action?.payload?.userId);
+                            }
+                            else {
+                                state.projects[currentProject].project.favouriteUsers.pop(action?.payload?.userId);
+                            }
                         }
                         else {
-                            state.projectsOfCor[currentProject].favouriteUsers.pop(action?.payload?.userId);
+                            state.favouriteProjects.pop(item => item.project.projectId === action?.payload?.projectId)
+                        }
+                    }else{
+                        var currentProject = state.projectsOfCor.findIndex(project => project.projectId === action?.payload?.projectId)
+    
+                        if (currentProject !== -1) {
+                            if (action?.payload?.isPush) {
+                                state.projectsOfCor[currentProject].favouriteUsers.push(action?.payload?.userId);
+                            }
+                            else {
+                                state.projectsOfCor[currentProject].favouriteUsers.pop(action?.payload?.userId);
+                            }
                         }
                     }
                 }

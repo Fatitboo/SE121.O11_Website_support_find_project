@@ -12,7 +12,8 @@ import {
     ManageVacancyAdmin,
     VacancyInfoAdmin,
     ProjectDetailAdmin,
-    ManageReport
+    ManageReport,
+    HistoryTransaction
 } from "../pages/Admin"
 import {
     Home,
@@ -85,7 +86,7 @@ const publicRoutes = [
     { path: '/Seeker/company-profile/:id', component: CompanyProfile, layout: LayoutNoSidebar },
     { path: '/Seeker/about-us', component: AboutUs, layout: LayoutNoSidebar },
     { path: '/Seeker/contact', component: Contact, layout: LayoutNoSidebar },
-   
+
 
 ]
 const seekerRoutes = [
@@ -113,10 +114,10 @@ const corRoutes = [
     { path: '/Organizer/update-project/:id', component: UpdateProject, layout: LayoutHasSidebar },
     { path: '/Organizer/payment', component: Payment, layout: LayoutNoSidebar },
     { path: '/Organizer/interview', component: Interview, layout: LayoutHasSidebar },
-    { path:'/Organizer/payment/:id', component: Payment, layout: LayoutNoSidebar},
-    { path:'/Organizer/payment/success/:id', component: SuccessPayment, layout: LayoutNoSidebar},
+    { path: '/Organizer/payment/:id', component: Payment, layout: LayoutNoSidebar },
+    { path: '/Organizer/payment/success/:id', component: SuccessPayment, layout: LayoutNoSidebar },
     { path: '/Organizer/payment/cancel', component: CancelPayment, layout: LayoutNoSidebar },
-    
+
 ]
 const AdminRoutes = [
     //Admin Layout
@@ -132,6 +133,8 @@ const AdminRoutes = [
     { path: '/Admin/occupation-management/add-occupation', component: AddOccupation, layout: LayoutHasSidebar },
     { path: '/Admin/occupation-management/edit-occupation/:id', component: EditOccupation, layout: LayoutHasSidebar },
     { path: '/Admin/manage-report', component: ManageReport, layout: LayoutHasSidebar },
+    { path: '/Admin/history-transactions', component: HistoryTransaction, layout: LayoutHasSidebar },
+
 ]
 
 export { publicRoutes, seekerRoutes, AdminRoutes, corRoutes }

@@ -66,6 +66,8 @@ function FavouriteVacancies() {
     return (
         <div className="px-10 pb-0">
             {loadingFvr && <LoadingComponent />}
+            {loading && <LoadingComponent />}
+
             <ToastContainer />
 
             {/* Start title of page  */}
@@ -111,7 +113,7 @@ function FavouriteVacancies() {
                                     <div className="relative w-full overflow-y-hidden overflow-x-hidden rounded-md mb-8 bg-white border-0 px-10 pt-3 grid grid-cols-1 gap-4">
                                         {pages.length !== 0 ?
                                             pages.map((item, index) => {
-                                                return <VacancyItem key={index} props={item} isAvatar={true} notify={notify} />
+                                                return <VacancyItem key={index} props={item} isAvatar={true}  />
                                             }) : <div className="text-center mt-10 col-span-2 ">Not have any Favourite Vacancies!</div>
                                         }
                                     </div>

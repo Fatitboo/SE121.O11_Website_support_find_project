@@ -172,7 +172,7 @@ const ProjectItem = ({ props, fullName, notify }) => {
                                     {
                                         vacancies?.map((item, index) => {
                                             return <div key={index} className="mx-1 relative">
-                                                <VacancyItem props={item} isAvatar={false} />
+                                                <VacancyItem props={item} isAvatar={false} notify={notify} setFunc={setVacancies}/>
                                             </div>
                                         })
                                     }

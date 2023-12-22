@@ -4,24 +4,26 @@ import { PiTargetLight } from 'react-icons/pi';
 import { GoHourglass } from "react-icons/go";
 import { AiOutlineSetting } from 'react-icons/ai';
 import { CalendarIcon, ExpiryIcon, SalaryIcon } from "../../../../assets/icons";
-import { ArrowLeftIcon } from "@heroicons/react/20/solid";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { getParticipantsProject, getProjectSingle, updateFavouriteProjectAction } from "../../../../redux/slices/projects/projectsSlices";
 import { useDispatch, useSelector } from "react-redux";
 import { CustomLoader, SmallItemLoader, VacancyItemLoader } from "../../../../components/Loader";
 import VacancyItem from "../../ProjectInfo/VacancyItem";
 import ParticipantItem from "../../ProjectInfo/ParticipantItem";
-import { BsBookmarkFill, BsTwitter } from "react-icons/bs";
+import { BsBookmarkCheckFill, BsTwitter } from "react-icons/bs";
 import Swal from "sweetalert2";
 import { Candidate } from "../../../../assets/images";
 import handleEmailClick from "../../../../utils/handleEmailClick";
-import {FacebookShareButton, LinkedinShareButton, TwitterShareButton} from 'react-share'
+import { FacebookShareButton, LinkedinShareButton, TwitterShareButton } from 'react-share'
+import { LoadingComponent } from "../../../../components";
+import { ToastContainer, toast } from "react-toastify";
 function ProjectDetailSeeker() {
-    
+
     const id = useParams()
     const dispatch = useDispatch()
     const [ctName, setCtName] = useState('')
     const [ctMssg, setCtMssg] = useState('')
+    const notify = (type, message) => toast(message, { type: type });
 
     const project = useSelector((state) => state.projects.project?.project)
 
@@ -30,7 +32,6 @@ function ProjectDetailSeeker() {
     const loading = useSelector((state) => state.projects.loading)
     const projectparticipants = useSelector(state => state.projects?.projectparticipants)
     let userAuth = useSelector((state) => state?.users?.userAuth)
-    
 
     useEffect(() => {
         if (id) {
@@ -49,7 +50,8 @@ function ProjectDetailSeeker() {
     }
     const handleUpdateFavourite = () => {
         if (userAuth) {
-            dispatch(updateFavouriteProjectAction(project?.projectId))
+            console.log(id.id)
+            dispatch(updateFavouriteProjectAction({ projectId: id.id, notify: notify }))
         }
         else {
             Swal.fire({
@@ -60,10 +62,14 @@ function ProjectDetailSeeker() {
             })
         }
     }
+
     return (<>
 
         <div className="mx-[8%] pt-[50px]">
+                {loading && <LoadingComponent />}
+                <ToastContainer />
             <div className="static grid grid-cols-12 gap-4 m-auto box-border">
+
                 {/* left infomation */}
                 <div className="col-span-8 pr-[30px]">
                     {/* quick info  */}
@@ -101,7 +107,7 @@ function ProjectDetailSeeker() {
 
                                             })
                                         }
-                                       
+
                                     </div>
                             }
                         </div>
@@ -126,14 +132,14 @@ function ProjectDetailSeeker() {
                     <div>
                         <div className="flex flex-row items-center mt-6">
                             <h4 className="text-base leading-6 text-[#202124] font-semibold">Share this project</h4>
-                            <FacebookShareButton 
-                            url={window.location.href}
+                            <FacebookShareButton
+                                url={window.location.href}
                             >
                                 <div className="flex flex-row items-center bg-[#3b5998] py-[10px] px-[25px] text-[14px] ml-[12px] rounded-lg">
                                     <BiLogoFacebook color="#fff" className="w-5 h-5" />
                                     <span className="text-[#fff] ml-1">Facebook</span>
                                 </div>
-                               
+
                             </FacebookShareButton>
                             <LinkedinShareButton url={window.location.href}>
                                 <div className="flex flex-row items-center bg-[#007bb5] py-[10px] px-[25px] text-[14px] ml-[9px] rounded-lg">
@@ -186,7 +192,7 @@ function ProjectDetailSeeker() {
                             <div onClick={() => handleUpdateFavourite()} className="item flex items-center justify-center w-full h-full">
                                 {
                                     !checkFavourite() ? <BiBookmark className="w-full h-full  p-2.5 rounded-[7px]" color="#1967d3" />
-                                        : <BsBookmarkFill className="w-full h-full p-2.5 rounded-[7px]" color="#1967d3" />
+                                        : <BsBookmarkCheckFill className="w-full h-full p-2.5 rounded-[7px]" color="#1967d3" />
                                 }
                             </div>
                         </div>
@@ -314,13 +320,13 @@ function ProjectDetailSeeker() {
                                     <form>
                                         <div>
                                             <div className="w-full">
-                                                <input onChange={e=> setCtName(e.target.value)} className="px-5 w-full mb-5 py-[15px] text-[15px] leading-[30px] text-[dimgray] rounded-lg border-[#ecedf2] border outline-none" type="text" name="username" placeholder="Subject" required="" />
+                                                <input onChange={e => setCtName(e.target.value)} className="px-5 w-full mb-5 py-[15px] text-[15px] leading-[30px] text-[dimgray] rounded-lg border-[#ecedf2] border outline-none" type="text" name="username" placeholder="Subject" required="" />
                                             </div>
-                                          
+
                                             <div className="w-full h-[160px] mb-5">
-                                                <textarea onChange={e=> setCtMssg(e.target.value)}  className="px-5 h-full w-full mb-5 py-[15px] text-[15px] leading-[30px] text-[dimgray] rounded-lg border-[#ecedf2] border outline-none" name="message" placeholder="Message"></textarea>
+                                                <textarea onChange={e => setCtMssg(e.target.value)} className="px-5 h-full w-full mb-5 py-[15px] text-[15px] leading-[30px] text-[dimgray] rounded-lg border-[#ecedf2] border outline-none" name="message" placeholder="Message"></textarea>
                                             </div>
-                                            <div onClick={(e)=>{handleEmailClick(e, corInfo?.email??'vanphat16032003asd@gmail.com', userAuth?.user?.fullName+' want to contact you with the subject '+ ctName, 'Message: '+ctMssg  ); setCtMssg(''); setCtName('')}}>
+                                            <div onClick={(e) => { handleEmailClick(e, corInfo?.email ?? 'vanphat16032003asd@gmail.com', userAuth?.user?.fullName + ' want to contact you with the subject ' + ctName, 'Message: ' + ctMssg); setCtMssg(''); setCtName('') }}>
                                                 <div className="flex items-center justify-center h-[53px] box-border bg-[#1967d3] px-[18px] py-[8px] w-full rounded-[8px] text-[#fff] hover:bg-[#0d6efd]" type="submit" name="submit-form">Open Send Message</div>
                                             </div>
                                         </div>

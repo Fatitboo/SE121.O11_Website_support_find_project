@@ -269,6 +269,29 @@ public class VacancyServices {
 
         return users;
     }
+    public HashMap<String, Object> getAllApplicantsVacancyWithVacancyTitle (String id) {
+        Optional<Vacancy> vacancyOptional = vacancyRepository.findById(new ObjectId(id));
+        if(vacancyOptional.isEmpty()){
+            throw new DataIntegrityViolationException("Error when get vacancy in database!");
+        }
+        Vacancy vacancy=  vacancyOptional.get();
+
+        List<String> userIds = vacancy.getRegistants();
+        HashMap<String, Object> hashMaps = new HashMap<>();
+        List<User> users = new ArrayList<>();
+        if(userIds!=null)
+            for(int i = 0; i < userIds.size(); i++){
+                Optional<User> userOptional = userRepository.findById(new ObjectId(userIds.get(i)));
+                if(userOptional.isEmpty()){
+                    throw new DataIntegrityViolationException("Error when get user in database!");
+                }
+               users.add(userOptional.get());
+            }
+        if(users.isEmpty()) return null;
+        hashMaps.put("vacancyName", vacancy.getVacancyName());
+        hashMaps.put("applicants", users);
+        return hashMaps;
+    }
     public HashMap<String, List<User>> getAllParticipantsVacancy (String id) {
         Optional<Vacancy> vacancyOptional = vacancyRepository.findById(new ObjectId(id));
         if(vacancyOptional.isEmpty()){

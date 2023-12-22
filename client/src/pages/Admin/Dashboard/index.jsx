@@ -321,7 +321,7 @@ function Dashboard() {
                                     <div className="flex items-start relative pb-4">
                                         <div className={`rounded-full p-2 absolute top-0 left-[-17px] ${index % 2 === 0 ? 'bg-green-100 text-green-700' : 'bg-blue-100 text-blue-700'}`}><MdOutlineMoneyOffCsred /></div>
                                         <div className="flex flex-wrap ml-6">
-                                            <div className="font-medium  flex flex-nowrap mr-1 text-sm ">{item?.vacancy?.userInfo?.fullName} </div>
+                                            <div className="font-medium  flex flex-nowrap mr-1 text-sm ">{item?.vacancy?item?.vacancy?.userInfo?.fullName:''} </div>
                                             <div className="font-normal flex-wrap flex mr-1 text-sm text-gray-500 ">{'has been paid the amount '} </div>
                                             <div className="font-normal text-blue-700 flex flex-wrap mr-1 text-sm " >{(parseFloat(item?.transactions?.amount?.total)
                                                 - parseFloat(item?.transactions?.related_resources?.sale?.transaction_fee?.value)).toFixed(2)} $ </div>

@@ -15,7 +15,7 @@ import {createVacancyId, setValueSuccess} from '../redux/slices/vacancies/vacanc
 import { BiBookmark } from 'react-icons/bi';
 import { PiSuitcaseSimpleDuotone } from 'react-icons/pi';
 import { isActiveSidebarAction } from '../redux/slices/skills/skillsSlices';
-import { BsStar } from 'react-icons/bs';
+import { BsClockHistory, BsStar } from 'react-icons/bs';
 
 
 function Sidebar({user}) {
@@ -88,6 +88,12 @@ function Sidebar({user}) {
                                 <Link onClick={()=>dispatch(isActiveSidebarAction('Reports'))} to="/Admin/manage-report" className="relative text-sm text-center p-3 flex items-center leading-7 font-normal  capitalize rounded-lg ">
                                     <MdReportGmailerrorred className='relative mr-4 ml-4 text-2xl text-center ' />
                                     Manage Reports
+                                </Link>
+                            </div>
+                            <div className={classNames(isActive === 'History' ? 'bg-[#E9EFFB] text-blue-600' : '', itemStyle)}>
+                                <Link onClick={()=>dispatch(isActiveSidebarAction('History'))} to="/Admin/history-transactions" className="relative text-sm text-center p-3 flex items-center leading-7 font-normal  capitalize rounded-lg ">
+                                    <BsClockHistory className='relative mr-4 ml-4 text-2xl text-center ' />
+                                    History Transactions
                                 </Link>
                             </div>
                             <div className={classNames(isActive === 'Change password' ? 'bg-[#E9EFFB] text-blue-600' : '', itemStyle)}>
