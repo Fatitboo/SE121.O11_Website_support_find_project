@@ -983,18 +983,18 @@ const vacanciesSlices = createSlice({
             }),
             //get uncompleted vacancy
             builder.addCase(postFullVacancy.pending, (state, action) => {
-                state.loading = true;
+                state.loadingPF = true;
                 state.isSuccessCR = false;
             }),
             builder.addCase(postFullVacancy.fulfilled, (state, action) => {
-                state.loading = false;
+                state.loadingPF = false;
                 state.appErr = null;
                 state.isSuccessCR = true;
                 state.vacancy = action?.payload?.vacancy
 
             }),
             builder.addCase(postFullVacancy.rejected, (state, action) => {
-                state.loading = false;
+                state.loadingPF = false;
                 state.appErr = action?.payload?.message;
                 state.isSuccessCR = false;
 
@@ -1048,6 +1048,7 @@ const vacanciesSlices = createSlice({
                 state.isSuccessAL = false;
                 state.isSuccessFvr = false;
                 state.isSuccessUDCL = false;
+                state.isSuccessCR = false;
 
             }),
 

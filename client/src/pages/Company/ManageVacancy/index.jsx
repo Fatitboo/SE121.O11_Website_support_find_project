@@ -23,6 +23,7 @@ function ManageVacancy() {
     const [currentPage, setCurrentPage] = useState(0);
     const [modal, setModal] = useState(false)
     const [pages, setPages] = useState([]);
+    let [selectId, setSelectedId] = useState()
     const setFilterKeyWord = (e) => {
         let list = [...complete]
 
@@ -55,7 +56,7 @@ function ManageVacancy() {
     }, [])
 
     const storeData = useSelector(store => store?.vacancies);
-    const { loading, appErr, isSuccess2C, isSuccess2U, loadingC, incomplete, complete, isSuccessDL, loadingU } = storeData;
+    const { loading, appErr, isSuccess2C, isSuccess2U, loadingC, incomplete, complete, isSuccessDL, loadingU, loadingDLCL } = storeData;
     const onFilterlistApprovedCbb = (filterValue) => {
         let list =  [...complete]
 
@@ -72,7 +73,7 @@ function ManageVacancy() {
             list = list.filter((item) => item.approvalStatus === filterValue.value)
 
         setCompleteList([...list])
-        setPages([...list].slice(currentPage * 10, (currentPage + 1) * 10))
+        setPages([...list].slice(currentPage *  10, (currentPage + 1) * 10))
         setSearchObj({...searchObj, status: filterValue.value})
     }
 
@@ -113,6 +114,10 @@ function ManageVacancy() {
     }, [isSuccess2C])
 
     useEffect(() => {
+        complete && setPages([...complete.slice(currentPage * 10, (currentPage + 1) * 10)])
+    }, [complete, currentPage])
+
+    useEffect(() => {
         if (isSuccessDL) {
             dispatch(resetSuccessAction());
             Swal.fire({
@@ -140,7 +145,7 @@ function ManageVacancy() {
     }
 
     const handleDeleteCompleteVacancy = (item) => {
-        console.log(item)
+        setSelectedId(item.vacancyId)
         if(item?.approvalStatus !== 'approved'){
             dispatch(deleteCompleteVacancy(item.vacancyId))
         }
@@ -274,6 +279,7 @@ function ManageVacancy() {
                                     </div>
                                     <div className="mt-4 mb-4 mx-3 font-medium text-lg flex justify-between">
                                         Complete Vacancies
+                                        <button onClick={() => console.log(complete)}>clicm em</button>
                                         <div className="flex ">
                                             <div className="mr-1 text-base">My vacancies list: </div> <div className="text-base">{pages.length}</div>
                                         </div>
@@ -486,7 +492,16 @@ function ManageVacancy() {
                                                                             <div> <CiDollar fontSize={18} strokeWidth={0.5}/> </div>
                                                                         </li>
                                                                         <li className="list-none relative bg-[#f5f7fc] border rounded-md border-[#e9ecf9] px-1 pt-1 hover:bg-[#ce3e37] hover:text-white" onClick={() => handleDeleteCompleteVacancy(item)}>
-                                                                            <button > <LiaTrashAltSolid fontSize={18} /> </button>
+                                                                            <button > 
+                                                                            {
+                                                                                    loadingDLCL && item.vacancyId === selectId ? <svg className="right-1 animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 24 24">
+                                                                                        <circle className="opacity-0" cx="12" cy="12" r="10" stroke="white" strokeWidth="4"></circle>
+                                                                                        <path className="opacity-90" fill="white" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                                                                    </svg> 
+                                                                                    :
+                                                                                <LiaTrashAltSolid fontSize={18} /> 
+                                                                            }
+                                                                            </button>
                                                                         </li>
                                                                     </ul>
                                                                 </div>

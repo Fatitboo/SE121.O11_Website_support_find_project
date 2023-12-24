@@ -759,7 +759,7 @@ public class VacancyServices {
         List<String> vacantList = u.getVacancies();
 
         if(vacantList != null){
-            vacantList.remove(vc.getVacancyId());
+            vacantList.remove(vc.getVacancyId().toString());
         }
         u.setVacancies(vacantList);
 

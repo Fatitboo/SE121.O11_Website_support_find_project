@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { JobDesImage, JobReviewImage } from "../../../../assets/images";
 import JobReviewItem from "./JobComponents/JobReviewItem";
 import { useDispatch, useSelector } from "react-redux";
-import { getFullUnCompletedVacancy, postFullVacancy, resetComponent, setVacancyId, setValueSuccess } from "../../../../redux/slices/vacancies/vacanciesSlices";
+import { getFullUnCompletedVacancy, postFullVacancy, resetComponent, resetSuccessAction, setVacancyId, setValueSuccess } from "../../../../redux/slices/vacancies/vacanciesSlices";
 import { Modal } from "../../../../components";
 import JobBasic from "./JobBasic";
 import { IoClose } from "react-icons/io5";
@@ -19,16 +19,14 @@ function JobReview({formId, formSubmit, flag}) {
     const [vacancy, setVacancy] = useState(null)
     function handleSubmit(e) {
         e.preventDefault();
-        formSubmit()
-        //dispatch(postFullVacancy(vacancyId))
-        dispatch(resetComponent())
-        dispatch(setValueSuccess())
+        vacancyId && dispatch(postFullVacancy(vacancyId))
     }
 
     const unCompletedVacancy = useSelector((state) => state.vacancies.unCompletedVacancy)
     const vacancyId = useSelector((state) => state.vacancies.vacancyId)
     const loadingUD = useSelector((state) => state.vacancies.loadingUD)
     const isSuccessCR = useSelector((state) => state.vacancies.isSuccessCR)
+    const loadingPF = useSelector((state) => state.vacancies.loadingPF)
     
     useEffect(() => {
         dispatch(getFullUnCompletedVacancy(vacancyId))
@@ -55,7 +53,7 @@ function JobReview({formId, formSubmit, flag}) {
 
     useEffect(() => {
         if(isSuccessCR){
-            dispatch(setValueSuccess(false))
+            dispatch(resetSuccessAction(false))
             formSubmit()
         }
     }, [isSuccessCR])
