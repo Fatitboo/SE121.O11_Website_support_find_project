@@ -656,6 +656,94 @@ export const getAllReportsAdminAction = createAsyncThunk(
         }
     }
 )
+
+//getAllReportsAdminAction
+export const searchVacancyAction = createAsyncThunk(
+    'vacancies/searchVacancyAction',
+    async (d, { rejectWithValue, getState, dispatch }) => {
+        try {
+            const user = getState()?.users;
+            const { userAuth } = user;
+            // http call 
+            const config = {
+                headers: {
+                    Authorization: `Bearer ${userAuth?.user?.token}`,
+                    'Content-Type': 'application/json',
+                },
+            };
+
+            const { data } = await axios.get(`${baseUrl}/api/v1/vacancies/search-vacancies?keyWord=${d?.keywords}&location=${d?.city}&jobType=${d?.jobType}`, config);
+            console.log(data)
+            return data;
+        } catch (error) {
+            if (!error?.response) {
+                console.log(error)
+
+                throw error;
+            }
+            return rejectWithValue(error?.response?.data);
+        }
+    }
+)
+
+//update Favourite vacancy
+export const deleteCompleteVacancy = createAsyncThunk(
+    "vacancies/deleteCompleteVacancy",
+    async (obj, { rejectWithValue, getState, dispatch }) => {
+        const user = getState()?.users;
+        const { userAuth } = user;
+        // http call 
+        const config = {
+            headers: {
+                Authorization: `Bearer ${userAuth?.user?.token}`,
+                'Content-Type': 'application/json',
+            },
+        };
+        try {
+            const { data } = await axios.delete(
+                `${baseUrl}/${apiPrefix}/delete-complete-vacancy/${obj}`,
+                config
+            );
+           
+            return data;
+        } catch (error) {
+            if (!error?.response) {
+                throw error;
+            }
+            return rejectWithValue(error?.response?.data);
+        }
+    }
+);
+//update Favourite vacancy
+export const updateCompleteVacancy = createAsyncThunk(
+    "vacancies/updateCompleteVacancy",
+    async (obj, { rejectWithValue, getState, dispatch }) => {
+        const user = getState()?.users;
+        const { userAuth } = user;
+        // http call 
+        const config = {
+            headers: {
+                Authorization: `Bearer ${userAuth?.user?.token}`,
+                'Content-Type': 'application/json',
+            },
+        };
+        try {
+            const { data } = await axios.post(
+                `${baseUrl}/${apiPrefix}/update-complete-vacancy`,
+                obj,
+                config
+            );
+           
+            return data;
+        } catch (error) {
+            if (!error?.response) {
+                throw error;
+            }
+            return rejectWithValue(error?.response?.data);
+        }
+    }
+);
+
 export function setValueSuccess(value) {
     return function setValueSuccess(dispatch, getState) {
         dispatch(vacanciesSlices.actions.setValueSuccess(value))
@@ -895,18 +983,18 @@ const vacanciesSlices = createSlice({
             }),
             //get uncompleted vacancy
             builder.addCase(postFullVacancy.pending, (state, action) => {
-                state.loading = true;
+                state.loadingPF = true;
                 state.isSuccessCR = false;
             }),
             builder.addCase(postFullVacancy.fulfilled, (state, action) => {
-                state.loading = false;
+                state.loadingPF = false;
                 state.appErr = null;
                 state.isSuccessCR = true;
                 state.vacancy = action?.payload?.vacancy
 
             }),
             builder.addCase(postFullVacancy.rejected, (state, action) => {
-                state.loading = false;
+                state.loadingPF = false;
                 state.appErr = action?.payload?.message;
                 state.isSuccessCR = false;
 
@@ -959,6 +1047,8 @@ const vacanciesSlices = createSlice({
                 state.isSuccessDL = false;
                 state.isSuccessAL = false;
                 state.isSuccessFvr = false;
+                state.isSuccessUDCL = false;
+                state.isSuccessCR = false;
 
             }),
 
@@ -1166,6 +1256,53 @@ const vacanciesSlices = createSlice({
                 state.loading = false;
                 state.appErr = action?.payload?.message;
                 state.isSuccess2 = false;
+            })
+
+            // get all rp
+            builder.addCase(searchVacancyAction.pending, (state, action) => {
+                state.loading = true;
+            }),
+            builder.addCase(searchVacancyAction.fulfilled, (state, action) => {
+                state.loading = false;
+                state.vcSearch = action?.payload.vacancies;
+                state.appErr = null;
+            }),
+            builder.addCase(searchVacancyAction.rejected, (state, action) => {
+                state.loading = false;
+                state.appErr = action?.payload?.message;
+            })
+
+            // get all rp
+            builder.addCase(updateCompleteVacancy.pending, (state, action) => {
+                state.loadingUDCL = true;
+                state.isSuccessUDCL = false;
+            }),
+            builder.addCase(updateCompleteVacancy.fulfilled, (state, action) => {
+                state.loadingUDCL = false;
+                state.appErr = null;
+                state.isSuccessUDCL = true;
+            }),
+            builder.addCase(updateCompleteVacancy.rejected, (state, action) => {
+                state.loadingUDCL = false;
+                state.appErr = action?.payload?.message;
+                state.isSuccessUDCL = false;
+            })
+
+            // delete complete rp
+            builder.addCase(deleteCompleteVacancy.pending, (state, action) => {
+                state.loadingDLCL = true;
+                state.isSuccessDLCL = false;
+            }),
+            builder.addCase(deleteCompleteVacancy.fulfilled, (state, action) => {
+                state.loadingDLCL = false;
+                state.appErr = null;
+                state.isSuccessDLCL = true;
+                state.complete = state.complete?.filter(item => item.vacancyId !== action.payload?.id)
+            }),
+            builder.addCase(deleteCompleteVacancy.rejected, (state, action) => {
+                state.loadingDLCL = false;
+                state.appErr = action?.payload?.message;
+                state.isSuccessDLCL = false;
             })
     }
 });

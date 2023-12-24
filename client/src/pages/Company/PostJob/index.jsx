@@ -28,22 +28,19 @@ function PostJob() {
     const params = useParams()
     const dispatch = useDispatch()
     const nextJobRef = () => {
-        if(jobRefKey === 6){
-            dispatch(postFullVacancy(params.id))
-        }
         if(jobRefKey < jobRef.length){
             window.scrollTo({top: 0, behavior: 'smooth'});
             jobRefKey > 1 ? setIsPreview(true) : setIsPreview(false)
             setJobRefKey(++jobRefKey)
             setJobProgress(jobRefKey / jobRef.length * 100 + '%')
         }
-        
     }
     const [modal, setModal] = useState(false)
     var [jobRefKey, setJobRefKey] = useState(0)
     var [jobProgress, setJobProgress] = useState('0%')
     var [isPreview, setIsPreview] = useState(false)
     const loadingUD = useSelector((state) => state.vacancies.loadingUD)
+    const loadingPF = useSelector((state) => state.vacancies.loadingPF)
     const formId = ["form-job-basic", "form-job-detail", "form-job-benefit", "form-job-des", "form-job-ref", "form-job-pre", "form-job-rev"]
     const jobRef = [<JobBasic formSubmit={nextJobRef} flag={0} formId={formId[0]} key={0}/>, <JobDetail formSubmit={nextJobRef} formId={formId[1]} flag={1} key={1}/>, <JobBenefit formSubmit={nextJobRef} formId={formId[2]} flag={2} key={2}/>, <JobDes  formSubmit={nextJobRef} formId={formId[3]} flag={3} key={3}/>,<JobPreferences formSubmit={nextJobRef} formId={formId[4]} flag={4} key={4}/>,<JobPreScreen formSubmit={nextJobRef} formId={formId[5]} flag={5} key={5}/>,<JobReview formSubmit={nextJobRef} formId={formId[6]} flag={6} key={6}/>]
     
@@ -109,9 +106,9 @@ function PostJob() {
                                             </div> : null
                         }
                         <button type="submit" form={formId[jobRefKey]} className="flex items-center justify-center h-[53px] box-border bg-[#1967d3] px-[18px] py-[8px] rounded-[8px] text-[#fff] hover:bg-[#0146a6] cursor-pointer">
-                            <span className="text-[15px] leading-none font-bold mr-2">Continue</span>
+                            <span className="text-[15px] leading-none font-bold mr-2">{jobRefKey === 6 ? 'Create' : 'Continue'}</span>
                             {
-                                loadingUD ? <svg className="right-1 animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 24 24">
+                                (loadingUD || loadingPF) ? <svg className="right-1 animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 24 24">
                                 <circle className="opacity-0" cx="12" cy="12" r="10" stroke="white" strokeWidth="4"></circle>
                                 <path className="opacity-90" fill="white" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                             </svg>

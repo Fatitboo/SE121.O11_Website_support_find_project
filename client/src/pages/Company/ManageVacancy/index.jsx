@@ -1,5 +1,5 @@
 import { AiFillExclamationCircle, AiOutlineSearch } from "react-icons/ai";
-import { ComboBox, CustomButton, LoadingComponent, PaginationButtons } from "../../../components";
+import { ComboBox, CustomButton, LoadingComponent, Modal, PaginationButtons } from "../../../components";
 import { BiDotsVerticalRounded, BiEdit, BiMap, BiPackage, BiPencil, BiTrash } from "react-icons/bi";
 import { CiDollar } from "react-icons/ci";
 import { LiaEyeSolid, LiaTrashAltSolid } from "react-icons/lia";
@@ -7,19 +7,47 @@ import { Menu, Transition } from "@headlessui/react";
 import { Fragment, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Swal from "sweetalert2";
-import { deleteuncompletedVacancyAction, getCompleteVacancyCor, getInCompleteVacancyCor, getVacancyCor, resetSuccessAction } from "../../../redux/slices/vacancies/vacanciesSlices";
+import { deleteCompleteVacancy, deleteuncompletedVacancyAction, getCompleteVacancyCor, getInCompleteVacancyCor, getVacancyCor, resetSuccessAction } from "../../../redux/slices/vacancies/vacanciesSlices";
 import { Link, useNavigate } from "react-router-dom";
+import { NewTabIcon } from "../../../assets/icons";
+import { JobReview } from "../PostJob/JobRef";
 
 const listPostedCbb = [ { id: 1,name: 'All'},{id: 2,name: 'Posted'},{id: 3, name: 'UnPosted' }]
-const listApprovedCbb = [ { id: 1,name: 'All'},{id: 2,name: 'Approved'},{id: 3, name: 'UnApproved' }]
+const listApprovedCbb = [ { id: 1,name: 'All', value: "All"},{id: 2,name: 'Approved', value: "approved"},{id: 3, name: 'Pending', value: "pending"}, {id: 4, name: 'WaitPayment', value: "waitPayment" }, {id: 5, name: 'Rejected', value: "rejected" }, {id: 6, name: 'Blocked', value: "blocked"}]
+
 
 function ManageVacancy() {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const [completeList, setCompleteList] = useState([])
     const [currentPage, setCurrentPage] = useState(0);
+    const [modal, setModal] = useState(false)
     const [pages, setPages] = useState([]);
-    const [filterKeyWord, setFilterKeyWord] = useState('');
+    let [selectId, setSelectedId] = useState()
+    const setFilterKeyWord = (e) => {
+        let list = [...complete]
+
+        list = list.filter(item => item.vacancyName.toLowerCase().trim().includes(e.toLowerCase().trim()))
+
+        if(searchObj.post === 'Posted'){
+            list = list.filter(item => item.post)
+        }
+        if(searchObj.post === 'UnPosted'){
+            list = list.filter(item => !item.post)
+        }
+        if(searchObj.status !== "All")
+            list = list.filter((item) => item.approvalStatus === searchObj.status)
+
+        setCompleteList([...list])
+        setPages([...list].slice(currentPage * 10, (currentPage + 1) * 10))
+        setSearchObj({...searchObj, keyWord: e})
+    }
+
+    const [searchObj, setSearchObj] = useState({
+        keyWord: "",
+        post: "",
+        status:""
+    })
 
     
     useEffect(() => {
@@ -28,21 +56,45 @@ function ManageVacancy() {
     }, [])
 
     const storeData = useSelector(store => store?.vacancies);
-    const { loading, appErr, isSuccess2C, isSuccess2U, loadingC, incomplete, complete, isSuccessDL, loadingU } = storeData;
+    const { loading, appErr, isSuccess2C, isSuccess2U, loadingC, incomplete, complete, isSuccessDL, loadingU, loadingDLCL } = storeData;
     const onFilterlistApprovedCbb = (filterValue) => {
-        // console.log(filterValue)
+        let list =  [...complete]
+
+        list = list.filter(item => item.vacancyName.toLowerCase().trim().includes(searchObj.keyWord.toLowerCase().trim()))
+
+        if(searchObj.post === 'Posted'){
+            list = list.filter(item => item.post)
+        }
+        if(searchObj.post === 'UnPosted'){
+            list = list.filter(item => !item.post)
+        }
+
+        if(filterValue.value !== "All")
+            list = list.filter((item) => item.approvalStatus === filterValue.value)
+
+        setCompleteList([...list])
+        setPages([...list].slice(currentPage *  10, (currentPage + 1) * 10))
+        setSearchObj({...searchObj, status: filterValue.value})
     }
 
     const onFilterlistPostedCbb = (filterValue) => {
-        if(filterValue.name === 'All'){
-            setCompleteList([...complete])
-        } 
+        let list = [...complete]
+
+        list = list.filter(item => item.vacancyName.toLowerCase().trim().includes(searchObj.keyWord.toLowerCase().trim()))
+
         if(filterValue.name === 'Posted'){
-            setCompleteList([...complete.filter(i => i.post)])
+            list = list.filter(item => item.post)
         }
         if(filterValue.name === 'UnPosted'){
-            setCompleteList([...complete.filter(i => !i.post)])
+            list = list.filter(item => !item.post)
         }
+
+        if(searchObj.status !== "All")
+            list = list.filter((item) => item.approvalStatus === searchObj.status)
+
+        setCompleteList([...list])
+        setPages([...list].slice(currentPage * 10, (currentPage + 1) * 10))
+        setSearchObj({...searchObj, post: filterValue.name})
     }
 
     const handleToPosting = (item) => {
@@ -53,10 +105,6 @@ function ManageVacancy() {
         navigate(`/Organizer/payment/${item.vacancyId}`)
     }
 
-
-    useEffect(() => {
-        setPages([...completeList.filter(item => ((item?.vacancyName).toLowerCase().includes(filterKeyWord.toLowerCase()) || (item?.projectName ?? '').toLowerCase().includes(filterKeyWord.toLowerCase())) ).slice(currentPage * 10, (currentPage + 1) * 10)])
-    }, [currentPage, completeList, filterKeyWord])
     useEffect(() => {
         if (isSuccess2C) {
             dispatch(resetSuccessAction());
@@ -64,6 +112,11 @@ function ManageVacancy() {
             setPages([...complete.slice(currentPage * 10, (currentPage + 1) * 10)])
         }
     }, [isSuccess2C])
+
+    useEffect(() => {
+        complete && setPages([...complete.slice(currentPage * 10, (currentPage + 1) * 10)])
+    }, [complete, currentPage])
+
     useEffect(() => {
         if (isSuccessDL) {
             dispatch(resetSuccessAction());
@@ -89,6 +142,13 @@ function ManageVacancy() {
                 dispatch(deleteuncompletedVacancyAction(item.vacancyId))
                 }
         });
+    }
+
+    const handleDeleteCompleteVacancy = (item) => {
+        setSelectedId(item.vacancyId)
+        if(item?.approvalStatus !== 'approved'){
+            dispatch(deleteCompleteVacancy(item.vacancyId))
+        }
     }
     return (
         <div className="px-10 pb-0">
@@ -219,6 +279,7 @@ function ManageVacancy() {
                                     </div>
                                     <div className="mt-4 mb-4 mx-3 font-medium text-lg flex justify-between">
                                         Complete Vacancies
+                                        <button onClick={() => console.log(complete)}>clicm em</button>
                                         <div className="flex ">
                                             <div className="mr-1 text-base">My vacancies list: </div> <div className="text-base">{pages.length}</div>
                                         </div>
@@ -354,8 +415,11 @@ function ManageVacancy() {
                                                                     </div>
                                                                 </div>
                                                             </td>
-                                                            <td className=" w-2/12">
-                                                                {item?.project ? <div className="font-medium text-ellipsis w-full line-clamp-2">{item?.project} </div> : <div className="font-light text-sm text-red-500 text-ellipsis w-full line-clamp-2 ">{'Not belong to any project'}  </div>}
+                                                            <td className="w-2/12">
+                                                                {item?.project ? <a target="_blank" onClick={() => navigate("/Organizer/manage-project/project-detail/" + item?.project)} className="bg-green-100 border-green-300 border rounded-xl text-center cursor-pointer text-green-500 w-fit px-1 flex flex-row items-center justify-center self-center ml-10 gap-1">
+                                                                                            <div>In project</div>
+                                                                                            <img src={NewTabIcon} className="w-3 h-3 text-green-500" color="#22c55e"/>
+                                                                                        </a> : <div className="font-light text-sm text-red-500 text-ellipsis w-full line-clamp-2 text-center">{'Not belong to any project'}  </div>}
                                                             </td>
                                                             <td className="pl-9 w-2/12 font-light text-gray-700 text-base">
                                                                 <div>{item?.createdAt ? `${item?.createdAt[2]}/${item?.createdAt[1]}/${item?.createdAt[0]}` : ''}</div>
@@ -373,11 +437,14 @@ function ManageVacancy() {
                                                             </td>
 
                                                             <td className="w-3/24">
-                                                                {item.post ? 
+                                                                {
+                                                                item?.project ? null :
+                                                                item.post ? 
                                                                     <div className="bg-green-100 border-green-300 border rounded-xl text-center text-sm text-green-500 w-fit px-1">Posted</div> : <div className="bg-red-100 border-red-300 w-fit  px-1 text-red-500 border rounded-xl text-center text-sm">UnPosted</div>}
                                                             </td>
                                                             <td className="w-3/24">
                                                                 {
+                                                                    item?.project ? null :
                                                                     item?.approvalStatus === 'pending' ?
                                                                         <div>
                                                                             <div className="bg-blue-100 border-blue-300 border rounded-xl text-center  text-blue-500 w-fit px-1">
@@ -418,14 +485,23 @@ function ManageVacancy() {
                                                                         <li className="list-none relative mr-2 bg-[#f5f7fc] border rounded-md border-[#e9ecf9] px-1 pt-1 hover:bg-[#5f86e9] hover:text-white">
                                                                             <Link to={`/Organizer/vacancy-info/${item.vacancyId}`}> <LiaEyeSolid fontSize={18}  /> </Link>
                                                                         </li>
-                                                                        <Link to={`/Organizer/update-vacancy/${item.projectId}`} className="list-none relative mr-2 bg-[#f5f7fc] border rounded-md border-[#e9ecf9] px-1 pt-1 hover:bg-[#278646] hover:text-white">
+                                                                        <Link to={`/Organizer/update-vacancy/${item.vacancyId}`} className="list-none relative mr-2 bg-[#f5f7fc] border rounded-md border-[#e9ecf9] px-1 pt-1 hover:bg-[#278646] hover:text-white">
                                                                             <button> <BiPencil fontSize={18} /> </button>
                                                                         </Link>
                                                                         <li className={`list-none ${item?.approvalStatus === 'waitPayment' ? 'opacity-100 cursor-pointer hover:bg-[#278646] hover:text-white' : 'opacity-50 cursor-default'} relative mr-2 bg-[#f5f7fc] border rounded-md border-[#e9ecf9] px-1 pt-1 `} onClick={() => {item?.approvalStatus === 'waitPayment' && handlePaymentVacancy(item)}}>
                                                                             <div> <CiDollar fontSize={18} strokeWidth={0.5}/> </div>
                                                                         </li>
-                                                                        <li className="list-none relative bg-[#f5f7fc] border rounded-md border-[#e9ecf9] px-1 pt-1 hover:bg-[#ce3e37] hover:text-white">
-                                                                            <button > <LiaTrashAltSolid fontSize={18} /> </button>
+                                                                        <li className="list-none relative bg-[#f5f7fc] border rounded-md border-[#e9ecf9] px-1 pt-1 hover:bg-[#ce3e37] hover:text-white" onClick={() => handleDeleteCompleteVacancy(item)}>
+                                                                            <button > 
+                                                                            {
+                                                                                    loadingDLCL && item.vacancyId === selectId ? <svg className="right-1 animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 24 24">
+                                                                                        <circle className="opacity-0" cx="12" cy="12" r="10" stroke="white" strokeWidth="4"></circle>
+                                                                                        <path className="opacity-90" fill="white" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                                                                    </svg> 
+                                                                                    :
+                                                                                <LiaTrashAltSolid fontSize={18} /> 
+                                                                            }
+                                                                            </button>
                                                                         </li>
                                                                     </ul>
                                                                 </div>
@@ -450,6 +526,10 @@ function ManageVacancy() {
                     </div>
                 </div>
             </div>
+
+            <Modal open={modal} setModal={setModal}>
+                <JobReview/>
+            </Modal>
         </div>
     );
 }
