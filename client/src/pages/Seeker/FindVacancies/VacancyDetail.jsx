@@ -222,6 +222,19 @@ const VacancyDetail = ({ props }) => {
                             })}
                         </div>
                     </div> : null}
+
+                    {props?.canContactViaEmail ? <div className="mt-5">
+                        <div className="w-full h-[0.5px] bg-[#d6d6d6] mb-4"></div>
+                        <span className="text-lg leading-6 text-[#202124] font-semibold">Contacts</span>
+                        <div className="flex flex-row flex-wrap items-center mt-2 w-3/4">
+                            {props?.emailReceivers?.map((item, index) => {
+                                return (
+                                    <span key={index} className="text-[16px] py-[5px] leading-none">- {item}</span>
+                                )
+                            })}
+                        </div>
+                    </div> : null}
+
                     <div className="mt-5">
                         <div className="w-full h-[0.5px] bg-[#d6d6d6] mb-4"></div>
                         <span className="text-lg leading-6 text-[#202124] mb-3 mt-5 font-semibold">Activity on this job</span>

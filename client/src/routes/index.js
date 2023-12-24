@@ -65,6 +65,7 @@ import { Contact } from "../pages/Seeker/Contact/Contact"
 import PaymentProject from "../pages/Company/Payment/Project"
 import SuccessPaymentProject from "../pages/Company/Payment/Project/Sucess"
 import CancelPaymentProject from "../pages/Company/Payment/Project/Cancel"
+import UpdateVacancy from "../pages/Company/ManageVacancy/UpdateVacancy"
 
 
 const publicRoutes = [
@@ -106,6 +107,7 @@ const corRoutes = [
     { path: '/Organizer/dashboard', component: DashboardCompany, layout: LayoutHasSidebar },
     { path: '/Organizer/company-profile-edit', component: CompanyProfileEdit, layout: LayoutHasSidebar },
     { path: '/Organizer/manage-vacancy', component: ManageVacancy, layout: LayoutHasSidebar },
+    { path: '/Organizer/update-vacancy/:id', component: UpdateVacancy, layout: LayoutHasSidebar },
     { path: '/Organizer/manage-project', component: ManageProject, layout: LayoutHasSidebar },
     { path: '/Organizer/manage-project/project-detail/:id', component: ProjectDetail, layout: LayoutHasSidebar },
     { path: '/Organizer/find-seeker', component: FindSeeker, layout: LayoutHasSidebar },
@@ -119,7 +121,6 @@ const corRoutes = [
     { path:'/Organizer/payment/:id', component: Payment, layout: LayoutNoSidebar},
     { path:'/Organizer/payment/success', component: SuccessPayment, layout: LayoutNoSidebar},
     { path: '/Organizer/payment/cancel', component: CancelPayment, layout: LayoutNoSidebar },
-
     { path:'/Organizer/payment/project/:id', component: PaymentProject, layout: LayoutNoSidebar},
     { path:'/Organizer/payment/project/success', component: SuccessPaymentProject, layout: LayoutNoSidebar},
     { path: '/Organizer/payment/project/cancel', component: CancelPaymentProject, layout: LayoutNoSidebar },

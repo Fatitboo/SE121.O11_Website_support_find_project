@@ -173,4 +173,57 @@ public class Vacancy {
         //post
         post = false;
     }
+
+    public void setValue(Vacancy vc){
+
+        //job basic
+        if(vc.getVacancyName() != null)
+            vacancyName = (String)vc.getVacancyName();
+        maxRequired = vc.getMaxRequired();
+        //--location
+        if(vc.getLocationType() != null)
+            locationType = vc.getLocationType();
+        if(vc.getLocation() != null)
+            location = vc.getLocation();
+        locationSpecificRequired = vc.isLocationSpecificRequired();
+
+        //job detail -- time
+
+        timeRequires = vc.getTimeRequires();
+
+        timeLength = vc.getTimeLength();
+        timePeriod = vc.getTimePeriod();
+        timeType = vc.getTimeType();
+        timeFirst = vc.getTimeFirst();
+        timeSecond = vc.getTimeSecond();
+
+        //job benefit --salary
+        salaryType = vc.getSalaryType();
+        salaryFirst = vc.getSalaryFirst();
+        salarySecond = vc.getSalarySecond();
+        salaryRate = vc.getSalaryRate();
+
+        //job Des
+        description = vc.getDescription();
+        skillsRequired = vc.getSkillsRequired();
+
+        //Job ref - config
+
+        emailReceivers =  vc.getEmailReceivers();
+        canReceiveApplied = vc.isCanReceiveApplied();
+        canContactViaEmail =vc.isCanContactViaEmail();
+        requireResume = vc.isRequireResume();
+        hiringTimeline = vc.getHiringTimeline();
+
+        //registants;
+
+
+        //experience required
+        //private Experience[] experiencesRequired;
+
+//        //Job prescreen
+//        if(unCompletedVacancy.getJobPreScreen() != null)
+//            jobPreScreen = unCompletedVacancy.getJobPreScreen();
+
+    }
 }

@@ -34,6 +34,36 @@ public class VacancyServices {
     public List<Vacancy> getAllVacancies(){
         return vacancyRepository.findAll();
     }
+
+    public List<Vacancy> getAllVacanciesBy(String keyWord, String location, String jobType){
+        List<Vacancy> listVacancy = vacancyRepository.findAll();
+
+        String k = keyWord.toLowerCase().trim();
+        String l = location.toLowerCase().trim();
+        if(k.equals("") && l.equals("") && (jobType.equals("All")  || jobType.equals(""))){
+            return listVacancy;
+        }
+
+        List<Vacancy> listVC = new ArrayList<>();
+
+        for(int i = 0; i < listVacancy.size(); i++){
+            Vacancy v = listVacancy.get(i);
+            if(jobType.equals("All")){
+                if(v.getVacancyName().toLowerCase().contains(k) &&
+                        v.getLocation().toLowerCase().contains(l)){
+                    listVC.add(v);
+                }
+            }
+            else
+                if(v.getVacancyName().toLowerCase().contains(k) &&
+                    v.getLocation().toLowerCase().contains(l)
+                    && Arrays.asList(v.getTimeRequires()).contains(jobType)){
+                    listVC.add(v);
+                }
+        }
+
+        return listVC;
+    }
     //POST
     public String createJobId(UserInfo userInfo) throws Exception {
         Optional<User> userOptional = userRepository.findById(new ObjectId(userInfo.getUserId()));
@@ -701,5 +731,39 @@ public class VacancyServices {
             listAppliedVacancies.add(hm);
         }
         return listAppliedVacancies;
+    }
+    public Vacancy updateCompleteVacancy(Vacancy vacancy){
+        Optional<Vacancy> vacancyOptional = vacancyRepository.findById(vacancy.getVacancyId());
+        if(vacancyOptional.isEmpty()){
+            throw new DataIntegrityViolationException("Error when get vacancy in database");
+        }
+        Vacancy vc = vacancyOptional.get();
+
+        vc.setValue(vacancy);
+
+        return vacancyRepository.save(vc);
+    }
+
+    public void deleteCompletedVacancy(String id){
+        Optional<Vacancy> vacancyOptional = vacancyRepository.findById(new ObjectId(id));
+        if(vacancyOptional.isEmpty()){
+            throw new DataIntegrityViolationException("Error when get vacancy in database");
+        }
+        Vacancy vc = vacancyOptional.get();
+
+        Optional<User> userOptional = userRepository.findById(new ObjectId(vc.getUserInfo().getUserId()));
+        if(userOptional.isEmpty()){
+            throw new DataIntegrityViolationException("Error when get user in database");
+        }
+        User u = userOptional.get();
+        List<String> vacantList = u.getVacancies();
+
+        if(vacantList != null){
+            vacantList.remove(vc.getVacancyId());
+        }
+        u.setVacancies(vacantList);
+
+        vacancyRepository.deleteById(vc.getVacancyId());
+        userRepository.save(u);
     }
 }

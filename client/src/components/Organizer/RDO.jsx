@@ -3,17 +3,12 @@ import { RadioGroup } from "@headlessui/react";
 import { BsCheck } from 'react-icons/bs';
 import { AiFillExclamationCircle } from 'react-icons/ai';
 
-export default function CustomRadioButton({label, listItem, filterValueChecked, error, type, rules, name, selectedItem}){
+export default function RDO({label, listItem, filterValueChecked, error, type, rules, name, selectedItem}){
     const [selected, setSelected] = useState(selectedItem ? selectedItem : {id: -1, name: '', value: false})
     useEffect(()=>{
         filterValueChecked(selected)
     
       },[selected])
-
-      useEffect(()=>{
-        if(selectedItem) setSelected(selectedItem)
-    
-      },[selectedItem])
     return (
         <>
             <p className='block leading-6 text-gray-900 text-base font-semibold' style={{color: `${error ? "#a9252b": ""}`}}>{label}</p>

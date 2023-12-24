@@ -8,7 +8,7 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
 
-export default function CustomComboBox({label, listItem, filterValueSelected, error, name, type, onblur, rules, placeHolder, selectItem, styleOuter}) {
+export default function CBB({label, listItem, filterValueSelected, error, name, type, onblur, rules, placeHolder, selectItem, styleOuter}) {
   const [selected, setSelected] = useState(selectItem ? selectItem : {id: -1, name: ''})
   const [visible, setVisible] = useState("none")
   const [outline, setOutline] = useState(false)
@@ -22,11 +22,6 @@ export default function CustomComboBox({label, listItem, filterValueSelected, er
     console.log(["Selected"], selected)
 
   },[selected])
-
-  useEffect(()=>{
-    if(selectItem) setSelected(selectItem)
-    console.log(["SelectedItem"],selectItem)
-  },[selectItem])
 
   const dropDownTag = useRef();
   

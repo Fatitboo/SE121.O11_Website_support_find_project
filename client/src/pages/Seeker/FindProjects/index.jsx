@@ -300,14 +300,14 @@ function FindProjects() {
             <div className="w-2/3">
                 <div className="flex flex-row items-center justify-between py-4">
                     <div className="text-[15px] text-[dimgray] leading-6 font-[400]">
-                        Show <strong>10</strong> projects
+                        Show <strong>{currentPrs?.filter((item) => item.project?.status === "approved" && !isExpired(item?.project?.datePost, item?.project))?.length ?? 0}</strong> projects
                     </div>
                     <div className="flex flex-row items-center">
                         <div className="w-44">
                             <ComboBox listItem={[{id: "0", name: "Sort by (default)"},{id: "1", name: "Newest"}, {id: "2", name: "Oldest"}]} filterValueSelected={onfilterValueSelected}/>
                         </div>
                         <div className="w-44 ml-3">
-                            <ComboBox listItem={[{id: "0", name: "All", value: 0},{id: "1", name: "10 per page", value: 1}, {id: "2", name: "20 per page", value: 2}, {id: "3", name: "30 per page", value: 30}]} filterValueSelected={onfilterItemSelected}/>
+                            <ComboBox listItem={[{id: "0", name: "All", value: 0},{id: "1", name: "10 per page", value: 10}, {id: "2", name: "20 per page", value: 20}, {id: "3", name: "30 per page", value: 30}]} filterValueSelected={onfilterItemSelected}/>
                         </div>
                     </div>
                 </div>

@@ -8,4 +8,5 @@ import java.util.List;
 
 public interface VacancyRepository extends MongoRepository<Vacancy, ObjectId> {
     List<Vacancy> findByReportsNotNull();
+    List<Vacancy> getVacancysByVacancyNameAndLocationAndLocationType(String vacancyName, String location, String locationType);
 }

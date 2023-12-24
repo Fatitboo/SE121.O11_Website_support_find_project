@@ -294,4 +294,44 @@ public class VacancyController
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
     }
+
+    @GetMapping("/search-vacancies")
+    public ResponseEntity<?> searchVacancies(@RequestParam String keyWord, @RequestParam String location, @RequestParam String jobType){
+        HashMap<String, Object> response = new HashMap<>();
+        try{
+            List<Vacancy> vacancies = vacancyServices.getAllVacanciesBy(keyWord, location, jobType);
+            response.put("vacancies", vacancies);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        }catch (Exception e) {
+            response.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+    }
+
+    @PostMapping("/update-complete-vacancy")
+    public ResponseEntity<?> updateCompleteVacancy(@RequestBody Vacancy vacancy){
+        HashMap<String, Object> response = new HashMap<>();
+        try{
+            Vacancy vc = vacancyServices.updateCompleteVacancy(vacancy);
+            response.put("vacancy", vc);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        }catch (Exception e) {
+            response.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+    }
+
+    @DeleteMapping("/delete-complete-vacancy/{id}")
+    public ResponseEntity<?> deleteCompletedVacancy(@PathVariable String id){
+        HashMap<String, Object> response = new HashMap<>();
+        try{
+            vacancyServices.deleteCompletedVacancy(id);
+            response.put("message","Delete vacancy successfully!");
+            response.put("id", id);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        }catch (Exception e) {
+            response.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+    }
 }
