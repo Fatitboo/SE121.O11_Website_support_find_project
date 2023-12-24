@@ -37,10 +37,10 @@ function VacancyInfo() {
     }, [dispatch])
 
     useEffect(() => {
-        if (vacancyInfo && vacancyInfo.jobPreScreen){
+        if (vacancyInfo && vacancyInfo.jobPreScreen) {
             setListQuestion([...vacancyInfo.jobPreScreen])
-        } 
-        else{
+        }
+        else {
             setListQuestion(null)
         }
     }, [vacancyInfo])
@@ -127,7 +127,7 @@ function VacancyInfo() {
     }
 
     const handleApplied = () => {
-        if(user){
+        if (user) {
             listQuestion ? setModal(true)
                 :
                 vacancyInfo?.vacancyId && dispatch(applyVacancyAction(vacancyInfo.vacancyId))
@@ -323,7 +323,6 @@ function VacancyInfo() {
                 <div className="col-span-4">
                     <div className="flex flex-row-reverse gap-6 mb-3">
 
-
                         <div className="item flex self-end items-center justify-center w-[50px] h-[52px] rounded-[7px] bg-[rgba(25,103,210,.07)]  cursor-pointer opacity-80" color="#1967d3">
                             <div onClick={() => handleUpdateFavourite()} className="item flex items-center justify-center w-full h-full">
                                 {
@@ -333,29 +332,29 @@ function VacancyInfo() {
                             </div>
                         </div>
                         {
-                                seletedUser?.appliedVacancies?.includes(vacancyInfo?.vacancyId) ?
-                                    <div className="flex items-center justify-center w-full box-border bg-[#1967d3] px-[10px] py-[3px] rounded-[8px] text-[#fff] cursor-not-allowed">
-                                        {
-                                            !(loadingAL || loadingGD) ? <span className="text-[14px] leading-none font-bold">Applied</span>
-                                                : <svg className="right-1 animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 24 24">
-                                                    <circle className="opacity-0" cx="12" cy="12" r="10" stroke="white" strokeWidth="4"></circle>
-                                                    <path className="opacity-90" fill="white" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                                </svg>
-                                        }
+                            seletedUser?.appliedVacancies?.includes(vacancyInfo?.vacancyId) ?
+                                <div className="flex items-center justify-center w-full box-border bg-[#1967d3] px-[10px] py-[3px] rounded-[8px] text-[#fff] cursor-not-allowed">
+                                    {
+                                        !(loadingAL || loadingGD) ? <span className="text-[14px] leading-none font-bold">Applied</span>
+                                            : <svg className="right-1 animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 24 24">
+                                                <circle className="opacity-0" cx="12" cy="12" r="10" stroke="white" strokeWidth="4"></circle>
+                                                <path className="opacity-90" fill="white" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                            </svg>
+                                    }
 
-                                    </div> :
-                                    <div className="flex items-center justify-center w-full box-border bg-[#1967d3] px-[10px] py-[3px] rounded-[8px] text-[#fff] hover:bg-[#0146a6] cursor-pointer" onClick={handleApplied} >
-                                        {
-                                            !(loadingAL || loadingGD) ? <span className="text-[14px] leading-none font-bold">Apply now</span>
-                                                : <svg className="right-1 animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 24 24">
-                                                    <circle className="opacity-0" cx="12" cy="12" r="10" stroke="white" strokeWidth="4"></circle>
-                                                    <path className="opacity-90" fill="white" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                                </svg>
-                                        }
+                                </div> :
+                                <div className="flex items-center justify-center w-full box-border bg-[#1967d3] px-[10px] py-[3px] rounded-[8px] text-[#fff] hover:bg-[#0146a6] cursor-pointer" onClick={handleApplied} >
+                                    {
+                                        !(loadingAL || loadingGD) ? <span className="text-[14px] leading-none font-bold">Apply now</span>
+                                            : <svg className="right-1 animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 24 24">
+                                                <circle className="opacity-0" cx="12" cy="12" r="10" stroke="white" strokeWidth="4"></circle>
+                                                <path className="opacity-90" fill="white" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                            </svg>
+                                    }
 
-                                    </div>
+                                </div>
 
-                            }
+                        }
                     </div>
                     <div className="p-6 bg-[#F5F6FC] rounded-lg mb-[30px]">
                         <div className="text-[#202124] text-[18px] font-semibold mb-4">Vacancy Overview</div>
@@ -453,87 +452,90 @@ function VacancyInfo() {
                             </div>
                         </div>
                     </div>
-                    
+
                 </div>
             </div>
             {
-                    listQuestion && listQuestion.length !== 0 &&
-                    <Modal open={modal} setModal={setModal}>
-                        <div>
-                            <div className="flex flex-row items-center justify-between mx-2">
-                                <p className='block leading-8 text-gray-900 text-xl font-bold'>Prescreen Question</p>
-                                <div className="hover:bg-slate-100 rounded-sm p-2 cursor-pointer opacity-90" onClick={() => {setModal(false);setListQuestion(null)}}>
-                                    <IoClose size={20} />
-                                </div>
-                            </div>
-                            <hr className="block h-1 w-full bg-[rgb(212, 210, 208)] mt-3" />
-                            <div className="max-h-[400px] w-[600px] overflow-y-auto overflow-x-hidden mb-4 px-3">
-                                <button onClick={() => console.log(listQuestion)}>Click me</button>
-                                {
-                                    listQuestion.map((item, index) => {
-                                        return <div key={index}>
-                                            <AnswerQuestion userId={user.userId} onCheckedRadio={(e) => onCheckedRadio(e, item, index)} onTextChanged={(e) => handleChangeText(e, item, index)} setDateTimeSelect={(e) => setDateTimeSelect(e, item, index)} props={item} />
-                                        </div>
-                                    })
-                                }
-                            </div>
-                            <div className="flex flex-row items-center gap-2 float-right">
-                                <div className="flex items-center justify-center box-border bg-[white] border px-[18px] py-[14px] rounded-[8px] text-[#1967d3] hover:bg-[#eef1fe] hover:border-[#1967d3] cursor-pointer" onClick={() => {setModal(false);setListQuestion(null)}}>
-                                    <span className="text-[15px] leading-none font-bold">Close</span>
-                                </div>
-                                <button className="w-[90px] flex items-center justify-center box-border bg-[#1967d3] px-[18px] py-[14px] rounded-[8px] text-[#fff] hover:bg-[#0146a6] cursor-pointer" onClick={() => handleApplyWithAnswers()}>
-                                    {
-                                        loadingAL ? <svg className="right-1 animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 24 24">
-                                            <circle className="opacity-0" cx="12" cy="12" r="10" stroke="white" strokeWidth="4"></circle>
-                                            <path className="opacity-90" fill="white" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                        </svg> :
-                                            <span className="text-[15px] leading-none font-bold">Done</span>
-                                    }
-                                </button>
+                listQuestion && listQuestion.length !== 0 &&
+                <Modal open={modal} setModal={setModal}>
+                    <div>
+                        <div className="flex flex-row items-center justify-between mx-2">
+                            <p className='block leading-8 text-gray-900 text-xl font-bold'>Prescreen Question</p>
+                            <div className="hover:bg-slate-100 rounded-sm p-2 cursor-pointer opacity-90" onClick={() => { setModal(false); setListQuestion(null) }}>
+                                <IoClose size={20} />
                             </div>
                         </div>
-                    </div> */}
-                </div>
-            </div>
-            {
-                    listQuestion && listQuestion.length !== 0 &&
-                    <Modal open={modal} setModal={setModal}>
-                        <div>
-                            <div className="flex flex-row items-center justify-between mx-2">
-                                <p className='block leading-8 text-gray-900 text-xl font-bold'>Prescreen Question</p>
-                                <div className="hover:bg-slate-100 rounded-sm p-2 cursor-pointer opacity-90" onClick={() => {setModal(false);setListQuestion(null)}}>
-                                    <IoClose size={20} />
-                                </div>
-                            </div>
-                            <hr className="block h-1 w-full bg-[rgb(212, 210, 208)] mt-3" />
-                            <div className="max-h-[400px] w-[600px] overflow-y-auto overflow-x-hidden mb-4 px-3">
-                                <button onClick={() => console.log(listQuestion)}>Click me</button>
-                                {
-                                    listQuestion.map((item, index) => {
-                                        return <div key={index}>
-                                            <AnswerQuestion userId={user.userId} onCheckedRadio={(e) => onCheckedRadio(e, item, index)} onTextChanged={(e) => handleChangeText(e, item, index)} setDateTimeSelect={(e) => setDateTimeSelect(e, item, index)} props={item} />
-                                        </div>
-                                    })
-                                }
-                            </div>
-                            <div className="flex flex-row items-center gap-2 float-right">
-                                <div className="flex items-center justify-center box-border bg-[white] border px-[18px] py-[14px] rounded-[8px] text-[#1967d3] hover:bg-[#eef1fe] hover:border-[#1967d3] cursor-pointer" onClick={() => {setModal(false);setListQuestion(null)}}>
-                                    <span className="text-[15px] leading-none font-bold">Close</span>
-                                </div>
-                                <button className="w-[90px] flex items-center justify-center box-border bg-[#1967d3] px-[18px] py-[14px] rounded-[8px] text-[#fff] hover:bg-[#0146a6] cursor-pointer" onClick={() => handleApplyWithAnswers()}>
-                                    {
-                                        loadingAL ? <svg className="right-1 animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 24 24">
-                                            <circle className="opacity-0" cx="12" cy="12" r="10" stroke="white" strokeWidth="4"></circle>
-                                            <path className="opacity-90" fill="white" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                        </svg> :
-                                            <span className="text-[15px] leading-none font-bold">Done</span>
-                                    }
-                                </button>
-                            </div>
+                        <hr className="block h-1 w-full bg-[rgb(212, 210, 208)] mt-3" />
+                        <div className="max-h-[400px] w-[600px] overflow-y-auto overflow-x-hidden mb-4 px-3">
+                            <button onClick={() => console.log(listQuestion)}>Click me</button>
+                            {
+                                listQuestion.map((item, index) => {
+                                    return <div key={index}>
+                                        <AnswerQuestion userId={user.userId} onCheckedRadio={(e) => onCheckedRadio(e, item, index)} onTextChanged={(e) => handleChangeText(e, item, index)} setDateTimeSelect={(e) => setDateTimeSelect(e, item, index)} props={item} />
+                                    </div>
+                                })
+                            }
                         </div>
-                    </Modal>
-                }
+                        <div className="flex flex-row items-center gap-2 float-right">
+                            <div className="flex items-center justify-center box-border bg-[white] border px-[18px] py-[14px] rounded-[8px] text-[#1967d3] hover:bg-[#eef1fe] hover:border-[#1967d3] cursor-pointer" onClick={() => { setModal(false); setListQuestion(null) }}>
+                                <span className="text-[15px] leading-none font-bold">Close</span>
+                            </div>
+                            <button className="w-[90px] flex items-center justify-center box-border bg-[#1967d3] px-[18px] py-[14px] rounded-[8px] text-[#fff] hover:bg-[#0146a6] cursor-pointer" onClick={() => handleApplyWithAnswers()}>
+                                {
+                                    loadingAL ? <svg className="right-1 animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 24 24">
+                                        <circle className="opacity-0" cx="12" cy="12" r="10" stroke="white" strokeWidth="4"></circle>
+                                        <path className="opacity-90" fill="white" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                    </svg> :
+                                        <span className="text-[15px] leading-none font-bold">Done</span>
+                                }
+                            </button>
+                        </div>
+                    </div>
+                </Modal>
+            }
         </div>
+
+        <div>
+            {
+                listQuestion && listQuestion.length !== 0 &&
+                <Modal open={modal} setModal={setModal}>
+                    <div>
+                        <div className="flex flex-row items-center justify-between mx-2">
+                            <p className='block leading-8 text-gray-900 text-xl font-bold'>Prescreen Question</p>
+                            <div className="hover:bg-slate-100 rounded-sm p-2 cursor-pointer opacity-90" onClick={() => { setModal(false); setListQuestion(null) }}>
+                                <IoClose size={20} />
+                            </div>
+                        </div>
+                        <hr className="block h-1 w-full bg-[rgb(212, 210, 208)] mt-3" />
+                        <div className="max-h-[400px] w-[600px] overflow-y-auto overflow-x-hidden mb-4 px-3">
+                            <button onClick={() => console.log(listQuestion)}>Click me</button>
+                            {
+                                listQuestion.map((item, index) => {
+                                    return <div key={index}>
+                                        <AnswerQuestion userId={user.userId} onCheckedRadio={(e) => onCheckedRadio(e, item, index)} onTextChanged={(e) => handleChangeText(e, item, index)} setDateTimeSelect={(e) => setDateTimeSelect(e, item, index)} props={item} />
+                                    </div>
+                                })
+                            }
+                        </div>
+                        <div className="flex flex-row items-center gap-2 float-right">
+                            <div className="flex items-center justify-center box-border bg-[white] border px-[18px] py-[14px] rounded-[8px] text-[#1967d3] hover:bg-[#eef1fe] hover:border-[#1967d3] cursor-pointer" onClick={() => { setModal(false); setListQuestion(null) }}>
+                                <span className="text-[15px] leading-none font-bold">Close</span>
+                            </div>
+                            <button className="w-[90px] flex items-center justify-center box-border bg-[#1967d3] px-[18px] py-[14px] rounded-[8px] text-[#fff] hover:bg-[#0146a6] cursor-pointer" onClick={() => handleApplyWithAnswers()}>
+                                {
+                                    loadingAL ? <svg className="right-1 animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 24 24">
+                                        <circle className="opacity-0" cx="12" cy="12" r="10" stroke="white" strokeWidth="4"></circle>
+                                        <path className="opacity-90" fill="white" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                    </svg> :
+                                        <span className="text-[15px] leading-none font-bold">Done</span>
+                                }
+                            </button>
+                        </div>
+                    </div>
+                </Modal>
+            }
+        </div >
+
     </>);
 }
 

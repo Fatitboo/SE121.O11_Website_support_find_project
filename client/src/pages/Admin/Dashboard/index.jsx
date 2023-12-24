@@ -205,21 +205,21 @@ function Dashboard() {
     }
     const convertDateFormat = (inputDate) => {
         const date = new Date(inputDate);
-        
+
         // Lấy giờ và phút
         const hours = ('0' + date.getHours()).slice(-2);
         const minutes = ('0' + date.getMinutes()).slice(-2);
-      
+
         // Lấy ngày, tháng, năm
         const day = ('0' + date.getDate()).slice(-2);
         const month = ('0' + (date.getMonth() + 1)).slice(-2);
         const year = date.getFullYear();
-      
+
         // Tạo chuỗi định dạng mong muốn
         const formattedDate = `${hours}:${minutes} ${day}-${month}-${year}`;
-      
+
         return formattedDate;
-      };
+    };
     return (
         <div className="px-10 pb-0">
             {loading && <LoadingComponent />}
@@ -321,7 +321,7 @@ function Dashboard() {
                                     <div className="flex items-start relative pb-4">
                                         <div className={`rounded-full p-2 absolute top-0 left-[-17px] ${index % 2 === 0 ? 'bg-green-100 text-green-700' : 'bg-blue-100 text-blue-700'}`}><MdOutlineMoneyOffCsred /></div>
                                         <div className="flex flex-wrap ml-6">
-                                            <div className="font-medium  flex flex-nowrap mr-1 text-sm ">{item?.vacancy?item?.vacancy?.userInfo?.fullName:''} </div>
+                                            <div className="font-medium  flex flex-nowrap mr-1 text-sm ">{item?.userInfo ? item?.userInfo?.fullName : ''} </div>
                                             <div className="font-normal flex-wrap flex mr-1 text-sm text-gray-500 ">{'has been paid the amount '} </div>
                                             <div className="font-normal text-blue-700 flex flex-wrap mr-1 text-sm " >{(parseFloat(item?.transactions?.amount?.total)
                                                 - parseFloat(item?.transactions?.related_resources?.sale?.transaction_fee?.value)).toFixed(2)} $ </div>

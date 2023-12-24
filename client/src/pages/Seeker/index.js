@@ -14,6 +14,7 @@ import VacancyInfoSeeker from "./Setting/Dashboard/VacancyInfo/VacancyInfo";
 import FavouriteProjects from "./FavouriteProjects/FavouriteProjects";
 import FavouriteVacancies from "./FavouriteVacancies/FavouriteVacancies";
 import ProjectDetailSeeker from "./FindProjects/ProjectDetail/ProjectDetail";
+import ProfileSeekerView from "./ProfileSeekerView";
 export {
     FindProjects, 
     Home, 
@@ -30,5 +31,6 @@ export {
     VacancyInfoSeeker,
     FavouriteProjects,
     FavouriteVacancies,
-    ProjectDetailSeeker
+    ProjectDetailSeeker,
+    ProfileSeekerView
 }

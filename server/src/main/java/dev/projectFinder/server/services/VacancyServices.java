@@ -7,6 +7,7 @@ import dev.projectFinder.server.components.Vacancy.JobPreScreen;
 import dev.projectFinder.server.components.Vacancy.UserInfo;
 import dev.projectFinder.server.dtos.UserDTO;
 import dev.projectFinder.server.dtos.VacancyDTO;
+import dev.projectFinder.server.models.Project;
 import dev.projectFinder.server.models.UnCompletedVacancy;
 import dev.projectFinder.server.models.User;
 import dev.projectFinder.server.models.Vacancy;
@@ -272,7 +273,7 @@ public class VacancyServices {
     public HashMap<String, Object> getAllApplicantsVacancyWithVacancyTitle (String id) {
         Optional<Vacancy> vacancyOptional = vacancyRepository.findById(new ObjectId(id));
         if(vacancyOptional.isEmpty()){
-            throw new DataIntegrityViolationException("Error when get vacancy in database!");
+            return null;
         }
         Vacancy vacancy=  vacancyOptional.get();
 
@@ -724,5 +725,28 @@ public class VacancyServices {
             listAppliedVacancies.add(hm);
         }
         return listAppliedVacancies;
+    }
+    public List<Vacancy> getAllVacanciesUserRecommend(String id) throws Exception {
+        Optional<User> userOptional = userRepository.findById(new ObjectId(id));
+        if(userOptional.isEmpty()){
+            throw new DataIntegrityViolationException("Error when get user in database");
+        }
+        User user = userOptional.get();
+
+        List<Vacancy> vacancyList = new ArrayList<>();
+
+        List<String> listVacanciesIds = user.getVacancies();
+        if(listVacanciesIds != null)
+            for (String listVccId : listVacanciesIds) {
+                Optional<Vacancy> vacancyOptional = vacancyRepository.findById(new ObjectId(listVccId));
+                if (vacancyOptional.isEmpty()) {
+                    throw new DataIntegrityViolationException("Error when get project in database");
+                }
+                Vacancy vacancy = vacancyOptional.get();
+                if(vacancy.getApprovalStatus().equals("approved"))
+                    vacancyList.add(vacancy);
+            }
+
+        return vacancyList;
     }
 }

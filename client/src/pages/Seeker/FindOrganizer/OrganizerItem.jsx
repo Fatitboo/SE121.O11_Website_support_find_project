@@ -4,6 +4,16 @@ import { PiSuitcase } from "react-icons/pi";
 import { Link } from "react-router-dom";
 
 const OrganizerItem = ({ item }) => {
+    const convertAddress = (string)=>{
+        var str = 'Not infor'
+        if(string.includes('Thành phố ')){
+            str = string.slice(10)
+        }
+        if(string.includes('Tỉnh ')){
+            str = string.slice(5)
+        }
+        return str
+    }
     return (
         <>
             <Link to={'/Seeker/company-profile/'+item.userId} className="relative">
@@ -35,27 +45,15 @@ const OrganizerItem = ({ item }) => {
                         <div className="flex flex-col items-center mb-3">
                             <div  className="text-[18px] leading-[26px] text-[#05264e] font-bold">{item.fullName}</div>
                             <div className="text-[#a0abb8] text-[14px]">Team size: {item?.teamSize ?? 0}</div>
-                            {/* <div>
-                                    {[...Array(5)].map((star, index) => {
-                                        if (index < corAvgStar)
-                                            return (
-                                                <span key={index} className="w-5 h-5 text-[18px] leading-none" style={{ color: '#ffbd27' }}>&#9733;</span>
-                                            );
-                                        return (
-                                            <span key={index} className="w-5 h-5 text-[18px] leading-none" style={{ color: '#a0abb8' }}>&#9733;</span>
-                                        );
-                                    })}
-
-                                    <span className="text-[#a0abb8] text-xs ml-[8px] font-medium">({corAmountRate})</span>
-                                </div> */}
+                           
                         </div>
-                        <span className="text-[#a0abb8] text-[14px] flex flex-row items-center mb-1"><HiOutlineLocationMarker color="#a0abb8" strokeWidth={"1.5px"} className="w-[18px] h-[18px] mr-1" />{item?.address?.province ?? 'Not found'}, {item?.address?.country ?? 'not found'}</span>
+                        <span className="text-[#a0abb8] text-[14px] flex flex-row items-center mb-1"><HiOutlineLocationMarker color="#a0abb8" strokeWidth={"1.5px"} className="w-[18px] h-[18px] mr-1" />{ convertAddress(item?.address?.province)}, {item?.address?.country ?? 'not found'}</span>
                         <span className="text-[#a0abb8] text-[14px] flex flex-row items-start mb-3 w-full px-3">
                             <PiSuitcase color="#a0abb8" className="w-[18px] h-[18px] mr-1.5 mt-0.5 " />
-                            <div className="flex flex-wrap line-clamp-2 w-full items-start overflow-y-auto h-[40px] text-ellipsis">
+                            <div className="flex flex-wrap line-clamp-2 w-full items-start overflow-y-auto h-[50px] text-ellipsis">
                                 {
-                                    (item?.fields ?? ['Nothing']).map((i, index) => {
-                                        return <div key={index} className="mr-1.5 whitespace-nowrap">{i} </div>
+                                    (item?.fields ?? ['Not information']).map((i, index) => {
+                                        return <div key={index} className="mr-1.5 whitespace-nowrap">{i}, </div>
                                     })
                                 }
                             </div>

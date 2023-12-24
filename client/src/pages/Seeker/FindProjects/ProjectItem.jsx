@@ -18,7 +18,7 @@ import Swal from "sweetalert2";
 import AnswerQuestion from "../FindVacancies/AnswerQuestion";
 import { applyVacancyAction, applyVacancyWithAnswersAction, getDetailUserAction } from "../../../redux/slices/users/usersSlices";
 
-const ProjectItem = ({ props,notify }) => {
+const ProjectItem = ({ props, notify }) => {
     let [dropDownTags, setDropDownTags] = useState(false)
     const [vacancies, setVacancies] = useState(null)
     const [loading, setLoading] = useState(false)
@@ -83,7 +83,7 @@ const ProjectItem = ({ props,notify }) => {
     }
     const handleUpdateFavourite = () => {
         if (userAuth)
-            dispatch(updateFavouriteProjectAction({projectId: props?.project?.projectId, notify:null}))
+            dispatch(updateFavouriteProjectAction({ projectId: props?.project?.projectId, notify: null }))
 
         else {
             Swal.fire({
@@ -95,10 +95,10 @@ const ProjectItem = ({ props,notify }) => {
         }
     }
 
-    
+
 
     const handleApplied = (ques, selected) => {
-        if(userAuth){
+        if (userAuth) {
             ques ? setModal(true)
                 :
                 selected?.vacancyId && dispatch(applyVacancyAction(selected.vacancyId))
@@ -169,7 +169,7 @@ const ProjectItem = ({ props,notify }) => {
                             </div>
                             <div className="flex flex-row items-center mt-2">
                                 <div className="mr-3 bg-[rgba(25,103,210,.15)] text-[#1967d2] rounded-3xl flex">
-                                    <span className="text-[13px] px-[20px] py-[5px] leading-none">{props?.fullName}</span>
+                                    <Link to={'/Seeker/company-profile/' + props?.project?.userId} className="text-[13px] px-[20px] py-[5px] leading-none">{props?.fullName}</Link>
                                 </div>
                                 <div className="flex flex-row items-center text-[14px] text-[dimgray] leading-[22px] font-normal mr-3">
                                     <BiTimeFive className="w-[18px] h-[18px] mr-[5px]" />
@@ -234,39 +234,39 @@ const ProjectItem = ({ props,notify }) => {
                                         vacancies?.map((item, index) => {
                                             return <div key={index} className="mx-1 relative">
                                                 {
-                                                  
+
                                                     userAuth &&
                                                     <div className="absolute top-6 right-28">
                                                         {
-                                                        seletedUser?.appliedVacancies?.includes(item?.vacancyId) ?
-                                                            <div className="flex items-center justify-center w-[120px] box-border bg-[#1967d3] px-[10px] py-3 opacity-75 rounded-[8px] text-[#fff] cursor-not-allowed">
-                                                                {
-                                                                    (loadingAL || loadingGD) && selectedVacancy?.vacancyId === item.vacancyId ? 
-                                                                        <svg className="right-1 animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 24 24">
-                                                                            <circle className="opacity-0" cx="12" cy="12" r="10" stroke="white" strokeWidth="4"></circle>
-                                                                            <path className="opacity-90" fill="white" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                                                        </svg>
-                                                                        :
-                                                                        <span className="text-[14px] leading-none font-bold">Applied</span>
-                                                                }
-                        
-                                                            </div> :
-                                                            <div className="flex items-center justify-center w-[120px] box-border bg-[#1967d3] px-[10px] py-3 rounded-[8px] text-[#fff] hover:bg-[#0146a6] cursor-pointer" onClick={() => {setSelectedVacancy(item); setListQuestion(item.jobPreScreen); handleApplied(item.jobPreScreen, item)}} >
-                                                                {
-                                                                    (loadingAL || loadingGD) && selectedVacancy?.vacancyId === item.vacancyId ? 
-                                                                        <svg className="right-1 animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 24 24">
-                                                                            <circle className="opacity-0" cx="12" cy="12" r="10" stroke="white" strokeWidth="4"></circle>
-                                                                            <path className="opacity-90" fill="white" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                                                        </svg>
-                                                                        :
-                                                                        <span className="text-[14px] leading-none font-bold text-center">Apply now</span>
-                                                                }
-                        
-                                                            </div>
+                                                            seletedUser?.appliedVacancies?.includes(item?.vacancyId) ?
+                                                                <div className="flex items-center justify-center w-[120px] box-border bg-[#1967d3] px-[10px] py-3 opacity-75 rounded-[8px] text-[#fff] cursor-not-allowed">
+                                                                    {
+                                                                        (loadingAL || loadingGD) && selectedVacancy?.vacancyId === item.vacancyId ?
+                                                                            <svg className="right-1 animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 24 24">
+                                                                                <circle className="opacity-0" cx="12" cy="12" r="10" stroke="white" strokeWidth="4"></circle>
+                                                                                <path className="opacity-90" fill="white" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                                                            </svg>
+                                                                            :
+                                                                            <span className="text-[14px] leading-none font-bold">Applied</span>
+                                                                    }
+
+                                                                </div> :
+                                                                <div className="flex items-center justify-center w-[120px] box-border bg-[#1967d3] px-[10px] py-3 rounded-[8px] text-[#fff] hover:bg-[#0146a6] cursor-pointer" onClick={() => { setSelectedVacancy(item); setListQuestion(item.jobPreScreen); handleApplied(item.jobPreScreen, item) }} >
+                                                                    {
+                                                                        (loadingAL || loadingGD) && selectedVacancy?.vacancyId === item.vacancyId ?
+                                                                            <svg className="right-1 animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 24 24">
+                                                                                <circle className="opacity-0" cx="12" cy="12" r="10" stroke="white" strokeWidth="4"></circle>
+                                                                                <path className="opacity-90" fill="white" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                                                            </svg>
+                                                                            :
+                                                                            <span className="text-[14px] leading-none font-bold text-center">Apply now</span>
+                                                                    }
+
+                                                                </div>
                                                         }
                                                     </div>
                                                 }
-                                                <VacancyItem props={item} isAvatar={false} setFunc={setVacancies} notify={notify}/>
+                                                <VacancyItem props={item} isAvatar={false} setFunc={setVacancies} notify={notify} />
                                             </div>
                                         })
                                     }
@@ -282,7 +282,7 @@ const ProjectItem = ({ props,notify }) => {
                         <div>
                             <div className="flex flex-row items-center justify-between mx-2">
                                 <p className='block leading-8 text-gray-900 text-xl font-bold'>Prescreen Question</p>
-                                <div className="hover:bg-slate-100 rounded-sm p-2 cursor-pointer opacity-90" onClick={() => {setModal(false); setListQuestion(null)}}>
+                                <div className="hover:bg-slate-100 rounded-sm p-2 cursor-pointer opacity-90" onClick={() => { setModal(false); setListQuestion(null) }}>
                                     <IoClose size={20} />
                                 </div>
                             </div>
@@ -298,10 +298,10 @@ const ProjectItem = ({ props,notify }) => {
                                 }
                             </div>
                             <div className="flex flex-row items-center gap-2 float-right">
-                                <div className="flex items-center justify-center box-border bg-[white] border px-[18px] py-[14px] rounded-[8px] text-[#1967d3] hover:bg-[#eef1fe] hover:border-[#1967d3] cursor-pointer" onClick={() => {setListQuestion(null); setModal(false)}}>
+                                <div className="flex items-center justify-center box-border bg-[white] border px-[18px] py-[14px] rounded-[8px] text-[#1967d3] hover:bg-[#eef1fe] hover:border-[#1967d3] cursor-pointer" onClick={() => { setListQuestion(null); setModal(false) }}>
                                     <span className="text-[15px] leading-none font-bold">Close</span>
                                 </div>
-                                <button className="w-[90px] flex items-center justify-center box-border bg-[#1967d3] px-[18px] py-[14px] rounded-[8px] text-[#fff] hover:bg-[#0146a6] cursor-pointer" onClick={() => {handleApplyWithAnswers()}}>
+                                <button className="w-[90px] flex items-center justify-center box-border bg-[#1967d3] px-[18px] py-[14px] rounded-[8px] text-[#fff] hover:bg-[#0146a6] cursor-pointer" onClick={() => { handleApplyWithAnswers() }}>
                                     {
                                         loadingAL ? <svg className="right-1 animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 24 24">
                                             <circle className="opacity-0" cx="12" cy="12" r="10" stroke="white" strokeWidth="4"></circle>

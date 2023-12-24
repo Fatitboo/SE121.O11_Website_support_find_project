@@ -1,14 +1,21 @@
 import { useDispatch, useSelector } from "react-redux"
 import { CustomButton, TextInput, LoadingComponent } from "../../../../components"
 import { useEffect, useState } from "react";
-import { getUserProfileAction, updateAvatarAction, updateUserProfileAction } from "../../../../redux/slices/users/usersSlices";
+import { getUserProfileAction, resetSuccessAction, updateAvatarAction, updateUserProfileAction } from "../../../../redux/slices/users/usersSlices";
 import { AiFillExclamationCircle } from "react-icons/ai";
 import { useForm } from "react-hook-form";
+import CustomeCbbAddress from "../../../../components/Organizer/CustomeCbbAddress";
+import { ToastContainer, toast } from "react-toastify";
 
 
 function MyProfile() {
     const dispatch = useDispatch();
+    const [uProfile , setUProfile] = useState({})
+    const [adrSelected , setAdrSelected] = useState({})
+    const notify = (type, message) => toast(message, { type: type });
+
     const { register, handleSubmit, setValue, formState: { errors } } = useForm({ mode: 'onChange' });
+
     const onSubmitInfo = (data) => {
         const dt = {
             fullName: data.fullname,
@@ -25,14 +32,14 @@ function MyProfile() {
     };
     const onSubmitAddress = (data) => {
         const dt = {
-            country: data.country,
-            province: data.province,
-            district: data.district,
-            addressDetail: data.addressDetail,
-            ward: data.ward,
+            country: "Việt Nam",
+            province: adrSelected.province,
+            district: adrSelected.district,
+            addressDetail: data?.addressDetail??'',
+            ward: adrSelected.ward,
             actions: 2
         }
-        console.log(data)
+        console.log(dt)
         dispatch(updateUserProfileAction(dt));
     };
     const onSubmitSocialLink = (data) => {
@@ -52,13 +59,21 @@ function MyProfile() {
     }, [dispatch])
 
     const storeData = useSelector(store => store?.users);
-    const { userProfile, loading, appErr, isSuccess } = storeData;
+    const { userProfile, loading, appErr, isSuccess, isSuccessUpd } = storeData;
     useEffect(() => {
         if (isSuccess) {
             dispatch(getUserProfileAction())
         }
     }, [isSuccess])
     useEffect(() => {
+        if (isSuccessUpd) {
+            dispatch(resetSuccessAction())
+            notify('success', "Update user profile successfully!")
+        }
+    }, [isSuccessUpd])
+    useEffect(() => {
+        
+        setUProfile({...userProfile})
         setValue('fullname', userProfile?.fullName);
         setValue('phone', userProfile?.phoneNumber);
         setValue('email', userProfile?.email);
@@ -66,17 +81,53 @@ function MyProfile() {
         setValue('dob', convertDate(userProfile?.dayOfBirth));
         setValue('description', userProfile?.description);
         setValue('website', userProfile?.website);
-        setValue('province', userProfile?.address?.province);
-        setValue('district', userProfile?.address?.district);
-        setValue('country', userProfile?.address?.country);
+        // setValue('province', userProfile?.address?.province);
+        // setValue('district', userProfile?.address?.district);
+        // setValue('country', userProfile?.address?.country);
         setValue('addressDetail', userProfile?.address?.addressDetail);
-        setValue('ward', userProfile?.address?.ward);
+        // setValue('ward', userProfile?.address?.ward);
+        if(userProfile?.address){
+            setAdrSelected({
+                province:userProfile?.address?.province,
+                district: userProfile?.address?.district,
+                ward: userProfile?.address?.ward
+            })
+        }else{
+            setAdrSelected({
+                province:"",
+                district: "",
+                ward: ""
+            })
+        }
         setValue('facebook', userProfile?.fbLink);
         setValue('twitter', userProfile?.twLink);
         setValue('linkedin', userProfile?.lkLink);
         setValue('instagram', userProfile?.insLink);
     }, [userProfile])
+    const filterProvince = (e) => {
+        fetch(districtApi(e.code))
+        .then((res) => res.json())
+        .then((json) => {
+            setDistrict(json.districts)
+            if(adrSelected.district) adrSelected.district = ''
+            if(adrSelected.ward) adrSelected.ward = ''
+            adrSelected.province = e.name
+          
+            setAdrSelected({...adrSelected})
+        });
+    }
 
+    const filterDistrict = (e) => {
+        fetch(wardApi(e.code))
+            .then((res) => res.json())
+            .then((json) => {
+                setWard(json.wards)
+                if(adrSelected.ward) adrSelected.ward = ''
+                adrSelected.district = e.name
+              
+                setAdrSelected({...adrSelected})
+            });
+    }
     const handleUpdateAvatar = (e) => {
         const file = e.target.files[0];
         const maxSize = 5 * 1024 * 1024;
@@ -111,10 +162,46 @@ function MyProfile() {
         const formattedDate = `${year}-${month}-${day}`;
         return formattedDate
     }
+    const provinceApi = "https://provinces.open-api.vn/api/";
+    const districtApi = (code) => `https://provinces.open-api.vn/api/p/${code}?depth=2`
+    const wardApi = (code) => `https://provinces.open-api.vn/api/d/${code}?depth=2`
+    const [provinces, setProvince] = useState([])
+    const [districts, setDistrict] = useState([])
+    const [wards, setWard] = useState([])
+
+    useEffect(() => {
+        fetch(provinceApi)
+            .then((res) => res.json())
+            .then((json) => {
+                setProvince(json)
+                if(userProfile?.address){
+                    const code = Array.from(json).find(item => item.name === userProfile?.address?.province)?.code
+                    code &&
+                        fetch(districtApi(code))
+                        .then((res) => res.json())
+                        .then((json) => {
+                            const code = Array.from(json.districts).find(item => item.name === userProfile?.address?.district)?.code
+                            setDistrict(json.districts)
+                            code &&
+                                fetch(wardApi(code))
+                                .then((res) => res.json())
+                                .then((json) => {
+                                    setWard(json.wards)
+                                });
+                        });
+                }
+                else{
+                    setDistrict([])
+                    setWard([])
+                }
+            });
+
+    }, [userProfile])
     return (
         <div className="px-10 pb-0">
             {/* Start title of page  */}
             {loading && <LoadingComponent />}
+            <ToastContainer/>
             <div className="mb-8">
                 <h3 className="font-medium text-3xl text-gray-900 mb-2 leading-10">My Profile!</h3>
                 <div className="text-sm leading-6 font-normal m-0 right-0 flex justify-between items-center ">Ready to jump back in?</div>
@@ -142,30 +229,30 @@ function MyProfile() {
 
                                 <div className="grid grid-cols-2 pb-4">
                                     <div className="px-4 mb-6">
-                                        <TextInput value={userProfile?.fullName} name='fullname' register={register("fullname")} type='text' label='Full Name' placeholder='Nguyen Van Phat' styles='bg-[#f0f5f7]' />
+                                        <TextInput value={uProfile?.fullName} name='fullname' register={register("fullname")} type='text' label='Full Name' placeholder='Nguyen Van Phat' styles='bg-[#f0f5f7]' />
                                     </div>
                                     <div className="px-4 mb-6">
-                                        <TextInput value={userProfile?.expectSalary} name='expectSalary' register={register("expectSalary")} type='text' label='Expect Salary ($/hour)' placeholder='100' styles='bg-[#f0f5f7]' />
+                                        <TextInput value={uProfile?.expectSalary} name='expectSalary' register={register("expectSalary")} type='text' label='Expect Salary ($/hour)' placeholder='100' styles='bg-[#f0f5f7]' />
                                     </div>
                                     <div className="px-4 mb-6">
-                                        <TextInput value={userProfile?.phoneNumber} name='phone' register={register("phone")} type='text' label='Phone' placeholder='0367625416' styles='bg-[#f0f5f7]' />
+                                        <TextInput value={uProfile?.phoneNumber} name='phone' register={register("phone")} type='text' label='Phone' placeholder='0367625416' styles='bg-[#f0f5f7]' />
                                     </div>
                                     <div className="px-4 mb-6">
-                                        <TextInput value={userProfile?.email} name='email' register={register("email")} type='email' label='Email' placeholder='vanphat@gmail.com' styles='bg-[#f0f5f7]' />
+                                        <TextInput value={uProfile?.email} name='email' register={register("email")} type='email' label='Email' placeholder='vanphat@gmail.com' styles='bg-[#f0f5f7]' />
                                     </div>
                                     <div className="px-4 mb-6">
                                         <label htmlFor="dob" className="block leading-8 text-gray-900 font-medium">Date of birth</label>
                                         <div className="relative mt-2 rounded-md shadow-sm ">
-                                            <input defaultValue={convertDate(userProfile?.dayOfBirth)} type="date" {...register('dob')} name="dob" id="dob" className="block bg-[#f0f5f7] focus:bg-white text-base w-full rounded-md border-0 pt-2 pb-1.5 pl-5 pr-5 text-gray-900 ring-1 ring-inset focus:ring-4 focus:ring-[#8DB3FB] ring-gray-300 placeholder:text-gray-400  sm:text-base sm:leading-8" />
+                                            <input defaultValue={convertDate(uProfile?.dayOfBirth)} type="date" {...register('dob')} name="dob" id="dob" className="block bg-[#f0f5f7] focus:bg-white text-base w-full rounded-md border-0 pt-2 pb-1.5 pl-5 pr-5 text-gray-900 ring-1 ring-inset focus:ring-4 focus:ring-[#8DB3FB] ring-gray-300 placeholder:text-gray-400  sm:text-base sm:leading-8" />
                                         </div>
                                     </div>
                                     <div className="px-4 mb-6">
-                                        <TextInput value={userProfile?.website} name='website' register={register("website")} type='text' label='Website' placeholder='www.vanan.com' styles='bg-[#f0f5f7]' />
+                                        <TextInput value={uProfile?.website} name='website' register={register("website")} type='text' label='Website' placeholder='www.vanan.com' styles='bg-[#f0f5f7]' />
                                     </div>
                                     <div className="col-span-2 px-4 mb-6">
                                         <label htmlFor="description" className="block leading-8 text-gray-900 font-medium ">Description</label>
                                         <div className="relative mt-2 rounded-md shadow-sm ">
-                                            <textarea defaultValue={userProfile?.description} rows={8} {...register('description')} type="text" name="description" id="description" className="block bg-[#f0f5f7] focus:bg-white text-base w-full rounded-md border-0 py-2.5 pl-5 pr-5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400  sm:text-base sm:leading-8" placeholder="Spent several years working on sheep on Wall Street. Had moderate success investing in Yugo's on Wall Street. Managed a small team buying and selling Pogo sticks for farmers. Spent several years licensing licorice in West Palm Beach, FL. Developed several new methods for working it banjos in the aftermarket. Spent a weekend importing banjos in West Palm Beach, FL.In this position, the Software Engineer collaborates with Evention's Development team to continuously enhance our current software solutions as well as create new solutions to eliminate the back-office operations and management challenges present" />
+                                            <textarea defaultValue={uProfile?.description} rows={8} {...register('description')} type="text" name="description" id="description" className="block bg-[#f0f5f7] focus:bg-white text-base w-full rounded-md border-0 py-2.5 pl-5 pr-5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400  sm:text-base sm:leading-8" placeholder="Spent several years working on sheep on Wall Street. Had moderate success investing in Yugo's on Wall Street. Managed a small team buying and selling Pogo sticks for farmers. Spent several years licensing licorice in West Palm Beach, FL. Developed several new methods for working it banjos in the aftermarket. Spent a weekend importing banjos in West Palm Beach, FL.In this position, the Software Engineer collaborates with Evention's Development team to continuously enhance our current software solutions as well as create new solutions to eliminate the back-office operations and management challenges present" />
                                         </div>
                                     </div>
                                     {
@@ -184,16 +271,16 @@ function MyProfile() {
                             <form onSubmit={handleSubmit(onSubmitSocialLink)} className="relative">
                                 <div className="grid grid-cols-2">
                                     <div className="px-4 mb-6">
-                                        <TextInput name='facebook' value={userProfile?.facebook} register={register("facebook")} type='text' label='Facebook' placeholder='www.facebook.com/Nguyenvana' styles='bg-[#f0f5f7]' />
+                                        <TextInput name='facebook' value={uProfile?.facebook} register={register("facebook")} type='text' label='Facebook' placeholder='www.facebook.com/Nguyenvana' styles='bg-[#f0f5f7]' />
                                     </div>
                                     <div className="px-4 mb-6">
-                                        <TextInput name='twitter' value={userProfile?.twitter} register={register("twitter")} type='text' label='Twitter' placeholder='www.twitter.com/@Nguyenvana' styles='bg-[#f0f5f7]' />
+                                        <TextInput name='twitter' value={uProfile?.twitter} register={register("twitter")} type='text' label='Twitter' placeholder='www.twitter.com/@Nguyenvana' styles='bg-[#f0f5f7]' />
                                     </div>
                                     <div className="px-4 mb-6">
-                                        <TextInput name='linkedin' value={userProfile?.linkedin} register={register("linkedin")} type='text' label='Linkedin' placeholder='www.linkedin.com/Nguyenvana' styles='bg-[#f0f5f7]' />
+                                        <TextInput name='linkedin' value={uProfile?.linkedin} register={register("linkedin")} type='text' label='Linkedin' placeholder='www.linkedin.com/Nguyenvana' styles='bg-[#f0f5f7]' />
                                     </div>
                                     <div className="px-4 mb-6">
-                                        <TextInput name='instagram' value={userProfile?.instagram} register={register("instagram")} type='text' label='Instagram' placeholder='www.instagram.com/Nguyenvana' styles='bg-[#f0f5f7]' />
+                                        <TextInput name='instagram' value={uProfile?.instagram} register={register("instagram")} type='text' label='Instagram' placeholder='www.instagram.com/Nguyenvana' styles='bg-[#f0f5f7]' />
                                     </div>
                                     {
                                         loading ?
@@ -211,18 +298,15 @@ function MyProfile() {
                             <form onSubmit={handleSubmit(onSubmitAddress)} className="relative">
                                 <div className="grid grid-cols-2">
                                     <div className="px-4 mb-6">
-                                        <TextInput name='country' value={userProfile?.address?.country} register={register("country")} type='text' label='Country' placeholder='Australia' styles='bg-[#f0f5f7]' />
+                                        <CustomeCbbAddress listItem={provinces} labelItemSelected={adrSelected.province} placeHolder={'Select province'} label={'Province'} filterValueSelected={filterProvince}/>
                                     </div>
                                     <div className="px-4 mb-6">
-                                        <TextInput name='province' value={userProfile?.address?.province} register={register("province")} type='text' label='Province' placeholder='Ho Chi Minh' styles='bg-[#f0f5f7]' />
+                                        <CustomeCbbAddress listItem={districts} labelItemSelected={adrSelected.district} placeHolder={'Select district'} label={'District'} filterValueSelected={filterDistrict}/>
                                     </div>
                                     <div className="px-4 mb-6">
-                                        <TextInput name='district' value={userProfile?.address?.district} register={register("district")} type='text' label='District' placeholder='Thu Duc' styles='bg-[#f0f5f7]' />
+                                        <CustomeCbbAddress listItem={wards} labelItemSelected={adrSelected.ward} placeHolder={'Select ward'} label={'Ward'} filterValueSelected={(e)=>{setAdrSelected(prev=>({...prev, ward: e.name }))}}/>
                                     </div>
-                                    <div className="px-4 mb-6">
-                                        <TextInput name='ward' value={userProfile?.address?.ward} register={register("ward")} type='text' label='Ward' placeholder='Di An' styles='bg-[#f0f5f7]' />
-                                    </div>
-                                    <div className="px-4 mb-6 col-span-2">
+                                    <div className="px-4 mb-6 ">
                                         <TextInput name='addressDetail' value={userProfile?.address?.addressDetail} register={register("addressDetail")} type='text' label='Address Detail' placeholder='...' styles='bg-[#f0f5f7]' />
                                     </div>
 

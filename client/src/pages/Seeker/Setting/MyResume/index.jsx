@@ -7,14 +7,16 @@ import AddEducation from "./AddEducation";
 import AddSkill from "./AddSkill";
 import AddAward from "./AddAward";
 import { useDispatch, useSelector } from "react-redux";
-import { getUserResumeAction, setSltCv, updateUserResumeAction } from "../../../../redux/slices/users/usersSlices";
+import { getUserResumeAction, resetSuccessAction, setSltCv, updateUserResumeAction } from "../../../../redux/slices/users/usersSlices";
 import { useForm } from "react-hook-form";
 import BackgroundItem from "../../../../components/Seeker/BackgroundItem";
 import { v4 as uuidv4 } from 'uuid';
 import axios from "axios";
 import baseUrl from "../../../../utils/baseUrl";
+import { ToastContainer, toast } from "react-toastify";
 
 function MyResume() {
+    const notify = (type, message) => toast(message, { type: type });
 
     const dispatch = useDispatch();
     const [OccupationCbb, setOccuaptionCbb] = useState([]);
@@ -42,7 +44,7 @@ function MyResume() {
         dispatch(getUserResumeAction())
     }, [dispatch])
     const storeData = useSelector(store => store?.users);
-    const { userResume, loading, appErr, isSuccess, userAuth } = storeData;
+    const { userResume, loading, appErr, isSuccess, userAuth ,isSuccessUpd} = storeData;
     const getAllCvLink = async () => {
         const config = {
             headers: {
@@ -69,11 +71,15 @@ function MyResume() {
     useEffect(() => {
         if (isSuccess) {
             // setValue('descriptionJob', userResume?.jobDes)
-
             dispatch(getUserResumeAction())
         }
     }, [isSuccess])
-
+    useEffect(() => {
+        if (isSuccessUpd) {
+            dispatch(resetSuccessAction())
+            notify('success', "Update user profile successfully!")
+        }
+    }, [isSuccessUpd])
     const getAllOccupation = async () => {
         const config = {
             headers: {
@@ -217,6 +223,7 @@ function MyResume() {
         <div className="px-10 pb-20">
             {/* Start title of page  */}
             {loading && <LoadingComponent />}
+            <ToastContainer/>
             <div className="mb-8">
                 <h3 className="font-medium text-3xl text-gray-900 mb-2 leading-10">My Resume!</h3>
                 <div className="text-sm leading-6 font-normal m-0 right-0 flex justify-between items-center ">Ready to jump back in?</div>

@@ -61,6 +61,7 @@ public class User implements UserDetails {
 
     private String tokenVerify;
     private LocalDateTime expiredDateTokenVerify;
+
     // Seeker
     private String expectSalary;
     private SkillUser[] skillUsers;
@@ -75,6 +76,7 @@ public class User implements UserDetails {
     private List<Notification> notifications;
     private List<String> favoriteProjects;
     private List<String> favoriteVacancies;
+
     // Organizer
     private String teamSize;
     private String[] fields;

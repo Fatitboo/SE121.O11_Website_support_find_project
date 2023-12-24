@@ -126,6 +126,29 @@ public class ProjectService {
 
         return listProjects;
     }
+    public List<Project> getAllProjectUserRecommend(String id) throws Exception {
+        Optional<User> userOptional = userRepository.findById(new ObjectId(id));
+        if(userOptional.isEmpty()){
+            throw new DataIntegrityViolationException("Error when get user in database");
+        }
+        User user = userOptional.get();
+
+        List<Project> listProjects = new ArrayList<>();
+
+        List<String> listProjectIds = user.getProjects();
+        if(listProjectIds != null)
+            for (String listProjectId : listProjectIds) {
+                Optional<Project> projectOptional = projectRepository.findById(new ObjectId(listProjectId));
+                if (projectOptional.isEmpty()) {
+                    throw new DataIntegrityViolationException("Error when get project in database");
+                }
+                Project project = projectOptional.get();
+                if(project.getStatus().equals("approved"))
+                    listProjects.add(project);
+            }
+
+        return listProjects;
+    }
 
     public HashMap<String, Object> getProjectInfo(String projectId) throws Exception {
         Optional<Project> projectOptional = projectRepository.findById(new ObjectId(projectId));
@@ -305,7 +328,6 @@ public class ProjectService {
 
         return result;
     }
-
     public List<User> getParticipantsProject (String projectId){
         Optional<Project> projectOptional = projectRepository.findById(new ObjectId(projectId));
         if(projectOptional.isEmpty())   throw new DataIntegrityViolationException("Error when get project in database");

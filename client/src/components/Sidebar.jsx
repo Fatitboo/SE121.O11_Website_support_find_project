@@ -122,19 +122,19 @@ function Sidebar({user}) {
                             <div className={classNames(isActive === 'My Profile' ? 'bg-[#E9EFFB] text-blue-600' : '', itemStyle)}>
                                 <Link onClick={()=>dispatch(isActiveSidebarAction('My Profile'))} to="/Seeker/my-profile" className="relative text-sm text-center p-3 flex items-center leading-7 font-normal  capitalize rounded-lg ">
                                     <MdOutlineFactCheck className='relative mr-4 ml-4 text-2xl text-center ' />
-                                    My Profile
+                                    Edit Profile
                                 </Link>
                             </div>
                             <div className={classNames(isActive === 'My Resume' ? 'bg-[#E9EFFB] text-blue-600' : '', itemStyle)}>
                                 <Link onClick={()=>dispatch(isActiveSidebarAction('My Resume'))} to="/Seeker/my-resume" className="relative text-sm text-center p-3 flex items-center leading-7 font-normal  capitalize rounded-lg ">
                                     <FiUsers className='relative mr-4 ml-4 text-2xl text-center ' />
-                                    My Resume
+                                    Edit Resume
                                 </Link>
                             </div>
                             <div className={classNames(isActive === 'CV Manager' ? 'bg-[#E9EFFB] text-blue-600' : '', itemStyle)}>
                                 <Link onClick={()=>dispatch(isActiveSidebarAction('CV Manager'))} to="/Seeker/cv-manager" className="relative text-sm text-center p-3 flex items-center leading-7 font-normal  capitalize rounded-lg ">
                                     <GrWorkshop className='relative mr-4 ml-4 text-2xl text-center ' />
-                                    CV Manager
+                                    CV Manage
                                 </Link>
                             </div>
                             <div className={classNames(isActive === 'ShortListed Organizer' ? 'bg-[#E9EFFB] text-blue-600' : '', itemStyle)}>
@@ -158,7 +158,7 @@ function Sidebar({user}) {
                             <div className={classNames(isActive === 'Applied Jobs' ? 'bg-[#E9EFFB] text-blue-600' : '', itemStyle)}>
                                 <Link onClick={()=>dispatch(isActiveSidebarAction('Applied Jobs'))} to="/Seeker/applied-jobs" className="relative text-sm text-center p-3 flex items-center leading-7 font-normal  capitalize rounded-lg ">
                                     <LuNetwork className='relative mr-4 ml-4 text-2xl text-center ' />
-                                    Applied Jobs
+                                    Applied Vacancies
                                 </Link>
                             </div>
                             <div className={classNames(isActive === 'Change password' ? 'bg-[#E9EFFB] text-blue-600' : '', itemStyle)}>
@@ -181,7 +181,7 @@ function Sidebar({user}) {
                             <div className={classNames(isActive === 'Post a job' ? 'bg-[#E9EFFB] text-blue-600' : '', postJobStyle)}>
                                 <Link onClick={()=>{dispatch(createVacancyId({"userId": userAuth?.userId, "avatar": userAuth?.avatar?.fileUrl, "fullName": userAuth?.fullName}))}} className="relative text-sm text-center p-3  flex items-center leading-7 font-normal rounded-lg ">
                                     <HiPlus className='relative mr-4 ml-4 text-2xl text-center ' />
-                                    Post a job
+                                    Post a Vacancy
                                 </Link>
                             </div>
                             <div className={classNames(isActive === 'Dashboard' ? 'bg-[#E9EFFB] text-blue-600' : '', itemStyle)}>
@@ -193,7 +193,7 @@ function Sidebar({user}) {
                             <div className={classNames(isActive === 'Company Profile' ? 'bg-[#E9EFFB] text-blue-600' : '', itemStyle)}>
                                 <Link onClick={()=>dispatch(isActiveSidebarAction('Company Profile'))} to="/Organizer/company-profile-edit" className="relative text-sm text-center p-3 flex items-center leading-7 font-normal  capitalize rounded-lg ">
                                     <MdOutlineFactCheck className='relative mr-4 ml-4 text-2xl text-center ' />
-                                    Company Profile
+                                    Edit Profile
                                 </Link>
                             </div>
                             <div className={classNames(isActive === 'Manage Vacancy' ? 'bg-[#E9EFFB] text-blue-600' : '', itemStyle)}>

@@ -1,12 +1,12 @@
 package dev.projectFinder.server.controllers;
 
 import dev.projectFinder.server.components.CVLink;
+import dev.projectFinder.server.components.Payment.PaymentProjectDetail;
+import dev.projectFinder.server.components.Recommend;
 import dev.projectFinder.server.components.Vacancy.JobPreScreen;
+import dev.projectFinder.server.components.Vacancy.UserInfo;
 import dev.projectFinder.server.dtos.*;
-import dev.projectFinder.server.models.History;
-import dev.projectFinder.server.models.UnCompletedVacancy;
-import dev.projectFinder.server.models.User;
-import dev.projectFinder.server.models.Vacancy;
+import dev.projectFinder.server.models.*;
 import dev.projectFinder.server.repositories.HistoryRepository;
 import dev.projectFinder.server.repositories.UnCompletedVacancyRepository;
 import dev.projectFinder.server.repositories.UserRepository;
@@ -15,6 +15,7 @@ import dev.projectFinder.server.responses.UserProfileResponse;
 import dev.projectFinder.server.responses.UserResponse;
 import dev.projectFinder.server.responses.UserResumeResponse;
 import dev.projectFinder.server.services.EmailService;
+import dev.projectFinder.server.services.ProjectService;
 import dev.projectFinder.server.services.UserServices;
 import dev.projectFinder.server.services.VacancyServices;
 import dev.projectFinder.server.utils.MessageKeys;
@@ -51,6 +52,7 @@ public class UserController {
     private final VacancyRepository vacancyRepository;
     private final UnCompletedVacancyRepository unCompletedVacancyRepository;
     private final VacancyServices vacancyServices;
+    private final ProjectService projectService;
 
     //  localhost:8088/api/v1/users/register/page=5&record=10
     @PostMapping("/register")
@@ -108,33 +110,56 @@ public class UserController {
     public ResponseEntity<?> updateUserInformation(@PathVariable String id, @RequestBody UserInforDTO userInforDTO) {
         HashMap<String, Object> response = new HashMap<>();
         try {
+            if(userInforDTO.getActions()==0){
+                response.put("message", "Action is not null");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+            }
             if (userInforDTO.getActions() == 1) {
                 userServices.updateSocialLink(id, userInforDTO);
                 response.put("message", MessageKeys.UPDATE_SOCIAL_LINK_SUCCESSFULLY);
-                return ResponseEntity.ok(response);
             }
             if (userInforDTO.getActions() == 2) {
                 userServices.updateAddress(id, userInforDTO);
                 response.put("message", MessageKeys.UPDATE_ADDRESS_SUCCESSFULLY);
-                return ResponseEntity.ok(response);
             }
             if (userInforDTO.getActions() == 3) {
                 userServices.updateUserInformation(id, userInforDTO);
                 response.put("message", MessageKeys.UPDATE_INFORMATION_SUCCESSFULLY);
-                return ResponseEntity.ok(response);
             }
             if (userInforDTO.getActions() == 4) {
                 userServices.updateCompanyFields(id, userInforDTO);
                 response.put("message", "Update company field successfully!");
-                return ResponseEntity.ok(response);
+
+            }
+            User user = userServices.getUserDetail(id);
+            UserProfileResponse userProfileResponse = UserProfileResponse.builder()
+                    .avatar(user.getAvatar())
+                    .fullName(user.getFullName())
+                    .phoneNumber(user.getPhoneNumber())
+                    .email(user.getEmail())
+                    .dayOfBirth(user.getDayOfBirth())
+                    .website(user.getWebsite())
+                    .description(user.getDescription())
+                    .fbLink(user.getFbLink())
+                    .twLink(user.getTwLink())
+                    .insLink(user.getInsLink())
+                    .lkLink(user.getLkLink())
+                    .address(user.getAddress())
+                    .build();
+            if (user.getUserType().equals("seeker")) {
+                userProfileResponse.setExpectSalary(user.getExpectSalary());
+            } else {
+                userProfileResponse.setTeamSize(user.getTeamSize());
+                userProfileResponse.setFields(user.getFields());
             }
 
+            response.put("userProfile", userProfileResponse);
+            return ResponseEntity.ok(response);
         } catch (Exception e) {
             response.put("message", e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
-        response.put("message", "Action is not null");
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+
 
     }
 
@@ -586,29 +611,113 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
     }
+    @GetMapping("/get-projects-vacancies-to-invite/{id}")
+    public ResponseEntity<?> getProjectsVacanciesToInvite(@PathVariable String id) {
+        HashMap<String, Object> response = new HashMap<>();
+        try {
+            List<Vacancy> vacancyList = vacancyServices.getAllVacanciesUserRecommend(id);
+            List<Project> projects = projectService.getAllProjectUserRecommend(id);
+
+            List<Recommend> recommends = new ArrayList<>();
+            if(vacancyList!=null){
+                for(Vacancy v : vacancyList){
+                    recommends.add(new Recommend(v.getVacancyId().toString(), v.getVacancyName(), v.getTimeLength()+" "+v.getTimePeriod(), v.getSkillsRequired(), "vacancy"));
+                }
+            }
+            if(projects!=null){
+                for(Project v : projects){
+                    recommends.add(new Recommend(v.getProjectId().toString(), v.getProjectName(), v.getDuration()+" "+v.getPeriod(), v.getOccupations(),"project"));
+                }
+            }
+            response.put("message", "Get all recommend successfully");
+            response.put("recommends",recommends);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        } catch (Exception e) {
+            response.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+    }
     @GetMapping("/get-all-histories")
     public ResponseEntity<?> getAllHistories() {
         HashMap<String, Object> response = new HashMap<>();
         try {
             List<History> histories = userServices.getAllHistoryTransaction();
+            List<HistoryDTO> historyDTOS = new ArrayList<>();
             for(History h : histories){
-                
-                HistoryDTO historyDTO =  HistoryDTO.builder()
-                        .historyId(h.getHistoryId())
-                        .cart(h.getCart())
-                        .create_time(h.getCreate_time())
-                        .id(h.getId())
-                        .intent(h.getIntent())
-                        .payer(h.getPayer())
-                        .state(h.getState())
-                        .transactions(h.getTransactions())
-                        .update_time(h.getUpdate_time())
-                        .response(h.getResponse())
-                        .vacancy(h.getVacancy())
-                        .build();
+                if(h.getProject()!=null){
+                    Project p = h.getProject();
+                    List<VacancyHistoryDTO> vacancyHistoryDTOList = new ArrayList<>();
+                    List<PaymentProjectDetail> paymentProjectDetails = p.getDetail();
+                    if(paymentProjectDetails==null) paymentProjectDetails = new ArrayList<>();
+                    for(PaymentProjectDetail ppd : paymentProjectDetails) {
+                        Optional<Vacancy> ov = vacancyRepository.findById(new ObjectId(ppd.getVacancyId()));
+                        if(ov.isPresent()){
+                            Vacancy v = ov.get();
+                            VacancyHistoryDTO vhDTO = VacancyHistoryDTO.builder()
+                                    .vacancyId(v.getVacancyId())
+                                    .vacancyName(v.getVacancyName())
+                                    .maxRequired(v.getMaxRequired())
+                                    .location(v.getLocation())
+                                    .locationType(v.getLocationType())
+                                    .createdAt(v.getCreatedAt())
+                                    .hiringTimeline(v.getHiringTimeline())
+                                    .paymentAmount((float) (ppd.getMaxRequired()*ppd.getBaseMoney()))
+                                .build();
+                            vacancyHistoryDTOList.add(vhDTO);
+                        }
+                    }
+                    ProjectHistoryDTO phDTo = ProjectHistoryDTO.builder()
+                            .projectId(p.getProjectId())
+                            .projectName(p.getProjectName())
+                            .startDate(p.getStartDate())
+                            .duration(p.getDuration())
+                            .period(p.getPeriod())
+                            .maxParticipants(p.getMaxParticipants())
+                            .budget(p.getBudget())
+                            .createdAt(p.getCreatedAt())
+                            .vacancies(vacancyHistoryDTOList)
+                            .build();
+                    Optional<User> uopt = userRepository.findById(p.getUserId());
+
+
+                    HistoryDTO historyDTO =  HistoryDTO.builder()
+                            .historyId(h.getHistoryId())
+                            .cart(h.getCart())
+                            .create_time(h.getCreate_time())
+                            .id(h.getId())
+                            .intent(h.getIntent())
+                            .payer(h.getPayer())
+                            .state(h.getState())
+                            .transactions(h.getTransactions())
+                            .update_time(h.getUpdate_time())
+                            .response(h.getResponse())
+                            .vacancy(h.getVacancy())
+                            .project(phDTo)
+                            .userInfo(new UserInfo(p.getUserId().toString(), uopt.get().getAvatar().getFileUrl(), uopt.get().getFullName()))
+                            .build();
+                    historyDTOS.add(historyDTO);
+                }
+                else {
+                    HistoryDTO historyDTO =  HistoryDTO.builder()
+                            .historyId(h.getHistoryId())
+                            .cart(h.getCart())
+                            .create_time(h.getCreate_time())
+                            .id(h.getId())
+                            .intent(h.getIntent())
+                            .payer(h.getPayer())
+                            .state(h.getState())
+                            .transactions(h.getTransactions())
+                            .update_time(h.getUpdate_time())
+                            .response(h.getResponse())
+                            .vacancy(h.getVacancy())
+                            .project(null)
+                            .userInfo(h.getVacancy().getUserInfo())
+                            .build();
+                    historyDTOS.add(historyDTO);
+                }
             }
             response.put("message", "Get all histories successfully");
-            response.put("histories", histories);
+            response.put("histories", historyDTOS);
             return ResponseEntity.status(HttpStatus.OK).body(response);
         } catch (Exception e) {
             response.put("message", e.getMessage());
@@ -635,6 +744,18 @@ public class UserController {
         try {
             userServices.applyVacancy(id, vacancyId);
             response.put("message", "Your applied has been send to corporator!");
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        } catch (Exception e) {
+            response.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+    }
+    @PostMapping("/send-mail-recommend/{id}")
+    public ResponseEntity<?> sendMailRecommend(@PathVariable String id, @RequestParam("recommendId") String recommendId, @RequestParam("recommendType") String recommendType, @RequestParam("seekerId") String seekerId) {
+        HashMap<String, Object> response = new HashMap<>();
+        try {
+            userServices.sendRecommendEmail(id, recommendId, seekerId, recommendType);
+            response.put("message", "Your recommend email has been send to this seeker!");
             return ResponseEntity.status(HttpStatus.OK).body(response);
         } catch (Exception e) {
             response.put("message", e.getMessage());

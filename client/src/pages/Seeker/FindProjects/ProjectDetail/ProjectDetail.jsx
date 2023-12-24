@@ -89,7 +89,7 @@ function ProjectDetailSeeker() {
                             {
                                 loading ?
                                     <div className="animate-pulse h-6 w-[300px] bg-slate-200 rounded-full col-span-2 my-[8px]"></div>
-                                    : <div className="flex flex-row text-[14px] font-thin my-[8px]">
+                                    : <div className="flex flex-row text-[14px] font-light my-[8px]">
                                         <span className="mr-7 text-[#1967d2] font-normal">{corInfo?.fullName ?? "Not information"}</span>
                                         <span className="flex flex-row items-center mr-7"><BiTimeFive className="w-[18px] h-[18px] mr-1" />{project?.duration} months</span>
                                         <span className="flex flex-row items-center mr-7"><GoHourglass className="w-[18px] h-[18px] mr-1" />{project?.startDate.split("-").reverse().reduce((total, item) => total !== "" ? total + "/" + item : total + item, "")}</span>

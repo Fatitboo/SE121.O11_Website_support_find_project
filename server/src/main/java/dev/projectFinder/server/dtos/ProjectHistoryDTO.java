@@ -20,7 +20,6 @@ public class ProjectHistoryDTO {
     @JsonSerialize(using = ToStringSerializer.class)
     private ObjectId projectId;
     private String projectName;
-    @JsonFormat(pattern = "yyyy-MM-dd")
     private Date startDate;
     private String duration;
     private String period;

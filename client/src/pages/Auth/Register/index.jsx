@@ -51,7 +51,7 @@ function Register() {
             })
         }
     },[isSuccess])
-
+    
     return (<>
         {loading && <LoadingComponent />}
        
@@ -61,15 +61,15 @@ function Register() {
             <div className="w-[418px] flex items-center flex-col">
                 <div className="text-sm text-blue-700">Register!</div>
                 <div className="text-4xl font-bold mt-3 mb-2">Start for free Today</div>
-                <div className="text-sm mb-8 text-[#6c757d]">Access to all features. No credit card required.</div>
-                <CustomButton title={'Sign up with Google'} containerStyles={'flex justify-center py-3 rounded items-center font-medium border border-[#ccc] w-full mb-5'}>
+                <div className="text-sm mb-5 text-[#6c757d]">Access to all features. No credit card required.</div>
+                {/* <CustomButton title={'Sign up with Google'} containerStyles={'flex justify-center py-3 rounded items-center font-medium border border-[#ccc] w-full mb-5'}>
                     <img src="https://jobbox-nextjs-v3.vercel.app/assets/imgs/template/icons/icon-google.svg" alt="logo Google" className="mr-1" />
                 </CustomButton>
                 <div className="flex w-full items-center ">
                     <div className="h-[0.5px] w-[32%] bg-[#ccc]"></div>
                     <div className="w-[35%] flex justify-center font-light text-[#05264e] text-base">Or continue with</div>
                     <div className="h-[0.5px] w-[33%] bg-[#ccc]"></div>
-                </div>
+                </div> */}
                 <form className="mt-2 w-full" onSubmit={handleSubmit(onSubmit)}>
                     <div className="w-full flex items-center justify-center py-4">
                         <div onClick={() => setAccountType('seeker')} className={`flex cursor-pointer mr-1 px-4 py-3 rounded outline-none ${accountType === 'seeker' ? 'bg-[#1d4fd862] text-blue-900 font-semibold' : 'bg-white border border-blue-400'}`}>Seeker Account</div>

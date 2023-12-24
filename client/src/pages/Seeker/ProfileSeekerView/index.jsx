@@ -3,32 +3,25 @@ import { PiMapPin } from "react-icons/pi";
 import { MoneyIcon, CalendarIcon, ExpiryIcon, RateIcon, SalaryIcon, UserIcon, DegreeIcon } from "../../../assets/icons";
 import { AiOutlineClockCircle } from "react-icons/ai";
 import BackgroundItem from "../../../components/Seeker/BackgroundItem";
-import { BiBookmark, BiLogoFacebook, BiLogoInstagram, BiLogoTwitter } from "react-icons/bi";
+import {  BiLogoFacebook, BiLogoInstagram, BiLogoTwitter } from "react-icons/bi";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
-import { getAllRecommnendSeekerAction, getDetailUserAction, resetSuccessAction, sendRecommendSeekerAction, updateShortlistedUsersAction } from "../../../redux/slices/users/usersSlices";
-import { CustomButton, LoadingComponent, Modal } from "../../../components";
+import { getDetailUserAction, resetSuccessAction } from "../../../redux/slices/users/usersSlices";
+import { LoadingComponent } from "../../../components";
 import { DegreesCbb } from "../../../utils/data";
-import { BsBookmarkCheckFill } from "react-icons/bs";
 import { ToastContainer, toast } from "react-toastify";
 import { ArrowLeftIcon } from "@heroicons/react/20/solid";
-import { CgClose } from "react-icons/cg";
-import CustomRadioBtnRecommendsx from "../../../components/Organizer/CustomRadioBtnRecommend.jsx";
 
-function SeekerProfile() {
+function ProfileSeekerView() {
     const { id } = useParams();
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const [modal, setModal] = useState(false)
-    const [recommendId, setRecommendId] = useState('')
-    const [recommendType, setRecommendType] = useState('')
-
     const notify = (type, message) => toast(message, { type: type });
     useEffect(() => {
         dispatch(getDetailUserAction(id))
     }, [dispatch])
     const storeData = useSelector(store => store?.users);
-    const { loading, appErr, seletedUser, isSuccess, loadingRCM, recommends,isSuccessSendMail } = storeData;
+    const { loading, appErr, seletedUser, isSuccess } = storeData;
     const [sltSeeker, setSltSeeker] = useState({})
     const { userAuth } = useSelector(store => store.users);
 
@@ -42,16 +35,7 @@ function SeekerProfile() {
             notify('success', 'Update shorted list users successfully!')
         }
     }, [isSuccess])
-    useEffect(() => {
-        if (isSuccessSendMail) {
-            dispatch(resetSuccessAction());
-            setRecommendId(-1)
-            setRecommendType('')
-            setModal(false)
-            notify('success', 'Send recommend email to seeker successfully!')
-        }
-    }, [isSuccessSendMail])
-    
+
     function getEducateList(Educations) {
         if (!Educations) return;
         const reversedArray = [...Educations].reverse();
@@ -129,47 +113,7 @@ function SeekerProfile() {
         const yearEx = maxYear - minYear;
         return (yearEx - 1) + ' - ' + (yearEx + 1) + ' Years'
     }
-    const linkCV = () => {
-        var publicId = '';
-        var name = ''
-        sltSeeker?.cvLinks.forEach(item => {
-            if (item.isDefault) { publicId = item.publicId; name = item.filename }
-        })
-        return { publicId, name: name }
-    }
-    const handleUpdateShortListed = () => {
-        dispatch(updateShortlistedUsersAction(id));
-    }
-    const handleDownloadClick = () => {
-        const obj = { ...linkCV() }
-        var arr = []
-        if (obj.name.includes('.')) {
-            arr = obj.name.split('.')
-        }
-        const fileUrl = `https://res.cloudinary.com/dvnxdtrzn/raw/upload/f_auto/fl_attachment:CV_Seeker_${obj.publicId.slice(18)}${arr[arr.length - 1]}/v1700816040/${obj.publicId}`;
 
-        // Tạo một phần tử a ẩn
-        const hiddenLink = document.createElement('a');
-        hiddenLink.style.display = 'none';
-        document.body.appendChild(hiddenLink);
-
-        // Đặt thuộc tính tải xuống và tên file
-        hiddenLink.href = fileUrl;
-
-
-        // Kích hoạt sự kiện click để bắt đầu tải xuống
-        hiddenLink.click();
-
-        // Loại bỏ phần tử a ẩn khỏi DOM
-        document.body.removeChild(hiddenLink);
-    };
-    const checkFavourite = () => {
-        const userId = userAuth?.user?.userId;
-        var isFvr = false;
-        if (!sltSeeker?.favouriteUser) return isFvr;
-        if (sltSeeker?.favouriteUser?.filter(item => item === userId).length === 1) isFvr = true;
-        return isFvr;
-    }
     const convertAddress = (string) => {
         var str = 'Not infor'
         if (string?.includes('Thành phố ')) {
@@ -179,19 +123,6 @@ function SeekerProfile() {
             str = string.slice(5)
         }
         return str
-    }
-    const handleCheckRecommned = (e) => {
-        setRecommendId(e.recommendId)
-        setRecommendType(e.recommendType)
-    }
-    const handleSendEmailToSeeker = () => {
-        console.log(recommendId, recommendType, id)
-        const dt ={
-            recommendId: recommendId,
-            recommendType:recommendType,
-            seekerId: id
-        }
-        dispatch(sendRecommendSeekerAction(dt))
     }
     return (<>
         {loading && <LoadingComponent />}
@@ -293,32 +224,6 @@ function SeekerProfile() {
                 </div>
                 {/* category */}
                 <div className="col-span-4">
-
-                    {/* save and download cv  */}
-                    <div className="flex flex-row mb-5">
-                        {
-                            sltSeeker?.cvLinks ?
-                                <>
-                                    <div onClick={handleDownloadClick} className="flex items-center justify-center h-[53px] box-border bg-[#1967d3] px-[18px] py-[8px] w-full rounded-[8px] text-[#fff] hover:bg-[#0146a6] cursor-pointer">
-                                        <span className="text-[15px] leading-none font-[400]">Download CV</span>
-                                    </div>
-                                </>
-                                : <div className="flex items-center justify-center h-[53px] box-border bg-[#85878a] px-[18px] py-[8px] w-full rounded-[8px] text-[#fff] hover:bg-[#0146a6] cursor-pointer">
-                                    <span className="text-[15px] leading-none font-[400]">Not have any CV</span>
-                                </div>
-                        }
-                        <div onClick={handleUpdateShortListed} className="item flex items-center justify-center w-[60px] h-[52px] rounded-[7px] bg-[rgba(25,103,210,.07)] ml-5 cursor-pointer opacity-80" color="#1967d3">
-                            {
-                                checkFavourite()
-                                    ? <BsBookmarkCheckFill className="w-full h-full p-[10px] rounded-[7px]" color="#1967d3" />
-                                    : <BiBookmark className="w-full h-full p-[10px] rounded-[7px]" color="#1967d3" />
-                            }
-                        </div>
-                    </div>
-                    <div onClick={() => { dispatch(getAllRecommnendSeekerAction()); setModal(true) }} className="flex mb-5 items-center justify-center h-[53px] box-border bg-green-700 px-[18px] py-[8px] w-full rounded-[8px] text-[#fff] hover:bg-green-900 cursor-pointer">
-                        <span className="text-[15px] leading-none font-[400]">Invite view profile project/ vacancy</span>
-                    </div>
-
                     {/* infomation */}
                     <div className="p-6 bg-[#F5F6FC] rounded-lg mb-[30px]">
                         <div className="flex flex-row mb-[30px]">
@@ -417,64 +322,10 @@ function SeekerProfile() {
                         </div>
                     </div>
 
-
                 </div>
-                <Modal open={modal} setModal={setModal}>
-                    <div className='w-[700px] rounded-lg bg-white h-auto px-4'>
-
-                        <div className='flex justify-between border-b border-gray-300 pb-5'>
-                            <div className='font-medium text-xl'>Choose the project/ vacancy to invite seeker to check out</div>
-                            <div className='cursor-pointer' onClick={() => setModal(false)}><CgClose size={24} /></div>
-                        </div>
-                        <div >
-                            {
-                                loadingRCM ?
-                                    [1, 2, 3].map((item, index) => {
-                                        return <>
-                                            <div key={index} className="space-x-4 py-2.5 px-0.5 w-full">
-                                                {/* <div className="rounded-full bg-slate-200 h-10 w-10"></div> */}
-                                                <div className="flex-1 space-y-6 py-1">
-                                                    <div className="h-2 bg-slate-200 rounded"></div>
-                                                    <div className="space-y-3">
-                                                        <div className="grid grid-cols-3 gap-4">
-                                                            <div className="h-2 bg-slate-200 rounded col-span-2"></div>
-                                                            <div className="h-2 bg-slate-200 rounded col-span-1"></div>
-                                                        </div>
-                                                        <div className="h-2 bg-slate-200 rounded"></div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </>
-                                    })
-                                    : <>
-                                        <div className='-ml-4'>
-                                            <CustomRadioBtnRecommendsx listItem={recommends} filterValueChecked={handleCheckRecommned} />
-                                        </div>
-                                    </>
-                            }
-
-                            <div className='mt-4'>
-                                {
-                                    recommendId === -1 ?
-                                        <div >
-                                            <CustomButton isDisable={true} title={'Send'} containerStyles="text-white justify-center w-[100%] flex py-2   mb-2 focus:outline-none  hover:text-white rounded-md text-base border  bg-gray-300" />
-                                        </div>
-                                        :
-                                        <div onClick={handleSendEmailToSeeker}>
-                                            <CustomButton title={'Send'} containerStyles="text-white justify-center w-[100%] flex py-2   mb-2 focus:outline-none hover:bg-blue-900 hover:text-white rounded-md text-base border border-blue- bg-blue-700" />
-                                        </div>
-                                }
-                            </div>
-                            <div className='text-sm text-gray-600 mb-2'>
-                                We will send an email to this candidate to introduce the project and available vacancy in your organization. They can view profile details if they want!.
-                            </div>
-                        </div>
-
-                    </div>
-                </Modal>
             </div>
         </div>
     </>);
 }
 
-export default SeekerProfile;
+export default ProfileSeekerView;
