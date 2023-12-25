@@ -4,7 +4,7 @@ import { PiSuitcaseSimpleThin, PiTargetLight } from 'react-icons/pi';
 import { GoHourglass } from "react-icons/go";
 import { BiBookmark, BiSolidFlag, BiTimeFive } from 'react-icons/bi';
 import { Candidate } from "../../../assets/images";
-import { MoneyIcon } from "../../../assets/icons";
+import { MoneyIcon, NewTabIcon } from "../../../assets/icons";
 import { useDispatch, useSelector } from "react-redux";
 import { applyVacancyAction, applyVacancyWithAnswersAction, getDetailUserAction } from "../../../redux/slices/users/usersSlices";
 import { Modal } from "../../../components";
@@ -24,7 +24,6 @@ const VacancyDetail = ({ props }) => {
     const [listQuestion, setListQuestion] = useState(null)
     let user = useSelector((state) => state?.users?.userAuth?.user)
     const { isSuccessApplied, seletedUser, loadingAL, loadingGD } = useSelector((state) => state.users)
-
 
     useEffect(() => {
         if (props && props.jobPreScreen) {
@@ -134,7 +133,8 @@ const VacancyDetail = ({ props }) => {
                                                 </svg>
                                         }
 
-                                    </div> :
+                                    </div> 
+                                    :
                                     <div className="flex items-center justify-center w-[120px] box-border bg-[#1967d3] px-[10px] py-[3px] rounded-[8px] text-[#fff] hover:bg-[#0146a6] cursor-pointer" onClick={handleApplied} >
                                         {
                                             !(loadingAL || loadingGD) ? <span className="text-[14px] leading-none font-bold">Apply now</span>
@@ -155,6 +155,12 @@ const VacancyDetail = ({ props }) => {
 
                                 </div>
                             </div>
+                            {props?.project && 
+                                <a target="_blank" rel="noreferrer" href={"/Organizer/manage-project/project-detail/" + props?.project} className="bg-green-100 border-green-300 border rounded-xl text-center cursor-pointer text-green-500 w-fit px-1 flex flex-row items-center justify-center self-center ml-10 gap-1">
+                                    <div>In project</div>
+                                    <img src={NewTabIcon} className="w-3 h-3 text-green-500" color="#22c55e"/>
+                                </a>
+                            }
                         </div>
                     </div>
                 </div>

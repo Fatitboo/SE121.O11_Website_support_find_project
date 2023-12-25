@@ -45,7 +45,7 @@ function FindVacancies() {
 
     useEffect(() => {
         if(vacancies){
-            const a = vacancies.filter((item) => item.post && !isExpired(item.datePost, item))
+            const a = vacancies.filter((item) => (item.post && !isExpired(item.datePost, item)))
             setCurrentPrs(a)
             setSelected(a.length !== 0 ? a[0] : null)
         } 

@@ -11,7 +11,7 @@ import { HiPlus } from 'react-icons/hi';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { logoutUserAction } from '../redux/slices/users/usersSlices';
-import {createVacancyId, setValueSuccess} from '../redux/slices/vacancies/vacanciesSlices';
+import {createVacancyId, resetComponent, setValueSuccess} from '../redux/slices/vacancies/vacanciesSlices';
 import { BiBookmark } from 'react-icons/bi';
 import { PiSuitcaseSimpleDuotone } from 'react-icons/pi';
 import { isActiveSidebarAction } from '../redux/slices/skills/skillsSlices';
@@ -179,7 +179,7 @@ function Sidebar({user}) {
                     (
                         <div className="relative w-full l-0 m-0 p-0">
                             <div className={classNames(isActive === 'Post a job' ? 'bg-[#E9EFFB] text-blue-600' : '', postJobStyle)}>
-                                <Link onClick={()=>{dispatch(createVacancyId({"userId": userAuth?.userId, "avatar": userAuth?.avatar?.fileUrl, "fullName": userAuth?.fullName}))}} className="relative text-sm text-center p-3  flex items-center leading-7 font-normal rounded-lg ">
+                                <Link onClick={()=>{dispatch(resetComponent()) ;dispatch(createVacancyId({"userId": userAuth?.userId, "avatar": userAuth?.avatar?.fileUrl, "fullName": userAuth?.fullName}))}} className="relative text-sm text-center p-3  flex items-center leading-7 font-normal rounded-lg ">
                                     <HiPlus className='relative mr-4 ml-4 text-2xl text-center ' />
                                     Post a Vacancy
                                 </Link>
