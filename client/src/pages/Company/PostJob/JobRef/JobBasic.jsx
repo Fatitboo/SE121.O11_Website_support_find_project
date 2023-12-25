@@ -44,7 +44,11 @@ function JobBasic({formSubmit, formId, flag, config, content, onDoneSubmit}) {
         setErrors(validationErrors);
         
         if(Object.keys(validationErrors).length === 0){
-            dispatch(updateVacancyComponent({"id":vacancyId, "value": {"jobBasic": inputsValues, "flag" : flag}}))
+            if(typeof inputsValues.numberParticipants === 'string'){
+                inputsValues = {...inputsValues, "numberParticipants": { id: -1, name: Number(inputsValues.numberParticipants).toString()}}
+            }
+            console.log(inputsValues)
+            //dispatch(updateVacancyComponent({"id":vacancyId, "value": {"jobBasic": inputsValues, "flag" : flag}}))
         }
     }
 
@@ -139,7 +143,7 @@ function JobBasic({formSubmit, formId, flag, config, content, onDoneSubmit}) {
                     {(content?.includes("jobTitle") || config === undefined) && <div className="mt-2"><TextInput label="Job title*" name="jobTitle" type="text" vl={inputsValues?.jobTitle} rules="requiredText" error={errors.jobTitle} onChange={handleChange} onblur={blurElement}/></div>}
                     {config ? null : <div className="h-6"></div>}
 
-                    {(content?.includes("numberParticipants") || config === undefined) && <CustomComboBox label="Number of people to hire for this job*" selectItem={currentJobComponent?.numberParticipants} type="select" rules="requiredCbb" placeHolder="Select an option" name="numberParticipants" listItem={numberHire} filterValueSelected={(e) => filterValueSelected(e, "numberParticipants")} error={errors.numberParticipants} onblur={blurElement}></CustomComboBox>}
+                    {(content?.includes("numberParticipants") || config === undefined) && <TextInput label="Number of people to hire for this job*" type="text" vl={inputsValues?.numberParticipants?.name} rules="requiredText|number|positiveNumber|intergerNumber" onChange={handleChange} placeHolder="Max participants" name="numberParticipants" error={errors.numberParticipants} onblur={blurElement}></TextInput>}
                     {config ? null : <hr className="block h-1 w-full bg-[rgb(212, 210, 208)] my-6"/>}
 
                     {(content?.includes("location") || config === undefined) &&<CustomComboBox label="Which option best describes this job's location?*" selectItem={currentJobComponent?.type} name="type" rules="requiredCbb" placeHolder={"Select an option."}  type='select' filterValueSelected={(e) => {filterValueSelected(e, "type"); configLocation(e); setCheckRemote(false)}} onblur={blurElement} listItem={JobLocation} error={errors.type}></CustomComboBox>}

@@ -39,33 +39,8 @@ const vacancyList = [
     },
 
 ]
-const listItemCbb = [
-    {
-        id: 1,
-        name: 'All'
-    },
-    {
-        id: 2,
-        name: 'Pending',
+const listItemCbb = [ { id: 1,name: 'All', value: "All"},{id: 2,name: 'Approved', value: "approved"},{id: 3, name: 'Pending', value: "pending"}, {id: 4, name: 'WaitPayment', value: "waitPayment" }, {id: 5, name: 'Rejected', value: "rejected" }, {id: 6, name: 'Blocked', value: "blocked"}]
 
-    },
-    {
-        id: 3,
-        name: 'Processing',
-    },
-    {
-        id: 4,
-        name: 'Finish',
-
-    },
-    {
-        id: 5,
-        name: 'Cancelled',
-
-    },
-
-
-]
 
 function ManageProject() {
     const dispatch = useDispatch()
@@ -80,9 +55,9 @@ function ManageProject() {
         dispatch(getAllProjectsUser({id: user.userId}))
     }, [])
     const onFilterValueSelected = (filterValue) => {
-        if(filterValue.name === 'All') setCurrentProjects(projectsOfCor)
+        if(filterValue.value === 'All') setCurrentProjects(projectsOfCor)
         else
-            setCurrentProjects(projectsOfCor.filter((item) => item.status === filterValue.name));
+            setCurrentProjects(projectsOfCor.filter((item) => item.status === filterValue.value));
     }
 
     const handleSearch = (e) => {

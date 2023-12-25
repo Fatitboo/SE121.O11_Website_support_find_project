@@ -146,7 +146,7 @@ function QuestionAndAnswerItem({props, onTextChanged, userId, onCheckedRadio, se
                                                 <div>
                                                     <div className="relative h-7 flex items-center justify-center">
                                                         <div className="absolute bg-[#FFF] border border-[#808082] w-[20px] h-[20px] rounded-[10px] group-hover:bg-[#e1ebff]" color="#FFF"></div>
-                                                        <div className={`${props?.result[0]?.id === item.id || user && props?.answer[user?.userId]?.id === item.id ? "": "hidden"} flex items-center justify-center absolute ${props?.result[0]?.id === item.id ? (props?.answer[user?.userId]?.id === item.id ? 'bg-[#34a853]' :'bg-[#2557a7]') : 'bg-[#b91c1c]'} w-[12px] h-[12px] rounded-[10px]`} color="#FFF"></div>
+                                                        <div className={`${props?.result[0]?.id === item.id || user && props?.answer[user?.userId]?.id === item.id ? "": "hidden"} flex items-center justify-center absolute ${props?.result[0]?.id === item.id ? (props?.answer && props?.answer[user?.userId]?.id === item.id ? 'bg-[#34a853]' :'bg-[#2557a7]') : 'bg-[#b91c1c]'} w-[12px] h-[12px] rounded-[10px]`} color="#FFF"></div>
                                                     </div>
                                                 </div>
                                                 <span className="pl-5 text-base select-none text-[#696969]">{item.name}</span>

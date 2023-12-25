@@ -64,7 +64,8 @@ function FindVacancies() {
     }
 
     const handleSearch = () => {
-        dispatch(searchVacancyAction(searchObj))
+       console.log(searchObj)
+    dispatch(searchVacancyAction(searchObj))
     }
 
     function onfilterValueSelected(e){
@@ -215,9 +216,9 @@ function FindVacancies() {
                             <div className="w-44">
                                 <ComboBox listItem={[{id: "0", name: "Sort by (default)"},{id: "1", name: "Newest"}, {id: "2", name: "Oldest"}]} filterValueSelected={onfilterValueSelected}/>
                             </div>
-                            <div className="w-44 ml-3">
+                            {/* <div className="w-44 ml-3">
                                 <ComboBox listItem={[{id: "0", name: "All"},{id: "1", name: "10 per page"}, {id: "2", name: "20 per page"}, {id: "3", name: "30 per page"}]} filterValueSelected={onfilterValueSelected}/>
-                            </div>
+                            </div> */}
                         </div>
                     </div>
                     <div className="mt-5 flex flex-col gap-3">

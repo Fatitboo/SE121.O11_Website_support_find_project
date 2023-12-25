@@ -82,7 +82,7 @@ function CreateProject() {
     useEffect(() => {
         if(occupationSelected?.length !== 0){
             setFormErrors({...formErrors, "vacancies": undefined})
-        }
+        }   
     }, [occupationSelected])
 
     const onSubmitForm = (data) => {

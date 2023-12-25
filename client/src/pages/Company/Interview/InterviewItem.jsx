@@ -67,7 +67,7 @@ const InterviewItem = ({ props }) => {
 
     return (
         <>
-            <div className="relative w-full rounded-md mb-8 bg-white border-0 ">
+            <div className="w-full rounded-md mb-8 bg-white border-0 ">
                 <div className="bg-[#f5f7fc] color-white border-transparent border-0 w-full">
                     <div className="w-full flex flex-row items-center">
                         <div className="w-3/12 pl-5 py-6">
@@ -112,9 +112,9 @@ const InterviewItem = ({ props }) => {
                                 {
                                     applicants.map((item, index) => {
                                         return (
-                                            <div onClick={() => navigate(`/Organizer/seeker-profile/${item?.userId}`)} key={index} className="relative w-[49%]">
+                                            <div onClick={() => navigate(`/Organizer/seeker-profile/${item?.userId}`)} key={index} className="relative w-[49%] overflow-visible">
                                                     {item?.isVerify ?
-                                                        <div className="absolute top-3 left-[-10px] w-[30px] z-20">
+                                                        <div className="absolute top-3 left-[-10px] w-[30px] z-10">
                                                             <div className="bg-blue-600 text-white text-sm px-3 py-1 rounded-e w-fit">
                                                                 Verified
                                                             </div>

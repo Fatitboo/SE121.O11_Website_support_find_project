@@ -14,6 +14,9 @@ var ValidatorRules = {
     positiveNumber: function(value){
         return value ? (parseFloat(value) > 0 ? undefined : "Please fill a positive number.") : "Please fill a positive number."
     },
+    intergerNumber: function(value){
+        return value ? (Number.isInteger(value) ? undefined : "Please fill a interger number.") : "Please fill a interger number."
+    },
     maxHourWeek: function(value){
         return value ? (parseFloat(value) <= 168 ? undefined : "Exceeded weekly hours.") : "Exceeded weekly hours."
     },

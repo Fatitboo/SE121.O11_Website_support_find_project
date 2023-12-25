@@ -7,7 +7,7 @@ import { getVacancyCor, resetSuccessAction } from "../../../redux/slices/vacanci
 import InterviewItem from "./InterviewItem";
 
 const listPostedCbb = [ { id: 1,name: 'All'},{id: 2,name: 'Posted'},{id: 3, name: 'UnPosted' }]
-const listApprovedCbb = [ { id: 1,name: 'All'},{id: 2,name: 'Approved'},{id: 3, name: 'UnApproved' }]
+const listApprovedCbb = [ { id: 1,name: 'All'},{id: 2,name: 'Approved'},{id: 3, name: 'Rejected' }]
 
 function Interview() {
     const dispatch = useDispatch();
@@ -73,16 +73,16 @@ function Interview() {
             {/* Start main content  to display something*/}
             <div className="flex flex-wrap mx-3 mt-3">
                 <div className="max-w-full px-3 pt-3 shrink-0 w-full">
-                    <div className="relative rounded-lg mb-8 bg-white shadow max-w-full px-3 pt-1 shrink-0 w-full">
-                        <div className="relative w-full">
+                    <div className="rounded-lg mb-8 bg-white shadow max-w-full px-3 pt-1 shrink-0 w-full">
+                        <div className="w-full">
                             {/* Start table */}
-                            <div className="px-6 relative">
-                                <div className="overflow-y-auto">
+                            <div className="px-6">
+                                <div className="">
 
                                     <div className="flex">
-                                        <div className="relative mr-4">
+                                        <div className="mr-4">
                                             <div method="post"  >
-                                                <div className="relative mb-1">
+                                                <div className="mb-1">
                                                     <AiOutlineSearch fontSize={22} color="#a7a9ad" className="absolute l-3 t-0 h-10 justify-center ml-2 text-center z-10 " />
                                                     <input onChange={(e) => setFilterKeyWord(e.target.value)} type='search' name="search-field" id="search-field" placeholder="Search" className="relative mt-2 block w-72 border pt-1 pb-1 pl-10 h-9 pr-5 text-sm bg-[#f0f5f7] focus:bg-white  rounded-md" />
                                                 </div>
