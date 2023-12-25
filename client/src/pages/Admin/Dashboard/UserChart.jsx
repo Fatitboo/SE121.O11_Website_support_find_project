@@ -25,10 +25,10 @@ export default function UserChart({sk, cor}) {
 		)
 	}
 	return (
-		<div className="w-full h-3/4 bg-white pt-3 px-3 rounded-sm flex flex-col">
-			<strong className="text-gray-700 font-bold mb-5 pl-2 pt-3">User Profile</strong>
-			<div className="mt-4 w-full  flex-1 text-xs">
-				<ResponsiveContainer width="100%" height="100%">
+		<div className="w-full h-full grid grid-rows-8 bg-white pt-3 px-3 rounded-sm ">
+			<div className="text-gray-700 font-bold mb-5 pl-2 pt-3 row-span-1">User Profile</div>
+			<div className="w-full  flex-1 text-xs row-span-5">
+				<ResponsiveContainer width="100%" height="80%">
 					<PieChart width='100%' height='100%'>
 						<Pie
 							data={data}
@@ -47,6 +47,16 @@ export default function UserChart({sk, cor}) {
 						<Legend />
 					</PieChart>
 				</ResponsiveContainer>
+			</div>
+			<div className='row-span-2 ml-4'>
+				<div className='flex mb-3'>
+					<div>Number of Seekers: </div>
+					<div>{sk}</div>
+				</div>
+				<div className='flex'>
+					<div>Number of Organizers: </div>
+					<div>{cor}</div>
+				</div>
 			</div>
 		</div>
 	)

@@ -35,17 +35,26 @@ function OrganizerItem({ item }) {
             }
         });
     }
-
+    const convertAddress = (string)=>{
+        var str = 'Not infor'
+        if(string.includes('Thành phố ')){
+            str = string.slice(10)
+        }
+        if(string.includes('Tỉnh ')){
+            str = string.slice(5)
+        }
+        return str
+    }
     return (
         <tr className="relative border-b border-l border-r border-solid border-[#ecedf2] w-full hover:bg-[#f4f4f4] cursor-pointer text-[15px]">
             <td className="relative pl-5 py-5 font-normal text-base w-3/12">
                 <div className="mb-0 relative h-14 ">
-                    <span className="absolute l-0 t-0 w-11">
+                    <span className="absolute l-0 t-1 w-10">
                         <img src={item?.avatar?.fileUrl ?? 'https://i.pinimg.com/564x/16/3e/39/163e39beaa36d1f9a061b0f0c5669750.jpg'} className="inline-block max-w-full h-auto align-middle" alt="logo" />
                     </span>
-                    <div className="pl-16  ">
+                    <div className="pl-12  ">
                         <div className="font-medium text-md mb-1 line-clamp-2 text-ellipsis w-full">{item.fullName}</div>
-                        <div className="flex font-light text-sm mb-0"> <BiMap className="mt-1 mr-1 " /> {item?.address?.district}, {item?.address?.province} </div>
+                        <div className="flex font-light text-sm mb-0"> <BiMap className="mt-1 " /> {item?.address?.district}, {convertAddress(item?.address?.province)} </div>
                     </div>
                 </div>
             </td>

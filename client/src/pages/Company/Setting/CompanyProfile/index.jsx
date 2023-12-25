@@ -1,11 +1,13 @@
 import { useDispatch, useSelector } from "react-redux";
 import { CustomButton, TextInput, LoadingComponent } from "../../../../components"
 import { useForm } from "react-hook-form";
-import { getUserProfileAction, updateAvatarAction, updateUserProfileAction } from "../../../../redux/slices/users/usersSlices";
+import { getUserProfileAction, resetSuccessAction, updateAvatarAction, updateUserProfileAction } from "../../../../redux/slices/users/usersSlices";
 import { useEffect, useRef, useState } from "react";
 import { IoIosClose } from "react-icons/io";
 import fetchSkillApikey from "../../../../utils/fetchSkillApiKey";
 import { AiFillExclamationCircle } from "react-icons/ai";
+import { ToastContainer, toast } from "react-toastify";
+import CustomeCbbAddress from "../../../../components/Organizer/CustomeCbbAddress";
 
 
 function CompanyProfile() {
@@ -14,6 +16,8 @@ function CompanyProfile() {
     const inputBox = useRef();
     const [spin, setSpin] = useState(false);
     const [skills, setSkills] = useState([]);
+    const [adrSelected , setAdrSelected] = useState({})
+    const notify = (type, message) => toast(message, { type: type });
     const { register, handleSubmit, setValue, formState: { errors } } = useForm({ mode: 'onChange' });
     const onSubmitInfo = (data) => {
         const dt = {
@@ -30,11 +34,11 @@ function CompanyProfile() {
     };
     const onSubmitAddress = (data) => {
         const dt = {
-            country: data.country,
-            province: data.province,
-            district: data.district,
-            addressDetail: data.addressDetail,
-            ward: data.ward,
+            country: "Việt Nam",
+            province: adrSelected.province,
+            district: adrSelected.district,
+            addressDetail: data?.addressDetail??'',
+            ward: adrSelected.ward,
             actions: 2
         }
         dispatch(updateUserProfileAction(dt));
@@ -62,12 +66,18 @@ function CompanyProfile() {
     }, [dispatch])
 
     const storeData = useSelector(store => store?.users);
-    const { userProfile, loading, appErr, isSuccess } = storeData;
+    const { userProfile, loading, appErr, isSuccess,isSuccessUpd } = storeData;
     useEffect(() => {
         if (isSuccess) {
             dispatch(getUserProfileAction())
         }
     }, [isSuccess])
+    useEffect(() => {
+        if (isSuccessUpd) {
+            dispatch(resetSuccessAction())
+            notify('success', "Update user profile successfully!")
+        }
+    }, [isSuccessUpd])
     useEffect(() => {
         setValue('fullname', userProfile?.fullName);
         setValue('phone', userProfile?.phoneNumber);
@@ -76,18 +86,54 @@ function CompanyProfile() {
         setValue('dob', convertDate(userProfile?.dayOfBirth));
         setValue('description', userProfile?.description);
         setValue('website', userProfile?.website);
-        setValue('province', userProfile?.address?.province);
-        setValue('district', userProfile?.address?.district);
-        setValue('country', userProfile?.address?.country);
+        // setValue('province', userProfile?.address?.province);
+        // setValue('district', userProfile?.address?.district);
+        // setValue('country', userProfile?.address?.country);
         setValue('addressDetail', userProfile?.address?.addressDetail);
-        setValue('ward', userProfile?.address?.ward);
+        if(userProfile?.address){
+            setAdrSelected({
+                province:userProfile?.address?.province,
+                district: userProfile?.address?.district,
+                ward: userProfile?.address?.ward
+            })
+        }else{
+            setAdrSelected({
+                province:"",
+                district: "",
+                ward: ""
+            })
+        }
+        // setValue('ward', userProfile?.address?.ward);
         setValue('facebook', userProfile?.fbLink);
         setValue('twitter', userProfile?.twLink);
         setValue('linkedin', userProfile?.lkLink);
         setValue('instagram', userProfile?.insLink);
         setSkills([...userProfile?.fields??[]])
     }, [userProfile])
+    const filterProvince = (e) => {
+        fetch(districtApi(e.code))
+        .then((res) => res.json())
+        .then((json) => {
+            setDistrict(json.districts)
+            if(adrSelected.district) adrSelected.district = ''
+            if(adrSelected.ward) adrSelected.ward = ''
+            adrSelected.province = e.name
+          
+            setAdrSelected({...adrSelected})
+        });
+    }
 
+    const filterDistrict = (e) => {
+        fetch(wardApi(e.code))
+            .then((res) => res.json())
+            .then((json) => {
+                setWard(json.wards)
+                if(adrSelected.ward) adrSelected.ward = ''
+                adrSelected.district = e.name
+              
+                setAdrSelected({...adrSelected})
+            });
+    }
     const handleUpdateAvatar = (e) => {
         const file = e.target.files[0];
         const maxSize = 5 * 1024 * 1024;
@@ -141,10 +187,46 @@ function CompanyProfile() {
                 .catch(error => console.log('error', error));
         }
     }
+    const provinceApi = "https://provinces.open-api.vn/api/";
+    const districtApi = (code) => `https://provinces.open-api.vn/api/p/${code}?depth=2`
+    const wardApi = (code) => `https://provinces.open-api.vn/api/d/${code}?depth=2`
+    const [provinces, setProvince] = useState([])
+    const [districts, setDistrict] = useState([])
+    const [wards, setWard] = useState([])
+
+    useEffect(() => {
+        fetch(provinceApi)
+            .then((res) => res.json())
+            .then((json) => {
+                setProvince(json)
+                if(userProfile?.address){
+                    const code = Array.from(json).find(item => item.name === userProfile?.address?.province)?.code
+                    code &&
+                        fetch(districtApi(code))
+                        .then((res) => res.json())
+                        .then((json) => {
+                            const code = Array.from(json.districts).find(item => item.name === userProfile?.address?.district)?.code
+                            setDistrict(json.districts)
+                            code &&
+                                fetch(wardApi(code))
+                                .then((res) => res.json())
+                                .then((json) => {
+                                    setWard(json.wards)
+                                });
+                        });
+                }
+                else{
+                    setDistrict([])
+                    setWard([])
+                }
+            });
+
+    }, [userProfile])
     return (
         <div className="px-10 pb-0">
             {/* Start title of page  */}
             {loading && <LoadingComponent />}
+            <ToastContainer/>
             <div className="mb-8">
                 <h3 className="font-medium text-3xl text-gray-900 mb-2 leading-10">Company Profile!</h3>
                 <div className="text-sm leading-6 font-normal m-0 right-0 flex justify-between items-center ">Ready to jump back in?</div>
@@ -287,21 +369,19 @@ function CompanyProfile() {
                         <div className="relative px-6 pt-3">
                             <form onSubmit={handleSubmit(onSubmitAddress)} className="relative">
                                 <div className="grid grid-cols-2">
-                                    <div className="px-4 mb-6">
-                                        <TextInput name='country' value={userProfile?.address?.country} register={register("country")} type='text' label='Country' placeholder='Australia' styles='bg-[#f0f5f7]' />
+                                <div className="px-4 mb-6">
+                                        <CustomeCbbAddress listItem={provinces} labelItemSelected={adrSelected.province} placeHolder={'Select province'} label={'Province'} filterValueSelected={filterProvince}/>
                                     </div>
                                     <div className="px-4 mb-6">
-                                        <TextInput name='province' value={userProfile?.address?.province} register={register("province")} type='text' label='Province' placeholder='Ho Chi Minh' styles='bg-[#f0f5f7]' />
+                                        <CustomeCbbAddress listItem={districts} labelItemSelected={adrSelected.district} placeHolder={'Select district'} label={'District'} filterValueSelected={filterDistrict}/>
                                     </div>
                                     <div className="px-4 mb-6">
-                                        <TextInput name='district' value={userProfile?.address?.district} register={register("district")} type='text' label='District' placeholder='Thu Duc' styles='bg-[#f0f5f7]' />
+                                        <CustomeCbbAddress listItem={wards} labelItemSelected={adrSelected.ward} placeHolder={'Select ward'} label={'Ward'} filterValueSelected={(e)=>{setAdrSelected(prev=>({...prev, ward: e.name }))}}/>
                                     </div>
-                                    <div className="px-4 mb-6">
-                                        <TextInput name='ward' value={userProfile?.address?.ward} register={register("ward")} type='text' label='Ward' placeholder='Di An' styles='bg-[#f0f5f7]' />
-                                    </div>
-                                    <div className="px-4 mb-6 col-span-2">
+                                    <div className="px-4 mb-6 ">
                                         <TextInput name='addressDetail' value={userProfile?.address?.addressDetail} register={register("addressDetail")} type='text' label='Address Detail' placeholder='...' styles='bg-[#f0f5f7]' />
                                     </div>
+
 
                                     {
                                         loading ?

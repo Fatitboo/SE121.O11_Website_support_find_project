@@ -384,6 +384,61 @@ export const getAllSeekersAction = createAsyncThunk(
         }
     }
 )
+// get Recommnend  cors
+export const getAllRecommnendSeekerAction = createAsyncThunk(
+    'users/getRecommnendSeekers',
+    async (payload, { rejectWithValue, getState, dispatch }) => {
+        try {
+            const user = getState()?.users;
+            const { userAuth } = user;
+            // http call 
+            const config = {
+                headers: {
+                    Authorization: `Bearer ${userAuth?.user?.token}`,
+                    'Content-Type': 'application/json',
+                },
+            };
+            const { data } = await axios.get(`${baseUrl}/${apiPrefix}/get-projects-vacancies-to-invite/${userAuth?.user?.userId}`, config);
+            console.log(data)
+            return data;
+        } catch (error) {
+            if (!error?.response) {
+                throw error;
+            }
+            return rejectWithValue(error?.response?.data);
+        }
+    }
+)
+// send Recommend Seeker 
+export const sendRecommendSeekerAction = createAsyncThunk(
+    'users/sendRecommendSeeker',
+    async (info, { rejectWithValue, getState, dispatch }) => {
+        try {
+            const user = getState()?.users;
+            const { userAuth } = user;
+            // http call 
+            const config = {
+                headers: {
+                    Authorization: `Bearer ${userAuth?.user?.token}`,
+                    'Content-Type': 'multipart/form-data',
+                },
+            };
+            const formData = new FormData();
+            formData.append('recommendId', info.recommendId);
+            formData.append('recommendType', info.recommendType)
+            formData.append('seekerId', info.seekerId)
+
+            const { data } = await axios.post(`${baseUrl}/${apiPrefix}/send-mail-recommend/${userAuth?.user?.userId}`, formData, config);
+            console.log(data)
+            return data;
+        } catch (error) {
+            if (!error?.response) {
+                throw error;
+            }
+            return rejectWithValue(error?.response?.data);
+        }
+    }
+)
 // get detail  user
 export const getDetailUserAction = createAsyncThunk(
     'users/getDetailUser',
@@ -695,6 +750,8 @@ const usersSlices = createSlice({
         corList: [],
         skrList: [],
         shortListUsers: [],
+        histories:[],
+        recommends:[]
     },
     reducers: {
         setSltCv: (state, action) => {
@@ -794,39 +851,60 @@ const usersSlices = createSlice({
                 state.loading = false;
                 state.appErr = action?.payload?.message;
             }),
+            // update avatar user 
+            builder.addCase(sendRecommendSeekerAction.pending, (state, action) => {
+                state.loading = true;
+                state.appErr = undefined;
+                state.isSuccessSendMail = false;
+            }),
+            builder.addCase(sendRecommendSeekerAction.fulfilled, (state, action) => {
+                state.loading = false;
+                state.isSuccessSendMail = true;
+                state.appErr = undefined;
+            }),
+            builder.addCase(sendRecommendSeekerAction.rejected, (state, action) => {
+                state.loading = false;
+                state.isSuccessSendMail = false;
+                state.appErrSendMail = action?.payload?.message;
+            }),
             // update profile user 
             builder.addCase(updateUserProfileAction.pending, (state, action) => {
                 state.loading = true;
                 state.appErr = undefined;
-                state.isSuccess = false;
+                state.isSuccessUpd = false;
             }),
             builder.addCase(updateUserProfileAction.fulfilled, (state, action) => {
                 state.loading = false;
-                state.userProfile = { ...state.userProfile, ...action?.payload?.userProfile };
+                state.userProfile =  action?.payload?.userProfile ;
                 state.appErr = undefined;
-                state.isSuccess = true;
+                state.isSuccessUpd = true;
             }),
             builder.addCase(updateUserProfileAction.rejected, (state, action) => {
                 state.loading = false;
                 state.appErr = action?.payload?.message;
-                state.isSuccess = false;
+                state.isSuccessUpd = false;
             }),
             // update resume user 
             builder.addCase(updateUserResumeAction.pending, (state, action) => {
                 state.loading = true;
                 state.appErr = undefined;
                 state.isSuccess = false;
+                state.isSuccessUpd = false;
             }),
             builder.addCase(updateUserResumeAction.fulfilled, (state, action) => {
                 state.loading = false;
                 state.userResume = { ...state.userResume, ...action?.payload?.userResume };
                 state.appErr = undefined;
                 state.isSuccess = true;
+                state.isSuccessUpd = true;
+
             }),
             builder.addCase(updateUserResumeAction.rejected, (state, action) => {
                 state.loading = false;
                 state.appErr = action?.payload?.message;
                 state.isSuccess = false;
+                state.isSuccessUpd = false;
+
             }),
 
             // get all cv
@@ -844,6 +922,24 @@ const usersSlices = createSlice({
             }),
             builder.addCase(getAllUserCvAction.rejected, (state, action) => {
                 state.loading = false;
+                state.appErr = action?.payload?.message;
+
+            }),
+            // get all cv
+            builder.addCase(getAllRecommnendSeekerAction.pending, (state, action) => {
+                state.loadingRCM = true;
+                state.appErr = undefined;
+                state.isSuccess = false;
+
+            }),
+            builder.addCase(getAllRecommnendSeekerAction.fulfilled, (state, action) => {
+                state.loadingRCM = false;
+                state.recommends = action?.payload?.recommends;
+                state.appErr = undefined;
+
+            }),
+            builder.addCase(getAllRecommnendSeekerAction.rejected, (state, action) => {
+                state.loadingRCM = false;
                 state.appErr = action?.payload?.message;
 
             }),
@@ -1025,6 +1121,7 @@ const usersSlices = createSlice({
             state.isSuccess = false;
             state.isSuccessUpd = false;
             state.isSuccessApplied = false;
+            state.isSuccessSendMail = false
         });
         builder.addCase(resetUserAuthAction.fulfilled, (state, action) => {
 
@@ -1133,6 +1230,8 @@ const usersSlices = createSlice({
             state.numVacancies = action?.payload?.numVacancies;
             state.viewsProfile = action?.payload?.viewsProfile;
             state.numProjects = action?.payload?.numProjects;
+            state.histories = action?.payload?.histories;
+
         });
         builder.addCase(getDataStatisticalAdminAction.rejected, (state, action) => {
             state.loading = false;

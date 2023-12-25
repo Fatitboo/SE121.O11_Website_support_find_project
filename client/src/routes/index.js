@@ -12,7 +12,8 @@ import {
     ManageVacancyAdmin,
     VacancyInfoAdmin,
     ProjectDetailAdmin,
-    ManageReport
+    ManageReport,
+    HistoryTransaction
 } from "../pages/Admin"
 import {
     Home,
@@ -31,6 +32,7 @@ import {
     FavouriteVacancies,
     FavouriteProjects,
     ProjectDetailSeeker,
+    ProfileSeekerView,
 } from '../pages/Seeker'
 import {
     CompanyProfileEdit,
@@ -83,13 +85,13 @@ const publicRoutes = [
     { path: '/Seeker/find-vacancies', component: FindVacancies, layout: LayoutNoSidebar },
     { path: '/Seeker/vacancy-info/:id', component: VacancyInfoSeeker, layout: LayoutNoSidebar },
     { path: '/Seeker/project-info/:id', component: ProjectDetailSeeker, layout: LayoutNoSidebar },
-    { path: '/Seeker/seeker-profile/:id', component: SeekerProfile, layout: LayoutNoSidebar },
+    { path: '/Seeker/seeker-profile/:id', component: ProfileSeekerView, layout: LayoutNoSidebar },
     // {path:'/Seeker/project-info', component: ProjectInfo, layout: LayoutNoSidebar},
     { path: '/Seeker/find-organizer', component: FindOrganizer, layout: LayoutNoSidebar },
     { path: '/Seeker/company-profile/:id', component: CompanyProfile, layout: LayoutNoSidebar },
     { path: '/Seeker/about-us', component: AboutUs, layout: LayoutNoSidebar },
     { path: '/Seeker/contact', component: Contact, layout: LayoutNoSidebar },
-   
+
 
 ]
 const seekerRoutes = [
@@ -118,13 +120,14 @@ const corRoutes = [
     { path: '/Organizer/update-project/:id', component: UpdateProject, layout: LayoutHasSidebar },
     { path: '/Organizer/payment', component: Payment, layout: LayoutNoSidebar },
     { path: '/Organizer/interview', component: Interview, layout: LayoutHasSidebar },
-    { path:'/Organizer/payment/:id', component: Payment, layout: LayoutNoSidebar},
-    { path:'/Organizer/payment/success', component: SuccessPayment, layout: LayoutNoSidebar},
+    { path: '/Organizer/payment/:id', component: Payment, layout: LayoutNoSidebar },
+    { path: '/Organizer/payment/success/:id', component: SuccessPayment, layout: LayoutNoSidebar },
     { path: '/Organizer/payment/cancel', component: CancelPayment, layout: LayoutNoSidebar },
-    { path:'/Organizer/payment/project/:id', component: PaymentProject, layout: LayoutNoSidebar},
-    { path:'/Organizer/payment/project/success', component: SuccessPaymentProject, layout: LayoutNoSidebar},
+
+    { path: '/Organizer/payment/project/:id', component: PaymentProject, layout: LayoutNoSidebar },
+    { path: '/Organizer/payment/project/success', component: SuccessPaymentProject, layout: LayoutNoSidebar },
     { path: '/Organizer/payment/project/cancel', component: CancelPaymentProject, layout: LayoutNoSidebar },
-    
+
 ]
 const AdminRoutes = [
     //Admin Layout
@@ -140,6 +143,8 @@ const AdminRoutes = [
     { path: '/Admin/occupation-management/add-occupation', component: AddOccupation, layout: LayoutHasSidebar },
     { path: '/Admin/occupation-management/edit-occupation/:id', component: EditOccupation, layout: LayoutHasSidebar },
     { path: '/Admin/manage-report', component: ManageReport, layout: LayoutHasSidebar },
+    { path: '/Admin/history-transactions', component: HistoryTransaction, layout: LayoutHasSidebar },
+
 ]
 
 export { publicRoutes, seekerRoutes, AdminRoutes, corRoutes }

@@ -6,6 +6,7 @@ import { LiaTrashAltSolid } from "react-icons/lia";
 import { BsEye } from "react-icons/bs";
 import { MdCancel, MdOutlineCancel } from "react-icons/md";
 import { Candidate } from "../../../assets/images";
+import { Link } from "react-router-dom";
 
 
 const Applicants = ({ item }) => {
@@ -20,12 +21,12 @@ const Applicants = ({ item }) => {
                                     <img src={item?.avatar?.fileUrl} className="w-full h-full rounded-full" alt="Logo" />
                                 </div>
                             </div>
-                        ) : 
-                        <div>
-                            <div className="w-[80px] h-[80px] rounded-full  mr-2">
-                                <img src={Candidate} className="w-full h-full rounded-lg" alt="Logo" />
+                        ) :
+                            <div>
+                                <div className="w-[80px] h-[80px] rounded-full  mr-2">
+                                    <img src={Candidate} className="w-full h-full rounded-lg" alt="Logo" />
+                                </div>
                             </div>
-                        </div>
                     }
 
                     <div className="ml-2 w-full">
@@ -43,8 +44,8 @@ const Applicants = ({ item }) => {
                                             <span className="text-[13px]  py-[5px] leading-none">{item?.jobTitle}</span>
                                         </div>
                                     ) : <div className="mr-3  text-[#1967d2] flex">
-                                    <span className="text-[13px]  py-[5px] leading-none">{'Not information'}</span>
-                                </div>
+                                        <span className="text-[13px]  py-[5px] leading-none">{'Not information'}</span>
+                                    </div>
                                 }
                                 <div className="flex flex-row items-center text-[14px] text-[dimgray] leading-[22px] font-normal mr-3">
                                     <PiTargetLight className="w-[18px] h-[18px] mr-[5px]" />
@@ -57,25 +58,17 @@ const Applicants = ({ item }) => {
                                     <img src={MoneyIcon} className="w-[18px] h-[18px] mr-[5px]" />
                                     {item?.expectSalary} $/hour
                                 </div>
-                                {/* <div className="flex end-1">
-                                    <div className="list-none relative mr-2 bg-[white] border rounded-md border-[#e9ecf9] h-[30px] w-[30px] px-0.5 justify-center flex py-0.5  hover:bg-blue-400 ">
-                                        <button> <BsEye fontSize={15} /> </button>
-                                    </div>
-                                    <div className="list-none relative mr-2 bg-[white] border rounded-md border-[#e9ecf9] h-[30px] w-[30px] px-0.5 justify-center flex py-0.5 hover:bg-blue-400 ">
-                                        <button > <BiCheck fontSize={20} /> </button>
-                                    </div>
-                                    <div className="list-none relative mr-2 bg-[white] border rounded-md border-[#e9ecf9] h-[30px] w-[30px] px-0.5 justify-center flex py-0.5 hover:bg-blue-400 ">
-                                        <button > <MdOutlineCancel fontSize={15} /> </button>
-                                    </div>
-                                    <div className="list-none relative bg-[white] border rounded-md border-[#e9ecf9] h-[30px] w-[30px] px-0.5 justify-center flex py-0.5 hover:bg-blue-400 ">
-                                        <button > <LiaTrashAltSolid fontSize={20} /> </button>
-                                    </div>
-                                </div> */}
+                                <div className="flex items-center justify-center">
+                                    <Link to={'/Organizer/seeker-profile/' + item?.userId} className="list-none  relative mr-2 bg-[white] border rounded-md border-[#e9ecf9] h-[30px] w-[30px] px-0.5 justify-center items-center flex py-0.5  hover:bg-blue-400 ">
+                                        <BsEye fontSize={15} />
+                                    </Link>
+                                   
+                                </div>
                             </div>
                         </div>
                         <div className="mt-3"></div>
 
-                        <div className="flex flex-wrap line-clamp-3 w-[90%] items-start h-[70px] overflow-y-auto no-scrollbar">
+                        <div className="flex flex-wrap line-clamp-2 w-[90%] items-start h-[70px] overflow-y-auto no-scrollbar">
                             {item?.skillUsers?.map((item, index) => {
                                 return (
                                     <div key={index} className={`mr-1 items-center w-fit
@@ -90,6 +83,7 @@ const Applicants = ({ item }) => {
 
                     </div>
                 </div>
+               
             </div>
         </>
     );

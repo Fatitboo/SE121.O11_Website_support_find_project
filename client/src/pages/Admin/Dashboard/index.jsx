@@ -12,6 +12,10 @@ import { getDataStatisticalAdminAction, resetSuccessAction } from '../../../redu
 import { BiMap, BiPackage } from 'react-icons/bi';
 import { AiOutlineCheckCircle } from 'react-icons/ai';
 import { isActiveSidebarAction } from '../../../redux/slices/skills/skillsSlices';
+import RevenueChart from './RevenueChart';
+import { CiMoneyBill } from 'react-icons/ci';
+import { MdOutlineMoneyOffCsred } from 'react-icons/md';
+
 
 const cbb = [
     {
@@ -32,14 +36,40 @@ function Dashboard() {
     const dispatch = useDispatch();
     const [dataViews, setDataView] = useState([])
     const [currentLastMonths, setCurrentLastMonths] = useState(6)
+    const [dayRvnOfmonth, setDayOfMonth] = useState([])
+    const [monthYear, setmonthYear] = useState('')
+    const [totalrevenue, settotalrevenue] = useState(0)
+
+    const [cbbRevenue, setCbbRevenue] = useState(() => {
+        const monthYear = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long' });
+        return [{ id: 1, name: monthYear }]
+    })
     const onFilterValueSelected = (filterValue) => {
         setCurrentLastMonths(filterValue.id)
+    }
+    const onFilterValueRevenueSelected = (filterValue) => {
+        const arr = filterValue.name.split(" ");
+
+        setmonthYear(filterValue.name)
+        if (arr[0] === 'December') getDaysOfMonth(parseInt(arr[1]), 12)
+        if (arr[0] === 'November') getDaysOfMonth(parseInt(arr[1]), 11)
+        if (arr[0] === 'October') getDaysOfMonth(parseInt(arr[1]), 10)
+        if (arr[0] === 'September') getDaysOfMonth(parseInt(arr[1]), 9)
+        if (arr[0] === 'August') getDaysOfMonth(parseInt(arr[1]), 8)
+        if (arr[0] === 'July') getDaysOfMonth(parseInt(arr[1]), 7)
+        if (arr[0] === 'June') getDaysOfMonth(parseInt(arr[1]), 6)
+        if (arr[0] === 'May') getDaysOfMonth(parseInt(arr[1]), 5)
+        if (arr[0] === 'AprilApril') getDaysOfMonth(parseInt(arr[1]), 4)
+        if (arr[0] === 'March') getDaysOfMonth(parseInt(arr[1]), 3)
+        if (arr[0] === 'February') getDaysOfMonth(parseInt(arr[1]), 2)
+        if (arr[0] === 'January') getDaysOfMonth(parseInt(arr[1]), 1)
+
     }
     useEffect(() => {
         dispatch(getDataStatisticalAdminAction());
     }, [dispatch])
     const storeData = useSelector(store => store?.users);
-    const { viewsProfile, isSuccess, appErr, loading, numProjects, recentOrganizers, recentProjects, recentVacancies, numSeekers, numOrganizers, numVacancies } = storeData;
+    const { viewsProfile, isSuccess, appErr, loading, numProjects, recentOrganizers, histories, recentProjects, recentVacancies, numSeekers, numOrganizers, numVacancies } = storeData;
     useEffect(() => {
         if (isSuccess) {
             dispatch(resetSuccessAction());
@@ -78,9 +108,19 @@ function Dashboard() {
                     dt.push({ ...obj })
                 }
             }
-            console.log(dt)
-            setDataView([...dt])
 
+            setDataView([...dt])
+            const arrCbb = getUniqueMonthsAndYears(histories);
+
+            const rv = [...arrCbb].reverse()
+            var revCbb = []
+            rv?.forEach((item, index) => {
+                revCbb.push({ id: index, name: item })
+            })
+            const d = new Date();
+            setCbbRevenue([...revCbb])
+
+            getDaysOfMonth(d.getFullYear(), d.getMonth() + 1);
         }
     }, [isSuccess])
     useEffect(() => {
@@ -88,7 +128,6 @@ function Dashboard() {
         const date = new Date();
         const year = date.getFullYear();
         const month = date.getMonth() + 1;
-        console.log(month)
         if (month >= currentLastMonths) {
             for (var i = currentLastMonths; i--; i >= 0) {
                 const obj = {
@@ -122,6 +161,65 @@ function Dashboard() {
         setDataView([...dt])
 
     }, [currentLastMonths])
+    const getUniqueMonthsAndYears = (list) => {
+        const uniqueMonthsAndYears = new Set();
+        // Lặp qua từng đối tượng trong danh sách
+        var tt = 0;
+        list?.forEach((item) => {
+            // Lấy tháng và năm từ trường create_time
+            const monthYear = new Date(item.create_time).toLocaleDateString('en-US', { year: 'numeric', month: 'long' });
+            tt += parseFloat(item?.transactions?.amount?.total)
+                - parseFloat(item?.transactions?.related_resources?.sale?.transaction_fee?.value)
+            // Thêm vào Set để loại bỏ trùng lặp
+            uniqueMonthsAndYears.add(monthYear);
+        });
+        settotalrevenue(tt.toFixed(2))
+        // Chuyển từ Set thành mảng để trả về
+        return Array.from(uniqueMonthsAndYears);
+    };
+    const getDaysOfMonth = (year, month) => {
+
+        const daysInMonth = new Date(year, month, 0).getDate();
+        var daysOfM = [];
+        for (let day = 1; day <= daysInMonth; day++) {
+            daysOfM.push({ name: day, revenue: 0 });
+
+        }
+
+        histories?.forEach((it, index) => {
+            const d = new Date(it.create_time)
+            if (d.getMonth() + 1 === month && d.getFullYear() === year) {
+                daysOfM[d.getDate() - 1].revenue += parseFloat(it?.transactions?.amount?.total)
+                    - parseFloat(it?.transactions?.related_resources?.sale?.transaction_fee?.value)
+            }
+        })
+
+        setDayOfMonth([...daysOfM])
+    };
+    const totalRevnueMonth = () => {
+        var tt = 0;
+        dayRvnOfmonth?.forEach(it => {
+            tt += it.revenue
+        })
+        return tt.toFixed(2);
+    }
+    const convertDateFormat = (inputDate) => {
+        const date = new Date(inputDate);
+
+        // Lấy giờ và phút
+        const hours = ('0' + date.getHours()).slice(-2);
+        const minutes = ('0' + date.getMinutes()).slice(-2);
+
+        // Lấy ngày, tháng, năm
+        const day = ('0' + date.getDate()).slice(-2);
+        const month = ('0' + (date.getMonth() + 1)).slice(-2);
+        const year = date.getFullYear();
+
+        // Tạo chuỗi định dạng mong muốn
+        const formattedDate = `${hours}:${minutes} ${day}-${month}-${year}`;
+
+        return formattedDate;
+    };
     return (
         <div className="px-10 pb-0">
             {loading && <LoadingComponent />}
@@ -134,18 +232,18 @@ function Dashboard() {
             </div>
 
             <div className="grid grid-cols-4 gap-5 mb-5">
-                <div  className="bg-white h-[120px] rounded-lg shadow flex p-6 cursor-pointer">
+                <div className="bg-white h-[120px] rounded-lg shadow flex p-6 cursor-pointer">
                     <div className='basis-1/3 place-content-center place-items-cent  items-center flex'>
                         <div className='rounded-lg bg-[rgba(25,103,210,.1)] h-[80px] w-[80px] text-[#1967d2] flex items-center place-content-center'>
-                            <IoDocumentTextOutline fontSize={40} />
+                            <CiMoneyBill fontSize={40} />
                         </div>
                     </div>
                     <div className='basis-2/3 flex flex-col justify-center items-end'>
-                        <span className='font-medium text-4xl text-[#1967d2]'>{numSeekers}</span>
-                        <span className='text-sm text-[#202124]'>Total Seekers</span>
+                        <span className='font-medium text-4xl text-[#1967d2]'>{totalrevenue} $</span>
+                        <span className='text-sm text-[#202124]'>Total Revenue</span>
                     </div>
                 </div>
-                <Link to="/Admin/user-management" onClick={()=>dispatch(isActiveSidebarAction('Organizer'))} className="bg-white h-[120px] rounded-lg shadow flex p-6 cursor-pointer">
+                <Link to="/Admin/user-management" onClick={() => dispatch(isActiveSidebarAction('Organizer'))} className="bg-white h-[120px] rounded-lg shadow flex p-6 cursor-pointer">
                     <div className='basis-1/3 place-content-center place-items-cent  items-center flex'>
                         <div className='rounded-lg bg-[rgba(217,48,37,.1)] h-[80px] w-[80px] text-[#d93025] flex items-center place-content-center'>
                             <IoCalculatorOutline fontSize={40} className="text-[#d93025]" />
@@ -156,7 +254,7 @@ function Dashboard() {
                         <span className='text-sm text-[#202124]'>Total Organizers</span>
                     </div>
                 </Link>
-                <Link to="/Admin/approval-project" onClick={()=>dispatch(isActiveSidebarAction('Projects'))} className="bg-white h-[120px] rounded-lg shadow flex p-6 cursor-pointer">
+                <Link to="/Admin/approval-project" onClick={() => dispatch(isActiveSidebarAction('Projects'))} className="bg-white h-[120px] rounded-lg shadow flex p-6 cursor-pointer">
                     <div className='basis-1/3 place-content-center place-items-cent  items-center flex'>
                         <div className='rounded-lg bg-[rgba(249,171,0,.1)] h-[80px] w-[80px] text-[#f9ab00] flex items-center place-content-center'>
                             <IoTabletPortraitOutline fontSize={40} />
@@ -167,7 +265,7 @@ function Dashboard() {
                         <span className='text-sm text-[#202124]'>Total Projects</span>
                     </div>
                 </Link>
-                <Link onClick={()=>dispatch(isActiveSidebarAction('Manage Vacancy'))} to="/Admin/manage-vacancy" className="bg-white h-[120px] rounded-lg shadow flex p-6 cursor-pointer">
+                <Link onClick={() => dispatch(isActiveSidebarAction('Manage Vacancy'))} to="/Admin/manage-vacancy" className="bg-white h-[120px] rounded-lg shadow flex p-6 cursor-pointer">
                     <div className='basis-1/3 place-content-center place-items-cent  items-center flex'>
                         <div className='rounded-lg bg-[rgba(52,168,83,.1)] h-[80px] w-[80px] text-[#34a853] flex items-center place-content-center'>
                             <LiaStar fontSize={40} />
@@ -193,8 +291,47 @@ function Dashboard() {
                         </div>
                         <ProjectChartAdmin data={dataViews} />
                     </div>
-                    <div className="relative rounded-lg mb-8 bg-white shadow max-w-full pt-1 shrink-0 ">
+                    <div className="relative rounded-lg mb-8 bg-white shadow max-w-full pt-1 shrink-0 h-[540px]">
                         <UserChart sk={numSeekers} cor={numOrganizers} />
+                    </div>
+                </div>
+            </div>
+            <div className=" mt-3 pt-3 px-2 relative rounded-lg mb-8 bg-white shadow max-w-full grid grid-cols-10 gap-5">
+                <div className='col-span-7 pt-3'>
+                    <div className='flex items-center justify-between mb-8'>
+                        <div className='flex mt-3'>
+                            <div className='ml-7 font-medium '>Revenue of {monthYear} : </div>
+                            <div className='ml-2  font-medium '>{totalRevnueMonth()}$ </div>
+                        </div>
+                        <div className=' flex  ml-4 items-center' >
+                            <span className='mt-3 ml-3 mr-2'>Order By: </span>
+                            <div className="w-44">
+                                <ComboBox listItem={cbbRevenue} filterValueSelected={onFilterValueRevenueSelected} />
+                            </div>
+                        </div>
+                    </div>
+                    <RevenueChart data={dayRvnOfmonth} />
+                </div>
+                <div className='col-span-3'>
+                    <div className='mx-7 pt-6 font-bold '>Recent Transactions</div>
+                    <div className="pr-2 pl-10 mt-4 overflow-auto h-[470px] no-scrollbar">
+                        {
+                            ([...histories]?.reverse())?.map((item, index) => {
+                                return <div key={index} className="flex mt-2 pb-4 border-l border-dashed border-green-200">
+                                    <div className="flex items-start relative pb-4">
+                                        <div className={`rounded-full p-2 absolute top-0 left-[-17px] ${index % 2 === 0 ? 'bg-green-100 text-green-700' : 'bg-blue-100 text-blue-700'}`}><MdOutlineMoneyOffCsred /></div>
+                                        <div className="flex flex-wrap ml-6">
+                                            <div className="font-medium  flex flex-nowrap mr-1 text-sm ">{item?.userInfo ? item?.userInfo?.fullName : ''} </div>
+                                            <div className="font-normal flex-wrap flex mr-1 text-sm text-gray-500 ">{'has been paid the amount '} </div>
+                                            <div className="font-normal text-blue-700 flex flex-wrap mr-1 text-sm " >{(parseFloat(item?.transactions?.amount?.total)
+                                                - parseFloat(item?.transactions?.related_resources?.sale?.transaction_fee?.value)).toFixed(2)} $ </div>
+
+                                            <div className="font-normal flex-wrap flex mr-1 text-sm text-gray-500 ">at {convertDateFormat(item?.create_time)}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            })
+                        }
                     </div>
                 </div>
             </div>
@@ -300,7 +437,7 @@ function Dashboard() {
                                     return (
                                         <div key={index} className="animate-pulse relative shadow rounded-md p-4 w-full mx-auto gap-2">
 
-                                            <td className="space-x-4 py-2.5 px-0.5 w-[500px]">
+                                            <div className="space-x-4 py-2.5 px-0.5 w-[500px]">
                                                 {/* <div className="rounded-full bg-slate-200 h-10 w-10"></div> */}
                                                 <div className="flex-1 space-y-6 py-1">
                                                     <div className="h-2 bg-slate-200 rounded"></div>
@@ -312,7 +449,7 @@ function Dashboard() {
                                                         <div className="h-2 bg-slate-200 rounded"></div>
                                                     </div>
                                                 </div>
-                                            </td>
+                                            </div>
 
                                         </div>
                                     )

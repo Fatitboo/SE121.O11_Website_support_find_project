@@ -23,8 +23,8 @@ function CompanyProfileAdmin() {
         dispatch(getDetailUserAction(id))
     }, [dispatch])
     const storeData = useSelector(store => store?.users);
-    const projects = useSelector((state) => state.projects.projects)
-
+    const projects = useSelector((state) => state.projects.projectsOfCor)
+    console.log(projects)
     const { loading, appErr, seletedUser, isSuccessUpd } = storeData;
     const [sltCor, setSltCor] = useState({ ...seletedUser })
     const [isActive, setIsActive] = useState(seletedUser?.isActive)
@@ -70,6 +70,16 @@ function CompanyProfileAdmin() {
             setIsActive(prev=>!prev)
         }
     }, [isSuccessUpd])
+    const convertAddress = (string)=>{
+        var str = 'Not infor'
+        if(string.includes('Thành phố ')){
+            str = string.slice(10)
+        }
+        if(string.includes('Tỉnh ')){
+            str = string.slice(5)
+        }
+        return str
+    }
     return (<>
         {loading && <LoadingComponent />}
         <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/uicons-regular-rounded/css/uicons-regular-rounded.css'></link>
@@ -90,11 +100,11 @@ function CompanyProfileAdmin() {
                         <div>
                             <h2 className="text-[26px] leading-[35px] text-[#202124] font-medium">{sltCor?.fullName}</h2>
                         </div>
-                        <div className="flex flex-row text-[14px] font-thin my-[8px]">
-                            <span className="flex flex-row items-center mr-7"><PiMapPin className="w-[18px] h-[18px] mr-1" />{sltCor?.address ? `${sltCor?.address?.district}, ${sltCor?.address?.province}` : 'Not infomation'}</span>
-                            <span className="flex flex-row items-center mr-7"><BsBriefcase className="w-[18px] h-[18px] mr-1" />{sltCor?.fields ? `${sltCor?.fields[0]}/ ${sltCor?.fields[1]}` : 'Not infomation'}</span>
-                            <span className="flex flex-row items-center mr-7"><LiaPhoneSolid strokeWidth={0.01} className="w-[22px] h-[22px] mr-1" />{sltCor?.phoneNumber ?? 'Not infomation'}</span>
-                            <span className="flex flex-row items-center mr-7"><CiMail className="w-[22px] h-[22px] mr-1" />{sltCor?.website ?? 'Not infomation'}</span>
+                        <div className="flex flex-row text-[14px] font-light  my-[8px]">
+                            <span className="flex flex-row items-center mr-4"><PiMapPin className="w-[18px] h-[18px] " />{sltCor?.address ? `${sltCor?.address?.district}, ${convertAddress(sltCor?.address?.province)}` : 'Not infomation'}</span>
+                            <span className="flex flex-row items-center mr-4"><BsBriefcase className="w-[18px] h-[18px] mr-1" />{sltCor?.fields ? `${sltCor?.fields[0]}/ ${sltCor?.fields[1]}` : 'Not infomation'}</span>
+                            <span className="flex flex-row items-center mr-4"><LiaPhoneSolid strokeWidth={0.01} className="w-[22px] h-[22px] mr-1" />{sltCor?.phoneNumber ?? 'Not infomation'}</span>
+                            <span className="flex flex-row items-center mr-4"><CiMail className="w-[22px] h-[22px] mr-1" />{sltCor?.website ?? 'Not infomation'}</span>
                         </div>
                         {/* skills */}
                         <div className="flex flex-row">

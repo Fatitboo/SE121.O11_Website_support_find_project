@@ -89,7 +89,7 @@ function CompanyProfile() {
                         <div>
                             <h2 className="text-[26px] leading-[35px] text-[#202124] font-medium">{sltCor?.fullName}</h2>
                         </div>
-                        <div className="flex flex-row text-[14px] font-thin my-[8px]">
+                        <div className="flex flex-row text-[14px] font-light my-[8px]">
                             <span className="flex flex-row items-center mr-7"><PiMapPin className="w-[18px] h-[18px] mr-1" />{sltCor?.address ? `${sltCor?.address?.district}, ${sltCor?.address?.province}` : 'Not infomation'}</span>
                             <span className="flex flex-row items-center mr-7"><BsBriefcase className="w-[18px] h-[18px] mr-1" />{sltCor?.fields ? `${sltCor?.fields[0]}/ ${sltCor?.fields[1]}` : 'Not infomation'}</span>
                             <span className="flex flex-row items-center mr-7"><LiaPhoneSolid strokeWidth={0.01} className="w-[22px] h-[22px] mr-1" />{sltCor?.phoneNumber ?? 'Not infomation'}</span>
@@ -129,7 +129,7 @@ function CompanyProfile() {
                     <></>
                     <div>
                         <h4 className="text-lg leading-6 text-[#202124] mb-5 font-semibold">About Company</h4>
-                        <p className="text-[#696969] text-[15px] mb-6 leading-8">
+                        <p className="text-[#696969] text-[16px] mb-6 leading-8">
                             {sltCor?.description ?? 'Not infomation'}
                         </p>
                     </div>
@@ -180,9 +180,9 @@ function CompanyProfile() {
                             <span className="text-4 leading-[26px] text-[#202124] font-semibold">Email:</span>
                             <span className="text-[15px] leading-[25px] text-[dimgray] font-medium">{sltCor?.email ?? 'Not infomation'}</span>
                         </div>
-                        <div className="flex flex-row items-center justify-between mb-5">
+                        <div className="flex flex-row items-start justify-between mb-5">
                             <span className="text-4 leading-[26px] text-[#202124] font-semibold">Location:</span>
-                            <span className="text-[15px] leading-[25px] text-[dimgray] font-medium">{sltCor?.address ? `${sltCor?.address?.district}, ${sltCor?.address?.province}` : 'Not infomation'}</span>
+                            <span className="text-[15px] leading-[25px] text-[dimgray] font-medium w-[260px] text-right">{sltCor?.address ? `${sltCor?.address?.addressDetail}, ${sltCor?.address?.ward}, ${sltCor?.address?.district}, ${sltCor?.address?.province}` : 'Not infomation'}</span>
                         </div>
                         <div className="flex flex-row items-center justify-between mb-5">
                             <span className="text-4 leading-[26px] text-[#202124] font-semibold">Social media:</span>

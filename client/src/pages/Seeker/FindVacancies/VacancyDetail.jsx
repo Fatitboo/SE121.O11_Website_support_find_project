@@ -14,6 +14,7 @@ import { updateFavouriteVacancyAction } from "../../../redux/slices/vacancies/va
 import { BsBookmarkCheckFill } from "react-icons/bs";
 import { ReportOr } from "../ReportOr/ReportOr";
 import Swal from "sweetalert2";
+import { Link } from "react-router-dom";
 
 const VacancyDetail = ({ props }) => {
     let [modal, setModal] = useState(false)
@@ -26,10 +27,10 @@ const VacancyDetail = ({ props }) => {
 
 
     useEffect(() => {
-        if (props && props.jobPreScreen){
+        if (props && props.jobPreScreen) {
             setListQuestion([...props.jobPreScreen])
-        } 
-        else{
+        }
+        else {
             setListQuestion(null)
         }
     }, [props])
@@ -46,7 +47,7 @@ const VacancyDetail = ({ props }) => {
         user && dispatch(getDetailUserAction(user?.userId))
     }, [])
     const handleApplied = () => {
-        if(user){
+        if (user) {
             listQuestion ? setModal(true)
                 :
                 props?.vacancyId && dispatch(applyVacancyAction(props.vacancyId))
@@ -94,8 +95,8 @@ const VacancyDetail = ({ props }) => {
         return isFvr;
     }
     const handleUpdateFavourite = () => {
-        if (user){
-            dispatch(updateFavouriteVacancyAction({vacancyId:props?.vacancyId, setFunc: null,notify:null}))
+        if (user) {
+            dispatch(updateFavouriteVacancyAction({ vacancyId: props?.vacancyId, setFunc: null, notify: null }))
 
         }
         else {
@@ -116,7 +117,7 @@ const VacancyDetail = ({ props }) => {
                             <a href="#">{props?.vacancyName}</a>
                         </span>
                         <span className="text-[14px] text-[#1967d2] hover:text-[#202124] leading-6 font-medium mt-2">
-                            <a href="#" className="underline underline-offset-2">{props?.userInfo?.fullName}</a>
+                            <Link to={'/Seeker/company-profile/' + props?.userInfo?.userId} className="underline underline-offset-2">{props?.userInfo?.fullName}</Link>
                         </span>
                         <span className="text-[gray] mt-1">
                             {props?.location}
@@ -271,7 +272,7 @@ const VacancyDetail = ({ props }) => {
                         <div>
                             <div className="flex flex-row items-center justify-between mx-2">
                                 <p className='block leading-8 text-gray-900 text-xl font-bold'>Prescreen Question</p>
-                                <div className="hover:bg-slate-100 rounded-sm p-2 cursor-pointer opacity-90" onClick={() => {setModal(false); setListQuestion(null)}}>
+                                <div className="hover:bg-slate-100 rounded-sm p-2 cursor-pointer opacity-90" onClick={() => { setModal(false); setListQuestion(null) }}>
                                     <IoClose size={20} />
                                 </div>
                             </div>
@@ -287,7 +288,7 @@ const VacancyDetail = ({ props }) => {
                                 }
                             </div>
                             <div className="flex flex-row items-center gap-2 float-right">
-                                <div className="flex items-center justify-center box-border bg-[white] border px-[18px] py-[14px] rounded-[8px] text-[#1967d3] hover:bg-[#eef1fe] hover:border-[#1967d3] cursor-pointer" onClick={() => {setModal(false); setListQuestion(null)}}>
+                                <div className="flex items-center justify-center box-border bg-[white] border px-[18px] py-[14px] rounded-[8px] text-[#1967d3] hover:bg-[#eef1fe] hover:border-[#1967d3] cursor-pointer" onClick={() => { setModal(false); setListQuestion(null) }}>
                                     <span className="text-[15px] leading-none font-bold">Close</span>
                                 </div>
                                 <button className="w-[90px] flex items-center justify-center box-border bg-[#1967d3] px-[18px] py-[14px] rounded-[8px] text-[#fff] hover:bg-[#0146a6] cursor-pointer" onClick={() => handleApplyWithAnswers()}>

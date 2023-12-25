@@ -1,150 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { CiSearch, CiLocationOn } from "react-icons/ci"
-import { RadioGroup } from "@headlessui/react";
-import { BsCheck } from "react-icons/bs";
+import { CiSearch } from "react-icons/ci"
 import { ComboBox, LoadingComponent, PaginationButtons } from "../../../components/index"
-import { Corporation_1 } from '../../../assets/images';
 import OrganizerItem from "./OrganizerItem";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllCorsAction, resetSuccessAction } from "../../../redux/slices/users/usersSlices";
 import { AiFillExclamationCircle } from "react-icons/ai";
-const corporations = [
-    {
-        corAvatar: <img src={Corporation_1} />,
-        corName: "LinkedIn",
-        corAvgRate: 5,
-        corAmountRate: 68,
-        corAddress: "New York, US",
-        corAmountProjects: 25,
-        field: "Accounting"
-    },
-    {
-        corAvatar: <img src={Corporation_1} />,
-        corName: "LinkedIn",
-        corAvgRate: 5,
-        corAmountRate: 68,
-        corAddress: "New York, US",
-        corAmountProjects: 25,
-        field: "Accounting"
-    },
-    {
-        corAvatar: <img src={Corporation_1} />,
-        corName: "LinkedIn",
-        corAvgRate: 5,
-        corAmountRate: 68,
-        corAddress: "New York, US",
-        corAmountProjects: 25,
-        field: "Accounting"
-    },
-    {
-        corAvatar: <img src={Corporation_1} />,
-        corName: "LinkedIn",
-        corAvgRate: 5,
-        corAmountRate: 68,
-        corAddress: "New York, US",
-        corAmountProjects: 25,
-        field: "Accounting"
-    },
-    {
-        corAvatar: <img src={Corporation_1} />,
-        corName: "LinkedIn",
-        corAvgRate: 5,
-        corAmountRate: 68,
-        corAddress: "New York, US",
-        corAmountProjects: 25,
-        field: "Accounting"
-    },
-    {
-        corAvatar: <img src={Corporation_1} />,
-        corName: "LinkedIn",
-        corAvgRate: 5,
-        corAmountRate: 68,
-        corAddress: "New York, US",
-        corAmountProjects: 25,
-        field: "Accounting"
-    },
-    {
-        corAvatar: <img src={Corporation_1} />,
-        corName: "LinkedIn",
-        corAvgRate: 5,
-        corAmountRate: 68,
-        corAddress: "New York, US",
-        corAmountProjects: 25,
-        field: "Accounting"
-    },
-    {
-        corAvatar: <img src={Corporation_1} />,
-        corName: "LinkedIn",
-        corAvgRate: 5,
-        corAmountRate: 68,
-        corAddress: "New York, US",
-        corAmountProjects: 25,
-        field: "Accounting"
-    },
-    {
-        corAvatar: <img src={Corporation_1} />,
-        corName: "LinkedIn",
-        corAvgRate: 5,
-        corAmountRate: 68,
-        corAddress: "New York, US",
-        corAmountProjects: 25,
-        field: "Accounting"
-    },
-    {
-        corAvatar: <img src={Corporation_1} />,
-        corName: "LinkedIn",
-        corAvgRate: 5,
-        corAmountRate: 68,
-        corAddress: "New York, US",
-        corAmountProjects: 25,
-        field: "Accounting"
-    },
-    {
-        corAvatar: <img src={Corporation_1} />,
-        corName: "LinkedIn",
-        corAvgRate: 5,
-        corAmountRate: 68,
-        corAddress: "New York, US",
-        corAmountProjects: 25,
-        field: "Accounting"
-    },
-    {
-        corAvatar: <img src={Corporation_1} />,
-        corName: "LinkedIn",
-        corAvgRate: 5,
-        corAmountRate: 68,
-        corAddress: "New York, US",
-        corAmountProjects: 25,
-        field: "Accounting"
-    },
-    {
-        corAvatar: <img src={Corporation_1} />,
-        corName: "LinkedIn",
-        corAvgRate: 5,
-        corAmountRate: 68,
-        corAddress: "New York, US",
-        corAmountProjects: 25,
-        field: "Accounting"
-    },
-    {
-        corAvatar: <img src={Corporation_1} />,
-        corName: "LinkedIn",
-        corAvgRate: 5,
-        corAmountRate: 68,
-        corAddress: "New York, US",
-        corAmountProjects: 25,
-        field: "Accounting"
-    },
-    {
-        corAvatar: <img src={Corporation_1} />,
-        corName: "LinkedIn",
-        corAvgRate: 5,
-        corAmountRate: 68,
-        corAddress: "New York, US",
-        corAmountProjects: 25,
-        field: "Accounting"
-    }
-]
+
 function FindOrganizer() {
     const dispatch = useDispatch()
     useEffect(() => {
@@ -159,6 +20,7 @@ function FindOrganizer() {
     const [filterLocation, setFilterLocation] = useState('');
     const [companyList, setCompanyList] = useState([]);
     const [categoryList, setCategoryList] = useState([{ id: 0, name: 'All' }]);
+    const [addressList, setAddressList] = useState([{ id: 0, name: 'All' }]);
 
 
     const onFilterSortBy = (filterValue) => {
@@ -181,13 +43,24 @@ function FindOrganizer() {
             setCompanyList([...corList]);
         }
         else {
-            setCompanyList([...corList.filter(item => (item?.fields?.filter(i => i.toLowerCase().includes(filterValue.name.toLowerCase())))?.length > 0)]);
+            setCompanyList([...corList.filter(item => (item?.fields?.filter(i => i.toLowerCase().includes(filterValue.name.trim().toLowerCase())))?.length > 0)]);
         }
     }
-    // const [distance, setDistance] = useState("100");
-    // const [plan, setPlan] = useState('startup')
+    const onFilterAddress = (filterValue) => {
+        if (filterValue.name === 'All') {
+            setCompanyList([...corList]);
+        }
+        else {
+            setCompanyList([...corList.filter(item=>item?.address?.province  === filterValue.name)]);
+        }
+    }
+
     useEffect(() => {
-        setPages([...companyList.filter(item => ((item?.fullName).toLowerCase().includes(filterKeyWord.toLowerCase()) || item?.fields?.filter(i => i.toLowerCase().includes(filterKeyWord.toLowerCase())).length>0) && ((item?.address?.province ?? '').toLowerCase()?.includes(filterLocation.toLowerCase()) || (item?.address?.district ?? '').toLowerCase()?.includes(filterLocation.toLowerCase()))).slice(currentPage * itemPerPage, (currentPage + 1) * itemPerPage)])
+        setPages([...companyList.filter(item => ((item?.fullName).toLowerCase().includes(filterKeyWord.trim().toLowerCase())
+            || item?.fields?.filter(i => i.toLowerCase().includes(filterKeyWord.trim().toLowerCase())).length > 0)
+            && ((item?.address?.province ?? '').toLowerCase()?.includes(filterLocation.trim().toLowerCase())
+                || (item?.address?.district ?? '').toLowerCase()?.includes(filterLocation.trim().toLowerCase())))
+            .slice(currentPage * itemPerPage, (currentPage + 1) * itemPerPage)])
     }, [currentPage, itemPerPage, companyList, filterKeyWord, filterLocation])
     useEffect(() => {
         if (isSuccess) {
@@ -203,8 +76,18 @@ function FindOrganizer() {
                 }
                 return result;
             }, []);
-            setCategoryList([{ id: 0, name: 'All' }, ...uniqueFields]);
+            const uniAddress = corList.reduce((result, company) => {
+                if (company.address) {
 
+                    if (!result.find(item => item.name === company.address.province)) {
+                        result.push({ id: result.length + 1, name: company.address.province });
+                    }
+
+                }
+                return result;
+            }, []);
+            setCategoryList([{ id: 0, name: 'All' }, ...uniqueFields]);
+            setAddressList([{id: 0, name: 'All'}, ...uniAddress])
             setPages([...corList.slice(currentPage * itemPerPage, (currentPage + 1) * itemPerPage)])
         }
     }, [isSuccess])
@@ -223,37 +106,13 @@ function FindOrganizer() {
                                 <CiSearch className="absolute w-5 h-5 left-5 top-[50%] -mt-[10px]" />
                             </div>
                         </div>
-
                         {/* search by location */}
                         <div className="mb-[10px]">
                             <h1 className="text-lg leading-[24px] text-[#202124] mb-4 font-medium">Location</h1>
-                            <div className="relative">
-                                <input onChange={(e) => setFilterLocation(e.target.value)} className="py-[10px] w-full leading-[30px] pr-5 pl-[54px] text-base rounded-lg focus:border-[#1967d2] focus:border outline-none" color="dimgray" type="text" name="listing-search" placeholder="City or District" />
-                                <CiLocationOn className="absolute w-5 h-5 left-5 top-[50%] -mt-[10px]" />
+                            <div className="rounded-lg focus:border-[#1967d2] ">
+                                <ComboBox listItem={addressList} filterValueSelected={onFilterAddress} styles={'py-3 outline-none border-none '} />
                             </div>
                         </div>
-
-                        {/* search by distance */}
-                        <div>
-                            {/* <h1 className="text-[14px] leading-[19px] text-[dimgray] mb-4 font-normal">Radius around selected destination</h1>
-                            <div className="flex flex-col justify-center">
-                                <input
-                                    type="range"
-                                    name="distance"
-                                    id=""
-                                    min={0}
-                                    max={100}
-                                    step={1}
-                                    value={distance}
-                                    className="bg-[#fff] in-range:border-green-500 outline-none"
-                                    style={{ accentColor: "#1967d2" }}
-                                    onChange={(e) => setDistance(e.target.value)} />
-                                <div className="mr-3 mt-3 bg-[rgba(25,103,210,.15)] text-[#1967d2] rounded-3xl flex self-center">
-                                    <span className="text-base px-[20px] py-[5px] leading-none">{distance} km</span>
-                                </div>
-                            </div> */}
-                        </div>
-
                         {/* search by category */}
                         <div>
                             <h1 className="text-lg leading-[24px] text-[#202124] mb-4 mt-5 font-medium">Category</h1>

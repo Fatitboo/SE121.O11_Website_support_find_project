@@ -18,6 +18,7 @@ const VacancyItem = ({ props, isAvatar, active, notify, isEditProject, setFunc, 
     // {vacancyName, skillsRequired, maxRequired, salary, registant, description, isAvatar, companyName, companyAvatar}
     const { userAuth } = useSelector(store => store.users);
     const { loadingFvr } = useSelector(store => store.vacancies)
+    const { loading } = useSelector(store => store.vacancies)
 
     const dispatch = useDispatch();
     const userId = userAuth?.user?.userId;
@@ -32,7 +33,7 @@ const VacancyItem = ({ props, isAvatar, active, notify, isEditProject, setFunc, 
             const obj = {
                 vacancyId: props?.vacancyId,
                 setFunc: setFunc ? setFunc : null,
-                notify: notify
+                notify: notify ? notify : null
             }
             dispatch(updateFavouriteVacancyAction(obj))
         }
@@ -48,7 +49,7 @@ const VacancyItem = ({ props, isAvatar, active, notify, isEditProject, setFunc, 
 
     return (
         <>
-            {loadingFvr && <LoadingComponent />}
+            {loading && <LoadingComponent />}
             {/* <Link to={`/Organizer/vacancy-info/${props?.vacancyId}`}> */}
             <div style={{ backgroundColor: active ? "#f6faff" : '' }} className="flex flex-row p-7 rounded-[4px] border border-[#ecedf2] hover:bg-[#f6faff] bg-white hover:shadow-[0_7px_18px_rgba(64,79,104,.05)] cursor-pointer">
                 {

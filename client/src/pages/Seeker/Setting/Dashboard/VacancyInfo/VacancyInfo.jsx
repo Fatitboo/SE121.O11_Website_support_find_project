@@ -1,15 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { BiBookmark, BiLogoFacebook, BiLogoInstagram, BiLogoLinkedin, BiMoney, BiPackage } from "react-icons/bi";
+import { BiBookmark, BiLogoFacebook, BiLogoLinkedin, BiMoney, BiPackage } from "react-icons/bi";
 import { PiTargetLight } from 'react-icons/pi';
 import { GoHourglass, GoLocation } from "react-icons/go";
-import VacancyItem from "./VacancyItem";
-import { AiOutlineSetting } from 'react-icons/ai';
-import ParticipantItem from "./ParticipantItem";
-import { ArrowLeftIcon } from "@heroicons/react/20/solid";
 import { ToastContainer, toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { BsBookmarkFill, BsClock } from "react-icons/bs";
+import { BsBookmarkCheckFill, BsClock, BsTwitter } from "react-icons/bs";
 import { getAllParticipantsVacancy, getVacancyInfoDetail, resetSuccessAction, updateFavouriteVacancyAction } from "../../../../../redux/slices/vacancies/vacanciesSlices";
 import { CalendarIcon, ExpiryIcon, SalaryIcon } from "../../../../../assets/icons";
 import { LoadingComponent, Modal } from "../../../../../components";
@@ -20,24 +16,7 @@ import { applyVacancyAction, applyVacancyWithAnswersAction, getDetailUserAction 
 import { IoClose } from "react-icons/io5";
 import AnswerQuestion from "../../../FindVacancies/AnswerQuestion";
 import { VacancyItemLoader } from "../../../../../components/Loader";
-
-
-const participants = [
-    {
-        userId: 1,
-        userAvatar: 'https://scontent.fsgn19-1.fna.fbcdn.net/v/t39.30808-6/305117982_819079809468330_6882772732131573332_n.jpg?_nc_cat=105&ccb=1-7&_nc_sid=a2f6c7&_nc_ohc=_tz73DXI83kAX8-wZsI&_nc_ht=scontent.fsgn19-1.fna&oh=00_AfCo2vH4GN6Tt7KXpVymIL9tEGH-MCebjb2VZfZjP_w6Xw&oe=651DF1E8',
-        firstName: 'Le Quang',
-        surName: 'Nhan',
-        position: 'CEO'
-    },
-    {
-        userId: 2,
-        userAvatar: 'https://scontent.fsgn19-1.fna.fbcdn.net/v/t39.30808-6/305117982_819079809468330_6882772732131573332_n.jpg?_nc_cat=105&ccb=1-7&_nc_sid=a2f6c7&_nc_ohc=_tz73DXI83kAX8-wZsI&_nc_ht=scontent.fsgn19-1.fna&oh=00_AfCo2vH4GN6Tt7KXpVymIL9tEGH-MCebjb2VZfZjP_w6Xw&oe=651DF1E8',
-        firstName: 'Nguyen Van',
-        surName: 'Phat',
-        position: 'Assistant'
-    }
-];
+import { FacebookShareButton, LinkedinShareButton, TwitterShareButton } from "react-share";
 
 function VacancyInfo() {
     const { id } = useParams();
@@ -58,10 +37,10 @@ function VacancyInfo() {
     }, [dispatch])
 
     useEffect(() => {
-        if (vacancyInfo && vacancyInfo.jobPreScreen){
+        if (vacancyInfo && vacancyInfo.jobPreScreen) {
             setListQuestion([...vacancyInfo.jobPreScreen])
-        } 
-        else{
+        }
+        else {
             setListQuestion(null)
         }
     }, [vacancyInfo])
@@ -148,7 +127,7 @@ function VacancyInfo() {
     }
 
     const handleApplied = () => {
-        if(user){
+        if (user) {
             listQuestion ? setModal(true)
                 :
                 vacancyInfo?.vacancyId && dispatch(applyVacancyAction(vacancyInfo.vacancyId))
@@ -187,13 +166,6 @@ function VacancyInfo() {
     return (<>
         {loading && <LoadingComponent />}
         <ToastContainer />
-        {/* Start title of page  */}
-        {/* <div className="pt-10 px-[8%] mx-14 -mb-8">
-            <div className="font-medium text-3xl text-gray-900  flex items-center">
-                <ArrowLeftIcon className="h-8 cursor-pointer mr-2" onClick={() => navigate(-1)} />
-
-            </div>
-        </div> */}
         <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/uicons-regular-rounded/css/uicons-regular-rounded.css'></link>
         <div className="px-[8%] mx-14   bg-white py-10 rounded-xl ">
             <div className="static grid grid-cols-12 gap-4 m-auto box-border">
@@ -247,19 +219,29 @@ function VacancyInfo() {
                     <></>
                     <div>
                         <div className="flex flex-row items-center mt-6">
-                            <h4 className="text-base leading-6 text-[#202124] font-semibold">Share this project</h4>
-                            <a href={sltVacancy} target="_blank" className="flex flex-row items-center bg-[#3b5998] py-[10px] px-[25px] text-[14px] ml-[12px] rounded-lg">
-                                <BiLogoFacebook color="#fff" className="w-5 h-5" />
-                                <span className="text-[#fff] ml-1">Facebook</span>
-                            </a>
-                            <a href="https://www.linkedin.com" target="_blank" className="flex flex-row items-center bg-[#007bb5] py-[10px] px-[25px] text-[14px] ml-[9px] rounded-lg">
-                                <BiLogoLinkedin color="#fff" className="w-5 h-5" />
-                                <span className="text-[#fff] ml-1">Linked in</span>
-                            </a>
-                            <a href="https://www.instagram.com" target="_blank" className="flex flex-row items-center bg-[#ea3ca4] py-[10px] px-[25px] text-[14px] ml-[9px] rounded-lg">
-                                <BiLogoInstagram color="#fff" className="w-5 h-5" />
-                                <span className="text-[#fff] ml-1">Instagram</span>
-                            </a>
+                            <h4 className="text-base leading-6 text-[#202124] font-semibold">Share this vacancy</h4>
+                            <FacebookShareButton
+                                url={window.location.href}
+                            >
+                                <div className="flex flex-row items-center bg-[#3b5998] py-[10px] px-[25px] text-[14px] ml-[12px] rounded-lg">
+                                    <BiLogoFacebook color="#fff" className="w-5 h-5" />
+                                    <span className="text-[#fff] ml-1">Facebook</span>
+                                </div>
+
+                            </FacebookShareButton>
+                            <LinkedinShareButton url={window.location.href}>
+                                <div className="flex flex-row items-center bg-[#007bb5] py-[10px] px-[25px] text-[14px] ml-[9px] rounded-lg">
+                                    <BiLogoLinkedin color="#fff" className="w-5 h-5" />
+                                    <span className="text-[#fff] ml-1">Linked in</span>
+                                </div>
+                            </LinkedinShareButton>
+                            <TwitterShareButton url={window.location.href}>
+                                <div className="flex flex-row items-center bg-[#ea3ca4] py-[10px] px-[25px] text-[14px] ml-[9px] rounded-lg">
+                                    <BsTwitter color="#fff" className="w-5 h-5" />
+                                    <span className="text-[#fff] ml-1">Twitter</span>
+                                </div>
+
+                            </TwitterShareButton>
                         </div>
                     </div>
                     <></>
@@ -341,39 +323,38 @@ function VacancyInfo() {
                 <div className="col-span-4">
                     <div className="flex flex-row-reverse gap-6 mb-3">
 
-
                         <div className="item flex self-end items-center justify-center w-[50px] h-[52px] rounded-[7px] bg-[rgba(25,103,210,.07)]  cursor-pointer opacity-80" color="#1967d3">
                             <div onClick={() => handleUpdateFavourite()} className="item flex items-center justify-center w-full h-full">
                                 {
                                     !checkFavourite() ? <BiBookmark className="w-full h-full  p-2.5 rounded-[7px]" color="#1967d3" />
-                                        : <BsBookmarkFill className="w-full h-full p-2.5 rounded-[7px]" color="#1967d3" />
+                                        : <BsBookmarkCheckFill className="w-full h-full p-2.5 rounded-[7px]" color="#1967d3" />
                                 }
                             </div>
                         </div>
                         {
-                                seletedUser?.appliedVacancies?.includes(vacancyInfo?.vacancyId) ?
-                                    <div className="flex items-center justify-center w-full box-border bg-[#1967d3] px-[10px] py-[3px] rounded-[8px] text-[#fff] cursor-not-allowed">
-                                        {
-                                            !(loadingAL || loadingGD) ? <span className="text-[14px] leading-none font-bold">Applied</span>
-                                                : <svg className="right-1 animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 24 24">
-                                                    <circle className="opacity-0" cx="12" cy="12" r="10" stroke="white" strokeWidth="4"></circle>
-                                                    <path className="opacity-90" fill="white" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                                </svg>
-                                        }
+                            seletedUser?.appliedVacancies?.includes(vacancyInfo?.vacancyId) ?
+                                <div className="flex items-center justify-center w-full box-border bg-[#1967d3] px-[10px] py-[3px] rounded-[8px] text-[#fff] cursor-not-allowed">
+                                    {
+                                        !(loadingAL || loadingGD) ? <span className="text-[14px] leading-none font-bold">Applied</span>
+                                            : <svg className="right-1 animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 24 24">
+                                                <circle className="opacity-0" cx="12" cy="12" r="10" stroke="white" strokeWidth="4"></circle>
+                                                <path className="opacity-90" fill="white" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                            </svg>
+                                    }
 
-                                    </div> :
-                                    <div className="flex items-center justify-center w-full box-border bg-[#1967d3] px-[10px] py-[3px] rounded-[8px] text-[#fff] hover:bg-[#0146a6] cursor-pointer" onClick={handleApplied} >
-                                        {
-                                            !(loadingAL || loadingGD) ? <span className="text-[14px] leading-none font-bold">Apply now</span>
-                                                : <svg className="right-1 animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 24 24">
-                                                    <circle className="opacity-0" cx="12" cy="12" r="10" stroke="white" strokeWidth="4"></circle>
-                                                    <path className="opacity-90" fill="white" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                                </svg>
-                                        }
+                                </div> :
+                                <div className="flex items-center justify-center w-full box-border bg-[#1967d3] px-[10px] py-[3px] rounded-[8px] text-[#fff] hover:bg-[#0146a6] cursor-pointer" onClick={handleApplied} >
+                                    {
+                                        !(loadingAL || loadingGD) ? <span className="text-[14px] leading-none font-bold">Apply now</span>
+                                            : <svg className="right-1 animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 24 24">
+                                                <circle className="opacity-0" cx="12" cy="12" r="10" stroke="white" strokeWidth="4"></circle>
+                                                <path className="opacity-90" fill="white" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                            </svg>
+                                    }
 
-                                    </div>
+                                </div>
 
-                            }
+                        }
                     </div>
                     <div className="p-6 bg-[#F5F6FC] rounded-lg mb-[30px]">
                         <div className="text-[#202124] text-[18px] font-semibold mb-4">Vacancy Overview</div>
@@ -451,7 +432,7 @@ function VacancyInfo() {
                             <div className="flex flex-row flex-wrap">
                                 {
                                     (!sltVacancy.skillsRequired ? ['Not information'] : [...sltVacancy.skillsRequired]).map((item, index) => {
-                                        return <div key={index} className="py-[3px] px-5 rounded bg-[#e2edf8] text-sm text-[#828281]  mr-[10px] my-1"><span>{item}</span></div>
+                                        return <div key={index} className="py-[3px] px-5 rounded bg-[#e2edf8] text-sm text-black  mr-[10px] my-1"><span>{item}</span></div>
                                     })
                                 }
                             </div>
@@ -471,70 +452,90 @@ function VacancyInfo() {
                             </div>
                         </div>
                     </div>
-                    {/* <div>
-                        <div className="p-6 bg-[#F5F6FC] rounded-lg mb-[30px]">
-                            <h4 className="text-[#202124] text-[18px] font-semibold mb-[30px]">Contact Us</h4>
-                            <div>
-                                <div >
-                                    <form>
-                                        <div>
-                                            <div className="w-full">
-                                                <input  className="px-5 w-full mb-5 py-[15px] text-[15px] leading-[30px] text-[dimgray] rounded-lg border-[#ecedf2] border outline-none" type="text" name="username" placeholder="Subject" required="" />
-                                            </div>
-                                           
-                                            <div className="w-full h-[160px] mb-5">
-                                                <textarea className="px-5 h-full w-full mb-5 py-[15px] text-[15px] leading-[30px] text-[dimgray] rounded-lg border-[#ecedf2] border outline-none" name="message" placeholder="Message"></textarea>
-                                            </div>
-                                            <div>
-                                                <button className="flex items-center justify-center h-[53px] box-border bg-[#1967d3] px-[18px] py-[8px] w-full rounded-[8px] text-[#fff] hover:bg-[#0d6efd]" type="submit" name="submit-form">Open send Message</button>
-                                            </div>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                    </div> */}
+
                 </div>
             </div>
             {
-                    listQuestion && listQuestion.length !== 0 &&
-                    <Modal open={modal} setModal={setModal}>
-                        <div>
-                            <div className="flex flex-row items-center justify-between mx-2">
-                                <p className='block leading-8 text-gray-900 text-xl font-bold'>Prescreen Question</p>
-                                <div className="hover:bg-slate-100 rounded-sm p-2 cursor-pointer opacity-90" onClick={() => {setModal(false);setListQuestion(null)}}>
-                                    <IoClose size={20} />
-                                </div>
-                            </div>
-                            <hr className="block h-1 w-full bg-[rgb(212, 210, 208)] mt-3" />
-                            <div className="max-h-[400px] w-[600px] overflow-y-auto overflow-x-hidden mb-4 px-3">
-                                <button onClick={() => console.log(listQuestion)}>Click me</button>
-                                {
-                                    listQuestion.map((item, index) => {
-                                        return <div key={index}>
-                                            <AnswerQuestion userId={user.userId} onCheckedRadio={(e) => onCheckedRadio(e, item, index)} onTextChanged={(e) => handleChangeText(e, item, index)} setDateTimeSelect={(e) => setDateTimeSelect(e, item, index)} props={item} />
-                                        </div>
-                                    })
-                                }
-                            </div>
-                            <div className="flex flex-row items-center gap-2 float-right">
-                                <div className="flex items-center justify-center box-border bg-[white] border px-[18px] py-[14px] rounded-[8px] text-[#1967d3] hover:bg-[#eef1fe] hover:border-[#1967d3] cursor-pointer" onClick={() => {setModal(false);setListQuestion(null)}}>
-                                    <span className="text-[15px] leading-none font-bold">Close</span>
-                                </div>
-                                <button className="w-[90px] flex items-center justify-center box-border bg-[#1967d3] px-[18px] py-[14px] rounded-[8px] text-[#fff] hover:bg-[#0146a6] cursor-pointer" onClick={() => handleApplyWithAnswers()}>
-                                    {
-                                        loadingAL ? <svg className="right-1 animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 24 24">
-                                            <circle className="opacity-0" cx="12" cy="12" r="10" stroke="white" strokeWidth="4"></circle>
-                                            <path className="opacity-90" fill="white" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                        </svg> :
-                                            <span className="text-[15px] leading-none font-bold">Done</span>
-                                    }
-                                </button>
+                listQuestion && listQuestion.length !== 0 &&
+                <Modal open={modal} setModal={setModal}>
+                    <div>
+                        <div className="flex flex-row items-center justify-between mx-2">
+                            <p className='block leading-8 text-gray-900 text-xl font-bold'>Prescreen Question</p>
+                            <div className="hover:bg-slate-100 rounded-sm p-2 cursor-pointer opacity-90" onClick={() => { setModal(false); setListQuestion(null) }}>
+                                <IoClose size={20} />
                             </div>
                         </div>
-                    </Modal>
-                }
+                        <hr className="block h-1 w-full bg-[rgb(212, 210, 208)] mt-3" />
+                        <div className="max-h-[400px] w-[600px] overflow-y-auto overflow-x-hidden mb-4 px-3">
+                            <button onClick={() => console.log(listQuestion)}>Click me</button>
+                            {
+                                listQuestion.map((item, index) => {
+                                    return <div key={index}>
+                                        <AnswerQuestion userId={user.userId} onCheckedRadio={(e) => onCheckedRadio(e, item, index)} onTextChanged={(e) => handleChangeText(e, item, index)} setDateTimeSelect={(e) => setDateTimeSelect(e, item, index)} props={item} />
+                                    </div>
+                                })
+                            }
+                        </div>
+                        <div className="flex flex-row items-center gap-2 float-right">
+                            <div className="flex items-center justify-center box-border bg-[white] border px-[18px] py-[14px] rounded-[8px] text-[#1967d3] hover:bg-[#eef1fe] hover:border-[#1967d3] cursor-pointer" onClick={() => { setModal(false); setListQuestion(null) }}>
+                                <span className="text-[15px] leading-none font-bold">Close</span>
+                            </div>
+                            <button className="w-[90px] flex items-center justify-center box-border bg-[#1967d3] px-[18px] py-[14px] rounded-[8px] text-[#fff] hover:bg-[#0146a6] cursor-pointer" onClick={() => handleApplyWithAnswers()}>
+                                {
+                                    loadingAL ? <svg className="right-1 animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 24 24">
+                                        <circle className="opacity-0" cx="12" cy="12" r="10" stroke="white" strokeWidth="4"></circle>
+                                        <path className="opacity-90" fill="white" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                    </svg> :
+                                        <span className="text-[15px] leading-none font-bold">Done</span>
+                                }
+                            </button>
+                        </div>
+                    </div>
+                </Modal>
+            }
         </div>
+
+        <div>
+            {
+                listQuestion && listQuestion.length !== 0 &&
+                <Modal open={modal} setModal={setModal}>
+                    <div>
+                        <div className="flex flex-row items-center justify-between mx-2">
+                            <p className='block leading-8 text-gray-900 text-xl font-bold'>Prescreen Question</p>
+                            <div className="hover:bg-slate-100 rounded-sm p-2 cursor-pointer opacity-90" onClick={() => { setModal(false); setListQuestion(null) }}>
+                                <IoClose size={20} />
+                            </div>
+                        </div>
+                        <hr className="block h-1 w-full bg-[rgb(212, 210, 208)] mt-3" />
+                        <div className="max-h-[400px] w-[600px] overflow-y-auto overflow-x-hidden mb-4 px-3">
+                            <button onClick={() => console.log(listQuestion)}>Click me</button>
+                            {
+                                listQuestion.map((item, index) => {
+                                    return <div key={index}>
+                                        <AnswerQuestion userId={user.userId} onCheckedRadio={(e) => onCheckedRadio(e, item, index)} onTextChanged={(e) => handleChangeText(e, item, index)} setDateTimeSelect={(e) => setDateTimeSelect(e, item, index)} props={item} />
+                                    </div>
+                                })
+                            }
+                        </div>
+                        <div className="flex flex-row items-center gap-2 float-right">
+                            <div className="flex items-center justify-center box-border bg-[white] border px-[18px] py-[14px] rounded-[8px] text-[#1967d3] hover:bg-[#eef1fe] hover:border-[#1967d3] cursor-pointer" onClick={() => { setModal(false); setListQuestion(null) }}>
+                                <span className="text-[15px] leading-none font-bold">Close</span>
+                            </div>
+                            <button className="w-[90px] flex items-center justify-center box-border bg-[#1967d3] px-[18px] py-[14px] rounded-[8px] text-[#fff] hover:bg-[#0146a6] cursor-pointer" onClick={() => handleApplyWithAnswers()}>
+                                {
+                                    loadingAL ? <svg className="right-1 animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 24 24">
+                                        <circle className="opacity-0" cx="12" cy="12" r="10" stroke="white" strokeWidth="4"></circle>
+                                        <path className="opacity-90" fill="white" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                    </svg> :
+                                        <span className="text-[15px] leading-none font-bold">Done</span>
+                                }
+                            </button>
+                        </div>
+                    </div>
+                </Modal>
+            }
+        </div >
+
     </>);
 }
 

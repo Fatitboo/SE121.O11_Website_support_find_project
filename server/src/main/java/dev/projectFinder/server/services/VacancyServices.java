@@ -7,6 +7,7 @@ import dev.projectFinder.server.components.Vacancy.JobPreScreen;
 import dev.projectFinder.server.components.Vacancy.UserInfo;
 import dev.projectFinder.server.dtos.UserDTO;
 import dev.projectFinder.server.dtos.VacancyDTO;
+import dev.projectFinder.server.models.Project;
 import dev.projectFinder.server.models.UnCompletedVacancy;
 import dev.projectFinder.server.models.User;
 import dev.projectFinder.server.models.Vacancy;
@@ -298,6 +299,29 @@ public class VacancyServices {
             }
 
         return users;
+    }
+    public HashMap<String, Object> getAllApplicantsVacancyWithVacancyTitle (String id) {
+        Optional<Vacancy> vacancyOptional = vacancyRepository.findById(new ObjectId(id));
+        if(vacancyOptional.isEmpty()){
+            return null;
+        }
+        Vacancy vacancy=  vacancyOptional.get();
+
+        List<String> userIds = vacancy.getRegistants();
+        HashMap<String, Object> hashMaps = new HashMap<>();
+        List<User> users = new ArrayList<>();
+        if(userIds!=null)
+            for(int i = 0; i < userIds.size(); i++){
+                Optional<User> userOptional = userRepository.findById(new ObjectId(userIds.get(i)));
+                if(userOptional.isEmpty()){
+                    throw new DataIntegrityViolationException("Error when get user in database!");
+                }
+               users.add(userOptional.get());
+            }
+        if(users.isEmpty()) return null;
+        hashMaps.put("vacancyName", vacancy.getVacancyName());
+        hashMaps.put("applicants", users);
+        return hashMaps;
     }
     public HashMap<String, List<User>> getAllParticipantsVacancy (String id) {
         Optional<Vacancy> vacancyOptional = vacancyRepository.findById(new ObjectId(id));
@@ -731,6 +755,29 @@ public class VacancyServices {
             listAppliedVacancies.add(hm);
         }
         return listAppliedVacancies;
+    }
+    public List<Vacancy> getAllVacanciesUserRecommend(String id) throws Exception {
+        Optional<User> userOptional = userRepository.findById(new ObjectId(id));
+        if(userOptional.isEmpty()){
+            throw new DataIntegrityViolationException("Error when get user in database");
+        }
+        User user = userOptional.get();
+
+        List<Vacancy> vacancyList = new ArrayList<>();
+
+        List<String> listVacanciesIds = user.getVacancies();
+        if(listVacanciesIds != null)
+            for (String listVccId : listVacanciesIds) {
+                Optional<Vacancy> vacancyOptional = vacancyRepository.findById(new ObjectId(listVccId));
+                if (vacancyOptional.isEmpty()) {
+                    throw new DataIntegrityViolationException("Error when get project in database");
+                }
+                Vacancy vacancy = vacancyOptional.get();
+                if(vacancy.getApprovalStatus().equals("approved"))
+                    vacancyList.add(vacancy);
+            }
+
+        return vacancyList;
     }
     public Vacancy updateCompleteVacancy(Vacancy vacancy){
         Optional<Vacancy> vacancyOptional = vacancyRepository.findById(vacancy.getVacancyId());

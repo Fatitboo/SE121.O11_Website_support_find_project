@@ -1,6 +1,9 @@
 package dev.projectFinder.server.services;
 
 
+import com.sendgrid.helpers.mail.Mail;
+import com.sendgrid.helpers.mail.objects.Content;
+import com.sendgrid.helpers.mail.objects.Email;
 import dev.projectFinder.server.components.*;
 import dev.projectFinder.server.components.Vacancy.JobPreScreen;
 import dev.projectFinder.server.components.Vacancy.UserInfo;
@@ -40,8 +43,8 @@ public class UserServices {
     private final JwtTokenUtils jwtTokenUtil;
     private final EmailService emailService;
     private final ProjectRepository projectRepository;
-    private final ReportRepository reportRepository;
     private final UnCompletedVacancyRepository unCompletedVacancyRepository;
+    private final HistoryRepository historyRepository;
 
     public UserResponse createUser(UserDTO userDTO) throws Exception {
         if (!userDTO.getPassword().equals(userDTO.getCPassword())){
@@ -499,7 +502,48 @@ public class UserServices {
         List<User> seekers = users.stream().filter(u-> u.getUserType().equals("seeker")).toList();
         List<Vacancy> vacancies = vacancyRepository.findAll();
         List<Project> projects = projectRepository.findAll();
+        List<History> histories = historyRepository.findAll();
+        List<HistoryDTO> historyDTOS = new ArrayList<>();
+        for(History h: histories){
+            if(h.getProject()!=null){
+                Optional<User> opu = userRepository.findById(h.getProject().getUserId());
 
+                HistoryDTO historyDTO =  HistoryDTO.builder()
+                        .historyId(h.getHistoryId())
+                        .cart(h.getCart())
+                        .create_time(h.getCreate_time())
+                        .id(h.getId())
+                        .intent(h.getIntent())
+                        .payer(h.getPayer())
+                        .state(h.getState())
+                        .transactions(h.getTransactions())
+                        .update_time(h.getUpdate_time())
+                        .response(h.getResponse())
+                        .vacancy(null)
+                        .project(null)
+                        .userInfo(new UserInfo(h.getProject().getUserId().toString(), opu.get().getAvatar().getFileUrl(), opu.get().getFullName()))
+                        .build();
+                historyDTOS.add(historyDTO);
+            }
+            else{
+                HistoryDTO historyDTO =  HistoryDTO.builder()
+                        .historyId(h.getHistoryId())
+                        .cart(h.getCart())
+                        .create_time(h.getCreate_time())
+                        .id(h.getId())
+                        .intent(h.getIntent())
+                        .payer(h.getPayer())
+                        .state(h.getState())
+                        .transactions(h.getTransactions())
+                        .update_time(h.getUpdate_time())
+                        .response(h.getResponse())
+                        .vacancy(h.getVacancy())
+                        .project(null)
+                        .userInfo(h.getVacancy().getUserInfo())
+                        .build();
+                historyDTOS.add(historyDTO);
+            }
+        }
         cors.sort(Comparator.comparing(User::getCreatedAt).reversed());
         vacancies.sort(Comparator.comparing(Vacancy::getCreatedAt).reversed());
         projects.sort(Comparator.comparing(Project::getCreatedAt).reversed());
@@ -519,8 +563,11 @@ public class UserServices {
         hashMap.put("numOrganizers", cors.size());
         hashMap.put("numVacancies", vacancies.size());
         hashMap.put("numProjects", projects.size());
-
+        hashMap.put("histories", historyDTOS);
         return hashMap;
+    }
+    public List<History> getAllHistoryTransaction(){
+        return historyRepository.findAll();
     }
     public void applyVacancy(String id, String vacancyId){
         Optional<User> foundUser = userRepository.findById(new ObjectId(id));
@@ -691,6 +738,48 @@ public class UserServices {
         Boolean isActive = user.getIsActive();
         user.setIsActive(!isActive);
         userRepository.save(user);
+    }
+    public void sendRecommendEmail(String corId, String rcmId, String seekerId, String type) throws IOException {
+        Optional<User> corF = userRepository.findById(new ObjectId(corId));
+        if(corF.isEmpty()){
+            throw new DataIntegrityViolationException(MessageKeys.USER_NOT_FOUND);
+        }
+        User cor = corF.get();
+        Optional<User> seekerF = userRepository.findById(new ObjectId(seekerId));
+        if(seekerF.isEmpty()){
+            throw new DataIntegrityViolationException(MessageKeys.USER_NOT_FOUND);
+        }
+        User seeker = seekerF.get();
+        if(type.equals("vacancy")){
+            Optional<Vacancy> vF = vacancyRepository.findById(new ObjectId(rcmId));
+            if(vF.isEmpty()){
+                throw new DataIntegrityViolationException(MessageKeys.USER_NOT_FOUND);
+            }
+            Vacancy v = vF.get();
+            emailService.sendRecommendEmail(
+                    seeker.getEmail(),
+                    "Organizer "+cor.getFullName()+" invite you to checkout "+type+" "+v.getVacancyName(),
+                    corId,
+                    rcmId,
+                    cor.getFullName(),
+                    type,
+                    v.getVacancyName());
+        }
+        else{
+            Optional<Project> pF = projectRepository.findById(new ObjectId(rcmId));
+            if(pF.isEmpty()){
+                throw new DataIntegrityViolationException(MessageKeys.USER_NOT_FOUND);
+            }
+            Project v = pF.get();
+            emailService.sendRecommendEmail(
+                    seeker.getEmail(),
+                    "Organizer "+cor.getFullName()+" invite you to checkout "+type+" "+v.getProjectName(),
+                    corId,
+                    rcmId,
+                    cor.getFullName(),
+                    type,
+                    v.getProjectName());
+        }
     }
 
 

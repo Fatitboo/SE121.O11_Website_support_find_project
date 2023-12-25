@@ -37,11 +37,11 @@ function DashboardCompany() {
         dispatch(getDataStatisticalAction());
     }, [dispatch])
     const storeData = useSelector(store => store?.users);
-    const { viewsProfile, isSuccess, appErr, loading, shortListed, postedProjects, postedVacancies, notification,recentApplicants } = storeData;
+    const { viewsProfile, isSuccess, appErr, loading, shortListed, postedProjects, postedVacancies, notification, recentApplicants } = storeData;
     useEffect(() => {
         if (isSuccess) {
             dispatch(resetSuccessAction());
-            setNoti([...notification??[]])
+            setNoti([...notification ?? []])
             var dt = [];
             const date = new Date();
             const year = date.getFullYear();
@@ -173,7 +173,7 @@ function DashboardCompany() {
             </div>
 
             <div className="grid grid-cols-4 gap-5 mb-5">
-                <Link to={'/Organizer/manage-vacancy'} onClick={()=>dispatch(isActiveSidebarAction('Manage Vacancy'))} className="bg-white h-[120px] rounded-lg shadow flex p-6 cursor-pointer">
+                <Link to={'/Organizer/manage-vacancy'} onClick={() => dispatch(isActiveSidebarAction('Manage Vacancy'))} className="bg-white h-[120px] rounded-lg shadow flex p-6 cursor-pointer">
                     <div className='basis-1/3 place-content-center place-items-cent  items-center flex'>
                         <div className='rounded-lg bg-[rgba(25,103,210,.1)] h-[80px] w-[80px] text-[#1967d2] flex items-center place-content-center'>
                             <IoBagHandleOutline fontSize={40} />
@@ -184,7 +184,7 @@ function DashboardCompany() {
                         <span className='text-sm text-[#202124]'>Posted Vacancies</span>
                     </div>
                 </Link>
-                <Link to={'/Organizer/interview'}  className="bg-white h-[120px] rounded-lg shadow flex p-6 cursor-pointer">
+                <Link to={'/Organizer/interview'} className="bg-white h-[120px] rounded-lg shadow flex p-6 cursor-pointer">
                     <div className='basis-1/3 place-content-center place-items-cent  items-center flex'>
                         <div className='rounded-lg bg-[rgba(217,48,37,.1)] h-[80px] w-[80px] text-[#d93025] flex items-center place-content-center'>
                             <IoDocumentTextOutline fontSize={40} className="text-[#d93025]" />
@@ -195,7 +195,7 @@ function DashboardCompany() {
                         <span className='text-sm text-[#202124]'>Applicants</span>
                     </div>
                 </Link>
-                <Link to={'/Organizer/manage-project'} onClick={()=>dispatch(isActiveSidebarAction('Manage Project'))} className="bg-white h-[120px] rounded-lg shadow flex p-6 cursor-pointer">
+                <Link to={'/Organizer/manage-project'} onClick={() => dispatch(isActiveSidebarAction('Manage Project'))} className="bg-white h-[120px] rounded-lg shadow flex p-6 cursor-pointer">
                     <div className='basis-1/3 place-content-center place-items-cent  items-center flex'>
                         <div className='rounded-lg bg-[rgba(249,171,0,.1)] h-[80px] w-[80px] text-[#f9ab00] flex items-center place-content-center'>
                             <IoCodeWorkingOutline fontSize={40} />
@@ -206,7 +206,7 @@ function DashboardCompany() {
                         <span className='text-sm text-[#202124]'>Posted Projects</span>
                     </div>
                 </Link>
-                <Link to={'/Organizer/short-listed-users'} onClick={()=>dispatch(isActiveSidebarAction('ShortListed Seeker'))} className="bg-white h-[120px] rounded-lg shadow flex p-6 cursor-pointer">
+                <Link to={'/Organizer/short-listed-users'} onClick={() => dispatch(isActiveSidebarAction('ShortListed Seeker'))} className="bg-white h-[120px] rounded-lg shadow flex p-6 cursor-pointer">
                     <div className='basis-1/3 place-content-center place-items-cent  items-center flex'>
                         <div className='rounded-lg bg-[rgba(52,168,83,.1)] h-[80px] w-[80px] text-[#34a853] flex items-center place-content-center'>
                             <LiaStar fontSize={40} />
@@ -259,10 +259,22 @@ function DashboardCompany() {
                 <div className="max-w-full  shrink-0 w-full grid grid-cols-4 grid-flow-row gap-5 ">
                     <div className="relative rounded-lg mb-8 bg-white shadow max-w-full pt-1 shrink-0 col-span-4 w-full px-8">
                         <div className='pt-6 px-4 font-bold mt-4'>Recent Applicants: </div>
-                        <div className="relative overflow-y-hidden overflow-x-hidden rounded-md mb-8 pt-8 px-4 bg-white border-0 text-sm h-fit w-full grid grid-cols-2 gap-x-8" >
+                        <div className="relative overflow-y-hidden overflow-x-hidden rounded-md mb-8 pt-8 px-4 bg-white border-0 text-sm h-fit w-full" >
                             {
                                 recentApplicants?.map((item, index) => {
-                                    return <Applicants key={index} item={item} />;
+                                    return <>
+                                        <div>
+                                            <div className="flex font-medium mb-4 text-base">
+                                                <div>Vacancy: </div>
+                                                <div className="text-blue-800 ml-2">{item?.vacancyName}</div>
+                                            </div>
+                                            <div className=" grid grid-cols-2 gap-x-8 w-full">
+                                                {item?.applicants?.map((i, idx)=>{
+                                                    return <Applicants key={idx} item={i} />
+                                                })}
+                                            </div>
+                                        </div>
+                                    </>;
                                 })
                             }
                         </div>
