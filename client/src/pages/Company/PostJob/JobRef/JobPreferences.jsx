@@ -7,12 +7,13 @@ import { BsCheck } from "react-icons/bs";
 import { FormErrors, Validate } from './validator'
 import { useDispatch, useSelector } from "react-redux";
 import { getVacancyComponent, resetComponent, setValueSuccess, updateVacancyComponent } from "../../../../redux/slices/vacancies/vacanciesSlices";
+import { toast } from "react-toastify";
 
 // eslint-disable-next-line react/prop-types
 function JobReferences({formId, formSubmit, flag, config, content, onDoneSubmit}) {
     const dispatch = useDispatch();
     const {currentJobComponent, vacancyId, isSuccess} = useSelector(store => store.vacancies)
-    const resumeRequestType = [{ id: 0, name: "Yes, require a resume", value: true}, { id: 1, name: "No, don't ask for a resume", value: false}, { id: 2, name: "Give the opinion to include a resume", value: false},]
+    const resumeRequestType = [{ id: 0, name: "Yes, require a CV", value: true}, { id: 1, name: "No, don't ask for a CV", value: false}]
     const hiringTimeline = [{ id: 0, name: "1 to 3 days"}, { id: 1, name: "3 to 7 days"}, { id: 2, name: "1 to 2 weeks"}, { id: 3, name: "2 to 4 weeks"}, { id: 4, name: "More than 4 weeks"},]
     let [errors, setErrors] = useState  ({})
     let [inputsValues, setInputValues] = useState({
@@ -39,7 +40,17 @@ function JobReferences({formId, formSubmit, flag, config, content, onDoneSubmit}
         setErrors(validationErrors);
 
         if(Object.keys(validationErrors).length === 0){
-            dispatch(updateVacancyComponent({"id":vacancyId, "value": {"jobRef": inputsValues, "flag" : flag}}))
+
+            for(let i = 0; i < inputsValues?.emails?.length; i++){
+                for(let j = i+1; j < inputsValues?.emails?.length; j++){
+                    if(inputsValues?.emails[i]?.trim() === inputsValues?.emails[j]?.trim()){
+                        notify("warning", "Coincide emails receiver");
+                        window.scrollTo({top: 380, behavior: 'smooth'});
+                        return false;
+                    }
+                }
+            }
+           dispatch(updateVacancyComponent({"id":vacancyId, "value": {"jobRef": inputsValues, "flag" : flag}}))
         }
     }
 
@@ -61,9 +72,14 @@ function JobReferences({formId, formSubmit, flag, config, content, onDoneSubmit}
     }, [isSuccess])
 
     useEffect(() => {
-        if(currentJobComponent)
-            setInputValues({...currentJobComponent})
+        if(currentJobComponent){
+            const a = {...currentJobComponent}
+            a.emails = [...currentJobComponent.emails]
+            setInputValues(a)
+
+        }
     }, [currentJobComponent]);
+    const notify = (type, message) => toast(message, { type: type });
 
     const handleChange = (e, index) => {
         const Element = e.target;
@@ -209,7 +225,7 @@ function JobReferences({formId, formSubmit, flag, config, content, onDoneSubmit}
                             {config ? null :<hr className="block h-1 bg-[rgb(212, 210, 208)] my-6"/>}
                             <></>
                                 {config ? null :<p className='block leading-8 text-gray-900 text-xl font-bold mb-6'>Application preferences</p>}
-                                <CustomComboBox label="Ask potential candidates for a resume?" selectItem={currentJobComponent?.resume} type="select" rules="requiredCbb" placeHolder="Select an option" name="resume" listItem={resumeRequestType} filterValueSelected={(e) => onSelectedChange(e, "resume")} error={errors.resume} onblur={blurElement}></CustomComboBox>
+                                <CustomComboBox label="Ask potential candidates for a curriculum vitae (CV)?" selectItem={currentJobComponent?.resume} type="select" rules="requiredCbb" placeHolder="Select an option" name="resume" listItem={resumeRequestType} filterValueSelected={(e) => onSelectedChange(e, "resume")} error={errors.resume} onblur={blurElement}></CustomComboBox>
                             <></>
                         </div>
                         }   

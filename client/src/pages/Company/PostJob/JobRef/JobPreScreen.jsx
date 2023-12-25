@@ -8,14 +8,14 @@ import { getVacancyComponent, resetComponent, setValueSuccess, updateVacancyComp
 import { useDispatch, useSelector } from "react-redux";
 function JobPreScreen({formId, formSubmit, flag, config, content, onDoneSubmit}) {
     const dispatch = useDispatch();
-    const {currentJobComponent, vacancyId, isSuccess} = useSelector(store => store.vacancies)
+    const {currentJobComponent, vacancyId, isSuccess, location} = useSelector(store => store.vacancies)
     const questionPatterns = [
         {
             tagId: 1,
             tagName: 'Ability to Commute',
             type: 'info',
             boxType: 'Application question',
-            question: 'Will you be able to reliably commute to Beaufort, SC 29902 for this job?',
+            question: `Will you be able to reliably commute to ${location} for this job?`,
             answerRequire: 'Applicant should be able to reliably commute.',
             dealBreakerBox: false,
             required: false,

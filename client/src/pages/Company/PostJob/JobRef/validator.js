@@ -1,6 +1,6 @@
 var ValidatorRules = {
     requiredText: function(value, messageError) {
-        return value ? (value.trim() ? undefined : messageError) : messageError;
+        return value ? (value.trim() !== '' ? undefined : messageError) : messageError;
     },
     requiredCbb: function(value, messageError) {
         return value ? (value != -1 ? undefined : messageError) : messageError;
@@ -14,8 +14,11 @@ var ValidatorRules = {
     positiveNumber: function(value){
         return value ? (parseFloat(value) > 0 ? undefined : "Please fill a positive number.") : "Please fill a positive number."
     },
+    intergerNumber: function(value){
+        return value ? (Number.isInteger(Number(value)) ? undefined : "Please fill a interger number.") : "Please fill a interger number."
+    },
     maxHourWeek: function(value){
-        return value ? (parseFloat(value) <= 168 ? undefined : "Exceeded weekly hours.") : "Exceeded weekly hours."
+        return value ? (parseFloat(Number(value)) < 168 ? undefined : "Exceeded weekly hours.") : "Exceeded weekly hours."
     },
     max: function(value, number){
         return value ? (parseFloat(value) <= parseFloat(number) ? undefined : "Please do not enter more than the maximum number") : "Please do not enter more than the maximum number"

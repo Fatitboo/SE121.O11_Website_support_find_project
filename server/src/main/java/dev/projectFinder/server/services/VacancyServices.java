@@ -11,6 +11,7 @@ import dev.projectFinder.server.models.Project;
 import dev.projectFinder.server.models.UnCompletedVacancy;
 import dev.projectFinder.server.models.User;
 import dev.projectFinder.server.models.Vacancy;
+import dev.projectFinder.server.repositories.ProjectRepository;
 import dev.projectFinder.server.repositories.UnCompletedVacancyRepository;
 import dev.projectFinder.server.repositories.UserRepository;
 import dev.projectFinder.server.repositories.VacancyRepository;
@@ -21,6 +22,7 @@ import org.bson.types.ObjectId;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
+import javax.swing.text.html.Option;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -30,10 +32,11 @@ public class VacancyServices {
     private final UnCompletedVacancyRepository unCompletedVacancyRepository;
     private final VacancyRepository vacancyRepository;
     private final UserRepository userRepository;
+    private final ProjectRepository projectRepository;
 
     //GET
     public List<Vacancy> getAllVacancies(){
-        return vacancyRepository.findAll();
+        return  vacancyRepository.findAll();
     }
 
     public List<Vacancy> getAllVacanciesBy(String keyWord, String location, String jobType){

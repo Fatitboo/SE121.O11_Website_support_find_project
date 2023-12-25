@@ -32,7 +32,7 @@ export default function CustomComboBox({label, listItem, filterValueSelected, er
   
   return (
     <>
-        <p className='block leading-9 mb-1 text-gray-900 text-base font-semibold' style={{color: `${error ? "#a9252b": ""}`}}>{label}</p>
+        <p className='block leading-8 text-gray-900 text-base font-semibold' style={{color: `${error ? "#a9252b": ""}`}}>{label}</p>
         <div onBlur={onblur} tabIndex={0}>
             <div name={name} type={type} rules={rules} value={selected?.id} onClick={toggleStateDropdown} onBlur={() => {setVisible('none'); setOutline(false);}} tabIndex={-1} className='relative cursor-default'>
                 <div className='relative z-[40] w-full cursor-default rounded-md bg-[#f9fbfc] py-3 px-5 text-left text-gray-900 shadow-sm border border-gray-300 focus:bg-white sm:text-base sm:leading-6' style={{borderColor: `${error ? "#a9252b" : outline ? "#2D2D2D" : "rgb(209 213 219)"}`, backgroundColor: `${outline ? 'white': '#f9fbfc'}`}}>

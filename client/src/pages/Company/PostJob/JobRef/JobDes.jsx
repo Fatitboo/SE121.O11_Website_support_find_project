@@ -17,6 +17,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getVacancyComponent, resetComponent, setValueSuccess, updateVacancyComponent } from '../../../../redux/slices/vacancies/vacanciesSlices';
 import { TextInput } from '../../../../components';
 import { IoIosClose } from 'react-icons/io';
+import { toast } from "react-toastify";
 import fetchSkillApikey from '../../../../utils/fetchSkillApiKey';
 
 function JobDes({formId, formSubmit, flag, config, content, onDoneSubmit}) {
@@ -32,6 +33,14 @@ function JobDes({formId, formSubmit, flag, config, content, onDoneSubmit}) {
 
     function handleSubmit(e) {
         e.preventDefault();
+        if(skills === null || skills.length === 0) {
+            notify("warning", "Please select at least one skill")
+            return
+        }
+        if(value === null || value === ""){
+            notify("warning", "Please type description to claritfy this vacancy")
+            return
+        }
         dispatch(updateVacancyComponent({"id":vacancyId, "value": {"jobDes": {description: value, skills: skills}, "flag": flag}}))
     }
 
@@ -83,8 +92,10 @@ function JobDes({formId, formSubmit, flag, config, content, onDoneSubmit}) {
     }
 
     function handleChange(e) {
+        console.log(e)
         setValue(e)
     }
+    const notify = (type, message) => toast(message, { type: type });
     return (  
         <>
             {
@@ -102,7 +113,7 @@ function JobDes({formId, formSubmit, flag, config, content, onDoneSubmit}) {
                 <form id={formId} onSubmit={handleSubmit}>
                     {(content?.includes("skills") || config === undefined) && 
                     <div>
-                        <p className='block leading-8 text-gray-900 text-base font-semibold mb-1'  style={{color: `${errors.jobDes ? "#a9252b": ''}`}}>Job skills*</p>
+                        <p className='block leading-8 text-gray-900 text-base font-semibold mb-1'  style={{color: `${errors.jobDes ? "#a9252b": ''}`}}>Vacancy skills*</p>
                         <div tabIndex={0} onBlur={() => setListSkillApi([])} className={`relative flex flex-row gap-1 flex-wrap items-center w-full bg-white focus:bg-white focus:border-gray-900 text-base shadow-sm rounded-md pl-5 py-2 text-gray-900 border border-gray-300 placeholder:text-gray-400 sm:text-base sm:leading-8`}>
                             {
                                 skills?.map((item, index) => {

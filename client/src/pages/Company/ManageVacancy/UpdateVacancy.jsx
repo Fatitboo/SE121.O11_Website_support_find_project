@@ -24,6 +24,7 @@ import { AiFillExclamationCircle, AiOutlineClose } from "react-icons/ai";
 import {v4 as uuidv4} from 'uuid';
 import CBB from "../../../components/Organizer/CBB";
 import RDO from "../../../components/Organizer/RDO";
+import { ToastContainer, toast } from "react-toastify";
 
 function UpdateVacancy() {
     const id = useParams();
@@ -117,14 +118,95 @@ function UpdateVacancy() {
             skillsRequired: skills,
  
             //job preferences
-            emailReceivers: emails,
+            emailReceivers: emails?.map(item => item.value),
             canContactViaEmail: isContactEmail,
             canReceiveApplied: isSendEmail,
             requireResume: resumeSL,
             hiringTimeline: hiringLength
         }
 
-        dispatch(updateCompleteVacancy(main))
+        if(validateForm(main)){
+            //dispatch(updateCompleteVacancy(main))
+            console.log("update successful", main)
+        }
+    }
+
+    const validateForm = (data) => {
+        console.log(data?.maxRequired)
+        if(data?.maxRequired === null || Number(data?.maxRequired) > 50){
+            window.scrollTo({top: 500, behavior: 'smooth'});
+            notify("warning", "Please type max participants smaller than 50");
+            return false;
+        }
+
+        if(data?.timeType !== null){
+            if(Number(data?.timeFirst )> 7 * 24){
+                window.scrollTo({top: 500, behavior: 'smooth'});
+                notify("warning", "You have type exceeded the maximum hours of week!");
+                return false;
+            }
+            if(data?.timeSecond){
+                if(Number(data?.timeSecond) > 7 * 24){
+                    window.scrollTo({top: 500, behavior: 'smooth'});
+                    notify("warning", "You have type exceeded the maximum hours of week!");
+                    return false;
+                }
+    
+                if(Number(data?.timeFirst) > Number(data?.timeSecond)){
+                    window.scrollTo({top: 500, behavior: 'smooth'});
+                    notify("warning", "Invalid range of hours");
+                    return false;
+                }
+            }
+        }
+
+        if(data?.salaryType !== null){
+            if(data?.salarySecond){    
+                if(Number(data?.salaryFirst) > Number(data?.salarySecond)){
+                    window.scrollTo({top: 700, behavior: 'smooth'});
+                    notify("warning", "Invalid range of salary");
+                    return false;
+                }
+            }
+        }
+
+        if(data?.skillsRequired === null || data?.skillsRequired?.length === 0){
+            window.scrollTo({top: 800, behavior: 'smooth'});
+            notify("warning", "Please select at least one skill");
+            return false;
+        }
+        if(data?.timeRequires === null || data?.timeRequires?.length === 0){
+            window.scrollTo({top: 380, behavior: 'smooth'});
+            notify("warning", "Please select at least one time required");
+            return false;
+        }
+
+        if(data?.emailReceivers !== null || data?.emailReceivers?.length !== 0){
+            let ind = 0;
+            for(let i = 0; i < data?.emailReceivers?.length; i++){
+                if(!data?.emailReceivers[i]?.match(/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)){
+                   emails[i].error = "Invalid email"
+                   ind++
+                }
+            }
+            if(ind !== 0) {
+                notify("warning", "Invalid email receivers");
+                return false;
+            }
+            
+            for(let i = 0; i < data?.emailReceivers?.length; i++){
+                for(let j = i+1; j < data?.emailReceivers?.length; j++){
+                    if(data?.emailReceivers[i]?.trim() === data?.emailReceivers[j]?.trim()){
+                        emails[i].error = "Already have a same email"
+                        emails[j].error = "Already have a same email"
+                        notify("warning", "Coincide emails receiver");
+                        return false;
+                    }
+                }
+            }
+            
+        }
+        return true;
     }
 
     useEffect(() => {
@@ -166,7 +248,7 @@ function UpdateVacancy() {
             setSkills(vacancyInfo.skillsRequired)
 
             //job preferences
-            setEmails(vacancyInfo.emailReceivers)
+            setEmails(vacancyInfo.emailReceivers?.map(item => ({id: uuidv4(), value: item})))
             setIsContactEmail(vacancyInfo.canContactViaEmail)
             setIsSendEmail(vacancyInfo.canReceiveApplied)
             setResumeSL(vacancyInfo.requireResume)
@@ -177,8 +259,8 @@ function UpdateVacancy() {
     const setAddEmail = (type, index) => {
         if(type === "add"){
             let a = [...emails]
-            a.push("")
-            setEmails([...a])
+            a.push({id: uuidv4(), value: ""})
+            setEmails(a)
         }
         else{
             let a = [...emails]
@@ -187,9 +269,12 @@ function UpdateVacancy() {
         }
     }
 
+    const notify = (type, message) => toast(message, { type: type });
+
     return ( <>
        <div className="px-10 pb-0">
         {/* Start title of page  */}
+        <ToastContainer />
         <div className="mb-3">
             <h3 className="font-medium text-3xl text-gray-900 mb-2 leading-10 flex flex-row items-center">
                 <div onClick={() => {navigate("/Organizer/manage-vacancy")}}>
@@ -223,6 +308,7 @@ function UpdateVacancy() {
                                                 // loadingPr ? <CustomLoader type={"title-input"}/> :
                                                 <TextInput name={"maxRequired"} register={register("maxRequired", {
                                                     required: "Max participant is required!",
+                                                    onChange: (e) => { if(!e.target.value.match(/^\d+$/)) {setValue("maxRequired", e.target.value.substring(0, e.target.value.length - 1)); }}
                                                 })} error={errors.maxRequired ? errors.maxRequired.message : ""} label="Max participants*"  type="text" />
                                             }
                                         </div>
@@ -254,14 +340,14 @@ function UpdateVacancy() {
                                     </div>
                                     <div className="grid grid-cols-4 gap-7 items-start justify-between mt-5">
                                         <div className="col-span-1">
-                                            <CustomComboBox listItem={timeRequires.filter(item => !timeRequiresList?.includes(item.name))} name="timeRequired" filterValueSelected={(e) => { let a = [...timeRequiresList]; a.push(e.name); setTimeRequiresList([...a])}} label="Job Type" placeHolder={'Select an options.'}/>
+                                            <CustomComboBox listItem={timeRequires.filter(item => !timeRequiresList?.includes(item.name))} name="timeRequired" filterValueSelected={(e) => { let a = [...timeRequiresList]; a.push(e.name); setTimeRequiresList([...a])}} label="List job type" placeHolder={'Select an options.'}/>
                                         </div>
                                         <div className="col-span-3">
                                             {
                                                 // loadingPr ? <CustomLoader type={"title-input"}/> :
                                                 
                                                 <div className="">
-                                                    <p className='block leading-8 mb-2 text-gray-900 text-base font-semibold'>Time Requires</p>
+                                                    <p className='block leading-8 mb-2 text-gray-900 text-base font-semibold'>Time Requires*</p>
                                                     <div tabIndex={0} className={`flex overflow-auto h-13 flex-row gap-1 flex-wrap items-center w-full bg-white focus:bg-white focus:border-gray-900 text-base shadow-sm rounded-md pl-5 py-2 text-gray-900 border border-gray-300 placeholder:text-gray-400 sm:text-base sm:leading-8`}>
                                                         <div className="flex flex-row gap-1">
                                                             {
@@ -285,23 +371,24 @@ function UpdateVacancy() {
                                         timeRequiresList?.includes("Part-time") ? 
                                         <div className="w-full mt-3">
                                             <div className="flex flex-row items-center gap-2">
-                                                    <div className="flex flex-row items-center gap-7 w-full">
+                                                    <div className="flex flex-row items-start gap-7 w-full">
                                                         <div className="w-[30%]">
                                                             <CBB listItem={showBy} name="showBy" selectItem={showBy.find(item => item.name === vacancyInfo?.timeType)} filterValueSelected={(e) => {setTimeType(e.name); if(e.name !== vacancyInfo?.timeType) setValue("timeSecond", ""); else setValue("timeSecond", vacancyInfo?.timeSecond);}} label="Time type" placeHolder={'Select an options.'}/>
                                                         </div>
-                                                        <div className="w-[50%] flex flex-row gap-7 items-center">
-                                                            <div className="w-full mt-1">
+                                                        <div className="w-[50%] flex flex-row gap-7 items-start">
+                                                            <div className="w-full">
                                                                 <p className='block leading-8 text-gray-900 text-base font-semibold mb-1' >{
-                                                                     timeType === "Range" ? "From" :
-                                                                     timeType === "Fixed hours"? "Fixed at":
-                                                                     timeType === "Maximum"? "No more than":
-                                                                     "No less than"
+                                                                     timeType === "Range" ? "From*" :
+                                                                     timeType === "Fixed hours"? "Fixed at*":
+                                                                     timeType === "Maximum"? "No more than*":
+                                                                     "No less than*"
                                                                 }</p>
                                                                 <div>
                                                                     <TextInput
                                                                         type="text"
                                                                         register={register("timeFirst", {
                                                                             required: "Time is required!",
+                                                                            onChange: (e) => { if(!e.target.value.match(/^\d+$/)) {setValue("timeFirst", e.target.value.substring(0, e.target.value.length - 1)); }}
                                                                         })} error={errors.timeFirst ? errors.timeFirst.message : ""}
                                                                         className={`w-full block bg-[#f9fbfc] focus:bg-white text-base shadow-sm rounded-md py-2 pl-5 pr-5 text-gray-900 border border-gray-300 placeholder:text-gray-400 sm:text-base sm:leading-8`}
                                                                     />                                                        
@@ -315,6 +402,7 @@ function UpdateVacancy() {
                                                                             type="text"
                                                                             register={register("timeSecond", {
                                                                                 required: "Time is required!",
+                                                                                onChange: (e) => { if(!e.target.value.match(/^\d+$/)) {setValue("timeSecond", e.target.value.substring(0, e.target.value.length - 1)); }}
                                                                             })} error={errors.timeSecond ? errors.timeSecond.message : ""}
                                                                             className={`w-full block bg-[#f9fbfc] focus:bg-white text-base shadow-sm rounded-md py-2 pl-5 pr-5 text-gray-900 border border-gray-300 placeholder:text-gray-400 sm:text-base sm:leading-8`}
                                                                         />  
@@ -322,7 +410,7 @@ function UpdateVacancy() {
                                                                 </> : null
                                                             }
                                                         </div>
-                                                        <div className="w-[20%] mt-1">
+                                                        <div className="w-[20%] mt-5">
                                                             <div className="text-base mt-8 whitespace-nowrap">Hours per week</div>
                                                         </div>
                                                     </div>
@@ -336,6 +424,7 @@ function UpdateVacancy() {
                                             <div className="w-[50%]">
                                                 <TextInput name={"timeLength"} register={register("timeLength", {
                                                         required: "Length is required!",
+                                                        onChange: (e) => { if(!e.target.value.match(/^\d+$/)) {setValue("timeLength", e.target.value.substring(0, e.target.value.length - 1)); }}
                                                     })} error={errors.timeLength ? errors.timeLength.message : ""} label="Length*"  type="text" />
                                             </div>
                                             <div className="w-[50%]">
@@ -348,13 +437,13 @@ function UpdateVacancy() {
                                         <div className="col-span-1">
                                             <CBB listItem={showPayBy} selectItem={showPayBy.find(item => item.name === vacancyInfo?.salaryType)} name="showPayBy" filterValueSelected={(e) => {setSalaryType(e.name); if(e.name !== vacancyInfo?.salaryType) setValue("salarySecond", ""); setValue("salarySecond", vacancyInfo?.salarySecond)}} label="Show pay by" placeHolder={'Select an options. main'}/>
                                         </div>
-                                        <div className="col-span-2 flex flex-row gap-2 items-center">
+                                        <div className="col-span-2 flex flex-row gap-2 items-start mt-1">
                                             <div className="w-full">
                                                 <p className='block leading-8 text-gray-900 text-base font-semibold'  style={{color: `${errors.pay_1 ? "#a9252b": ''}`}}>{
-                                                    salaryType === "Range" ? "Minimum" :
-                                                    salaryType === "Starting amount"? "Amount":
-                                                    salaryType === "Maximum amount"? "Amount":
-                                                    "Amount"
+                                                    salaryType === "Range" ? "Minimum*" :
+                                                    salaryType === "Starting amount"? "Amount*":
+                                                    salaryType === "Maximum amount"? "Amount*":
+                                                    "Amount*"
 
                                                 }</p>
 
@@ -363,6 +452,7 @@ function UpdateVacancy() {
                                                         type="text"
                                                         name={"salaryFirst"} 
                                                         register={register("salaryFirst", {
+                                                            onChange: (e) => { if(!e.target.value.match(/^\d+$/)) {setValue("salaryFirst", e.target.value.substring(0, e.target.value.length - 1)); }},
                                                             required: "Min price is required!",
                                                         })} 
                                                         error={errors.salaryFirst ? errors.salaryFirst.message : ""}
@@ -372,13 +462,14 @@ function UpdateVacancy() {
                                             </div>
                                             {
                                                  salaryType === "Range" ? <>
-                                                    <div className="text-base mt-8 whitespace-nowrap">to</div>
+                                                    <div className="text-base mt-12 whitespace-nowrap">to</div>
                                                     <div className="w-full">
-                                                        <p className='block leading-8 text-gray-900 text-base font-semibold' style={{color: `${errors.pay_2 ? "#a9252b": ''}`}}>Maximum</p>
+                                                        <p className='block leading-8 text-gray-900 text-base font-semibold' style={{color: `${errors.pay_2 ? "#a9252b": ''}`}}>Maximum*</p>
                                                         <TextInput
                                                             type="text"
                                                             name={"salarySecond"} 
                                                             register={register("salarySecond", {
+                                                                onChange: (e) => { if(!e.target.value.match(/^\d+$/)) {setValue("salarySecond", e.target.value.substring(0, e.target.value.length - 1)); }},
                                                                 required: "Max price is required!",
                                                             })} 
                                                             error={errors.salarySecond ? errors.salarySecond.message : ""}
@@ -473,17 +564,20 @@ function UpdateVacancy() {
                                         {
                                             emails?.map((item, index) => {
                                                 return (
-                                                    <div key={uuidv4()} className="flex flex-row items-center gap-1 w-full justify-between">
-                                                        <div className="w-full">
-                                                            <TextInput
-                                                                type="text"
-                                                                name={`emails_${index}`}
-                                                                value={item}
-                                                                onChange={(e) => {let ems = [...emails]; ems[index] = e.target.value; setEmails(ems)}}
-                                                                className={`w-full block bg-[#f9fbfc] focus:bg-white text-base shadow-sm rounded-md py-2.5 pl-5 pr-5 text-gray-900 border border-gray-300 placeholder:text-gray-400 sm:text-base sm:leading-8`}
-                                                            />                                                        
+                                                    <div key={item.id}>
+                                                        <div className="flex flex-row items-center gap-1 w-full justify-between">
+                                                            <div className="w-full">
+                                                                <TextInput
+                                                                    type="text"
+                                                                    name={`emails_${index}`}
+                                                                    value={item.value}
+                                                                    onChange={(e) => {if(e.target.value !== "") emails[index].error = null;emails[index].value = e.target.value ;setEmails([...emails])}}
+                                                                    className={`w-full block bg-[#f9fbfc] focus:bg-white text-base shadow-sm rounded-md py-2.5 pl-5 pr-5 text-gray-900 border border-gray-300 placeholder:text-gray-400 sm:text-base sm:leading-8`}
+                                                                />                                                        
+                                                            </div>
+                                                            {index !== 0 ? <div className="bg-white hover:bg-[#e8f0fe] rounded-md h-full p-3 cursor-pointer" onClick={() => setAddEmail("remove", index)}><AiOutlineClose className="px-1 w-7 h-7" /></div> : null}
                                                         </div>
-                                                        {index !== 0 ? <div className="bg-white hover:bg-[#e8f0fe] rounded-md h-full p-3 cursor-pointer" onClick={() => setAddEmail("remove", index)}><AiOutlineClose className="px-1 w-7 h-7" /></div> : null}
+                                                        {item.error && <span className='flex flex-row items-center text-sm text-[#a9252b] mt-2'><AiFillExclamationCircle className="mr-1"/>{item.error}</span>}
                                                     </div>
                                                 )
                                             })
@@ -514,7 +608,6 @@ function UpdateVacancy() {
                                         </div>
                                     
                                         <div>
-                                            <button onClick={() => console.log(emails)}>onClick</button>
                                             <p className='block leading-8 text-gray-900 text-base font-semibold'>Let potential candidates contact you about this job</p>
                                             <li onClick={() => setIsContactEmail(!isContactEmail)} className='flex items-center justify-between bg-white py-1 focus:outline-none text-base text-gray-900 hover:font-normal hover:opacity-90 mt-1'>
                                                 <div className="flex flex-row items-center cursor-pointer w-full rounded-md group">

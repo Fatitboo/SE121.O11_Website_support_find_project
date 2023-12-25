@@ -22,6 +22,7 @@ import { CustomLoader, VacancyItemLoader } from "../../../../components/Loader";
 import { IoIosClose } from "react-icons/io";
 import baseUrl from "../../../../utils/baseUrl";
 import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
 
 function UpdateProject() {
     const period = [{ id: 1, name:"month(s)", value: 30}, { id: 2, name: "week(s)", value: 7}, { id: 3, name: "day(s)", value: 1}, { id: 4, name:"year(s)", value: 365},]
@@ -94,6 +95,15 @@ function UpdateProject() {
         }
     }, [isSuccessUD])
 
+    const validateForm = (data) => {
+        if(Number(data.duration) < 1){
+            window.scrollTo({top: 0, behavior: 'smooth'});
+            notify("warning", "Please select at least one field for project!");
+            return false;
+        }
+        return true
+    }
+
     const onSubmitForm = (data) => {
         const main = {
             ...data, 
@@ -102,10 +112,12 @@ function UpdateProject() {
             startDate: dateValue,
             vacancies: selected.map(item => item.vacancyId),
             period: durationType.name,
-            status: "Pending",
             occupations: occupationSelected
         }
-        dispatch(updateProject({"value": main, "id": id.id}))
+        if(validateForm(main)){
+            console.log(main)
+        }
+        //dispatch(updateProject({"value": main, "id": id.id}))
     }
 
     const handleChangeDate = (e) => {
@@ -144,7 +156,10 @@ function UpdateProject() {
             return acc + salary * itemVacancy.maxRequired * duration * selectDuration.value
         }, 0)
 
-        setValue("budget", newBudget)
+        if(newBudget)
+            setValue("budget", newBudget)
+        else
+            setValue("budget", 0)
 
         setValue("maxParticipants", list.reduce((acc, item) => acc + item.maxRequired, 0))
     }
@@ -174,8 +189,11 @@ function UpdateProject() {
         }
     }
 
+    const notify = (type, message) => toast(message, { type: type });
+
     return (
         <div className="px-10 pb-0">
+            <ToastContainer />
         {/* Start title of page  */}
         <div className="mb-8">
             <h3 className="font-medium text-3xl text-gray-900 mb-2 leading-10 flex flex-row items-center">
@@ -219,7 +237,7 @@ function UpdateProject() {
                                                 loadingPr ? <CustomLoader type={"title-input"}/> :
                                                 <TextInput name={"duration"} register={register("duration", {
                                                     required: "Duration is required!",
-                                                    onChange: (e) => { if(!e.target.value.match(/^\d+$/)) setValue("duration", e.target.value.substring(0, e.target.value.length - 1)); calculateBudgetAndParticipants(selected, durationType)},
+                                                    onChange: (e) => {if(!e.target.value.match(/^\d+$/)) setValue("duration", e.target.value.substring(0, e.target.value.length - 1)); calculateBudgetAndParticipants(selected, durationType)},
                                                     valueAsNumber: true,
                                                 })} error={errors.duration ? errors.duration.message : ""} label="Duration*" type="text" />
                                             }
@@ -238,7 +256,7 @@ function UpdateProject() {
                                         <div>
                                             {
                                                 loadingPr ? <CustomLoader type={"title-input"}/> :
-                                                <TextInput name={"maxParticipants"} register={register("maxParticipants", {
+                                                <TextInput name={"maxParticipants"} readOnly register={register("maxParticipants", {
                                                     required: "Max participants is required!",
                                                     onChange: (e) => { setValue("maxParticipants", e.target.value.substring(0, e.target.value.length - 1))},
                                                 })} error={errors.maxParticipants ? errors.maxParticipants.message : ""} label="Max Participants" type="text" />
@@ -247,7 +265,7 @@ function UpdateProject() {
                                         <div>
                                             {
                                                 loadingPr ? <CustomLoader type={"title-input"}/> :
-                                                <TextInput name={"budget"} register={register("budget", {
+                                                <TextInput name={"budget"} readOnly register={register("budget", {
                                                     required: "Budget is required!",
                                                     valueAsNumber: true,
                                                     onChange: (e) => { if(!e.target.value.match(/^\d+$/)) {setValue("budget", e.target.value.substring(0, e.target.value.length - 1)); }}

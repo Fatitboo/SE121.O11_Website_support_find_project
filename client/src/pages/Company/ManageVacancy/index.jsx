@@ -279,7 +279,6 @@ function ManageVacancy() {
                                     </div>
                                     <div className="mt-4 mb-4 mx-3 font-medium text-lg flex justify-between">
                                         Complete Vacancies
-                                        <button onClick={() => console.log(complete)}>clicm em</button>
                                         <div className="flex ">
                                             <div className="mr-1 text-base">My vacancies list: </div> <div className="text-base">{pages.length}</div>
                                         </div>

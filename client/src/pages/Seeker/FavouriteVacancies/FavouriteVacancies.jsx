@@ -16,7 +16,7 @@ function FavouriteVacancies() {
     const [currentPage, setCurrentPage] = useState(0);
     const [pages, setPages] = useState([]);
     // const [categoryList, setCategoryList] = useState([{ id: 0, name: 'All' }]);
-    const notify = (type, message) => toast(message, { type: type });
+    
 
     const onFilterValueSelected = (filterValue) => {
         // if (filterValue.name === 'All') {

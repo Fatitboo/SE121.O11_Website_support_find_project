@@ -179,6 +179,24 @@ public class PaypalService {
             project.setLength(length);
             project.setDatePost(LocalDateTime.now());
             project.setDetail(null);
+
+            ObjectId[] vcList = project.getVacancies();
+            List<Vacancy> lVC = new ArrayList<>();
+
+            for(int i = 0; i < vcList.length; i++){
+                Optional<Vacancy> vacancyOptional = vacancyRepository.findById(vcList[i]);
+                if(vacancyOptional.isEmpty()){
+                    throw new DataIntegrityViolationException("Error when get job in database");
+                }
+
+                Vacancy vacancy = vacancyOptional.get();
+                vacancy.setApprovalStatus("approved");
+                vacancy.setPost(true);
+                vacancy.setLength(length);
+                vacancy.setDatePost(LocalDateTime.now());
+                lVC.add(vacancy);
+            }
+
             Optional<User> userOptional = userRepository.findById(project.getUserId());
             if(userOptional.isEmpty()){
                 throw new DataIntegrityViolationException("Error when get user in database!");
@@ -196,6 +214,7 @@ public class PaypalService {
 
             userRepository.save(user);
             projectRepository.save(project);
+            vacancyRepository.saveAll(lVC);
         }
         catch(JsonProcessingException e){
             Optional<Project> projectOptional = projectRepository.findById(new ObjectId(projectId));
@@ -213,6 +232,24 @@ public class PaypalService {
             project.setStatus("approved");
             project.setLength(length);
             project.setDatePost(LocalDateTime.now());
+
+            ObjectId[] vcList = project.getVacancies();
+            List<Vacancy> lVC = new ArrayList<>();
+
+            for(int i = 0; i < vcList.length; i++){
+                Optional<Vacancy> vacancyOptional = vacancyRepository.findById(vcList[i]);
+                if(vacancyOptional.isEmpty()){
+                    throw new DataIntegrityViolationException("Error when get job in database");
+                }
+
+                Vacancy vacancy = vacancyOptional.get();
+                vacancy.setApprovalStatus("approved");
+                vacancy.setLength(length);
+                vacancy.setPost(true);
+                vacancy.setDatePost(LocalDateTime.now());
+                lVC.add(vacancy);
+            }
+
             Optional<User> userOptional = userRepository.findById(project.getUserId());
             if(userOptional.isEmpty()){
                 throw new DataIntegrityViolationException("Error when get user in database!");
@@ -230,6 +267,7 @@ public class PaypalService {
 
             userRepository.save(user);
             projectRepository.save(project);
+            vacancyRepository.saveAll(lVC);
         }
     }
 
