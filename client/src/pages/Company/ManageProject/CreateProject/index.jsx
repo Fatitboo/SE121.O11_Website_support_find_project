@@ -22,11 +22,13 @@ import { VacancyItemLoader } from "../../../../components/Loader";
 import { IoIosClose } from "react-icons/io";
 import baseUrl from "../../../../utils/baseUrl";
 import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import { AiFillExclamationCircle } from "react-icons/ai";
 
 function CreateProject() {
     const period = [{ id: 1, name:"month(s)", value: 30}, { id: 2, name: "week(s)", value: 7}, { id: 3, name: "day(s)", value: 1}, { id: 4, name:"year(s)", value: 365},]
     const rates = [{ id: 1, name:"per hour"}, { id: 2, name: "per day"}, { id: 3, name: "per week"}, { id: 4, name: "per month"}, { id: 5, name: "per year"}]
-    const { register, handleSubmit, setValue, getValues, formState: { errors } } = useForm({ mode: 'onChange' });
+    const { register, handleSubmit, setValue, getValues, setError, formState: { errors } } = useForm({ mode: 'onChange' });
     const dispatch = useDispatch()
     const navigate = useNavigate()
     let vacancies = useSelector((state) => state.vacancies.complete)
@@ -56,6 +58,33 @@ function CreateProject() {
         }
     }, [isSuccess])
 
+    const dateInput = useRef()
+
+    const [formErrors, setFormErrors] = useState({})
+
+    const validateForm = (data) => {
+        if(data.occupations?.length === 0){
+            setFormErrors({...formErrors, "fields": "Please select at least one field for project!"})
+            window.scrollTo({top: 0, behavior: 'smooth'});
+            notify("warning", "Please select at least one field for project!");
+            return false;
+        }
+
+        if(data.vacancies?.length === 0){
+            setFormErrors({...formErrors, "vacancies": "Please select at least one vacancy for project!"})
+            window.scrollTo({top: 0, behavior: 'smooth'});
+            notify("warning", "Please select at least one vacancy for project!");
+            return false;
+        }
+        return true;
+    }
+
+    useEffect(() => {
+        if(occupationSelected?.length !== 0){
+            setFormErrors({...formErrors, "vacancies": undefined})
+        }
+    }, [occupationSelected])
+
     const onSubmitForm = (data) => {
         const main = {
             ...data, 
@@ -67,7 +96,9 @@ function CreateProject() {
             status: "pending",
             occupations: occupationSelected
         }
-        dispatch(createProject({"id": user.userId, "value": main}))
+        if(validateForm(main)){
+            dispatch(createProject({"id": user.userId, "value": main}))
+        }
     }
 
     const handleChangeDate = (e) => {
@@ -103,6 +134,16 @@ function CreateProject() {
         }
     }
 
+    const getCurrentDate = () => {
+        const date = new Date(Date.now());
+
+        const year = date.getFullYear();
+        const month = date.getMonth() + 1;
+        const day = date.getDate();
+
+        return `${year}-${month}-${day}`
+    }
+
     const calculateBudgetAndParticipants = (list, selectDuration) => {
         const duration = Number(getValues("duration"))
 
@@ -136,9 +177,11 @@ function CreateProject() {
 
         setValue("maxParticipants", list.reduce((acc, item) => acc + item.maxRequired, 0))
     }
+    const notify = (type, message) => toast(message, { type: type });
 
     return (
         <div className="px-10 pb-0">
+             <ToastContainer />
         {/* Start title of page  */}
         <div className="mb-8">
             <h3 className="font-medium text-3xl text-gray-900 mb-2 leading-10 flex flex-row items-center">
@@ -166,12 +209,12 @@ function CreateProject() {
                                     <div className="grid grid-cols-4 gap-7 items-start justify-between mt-5">
                                         <div>
                                             <p className="block leading-8 text-gray-900 font-medium mb-1">Start date*</p>
-                                            <input onChange={handleChangeDate} className="w-full block bg-[#f9fbfc] focus:bg-white text-base outline-1 shadow-s rounded-md py-2 pl-5 pr-5 text-gray-900 border-[1px] border-gray-300 placeholder:text-gray-400 sm:text-base sm:leading-8" type="date" />
+                                            <input ref={dateInput} defaultValue={getCurrentDate()} onChange={handleChangeDate} className="w-full block bg-[#f9fbfc] focus:bg-white text-base outline-1 shadow-s rounded-md py-2 pl-5 pr-5 text-gray-900 border-[1px] border-gray-300 placeholder:text-gray-400 sm:text-base sm:leading-8" type="date" />
                                         </div>
                                         <div className="col-span-2">
                                             <TextInput name={"duration"} register={register("duration", {
                                                 required: "Duration is required!",
-                                                onChange: (e) => { if(!e.target.value.match(/^\d+$/)) setValue("duration", e.target.value.substring(0, e.target.value.length - 1)); calculateBudgetAndParticipants(selected, durationType)},
+                                                onChange: (e) => { if(!e.target.value.match(/^\d+$/)){ setValue("duration", e.target.value.substring(0, e.target.value.length - 1));} else calculateBudgetAndParticipants(selected, durationType)},
                                                 valueAsNumber: true,
                                             })} error={errors.duration ? errors.duration.message : ""} label="Duration*" type="text" />
                                         </div>
@@ -182,14 +225,14 @@ function CreateProject() {
                                     </div>
                                     <div className="grid grid-cols-4 gap-7  mt-5">
                                         <div>
-                                            <TextInput name={"maxParticipants"} register={register("maxParticipants", {
+                                            <TextInput name={"maxParticipants"} readOnly register={register("maxParticipants", {
                                                 required: "Max participants is required!",
                                                 onChange: (e) => { setValue("maxParticipants", e.target.value.substring(0, e.target.value.length - 1))},
                                             })} error={errors.maxParticipants ? errors.maxParticipants.message : ""} label="Max Participants" type="text" />
                                         </div>
                                            
                                         <div>
-                                            <TextInput name={"budget"} register={register("budget", {
+                                            <TextInput name={"budget"} readOnly register={register("budget", {
                                                 required: "Budget is required!",
                                                 valueAsNumber: true,
                                                 onChange: (e) => { if(!e.target.value.match(/^\d+$/)) {setValue("budget", e.target.value.substring(0, e.target.value.length - 1)); }}
@@ -214,9 +257,9 @@ function CreateProject() {
                                                         type="text"
                                                         ref={inputBox}
                                                         onBlur={(e) => e.stopPropagation()}
-                                                        onChange={(e) => fetchDataOccupation(e.target.value)}
+                                                        onChange={(e) => {setFormErrors({...formErrors, "fields": undefined}) ;fetchDataOccupation(e.target.value)}}
                                                         className={`min-w-5 w-full block focus:outline-none bg-white focus:bg-white text-base shadow-sm rounded-md pr-5 text-gray-900 border-gray-300 placeholder:text-gray-400 sm:text-base sm:leading-8`}
-                                                    />                                                        
+                                                    /> 
                                                 </div>
                                                 
                                                 {spin ? <svg className="absolute right-1 animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 24 24">
@@ -224,6 +267,7 @@ function CreateProject() {
                                                     <path className="opacity-75" fill="#cccccc" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                                                 </svg> : null}
                                             </div>
+                                            {formErrors.fields && <span className='flex flex-row items-center text-sm text-[#a9252b] mt-2'><AiFillExclamationCircle className="mr-1"/>{formErrors.fields}</span>}                                                       
                                             <div  className='relative' style={{visibility: occupations.length === 0 ? 'collapse' : 'visible'}}>
                                                 <div className='border mt-1 rounded overflow-auto absolute z-10 w-full max-h-56'>
                                                     {

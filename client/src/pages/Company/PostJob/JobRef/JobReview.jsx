@@ -55,6 +55,7 @@ function JobReview({formId, formSubmit, flag}) {
         if(isSuccessCR){
             dispatch(resetSuccessAction(false))
             formSubmit()
+            dispatch(resetComponent())
         }
     }, [isSuccessCR])
 
