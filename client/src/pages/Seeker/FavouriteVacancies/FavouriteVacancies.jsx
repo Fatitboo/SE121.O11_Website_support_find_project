@@ -28,7 +28,7 @@ function FavouriteVacancies() {
     }
     useEffect(() => {
         dispatch(getAllFavouriteVacanciesAction())
-    }, [dispatch])
+    }, [])
     const storeData = useSelector(store => store?.vacancies);
     const { favouriteVacancies, isSuccessFvr, appErr, loadingFvr, isSuccess2, loading } = storeData;
     useEffect(() => {

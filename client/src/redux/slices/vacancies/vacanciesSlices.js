@@ -844,10 +844,14 @@ const vacanciesSlices = createSlice({
             builder.addCase(updateVacancyStatus.fulfilled, (state, action) => {
                 state.loading = false;
                 state.appErr = null;
-                let currentVacancy = state.vacancies.findIndex((v) => v.vacancyId === action?.payload?.updateVacancyId);
-                if (currentVacancy !== -1) state.vacancies[currentVacancy].approvalStatus = action?.payload?.status;
-                else {
+                if(state.vacancies.length === 0){
                     state.vacProList.pop(item => item.vacProId === action?.payload?.updateVacancyId)
+                }
+                else{
+
+                    let currentVacancy = state.vacancies.findIndex((v) => v.vacancyId === action?.payload?.updateVacancyId);
+                    if (currentVacancy !== -1) state.vacancies[currentVacancy].approvalStatus = action?.payload?.status;
+                    
                 }
                 state.isSuccessUpd = true;
             }),
@@ -1166,6 +1170,8 @@ const vacanciesSlices = createSlice({
                 state.loadingFvr = false;
                 state.loading = false;
                 state.appErr = undefined;
+                console.log(state.favouriteVacancies, state.vacancyInfo)
+
                 if(Object.keys(state.vacancyInfo).length === 0 && state.vacancyInfo.constructor === Object){
                     var currentVacancy = state.vacancies.findIndex(vacancy => vacancy.vacancyId === action?.payload?.vacancyId)
                     if (currentVacancy !== -1) {
@@ -1180,6 +1186,7 @@ const vacanciesSlices = createSlice({
                         }
                     }
                     else {
+
                         if (state.favouriteVacancies) {
                             state.isSuccessFvr = true;
                             state.favouriteVacancies.pop(item => item.vacancyId === action?.payload?.vacancyId)
@@ -1216,6 +1223,7 @@ const vacanciesSlices = createSlice({
                 state.loading = false;
                 state.appErr = undefined;
                 state.isSuccess2 = true;
+                state.vacancyInfo = {};
                 state.favouriteVacancies = action?.payload?.favouriteVacancies;
             }),
             builder.addCase(getAllFavouriteVacanciesAction.rejected, (state, action) => {

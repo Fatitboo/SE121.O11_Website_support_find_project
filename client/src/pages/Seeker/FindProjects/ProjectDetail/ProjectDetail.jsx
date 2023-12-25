@@ -39,7 +39,10 @@ function ProjectDetailSeeker() {
             dispatch(getParticipantsProject(id))
         }
     }, [id])
-
+    useEffect(() => {
+    window.scrollTo({top: 0, behavior: 'smooth'});
+        
+    }, [])
     const navigate = useNavigate()
     const checkFavourite = () => {
         const userId = userAuth?.user?.userId;

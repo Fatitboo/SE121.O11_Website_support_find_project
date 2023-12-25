@@ -485,6 +485,7 @@ const projectsSlices = createSlice({
                             }
                         }
                         else {
+                            
                             state.favouriteProjects.pop(item => item.project.projectId === action?.payload?.projectId)
                         }
                     }else{
@@ -518,6 +519,8 @@ const projectsSlices = createSlice({
                 state.loading = false;
                 state.appErr = undefined;
                 state.isSuccess = true;
+                state.projects= []
+                state.project= null
                 state.favouriteProjects = action?.payload?.favouriteProjects;
             }),
             builder.addCase(getAllFavouriteProjectsAction.rejected, (state, action) => {

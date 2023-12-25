@@ -1,15 +1,11 @@
 import React from 'react'
 import { ComboBox, LoadingComponent, PaginationButtons } from "../../../components";
 import { AiFillExclamationCircle, AiOutlineSearch } from "react-icons/ai";
-import { LiaTrashAltSolid } from "react-icons/lia";
-import { CiEdit } from 'react-icons/ci'
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
-import Swal from 'sweetalert2'
 import { getAllHistoriesAction, resetSuccessAction } from '../../../redux/slices/skills/skillsSlices';
 import { TransactionItem } from './TransactionItem';
 function HistoryTransaction() {
-    const listPostedCbb = [{ id: 1, name: 'All' }, { id: 2, name: 'Pending' }, { id: 3, name: 'Approval' }, { id: 4, name: 'Rejected' }]
 
     // define dispatch 
     const dispatch = useDispatch();
@@ -20,9 +16,8 @@ function HistoryTransaction() {
     const [currentPage, setCurrentPage] = useState(0);
     const [pages, setPages] = useState([]);
     const [filterKeyWord, setFilterKeyWord] = useState('');
-
+    const [filterDay, setFilterDay] = useState(null);
     // func change cbb
-    const onFilterlistPostedCbb = (filterValue) => { }
 
     // get histories
     useEffect(() => {
@@ -32,11 +27,39 @@ function HistoryTransaction() {
     // get store
     const storeData = useSelector(store => store?.skills);
     const { appErr, histories, loading, isSuccess } = storeData;
+    const checkDate = (dateItem, datePick) => {
+        if (datePick === null || datePick.toString() === '') {
+            console.log(datePick)
+            return true;
+        } else {
 
+            // Ngày đã chọn
+            var ngayItem = new Date(dateItem);
+
+            // Ngày được chọn
+            var ngayDuocChon = new Date(datePick);
+            console.log(ngayItem, ngayDuocChon)
+            // So sánh
+            if (ngayItem.getFullYear() === ngayDuocChon.getFullYear() && ngayItem.getMonth() === ngayDuocChon.getMonth() && ngayItem.getDate() === ngayDuocChon.getDate()) {
+                return true
+            } else {
+                return false
+            }
+        }
+
+    }
     // check list => update list by filter + paging
     useEffect(() => {
-        setPages([...historyList.filter(item => item).slice(currentPage * 10, (currentPage + 1) * 10)])
-    }, [currentPage, historyList, filterKeyWord])
+        console.log(filterDay)
+
+        setPages([...histories.filter(item =>
+            ((item?.id?.toLowerCase().includes(filterKeyWord.trim().toLowerCase()))
+                || (item?.userInfo?.fullName?.trim().toLowerCase().includes(filterKeyWord.trim().toLowerCase())))
+            && (checkDate(item?.create_time, filterDay))
+
+        ).slice(currentPage * 10, (currentPage + 1) * 10)
+        ])
+    }, [currentPage, historyList, filterKeyWord, filterDay])
 
     // check sucess => reset success
     useEffect(() => {
@@ -72,11 +95,12 @@ function HistoryTransaction() {
                                             </div>
                                         </div>
                                         <div className="w-40">
-                                            <ComboBox listItem={listPostedCbb} filterValueSelected={onFilterlistPostedCbb} />
+                                            <input onChange={(e) => setFilterDay(e.target.value)} type='date' name="search-field" id="search-field" className=" relative mt-2 block w-40 border pt-1 pb-1 pl-4 h-10 pr-5 text-sm bg-[#f0f5f7] focus:bg-white  rounded-md" />
+
                                         </div>
                                     </div>
                                     <div className="flex text-base">
-                                        <div className="mr-1">History transactions: </div> <span>  10</span>
+                                        <div className="mr-1">History transactions: </div> <span>  {pages?.length}</span>
                                     </div>
                                 </div>
                                 {appErr && <span className='flex flex-row items-center text-base text-[#a9252b] mt-2 ml-8'><AiFillExclamationCircle className="mr-1" />{appErr}</span>}
@@ -192,12 +216,12 @@ function HistoryTransaction() {
                                                                             </div>
                                                                         </div>
                                                                     </td>
-                                                                   
+
                                                                 </tr>
                                                             )
                                                         }) :
                                                         <>
-                                                            {([...historyList]?.reverse())?.map((item, index) => {
+                                                            {([...pages]?.reverse())?.map((item, index) => {
                                                                 return <TransactionItem item={item} key={index} />
                                                             })}
 

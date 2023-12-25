@@ -5,15 +5,16 @@ import { LiaBanSolid, LiaEyeSolid, LiaTrashAltSolid } from "react-icons/lia";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllVacancies, resetSuccessAction, updateVacancyStatus } from "../../../redux/slices/vacancies/vacanciesSlices";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { PiSuitcaseSimpleDuotone } from "react-icons/pi";
 import { BsLock } from "react-icons/bs";
 import { CgLock } from "react-icons/cg";
 import { FaUnlock } from "react-icons/fa";
 import { FiUnlock } from "react-icons/fi";
+import { NewTabIcon } from "../../../assets/icons";
 
-const listPostedCbb = [{ id: 1, name: 'All' }, { id: 2, name: 'Pending' }, { id: 3, name: 'Approval' }, { id: 4, name: 'Rejected' }]
+const listPostedCbb = [{ id: 1, name: 'All' }, { id: 2, name: 'Pending' }, { id: 3, name: 'Approved' }, { id: 4, name: 'WaitPayment' }, { id: 5, name: 'Rejected' }, { id: 5, name: 'Blocked' }]
 
 function ManageVacancy() {
     const dispatch = useDispatch();
@@ -21,6 +22,7 @@ function ManageVacancy() {
     const [currentPage, setCurrentPage] = useState(0);
     const [pages, setPages] = useState([]);
     const [filterKeyWord, setFilterKeyWord] = useState('');
+    const navigate = useNavigate();
 
 
     useEffect(() => {
@@ -36,11 +38,14 @@ function ManageVacancy() {
         if (filterValue.name === 'Pending') {
             setVacancyList([...vacancies.filter(i => i.approvalStatus === 'pending')])
         }
-        if (filterValue.name === 'Accepted') {
-            setVacancyList([...vacancies.filter(i => i.approvalStatus === 'accepted')])
+        if (filterValue.name === 'Approved') {
+            setVacancyList([...vacancies.filter(i => i.approvalStatus === 'approved')])
         }
         if (filterValue.name === 'Rejected') {
             setVacancyList([...vacancies.filter(i => i.approvalStatus === 'rejected')])
+        }
+        if (filterValue.name === 'WaitPayment') {
+            setVacancyList([...vacancies.filter(i => i.approvalStatus === 'waitPayment')])
         }
         if (filterValue.name === 'Blocked') {
             setVacancyList([...vacancies.filter(i => i.approvalStatus === 'blocked')])
@@ -125,7 +130,7 @@ function ManageVacancy() {
         });
     }
     useEffect(() => {
-        setPages([...vacancyList.filter(item => ((item?.vacancyName).toLowerCase().includes(filterKeyWord.toLowerCase())
+        setPages([...vacancyList.filter(item => ((item?.vacancyName).toLowerCase().includes(filterKeyWord.trim().toLowerCase())
             || (item?.projectName ?? '').toLowerCase().includes(filterKeyWord.toLowerCase())
             || (item?.userInfo?.fullName ?? '').toLowerCase().includes(filterKeyWord.toLowerCase())
             || (item?.location ?? '').toLowerCase().includes(filterKeyWord.toLowerCase())
@@ -196,12 +201,12 @@ function ManageVacancy() {
                                     <table className="relative w-full overflow-y-hidden overflow-x-hidden rounded-md mb-8 bg-white border-0 ">
                                         <thead className="bg-[#f5f7fc] color-white border-transparent border-0 w-full">
                                             <tr className="w-full">
-                                                <th className="relative text-[#3a60bf] font-medium py-6 text-base text-left w-3/12 pl-5 ">Vacancy Name</th>
-                                                <th className="relative text-[#3a60bf] font-medium py-6 text-base text-left w-5/24 ">Project Name</th>
-                                                <th className="relative text-[#3a60bf] font-medium py-6 text-base text-left w-2/12 ">Created & Duration</th>
-                                                <th className="relative text-[#3a60bf] font-medium py-6 text-base text-left w-3/24 ">Max required</th>
-                                                <th className="relative text-[#3a60bf] font-medium py-6 text-base text-left w-3/24">Status</th>
-                                                <th className="relative text-[#3a60bf] font-medium py-6 text-base text-left w-3/24">Action</th>
+                                                <th className="relative text-[#3a60bf] font-medium py-6 text-base text-left w-[35%] pl-5 ">Vacancy Name</th>
+                                                <th className="relative text-[#3a60bf] font-medium py-6 text-base text-left w-[10%] ">Project Name</th>
+                                                <th className="relative text-[#3a60bf] font-medium py-6 text-base text-left w-[15%] pl-6">Created & Duration</th>
+                                                <th className="relative text-[#3a60bf] font-medium py-6 text-base text-left w-[15%] ">Max required</th>
+                                                <th className="relative text-[#3a60bf] font-medium py-6 text-base text-left w-[15%]">Status</th>
+                                                <th className="relative text-[#3a60bf] font-medium py-6 text-base text-left w-[10%]">Action</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -294,7 +299,7 @@ function ManageVacancy() {
                                                 pages?.map((item, index) => {
                                                     return (
                                                         <tr key={index} className="relative border-b border-solid border-[#ecedf2] w-full hover:bg-[#f4f2f2] cursor-pointer px-5  ">
-                                                            <td className="relative pl-5 py-5 font-normal text-base w-3/12">
+                                                            <td className="relative pl-5 py-5 font-normal text-base w-[35%]">
                                                                 <div className="mb-0 flex h-16 ">
                                                                     <div className=" w-11">
                                                                         <img src={item?.userInfo?.avatar ?? 'https://pic.onlinewebfonts.com/thumbnails/icons_148020.svg'} className="inline-block max-w-full h-auto align-middle" alt="logo" />
@@ -312,88 +317,143 @@ function ManageVacancy() {
                                                                     </div>
                                                                 </div>
                                                             </td>
-                                                            <td className=" w-5/24">
-                                                                {item?.projectName ? <div className="font-medium text-ellipsis w-full line-clamp-2">{item?.projectName} </div> : <div className="font-light text-sm text-red-500 text-ellipsis w-full line-clamp-2 ">{'Not belong to any project'}  </div>}
+                                                            <td className="w-[10%]">
+                                                                {item?.project ? <a target="_blank" onClick={() => navigate("/Admin/approval-project/" + item?.project)} className="bg-green-100 border-green-300 border rounded-xl text-left cursor-pointer text-green-500 w-fit flex flex-row items-center justify-center self-center  gap-1">
+                                                                    <div>In project</div>
+                                                                    <img src={NewTabIcon} className="w-3 h-3 text-green-500" color="#22c55e" />
+                                                                </a> : <div className="font-light text-sm text-red-500 text-ellipsis w-full line-clamp-2 text-left">{'Not belong to any project'}  </div>}
                                                             </td>
-                                                            <td className="pl-9 w-2/12 font-light text-gray-700 text-base">
+                                                            <td className="pl-14 w-[15%] font-light text-gray-700 text-base ">
                                                                 <div>{item?.createdAt ? `${item?.createdAt[2]}/${item?.createdAt[1]}/${item?.createdAt[0]}` : ''}</div>
                                                                 <div>{item?.hiringTimeline ?? '1 to 2 weeks'}</div>
                                                             </td>
-                                                            <td className="font-light text-blue-700 w-3/24  ">
+                                                            <td className="font-light text-blue-700 w-[15%]  ">
                                                                 <div className="flex h-full items-center pl-8">
                                                                     <div className="mr-1">{item.maxRequired ?? 0}</div>
                                                                 </div>
                                                             </td>
 
-                                                            <td className="w-3/24">
-                                                                {
-                                                                    item?.approvalStatus === 'pending' ?
-                                                                        <div>
-                                                                            <div className="bg-blue-100 mt-2 border-blue-300 border rounded-xl text-center  text-blue-500 w-fit px-1">
-                                                                                Pending
-                                                                            </div>
-                                                                        </div>
-                                                                        : item?.approvalStatus === 'waitPayment' ?
+                                                            <td className="w-[15%]">
+                                                                {!item?.project ? <>
+                                                                    {
+                                                                        item?.approvalStatus === 'pending' ?
                                                                             <div>
-                                                                                <div className="bg-orange-100 mt-2 border-orange-300 border rounded-xl text-center  text-orange-500 w-fit px-1">
-                                                                                    Wait Payment
+                                                                                <div className="bg-blue-100 mt-2 border-blue-300 border rounded-xl text-center  text-blue-500 w-fit px-1">
+                                                                                    Pending
                                                                                 </div>
                                                                             </div>
-                                                                            : item?.approvalStatus === 'rejected' ?
+                                                                            : item?.approvalStatus === 'waitPayment' ?
                                                                                 <div>
                                                                                     <div className="bg-orange-100 mt-2 border-orange-300 border rounded-xl text-center  text-orange-500 w-fit px-1">
-                                                                                        Rejected
+                                                                                        Wait Payment
                                                                                     </div>
                                                                                 </div>
-                                                                                : item?.approvalStatus === 'approved' ?
+                                                                                : item?.approvalStatus === 'rejected' ?
                                                                                     <div>
-                                                                                        <div className="bg-green-100 mt-2 border-green-300 border rounded-xl text-center  text-green-500 w-fit px-1">
-                                                                                            Approved
+                                                                                        <div className="bg-orange-100 mt-2 border-orange-300 border rounded-xl text-center  text-orange-500 w-fit px-1">
+                                                                                            Rejected
                                                                                         </div>
                                                                                     </div>
-                                                                                    : item?.approvalStatus === 'blocked' ?
+                                                                                    : item?.approvalStatus === 'approved' ?
                                                                                         <div>
-                                                                                            <div className="bg-red-100 mt-2 border-red-300 border rounded-xl text-center  text-red-500 w-fit px-1">
-                                                                                                Blocked
+                                                                                            <div className="bg-green-100 mt-2 border-green-300 border rounded-xl text-center  text-green-500 w-fit px-1">
+                                                                                                Approved
                                                                                             </div>
                                                                                         </div>
-                                                                                        : <>  </>
-                                                                }
+                                                                                        : item?.approvalStatus === 'blocked' ?
+                                                                                            <div>
+                                                                                                <div className="bg-red-100 mt-2 border-red-300 border rounded-xl text-center  text-red-500 w-fit px-1">
+                                                                                                    Blocked
+                                                                                                </div>
+                                                                                            </div>
+                                                                                            : <>  </>
+                                                                    }
+                                                                </> : <>
+                                                                    {item?.approvalStatus === 'blocked' ?
+                                                                        <div>
+                                                                            <div className="bg-red-100 mt-2 border-red-300 border rounded-xl text-center  text-red-500 w-fit px-1">
+                                                                                Blocked
+                                                                            </div>
+                                                                        </div> :
+                                                                        <>
+                                                                            <div>
+                                                                                <div className="bg-green-100 mt-2 border-green-300 border rounded-xl text-center  text-green-500 w-fit px-1">
+                                                                                    In Project
+                                                                                </div>
+                                                                            </div>
+                                                                        </>}
+                                                                </>}
                                                             </td>
 
-                                                            <td className="w-3/24" >
+                                                            <td className="w-[10%]" >
                                                                 <div className="">
                                                                     <ul className="list-none flex relative item-center ">
                                                                         <li className="list-none relative mr-2 bg-[#f5f7fc] border rounded-md border-[#e9ecf9] px-1 pt-1 hover:bg-[#5f86e9] hover:text-white">
                                                                             <Link to={`/Admin/manage-vacancy/${item.vacancyId}`}> <LiaEyeSolid fontSize={18} /> </Link>
                                                                         </li>
-                                                                        {item?.approvalStatus === 'pending' ? <>
-                                                                            <li className="list-none relative mr-2 bg-[#f5f7fc] border rounded-md border-[#e9ecf9] px-1 pt-1 hover:bg-[#278646] hover:text-white">
-                                                                                <button onClick={() => handleApprovalVacancy(item?.vacancyId)}> <AiOutlineCheckCircle fontSize={18} /> </button>
-                                                                            </li>
-                                                                            <li className="list-none relative bg-[#f5f7fc] border rounded-md border-[#e9ecf9] px-1 pt-1 hover:bg-orange-300 hover:text-black">
-                                                                                <button onClick={() => handleRejectVacancy(item?.vacancyId)}> <LiaBanSolid fontSize={18} /> </button>
-                                                                            </li>
+                                                                        {!item?.project
+                                                                            ? <>
+                                                                                {
+                                                                                    item?.approvalStatus === 'pending' ? <>
+                                                                                        {!item?.project ?
+                                                                                            <>
+                                                                                                <li className="list-none relative mr-2 bg-[#f5f7fc] border rounded-md border-[#e9ecf9] px-1 pt-1 hover:bg-[#278646] hover:text-white">
+                                                                                                    <button onClick={() => handleApprovalVacancy(item?.vacancyId)}> <AiOutlineCheckCircle fontSize={18} /> </button>
+                                                                                                </li>
+                                                                                                <li className="list-none relative bg-[#f5f7fc] border rounded-md border-[#e9ecf9] px-1 pt-1 hover:bg-orange-300 hover:text-black">
+                                                                                                    <button onClick={() => handleRejectVacancy(item?.vacancyId)}> <LiaBanSolid fontSize={18} /> </button>
+                                                                                                </li>
+                                                                                            </> : <></>
+                                                                                        }
 
-                                                                        </> : item?.approvalStatus === 'waitPayment' ? <>
-                                                                            <li className="list-none relative bg-[#f5f7fc] border rounded-md border-[#e9ecf9] px-1 pt-1 hover:bg-orange-300 hover:text-black">
-                                                                                <button onClick={() => handleRejectVacancy(item?.vacancyId)}> <LiaBanSolid fontSize={18} /> </button>
-                                                                            </li>
+                                                                                    </> : item?.approvalStatus === 'waitPayment' ? <>
+                                                                                        {!item?.project ?
+                                                                                            <>
+                                                                                                <li className="list-none relative bg-[#f5f7fc] border rounded-md border-[#e9ecf9] px-1 pt-1 hover:bg-orange-300 hover:text-black">
+                                                                                                    <button onClick={() => handleRejectVacancy(item?.vacancyId)}> <LiaBanSolid fontSize={18} /> </button>
+                                                                                                </li>
+                                                                                            </> : <></>
+                                                                                        }
 
-                                                                        </> : item?.approvalStatus === 'rejected' ? <>
-                                                                            <li className="list-none relative mr-2 bg-[#f5f7fc] border rounded-md border-[#e9ecf9] px-1 pt-1 hover:bg-[#278646] hover:text-white">
-                                                                                <button onClick={() => handleApprovalVacancy(item?.vacancyId)}> <AiOutlineCheckCircle fontSize={18} /> </button>
-                                                                            </li>
-                                                                        </> : item?.approvalStatus === 'approved' ? <>
 
-                                                                            <li className="list-none relative mr-2 bg-red-300 border rounded-md border-red-300 px-1 pt-1 hover:bg-red-700 hover:text-white">
-                                                                                <button onClick={() => handleBlockVacancy(item?.vacancyId)}> <CgLock fontSize={18} /> </button>
-                                                                            </li>
-                                                                        </> : <>
-                                                                            <li className="list-none relative mr-2 bg-[#f5f7fc] border rounded-md border-[#e9ecf9] px-1 pt-1 hover:bg-[#278646] hover:text-white">
-                                                                                <button onClick={() => handleOpenBlockVacancy(item?.vacancyId)}> <FiUnlock fontSize={18} /> </button>
-                                                                            </li>
-                                                                        </>
+                                                                                    </> : item?.approvalStatus === 'rejected' ? <>
+                                                                                        {!item?.project ?
+                                                                                            <>
+                                                                                                <li className="list-none relative mr-2 bg-[#f5f7fc] border rounded-md border-[#e9ecf9] px-1 pt-1 hover:bg-[#278646] hover:text-white">
+                                                                                                    <button onClick={() => handleApprovalVacancy(item?.vacancyId)}> <AiOutlineCheckCircle fontSize={18} /> </button>
+                                                                                                </li>
+                                                                                            </> : <></>
+                                                                                        }
+
+                                                                                    </> : item?.approvalStatus === 'approved' ? <>
+
+                                                                                        <li className="list-none relative mr-2 bg-red-300 border rounded-md border-red-300 px-1 pt-1 hover:bg-red-700 hover:text-white">
+                                                                                            <button onClick={() => handleBlockVacancy(item?.vacancyId)}> <CgLock fontSize={18} /> </button>
+                                                                                        </li>
+                                                                                    </> : <>
+                                                                                        <li className="list-none relative mr-2 bg-[#f5f7fc] border rounded-md border-[#e9ecf9] px-1 pt-1 hover:bg-[#278646] hover:text-white">
+                                                                                            <button onClick={() => handleOpenBlockVacancy(item?.vacancyId)}> <FiUnlock fontSize={18} /> </button>
+                                                                                        </li>
+                                                                                    </>
+                                                                                }
+                                                                            </>
+                                                                            : <>
+                                                                                {
+                                                                                    item?.approvalStatus === 'blocked' ?
+                                                                                        <>
+                                                                                            <li className="list-none relative mr-2 bg-[#f5f7fc] border rounded-md border-[#e9ecf9] px-1 pt-1 hover:bg-[#278646] hover:text-white">
+                                                                                                <button onClick={() => handleOpenBlockVacancy(item?.vacancyId)}> <FiUnlock fontSize={18} /> </button>
+                                                                                            </li>
+                                                                                        </>
+                                                                                        :
+                                                                                        <>
+                                                                                            <li className="list-none relative mr-2 bg-red-300 border rounded-md border-red-300 px-1 pt-1 hover:bg-red-700 hover:text-white">
+                                                                                                <button onClick={() => handleBlockVacancy(item?.vacancyId)}> <CgLock fontSize={18} /> </button>
+                                                                                            </li>
+                                                                                        </>
+                                                                                }
+
+                                                                            </>
                                                                         }
                                                                     </ul>
                                                                 </div>

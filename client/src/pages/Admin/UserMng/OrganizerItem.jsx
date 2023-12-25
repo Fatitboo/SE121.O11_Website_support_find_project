@@ -37,10 +37,10 @@ function OrganizerItem({ item }) {
     }
     const convertAddress = (string)=>{
         var str = 'Not infor'
-        if(string.includes('Thành phố ')){
+        if(string?.includes('Thành phố ')){
             str = string.slice(10)
         }
-        if(string.includes('Tỉnh ')){
+        if(string?.includes('Tỉnh ')){
             str = string.slice(5)
         }
         return str

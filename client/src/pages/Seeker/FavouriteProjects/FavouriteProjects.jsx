@@ -23,7 +23,7 @@ function FavouriteProjects() {
     }
     useEffect(() => {
         dispatch(getAllFavouriteProjectsAction())
-    }, [dispatch])
+    }, [])
     const storeData = useSelector(store => store?.projects);
     const { favouriteProjects, isSuccessFvr, appErr, isSuccess, loading } = storeData;
     useEffect(() => {

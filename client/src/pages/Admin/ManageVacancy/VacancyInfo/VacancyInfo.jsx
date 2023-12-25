@@ -538,7 +538,7 @@ function VacancyInfoAdmin() {
                 <div className="col-span-4">
                     <div className="grid grid-flow-row grid-cols-3 gap-6 mb-3">
 
-                        {
+                        {!sltVacancy?.project ? <> {
                             apvStt === 'waitPayment' ?
                                 <>
                                     <div></div>
@@ -579,7 +579,24 @@ function VacancyInfoAdmin() {
                                                 <span className="text-[15px] leading-none font-[400]">Approve</span>
                                             </div>
                                         </>
-                        }
+                        }</> : <>
+                            {
+                                apvStt === 'blocked' ? <>
+                                    
+                                    <div></div>
+                                    <div></div>
+                                    <div onClick={() => handleOpenBlockVacancy(id)} className="flex items-center justify-center h-[53px] box-border bg-green-700 px-[18px] w-full rounded-[8px] text-[#fff] hover:bg-green-900 cursor-pointer">
+                                        <span className="text-[15px] leading-none font-[400]">Approve</span>
+                                    </div>
+                                </> : <>
+                                <div></div>
+                                    <div></div>
+                                    <div onClick={() => handleBlockVacancy(id)} className="flex items-center justify-center h-[53px] box-border bg-gray-700 px-[18px] w-full rounded-[8px] text-[#fff] hover:bg-gray-900 cursor-pointer">
+                                        <span className="text-[15px] leading-none font-[400]">Block</span>
+                                    </div>
+                                </>
+                            }
+                        </>}
 
 
 

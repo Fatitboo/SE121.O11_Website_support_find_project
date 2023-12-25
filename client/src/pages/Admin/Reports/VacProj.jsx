@@ -10,6 +10,7 @@ import { FiLock } from 'react-icons/fi'
 import Swal from 'sweetalert2'
 import { updateVacancyStatus } from '../../../redux/slices/vacancies/vacanciesSlices'
 import { Link } from 'react-router-dom'
+import { LiaEyeSolid } from 'react-icons/lia'
 
 export const VacProj = ({ item }) => {
     let [dropDownTags, setDropDownTags] = useState(false)
@@ -34,7 +35,7 @@ export const VacProj = ({ item }) => {
                         };
                         const formData = new FormData();
                         formData.append('isVacancy', item?.isVacancy)
-                        const res = await axios.post(`${baseUrl}/${apiPrefix}/get-all-report-var/${item?.vacProId}`, formData ,config);
+                        const res = await axios.post(`${baseUrl}/${apiPrefix}/get-all-report-var/${item?.vacProId}`, formData, config);
 
                         if (res.data) {
                             console.log(res.data.reports)
@@ -81,7 +82,7 @@ export const VacProj = ({ item }) => {
     return (
         <tr>
             <td colSpan={2} className="p-7 rounded-[10px] border overflow-hidden border-[#ecedf2] hover:shadow-[0_7px_18px_rgba(64,79,104,.05)]  mb-[30px]">
-                <Link to={`/Admin/manage-vacancy/${item.vacProId}`} className="flex flex-row">
+                <div  className="flex flex-row">
                     <div>
                         <div className="w-[50px] h-[50px] rounded-lg bg-slate-400">
                             <img src={item?.avt} className="w-full h-full" alt="Logo" />
@@ -109,8 +110,11 @@ export const VacProj = ({ item }) => {
                                     {item?.address}
                                 </div>
                             </div>
-                            <div className='pr-[11%]'>
-                                <FiLock onClick={()=>handleRejectVacancy(item?.vacProId)} size={24} color='red' className='cursor-pointer'/>
+                            <div className='pr-[9%] flex'>
+                                <div className="list-none relative mr-2 bg-[#f5f7fc] border rounded-md border-[#e9ecf9] px-1 pt-1 hover:bg-[#5f86e9] hover:text-white">
+                                    <Link to={`/Admin/manage-vacancy/${item.vacProId}`}> <LiaEyeSolid fontSize={18} /> </Link>
+                                </div>
+                                <FiLock onClick={() => handleRejectVacancy(item?.vacProId)} size={24} color='red' className='cursor-pointer' />
                             </div>
                         </div>
                         <div className="flex flex-row items-center mt-2">
@@ -132,7 +136,7 @@ export const VacProj = ({ item }) => {
                             </p>
                         </div>
                     </div>
-                </Link>
+                </div>
 
                 <div>
                     <div className="flex flex-col mt-3">
@@ -162,7 +166,7 @@ export const VacProj = ({ item }) => {
                                     reports?.map((item, index) => {
                                         return <div key={index} className=" relative p-4 grid grid-cols-12 border-b border-gray-200 bg-[#f6faff]">
                                             <div className='col-span-1 '>
-                                                <img src={item?.avatar} alt="" className='rounded-full w-2/3'/>
+                                                <img src={item?.avatar} alt="" className='rounded-full w-2/3' />
                                             </div>
                                             <div className='col-span-11 text-[14px]'>
                                                 <div className='font-medium text-[16px]'>{item?.orgName}</div>
@@ -184,7 +188,7 @@ export const VacProj = ({ item }) => {
                     </div>
 
                 </div>
-                
+
             </td>
         </tr>
     )

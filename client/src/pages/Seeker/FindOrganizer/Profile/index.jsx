@@ -22,6 +22,11 @@ function CompanyProfile() {
     const [ctName, setCtName] = useState('')
     const [ctMssg, setCtMssg] = useState('')
     useEffect(() => {
+        window.scrollTo({top: 0, behavior: 'smooth'});
+            
+        }, [])
+    useEffect(() => {
+
         dispatch(getAllProjectsUser({ id: id }))
         dispatch(getDetailUserAction(id))
     }, [dispatch])

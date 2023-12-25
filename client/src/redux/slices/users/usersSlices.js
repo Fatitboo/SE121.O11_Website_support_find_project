@@ -216,8 +216,11 @@ export const updateUserCvAction = createAsyncThunk(
                 },
             };
             const formData = new FormData();
-            formData.append('file', info);
+            formData.append('file', info.file);
             const { data } = await axios.post(`${baseUrl}/${apiPrefix}/update-seeker-cv/${userAuth?.user?.userId}`, formData, config);
+            if(info.notify){
+                info.notify('success', 'Update file CV successfully!')
+            }
             console.log(data)
             return data;
         } catch (error) {
@@ -285,7 +288,7 @@ export const updateAvtiveCorByAdminAction = createAsyncThunk(
 // delete cv seeker 
 export const deleteUserCvAction = createAsyncThunk(
     'users/deleteUserCv',
-    async (publicId, { rejectWithValue, getState, dispatch }) => {
+    async (dt, { rejectWithValue, getState, dispatch }) => {
         try {
             const user = getState()?.users;
             const { userAuth } = user;
@@ -297,8 +300,11 @@ export const deleteUserCvAction = createAsyncThunk(
                 },
             };
             const formData = new FormData();
-            formData.append('publicId', publicId);
+            formData.append('publicId', dt.publicId);
             const { data } = await axios.post(`${baseUrl}/${apiPrefix}/delete-seeker-cv/${userAuth?.user?.userId}`, formData, config);
+            if(dt.notify){
+                dt.notify('success', 'Delete file cv successfully!')
+            }
             console.log(data)
             return data;
         } catch (error) {
