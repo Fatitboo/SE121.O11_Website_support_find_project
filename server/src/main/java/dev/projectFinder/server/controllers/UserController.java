@@ -347,7 +347,7 @@ public class UserController {
                     Optional<Vacancy> cv = vacancyRepository.findById(new ObjectId(completeId));
                     if(!cv.isEmpty()){
                         Vacancy vc = cv.get();
-                        if(vc.getPost()){
+                        if(vc.getPost() && vc.getDatePost() != null){
                             float hours = ChronoUnit.HOURS.between(vc.getDatePost(), LocalDateTime.now());
                             System.out.println("HOURS: " + hours/ 24 + "   LENGTH: " + vc.getLength());
                             if(hours / 24 > vc.getLength()){

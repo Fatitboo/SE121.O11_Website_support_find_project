@@ -7,7 +7,7 @@ import { Menu, Transition } from "@headlessui/react";
 import { Fragment, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Swal from "sweetalert2";
-import { deleteCompleteVacancy, deleteuncompletedVacancyAction, getCompleteVacancyCor, getInCompleteVacancyCor, getVacancyCor, resetSuccessAction } from "../../../redux/slices/vacancies/vacanciesSlices";
+import { deleteCompleteVacancy, deleteuncompletedVacancyAction, getCompleteVacancyCor, getInCompleteVacancyCor, resetSuccessAction } from "../../../redux/slices/vacancies/vacanciesSlices";
 import { Link, useNavigate } from "react-router-dom";
 import { NewTabIcon } from "../../../assets/icons";
 import { JobReview } from "../PostJob/JobRef";
@@ -415,7 +415,7 @@ function ManageVacancy() {
                                                                 </div>
                                                             </td>
                                                             <td className="w-2/12">
-                                                                {item?.project ? <a target="_blank" onClick={() => navigate("/Organizer/manage-project/project-detail/" + item?.project)} className="bg-green-100 border-green-300 border rounded-xl text-center cursor-pointer text-green-500 w-fit px-1 flex flex-row items-center justify-center self-center ml-10 gap-1">
+                                                                {item?.project ? <a target="_blank" href={"/Organizer/manage-project/project-detail/" + item?.project} rel="noreferrer" className="bg-green-100 border-green-300 border rounded-xl text-center cursor-pointer text-green-500 w-fit px-3 flex flex-row items-center justify-center self-center ml-10 gap-1">
                                                                                             <div>In project</div>
                                                                                             <img src={NewTabIcon} className="w-3 h-3 text-green-500" color="#22c55e"/>
                                                                                         </a> : <div className="font-light text-sm text-red-500 text-ellipsis w-full line-clamp-2 text-center">{'Not belong to any project'}  </div>}
@@ -437,13 +437,11 @@ function ManageVacancy() {
 
                                                             <td className="w-3/24">
                                                                 {
-                                                                item?.project ? null :
                                                                 item.post ? 
                                                                     <div className="bg-green-100 border-green-300 border rounded-xl text-center text-sm text-green-500 w-fit px-1">Posted</div> : <div className="bg-red-100 border-red-300 w-fit  px-1 text-red-500 border rounded-xl text-center text-sm">UnPosted</div>}
                                                             </td>
                                                             <td className="w-3/24">
                                                                 {
-                                                                    item?.project ? null :
                                                                     item?.approvalStatus === 'pending' ?
                                                                         <div>
                                                                             <div className="bg-blue-100 border-blue-300 border rounded-xl text-center  text-blue-500 w-fit px-1">

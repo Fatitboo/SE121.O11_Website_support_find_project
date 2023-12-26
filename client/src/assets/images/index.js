@@ -25,6 +25,7 @@ export { default as pleaseWaiting } from './preload_waiting_1.gif'
 export { default as lockAccount } from './lockAccount.png'
 export { default as SuccessPaymentIcon } from './success.jpg'
 export { default as CancelPaymentIcon } from './calcel.jpg'
+export { default as SuccessPostImage } from './successPost.png'
 
 
 

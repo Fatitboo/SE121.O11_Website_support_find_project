@@ -10,6 +10,7 @@ import { IoClose } from "react-icons/io5";
 import PreviewVacancy from "./JobRef/JobComponents/PreviewVacancy";
 import SuccessCreate from "./JobRef/SuccessCreate";
 import { ToastContainer } from "react-toastify";
+import { BsSkipForward } from "react-icons/bs";
 // Add job basic
 // 	- Job title
 // 	- number of people to hỉe
@@ -40,10 +41,11 @@ function PostJob() {
     var [jobRefKey, setJobRefKey] = useState(0)
     var [jobProgress, setJobProgress] = useState('0%')
     var [isPreview, setIsPreview] = useState(false)
+    var [skip, setSkip] = useState(false)
     const loadingUD = useSelector((state) => state.vacancies.loadingUD)
     const loadingPF = useSelector((state) => state.vacancies.loadingPF)
     const formId = ["form-job-basic", "form-job-detail", "form-job-benefit", "form-job-des", "form-job-ref", "form-job-pre", "form-job-rev"]
-    const jobRef = [<JobBasic formSubmit={nextJobRef} flag={0} formId={formId[0]} key={0}/>, <JobDetail formSubmit={nextJobRef} formId={formId[1]} flag={1} key={1}/>, <JobBenefit formSubmit={nextJobRef} formId={formId[2]} flag={2} key={2}/>, <JobDes  formSubmit={nextJobRef} formId={formId[3]} flag={3} key={3}/>,<JobPreferences formSubmit={nextJobRef} formId={formId[4]} flag={4} key={4}/>,<JobPreScreen formSubmit={nextJobRef} formId={formId[5]} flag={5} key={5}/>,<JobReview formSubmit={nextJobRef} formId={formId[6]} flag={6} key={6}/>]
+    const jobRef = [<JobBasic formSubmit={nextJobRef} flag={0} formId={formId[0]} key={0}/>, <JobDetail formSubmit={nextJobRef} formId={formId[1]} flag={1} key={1}/>, <JobBenefit skip={skip} setSkip={setSkip} formSubmit={nextJobRef} formId={formId[2]} flag={2} key={2}/>, <JobDes  formSubmit={nextJobRef} formId={formId[3]} flag={3} key={3}/>,<JobPreferences formSubmit={nextJobRef} formId={formId[4]} flag={4} key={4}/>,<JobPreScreen formSubmit={nextJobRef} formId={formId[5]} flag={5} key={5}/>,<JobReview formSubmit={nextJobRef} formId={formId[6]} flag={6} key={6}/>]
     
     //const currentJobComponent = useSelector((state) => state.vacancies.currentJobComponent)
     const flag = useSelector((state) => state.vacancies.flag)
@@ -59,7 +61,6 @@ function PostJob() {
     }
 
     useEffect(() => {
-        console.log(params.id)
         dispatch(getCurrentVacanciesComponent(params.id))
     }, [])
 
@@ -85,11 +86,27 @@ function PostJob() {
                         </div>
                     </div>
                 </div>
+                
                 <div className="mt-8 mb-11">
                     {
                         jobRefKey !== jobRef.length ? jobRef[jobRefKey] : <SuccessCreate></SuccessCreate>
                     }
                 </div>
+                {
+                    jobRefKey !== 2 ? null :
+                    <div>
+                        <button type="submit" form={formId[jobRefKey]} onClick={() => {setSkip(true)}} className="mb-2 flex items-center float-right justify-center h-[38px] box-border px-[18px] py-[8px] rounded-[8px] text-[#000] hover:bg-[#eef1fe] hover:border-[#1967d3] hover:border cursor-pointer">
+                            <span className="text-[15px] leading-none font-bold mr-2">Skip</span>
+                            {
+                                (loadingUD || loadingPF) && skip ? <svg className="right-1 animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 24 24">
+                                <circle className="opacity-0" cx="12" cy="12" r="10" stroke="white" strokeWidth="4"></circle>
+                                <path className="opacity-90" fill="black" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                                :<BsSkipForward  className="w-6 h-6"/>
+                            }
+                        </button>
+                    </div>
+                }
                 <div className="flex flex-row justify-between">
                     {
                         jobRefKey != 0 && jobRefKey !== 7 ? <div className="flex items-center justify-center h-[53px] box-border bg-[white] border px-[18px] py-[8px] rounded-[8px] text-[#1967d3] hover:bg-[#eef1fe] hover:border-[#1967d3] cursor-pointer"
@@ -108,12 +125,13 @@ function PostJob() {
                                                 <MdRemoveRedEye className="w-6 h-6"/>
                                             </div> : null
                         }
+                        
                         {
                             jobRefKey === 7 ? null :
-                            <button type="submit" form={formId[jobRefKey]} className="flex items-center justify-center h-[53px] box-border bg-[#1967d3] px-[18px] py-[8px] rounded-[8px] text-[#fff] hover:bg-[#0146a6] cursor-pointer">
+                            <button  type="submit" form={formId[jobRefKey]} className="flex items-center justify-center h-[53px] box-border bg-[#1967d3] px-[18px] py-[8px] rounded-[8px] text-[#fff] hover:bg-[#0146a6] cursor-pointer">
                                 <span className="text-[15px] leading-none font-bold mr-2">{jobRefKey === 6 ? 'Create' : 'Continue'}</span>
                                 {
-                                    (loadingUD || loadingPF) ? <svg className="right-1 animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 24 24">
+                                    (loadingUD || loadingPF) && !skip ? <svg className="right-1 animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 24 24">
                                     <circle className="opacity-0" cx="12" cy="12" r="10" stroke="white" strokeWidth="4"></circle>
                                     <path className="opacity-90" fill="white" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                                 </svg>

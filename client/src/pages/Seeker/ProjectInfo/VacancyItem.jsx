@@ -13,6 +13,7 @@ import { BsBookmarkCheckFill, BsEye } from "react-icons/bs";
 import { resetSuccessAction, updateFavouriteVacancyAction } from "../../../redux/slices/vacancies/vacanciesSlices";
 import { LoadingComponent } from "../../../components";
 import Swal from "sweetalert2";
+import DOMPurify from "dompurify";
 
 const VacancyItem = ({ props, isAvatar, active, notify, isEditProject, setFunc, isHideFunc }) => {
     // {vacancyName, skillsRequired, maxRequired, salary, registant, description, isAvatar, companyName, companyAvatar}
@@ -116,7 +117,7 @@ const VacancyItem = ({ props, isAvatar, active, notify, isEditProject, setFunc, 
                         {props?.location}
                     </div>
                     <div className="mt-2 min-h-[60px] w-[96%]">
-                        <p className="line-clamp-3 bg-transparent text-ellipsis " dangerouslySetInnerHTML={{ __html: props?.description }}>
+                        <p className="line-clamp-3 bg-transparent text-ellipsis " dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(props?.description) }}>
                         </p>
                     </div>
                     <div className="flex flex-row items-center mt-2">

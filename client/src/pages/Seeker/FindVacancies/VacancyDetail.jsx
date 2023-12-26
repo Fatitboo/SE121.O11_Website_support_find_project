@@ -15,6 +15,7 @@ import { BsBookmarkCheckFill } from "react-icons/bs";
 import { ReportOr } from "../ReportOr/ReportOr";
 import Swal from "sweetalert2";
 import { Link } from "react-router-dom";
+import DOMPurify from 'dompurify'
 
 const VacancyDetail = ({ props }) => {
     let [modal, setModal] = useState(false)
@@ -46,10 +47,14 @@ const VacancyDetail = ({ props }) => {
         user && dispatch(getDetailUserAction(user?.userId))
     }, [])
     const handleApplied = () => {
-        if (user) {
-            listQuestion ? setModal(true)
-                :
+        if (user && props) {
+            if(props.jobPreScreen){
+                setListQuestion(props.jobPreScreen)
+                setModal(true)    
+            }
+            else{
                 props?.vacancyId && dispatch(applyVacancyAction(props.vacancyId))
+            }
         }
         else {
             Swal.fire({
@@ -156,18 +161,18 @@ const VacancyDetail = ({ props }) => {
                                 </div>
                             </div>
                             {props?.project && 
-                                <a target="_blank" rel="noreferrer" href={"/Organizer/manage-project/project-detail/" + props?.project} className="bg-green-100 border-green-300 border rounded-xl text-center cursor-pointer text-green-500 w-fit px-1 flex flex-row items-center justify-center self-center ml-10 gap-1">
-                                    <div>In project</div>
+                                <a target="_blank" rel="noreferrer" href={"/Seeker/project-info/" + props?.project} className="bg-green-100 border-green-300 border rounded-xl text-center cursor-pointer text-green-500 w-fit px-2 flex flex-row items-center justify-center self-center ml-10 gap-1">
+                                    <div>Open project relation</div>
                                     <img src={NewTabIcon} className="w-3 h-3 text-green-500" color="#22c55e"/>
                                 </a>
                             }
                         </div>
                     </div>
                 </div>
-                <div className="overflow-y-auto px-7">
+                <div className="overflow-y-auto overflow-x-auto px-7">
                     <div className="mt-3">
                         <span className="text-lg leading-6 text-[#202124] mb-3 mt-5 font-semibold">Description</span>
-                        <p className="bg-transparent" dangerouslySetInnerHTML={{ __html: props?.description }}>
+                        <p className="bg-transparent max-w-[500px]" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(props?.description) }}>
                         </p>
                     </div>
                     <div className="mt-5">

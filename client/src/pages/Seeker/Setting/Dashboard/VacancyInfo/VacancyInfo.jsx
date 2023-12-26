@@ -127,10 +127,14 @@ function VacancyInfo() {
     }
 
     const handleApplied = () => {
-        if (user) {
-            listQuestion ? setModal(true)
-                :
+        if (user && vacancyInfo) {
+            if(vacancyInfo.jobPreScreen){
+                setListQuestion(vacancyInfo.jobPreScreen)
+                setModal(true)    
+            }
+            else{
                 vacancyInfo?.vacancyId && dispatch(applyVacancyAction(vacancyInfo.vacancyId))
+            }
         }
         else {
             Swal.fire({

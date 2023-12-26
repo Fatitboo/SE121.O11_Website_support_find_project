@@ -190,7 +190,7 @@ function JobReferences({formId, formSubmit, flag, config, content, onDoneSubmit}
                         }
                         {(content?.includes("emailApply") || config === undefined) && 
                         <div>
-                            <p className='block leading-8 text-gray-900 text-base font-semibold'>Let we updates you about this job</p>
+                            <p className='block leading-8 text-gray-900 text-base font-semibold'>Let we updates you about this vacancy</p>
                             <li onClick={() => {setInputValues({...inputsValues, emailApply: !inputsValues.emailApply})}} className='flex items-center justify-between bg-white py-1 focus:outline-none text-base text-gray-900 hover:font-normal hover:opacity-90'>
                                 <div className={`flex flex-row items-center cursor-pointer ${!(content?.includes("emailApply") || config === undefined) && 'my-10'} w-full rounded-md group`}>
                                     <div className='ml-1'>
@@ -206,7 +206,7 @@ function JobReferences({formId, formSubmit, flag, config, content, onDoneSubmit}
                         }
                         {(content?.includes("emailContact") || config === undefined) && 
                         <div>
-                            <p className='block leading-8 text-gray-900 text-base font-semibold'>Let potential candidates contact you about this job</p>
+                            <p className='block leading-8 text-gray-900 text-base font-semibold'>Let potential candidates contact you about this vacancy</p>
                             <li onClick={() => {setInputValues({...inputsValues, emailContact: !inputsValues.emailContact})}} className='flex items-center justify-between bg-white py-1 focus:outline-none text-base text-gray-900 hover:font-normal hover:opacity-90 mt-1'>
                                 <div className="flex flex-row items-center cursor-pointer w-full rounded-md group">
                                     <div className='ml-1'>
@@ -234,7 +234,7 @@ function JobReferences({formId, formSubmit, flag, config, content, onDoneSubmit}
                                 {config ? null : <hr className="block h-1 bg-[rgb(212, 210, 208)] my-6"/>}
                                 <></>
                                 {config ? null : <p className='block leading-8 text-gray-900 text-xl font-bold mb-6'>Hire Settings</p>}
-                                    <CustomComboBox label="Hiring timeline for this job*" selectItem={currentJobComponent?.hiringTimeline} type="select" rules="requiredCbb" placeHolder="Select an option" name="hiringTimeline" listItem={hiringTimeline} filterValueSelected={(e) => onSelectedChange(e, "hiringTimeline")} error={errors.hiringTimeline} onblur={blurElement}></CustomComboBox>
+                                    <CustomComboBox label="Hiring timeline for this vacancy*" selectItem={currentJobComponent?.hiringTimeline} type="select" rules="requiredCbb" placeHolder="Select an option" name="hiringTimeline" listItem={hiringTimeline} filterValueSelected={(e) => onSelectedChange(e, "hiringTimeline")} error={errors.hiringTimeline} onblur={blurElement}></CustomComboBox>
                                 <></>
                             </div>
                         }

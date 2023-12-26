@@ -104,62 +104,71 @@ public class Vacancy {
     public Vacancy(UnCompletedVacancy unCompletedVacancy){
         //userInfo
         userInfo = unCompletedVacancy.getUserInfo();
+
         //job basic
+        if(unCompletedVacancy.getJobBasic() != null){
+            HashMap<String, Object> jobBasic = unCompletedVacancy.getJobBasic().spreadString();
+            if(jobBasic.get("vacancyName") != null)
+                vacancyName = (String)jobBasic.get("vacancyName");
+            if(!((String)jobBasic.get("maxRequired")).isEmpty())
+                maxRequired = Integer.parseInt((String)jobBasic.get("maxRequired"));
+            //--location
+            if(jobBasic.get("locationType") != null)
+                locationType = (String)jobBasic.get("locationType");
+            if(jobBasic.get("location") != null)
+                location = (String)jobBasic.get("location");
+            if(jobBasic.get("locationSpecificRequired") != null)
+                locationSpecificRequired = (Boolean)jobBasic.get("locationSpecificRequired");
+        }
 
-        HashMap<String, Object> jobBasic = unCompletedVacancy.getJobBasic().spreadString();
-        if(jobBasic.get("vacancyName") != null)
-            vacancyName = (String)jobBasic.get("vacancyName");
-        if(!((String)jobBasic.get("maxRequired")).isEmpty())
-            maxRequired = Integer.parseInt((String)jobBasic.get("maxRequired"));
-        //--location
-        if(jobBasic.get("locationType") != null)
-            locationType = (String)jobBasic.get("locationType");
-        if(jobBasic.get("location") != null)
-            location = (String)jobBasic.get("location");
-        if(jobBasic.get("locationSpecificRequired") != null)
-            locationSpecificRequired = (Boolean)jobBasic.get("locationSpecificRequired");
+        //job detail
+        if(unCompletedVacancy.getJobDetail() != null){
+            HashMap<String, Object> jobDetail = unCompletedVacancy.getJobDetail().spreadString();
 
-        //job detail -- time
-        HashMap<String, Object> jobDetail = unCompletedVacancy.getJobDetail().spreadString();
-
-        timeRequires = Arrays.stream(unCompletedVacancy.getJobDetail().getJobTypes())
-                .map(Combobox::getName)
-                .toArray(String[]::new);
-        if(!((String)jobDetail.get("timeLength")).isEmpty())
-            timeLength = Integer.parseInt((String)jobDetail.get("timeLength"));
-        if(jobDetail.get("timePeriod") != null)
-            timePeriod = (String)jobDetail.get("timePeriod");
-        if(jobDetail.get("timeType") != null)
-            timeType = (String)jobDetail.get("timeType");
-        if(!((String)jobDetail.get("timeFirst")).isEmpty())
-            timeFirst = Integer.parseInt((String)jobDetail.get("timeFirst"));
-        if(!((String)jobDetail.get("timeSecond")).isEmpty())
-            timeSecond = Integer.parseInt((String)jobDetail.get("timeSecond"));
+            timeRequires = Arrays.stream(unCompletedVacancy.getJobDetail().getJobTypes())
+                    .map(Combobox::getName)
+                    .toArray(String[]::new);
+            if(!((String)jobDetail.get("timeLength")).isEmpty())
+                timeLength = Integer.parseInt((String)jobDetail.get("timeLength"));
+            if(jobDetail.get("timePeriod") != null)
+                timePeriod = (String)jobDetail.get("timePeriod");
+            if(jobDetail.get("timeType") != null)
+                timeType = (String)jobDetail.get("timeType");
+            if(!((String)jobDetail.get("timeFirst")).isEmpty())
+                timeFirst = Integer.parseInt((String)jobDetail.get("timeFirst"));
+            if(!((String)jobDetail.get("timeSecond")).isEmpty())
+                timeSecond = Integer.parseInt((String)jobDetail.get("timeSecond"));
+        }
 
         //job benefit --salary
-        HashMap<String, Object> jobBenefit = unCompletedVacancy.getJobBenefit().spreadString();
-        if(jobBenefit.get("salaryType") != null)
-            salaryType = (String)jobBenefit.get("salaryType");
-        if(!((String)jobBenefit.get("salaryFirst")).isEmpty())
-            salaryFirst = Double.parseDouble((String)jobBenefit.get("salaryFirst"));
-        if(!((String)jobBenefit.get("salarySecond")).isEmpty())
-            salarySecond = Double.parseDouble((String)jobBenefit.get("salarySecond"));
-        if(jobBenefit.get("salaryRate") != null)
-            salaryRate = (String)jobBenefit.get("salaryRate");
+        if(unCompletedVacancy.getJobBenefit() != null){
+            HashMap<String, Object> jobBenefit = unCompletedVacancy.getJobBenefit().spreadString();
+            if(jobBenefit.get("salaryType") != null)
+                salaryType = (String)jobBenefit.get("salaryType");
+            if(!((String)jobBenefit.get("salaryFirst")).isEmpty())
+                salaryFirst = Double.parseDouble((String)jobBenefit.get("salaryFirst"));
+            if(!((String)jobBenefit.get("salarySecond")).isEmpty())
+                salarySecond = Double.parseDouble((String)jobBenefit.get("salarySecond"));
+            if(jobBenefit.get("salaryRate") != null)
+                salaryRate = (String)jobBenefit.get("salaryRate");
+        }
 
         //job Des
-        description = unCompletedVacancy.getJobDes().getDescription();
-        skillsRequired = unCompletedVacancy.getJobDes().getSkills();
+        if(unCompletedVacancy.getJobDes() != null){
+            description = unCompletedVacancy.getJobDes().getDescription();
+            skillsRequired = unCompletedVacancy.getJobDes().getSkills();
+        }
 
         //Job ref - config
-        HashMap<String, Object> jobRef = unCompletedVacancy.getJobRef().spreadString();
+        if(unCompletedVacancy.getJobRef() != null){
+            HashMap<String, Object> jobRef = unCompletedVacancy.getJobRef().spreadString();
 
-        emailReceivers =  unCompletedVacancy.getJobRef().getEmails();
-        canReceiveApplied = (Boolean) jobRef.get("canReceiveApplied");
-        canContactViaEmail = (Boolean) jobRef.get("canContactViaEmail");
-        requireResume = (Boolean) jobRef.get("requireResume");
-        hiringTimeline = (String) jobRef.get("hiringTimeline");
-
+            emailReceivers =  unCompletedVacancy.getJobRef().getEmails();
+            canReceiveApplied = (Boolean) jobRef.get("canReceiveApplied");
+            canContactViaEmail = (Boolean) jobRef.get("canContactViaEmail");
+            requireResume = (Boolean) jobRef.get("requireResume");
+            hiringTimeline = (String) jobRef.get("hiringTimeline");
+        }
         //registants;
 
 

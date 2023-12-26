@@ -8,7 +8,7 @@ import store from "../../../../redux/store/store";
 
 const numberHire = [{ id: 1, name:"1"}, { id: 2, name:"2"}, { id: 3, name: "3"}, { id: 4, name:"4"}, { id: 5, name:"5"}, { id: 6, name:"6"}, { id:7, name:"7"}, { id: 8, name:"8"}, { id: 9, name:"9"}, { id: 10, name:"10"}, { id: 11, name: "10+"}, { id: 12, name: "I have an ongoing need to fill this role"}]
 
-const JobLocation = [{ id: 1, name: "In person", des: "The job is performed at a specific address"}, { id: 2, name: "Remote", des: "The job is performed remotely. No one-site work required" }, { id: 3, name: "On the road", des: "The job requires regular travel" }]
+const JobLocation = [{ id: 1, name: "In person", des: "The vacancy is performed at a specific address"}, { id: 2, name: "Remote", des: "The vacancy is performed remotely. No one-site work required" }, { id: 3, name: "On the road", des: "The vacancy requires regular travel" }]
 const remoteOption = [{ id: 0, name: "Yes", value: true}, { id: 1, name: "No", value: false}]
 
 function JobBasic({formSubmit, formId, flag, config, content, onDoneSubmit}) {
@@ -140,13 +140,13 @@ function JobBasic({formSubmit, formId, flag, config, content, onDoneSubmit}) {
                 <div className="p-8">
                 {config ? null : <hr className="block h-1 bg-[rgb(212, 210, 208)] my-6"/>}
                     <form onSubmit={handleSubmit} id={formId} ref={formJobBasic}>
-                    {(content?.includes("jobTitle") || config === undefined) && <div className="mt-2"><TextInput label="Job title*" name="jobTitle" type="text" vl={inputsValues?.jobTitle} rules="requiredText" error={errors.jobTitle} onChange={handleChange} onblur={blurElement}/></div>}
+                    {(content?.includes("jobTitle") || config === undefined) && <div className="mt-2"><TextInput label="Vacancy title*" name="jobTitle" type="text" vl={inputsValues?.jobTitle} rules="requiredText" error={errors.jobTitle} onChange={handleChange} onblur={blurElement}/></div>}
                     {config ? null : <div className="h-6"></div>}
 
-                    {(content?.includes("numberParticipants") || config === undefined) && <TextInput label="Number of people to hire for this job*" type="text" vl={inputsValues?.numberParticipants?.name} rules="requiredText|number|positiveNumber|intergerNumber" onChange={handleChange} placeHolder="Max participants" name="numberParticipants" error={errors.numberParticipants} onblur={blurElement}></TextInput>}
+                    {(content?.includes("numberParticipants") || config === undefined) && <TextInput label="Number of people to hire for this vacancy*" type="text" vl={inputsValues?.numberParticipants?.name} rules="requiredText|number|positiveNumber|intergerNumber" onChange={handleChange} placeHolder="Max participants" name="numberParticipants" error={errors.numberParticipants} onblur={blurElement}></TextInput>}
                     {config ? null : <hr className="block h-1 w-full bg-[rgb(212, 210, 208)] my-6"/>}
 
-                    {(content?.includes("location") || config === undefined) &&<CustomComboBox label="Which option best describes this job's location?*" selectItem={currentJobComponent?.type} name="type" rules="requiredCbb" placeHolder={"Select an option."}  type='select' filterValueSelected={(e) => {filterValueSelected(e, "type"); configLocation(e); setCheckRemote(false)}} onblur={blurElement} listItem={JobLocation} error={errors.type}></CustomComboBox>}
+                    {(content?.includes("location") || config === undefined) &&<CustomComboBox label="Which option best describes this vacancy's location?*" selectItem={currentJobComponent?.type} name="type" rules="requiredCbb" placeHolder={"Select an option."}  type='select' filterValueSelected={(e) => {filterValueSelected(e, "type"); configLocation(e); setCheckRemote(false)}} onblur={blurElement} listItem={JobLocation} error={errors.type}></CustomComboBox>}
                     {config ? null :  <div className="h-6"></div>}
                         {
                             jobLocation === JobLocation[0].name ? <TextInput label="What is the street address for this location?*" type="text" rules="requiredText" name="location" value={inputsValues?.location} error={errors.location} onblur={blurElement}  onChange={handleChange}/> :
@@ -154,7 +154,7 @@ function JobBasic({formSubmit, formId, flag, config, content, onDoneSubmit}) {
                                 <CustomRadioButton listItem={remoteOption} name="isRequire" filterValueChecked={(e) => setCheckedValue(e)} selectedItem={currentJobComponent?.require} label="Are employees required to reside in a specific location?*"/>
                             ) :
                             jobLocation === JobLocation[2].name ? 
-                            (<div><TextInput label="What is the operating area for this job?*" value={inputsValues?.location} type="text" rules="requiredText" name="location" error={errors.location} onblur={blurElement} onChange={handleChange}/></div>)
+                            (<div><TextInput label="What is the operating area for this vacancy?*" value={inputsValues?.location} type="text" rules="requiredText" name="location" error={errors.location} onblur={blurElement} onChange={handleChange}/></div>)
                             : null
                         }
                     {config ? null : <div className="h-6"></div>}

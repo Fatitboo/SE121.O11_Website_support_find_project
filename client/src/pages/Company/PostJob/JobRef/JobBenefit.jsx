@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getVacancyComponent, resetComponent, setValueSuccess, updateVacancyComponent } from "../../../../redux/slices/vacancies/vacanciesSlices";
 import { toast } from "react-toastify";
 
-function JobBenefit({formId, formSubmit, flag, config, content, onDoneSubmit}) {
+function JobBenefit({formId, formSubmit, flag, config, content, onDoneSubmit, skip, setSkip}) {
     const dispatch = useDispatch();
     const {currentJobComponent, vacancyId, isSuccess} = useSelector(store => store.vacancies)
     const showPayBy = [{ id: 1, name:"Range"}, { id: 2, name: "Starting amount"}, { id: 3, name: "Maximum amount"}, { id: 4, name: "Exact amount"}]
@@ -40,21 +40,27 @@ function JobBenefit({formId, formSubmit, flag, config, content, onDoneSubmit}) {
 
     function handleSubmit(e) {
         e.preventDefault();
-        const validationErrors = FormErrors(e.target, ErrorMessages)
-
-        setErrors(validationErrors);
-
-        if(Object.keys(validationErrors).length === 0){
-            if(inputsValues?.showPayBy?.id === -1){
-                notify("warning", "Please select the way to visible salary to seeker!")
-                return;
+        if(skip){
+            setSkip(false)
+            dispatch(updateVacancyComponent({"id":vacancyId, "value": {"jobBenefit": null, "flag": flag}}))
+        }
+        else{
+            const validationErrors = FormErrors(e.target, ErrorMessages)
+    
+            setErrors(validationErrors);
+    
+            if(Object.keys(validationErrors).length === 0){
+                if(inputsValues?.showPayBy?.id === -1){
+                    notify("warning", "Please select the way to visible salary to seeker!")
+                    return;
+                }
+    
+                if(inputsValues?.rate?.id === -1){
+                    notify("warning", "Please select the expected period for salary!")
+                    return;
+                }
+                dispatch(updateVacancyComponent({"id":vacancyId, "value": {"jobBenefit": inputsValues, "flag": flag}}))
             }
-
-            if(inputsValues?.rate?.id === -1){
-                notify("warning", "Please select the expected period for salary!")
-                return;
-            }
-            dispatch(updateVacancyComponent({"id":vacancyId, "value": {"jobBenefit": inputsValues, "flag": flag}}))
         }
     }
     const notify = (type, message) => toast(message, { type: type });
