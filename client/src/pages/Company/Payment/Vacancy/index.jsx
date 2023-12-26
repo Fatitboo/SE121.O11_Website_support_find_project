@@ -1,6 +1,6 @@
 import { FiMinus, FiPlus } from "react-icons/fi";
 import { JobPaymentImage, JobReviewImage } from "../../../../assets/images";
-import { CustomComboBox } from "../../../../components";
+import { CustomComboBox, LoadingComponent } from "../../../../components";
 import { useEffect, useState } from "react";
 import { AiFillExclamationCircle } from "react-icons/ai";
 import { PaypalIcon } from "../../../../assets/icons";
@@ -104,8 +104,7 @@ function Payment({vacancy}) {
             })
             if(a){
                 const per = a.length / skrList.length
-                console.log(a)
-                if(per < 0.01){
+                if(per < 0.03){
                     setSkrsMatchPerc(50)
                     setBaseMoney(take_decimal_number(5 * 0.5, 2))
                 }
@@ -164,6 +163,7 @@ function Payment({vacancy}) {
     return ( 
         <>
             <div className="mx-[24%] mt-28">
+                {loading && <LoadingComponent/>}
                 <div className="flex flex-row justify-between bg-[#faf9f8] rounded-xl mx-4">
                     <div className="flex items-center m-8">
                         <span className="text-[#2D2D2D] text-[28px] font-bold">Sponsor</span>            
@@ -236,7 +236,7 @@ function Payment({vacancy}) {
                             </div>
                             <div className="w-full bg-[#f0e6ed] p-5 mt-3">
                                 <div>
-                                    Daily spend may fluctuate based on your post's activity, but you will spend <span className="font-semibold">US$37.50/</span>week, max.
+                                    Daily spend may fluctuate based on your post's activity
                                 </div>
                                 <div>
                                     You can change the amount, pause, or close your job ar any time.

@@ -75,17 +75,17 @@ function QuestionAndAnswerItem({props, onTextChanged, userId, onCheckedRadio, se
                             {
                                 [{id: 0, name: "Yes", value: true}, {id: 1, name: "No", value: false}].map((item, index) => {
                                     return (
-                                        <li key={index} value={index} onClick={() => {}} className={`flex cursor-pointer items-center justify-between bg-white py-1 px-5 focus:outline-none text-base text-gray-900 hover:font-normal border hover:opacity-90 rounded-md ${user && props?.answer[user.userId] === item.value && 'border-[#34a853]'} group`}>
+                                        <li key={index} value={index} onClick={() => {}} className={`flex cursor-pointer items-center justify-between bg-white py-1 px-5 focus:outline-none text-base text-gray-900 hover:font-normal border hover:opacity-90 rounded-md ${user && props?.answer && props?.answer[user.userId] === item.value && 'border-[#34a853]'} group`}>
                                             <div className="flex flex-row items-center cursor-pointer mt-1">
                                                 <div>
                                                     <div className="relative h-7 flex items-center justify-center">
                                                         <div className="absolute bg-[#FFF] border border-[#808082] w-[20px] h-[20px] rounded-[10px] group-hover:bg-[#e1ebff]" color="#FFF"></div>
-                                                        <div className={`${user && props?.answer[user.userId] === item.value ? "": "hidden"} flex items-center justify-center absolute bg-[#34a853] w-[12px] h-[12px] rounded-[10px]`} color="#FFF"></div>
+                                                        <div className={`${user && props?.answer && props?.answer[user.userId] === item.value ? "": "hidden"} flex items-center justify-center absolute bg-[#34a853] w-[12px] h-[12px] rounded-[10px]`} color="#FFF"></div>
                                                     </div>
                                                 </div>
                                                 <span className="pl-5 text-base select-none text-[#696969]">{item.name}</span>
                                             </div>
-                                            {user && props?.answer[user.userId] === item.value ? 
+                                            {user && props?.answer && props?.answer[user.userId] === item.value ? 
                                                 <>
                                                         <img src={user?.avatar?.fileUrl ?? 'https://i.pinimg.com/564x/16/3e/39/163e39beaa36d1f9a061b0f0c5669750.jpg'} className="w-[25px] h-[25px] rounded-full shadow"></img>
                                                 </> : null
@@ -141,17 +141,17 @@ function QuestionAndAnswerItem({props, onTextChanged, userId, onCheckedRadio, se
                             {
                                 props?.selectList?.map((item, index) => {
                                     return (
-                                        <li key={index} value={index} onClick={() => {}} className={`flex cursor-pointer items-center justify-between bg-white py-1 px-5 focus:outline-none text-base text-gray-900 hover:font-normal border hover:opacity-90 rounded-md ${user && props?.answer[user.userId]?.id === item.id ? (props?.answer[user.userId]?.id === props?.result[0]?.id ? 'border-[#34a853]' : 'border-[#b91c1c]') : (props?.result[0]?.id === item.id ? 'border-[#2557a7]' : '')} group`}>
+                                        <li key={index} value={index} onClick={() => {}} className={`flex cursor-pointer items-center justify-between bg-white py-1 px-5 focus:outline-none text-base text-gray-900 hover:font-normal border hover:opacity-90 rounded-md ${user && props?.answer && props?.answer[user.userId]?.id === item.id ? (props?.answer[user.userId]?.id >= props?.result[0]?.id ? 'border-[#34a853]' : 'border-[#b91c1c]') : (props?.result[0]?.id === item.id ? 'border-[#2557a7]' : '')} group`}>
                                             <div className="flex flex-row items-center cursor-pointer mt-1">
                                                 <div>
                                                     <div className="relative h-7 flex items-center justify-center">
                                                         <div className="absolute bg-[#FFF] border border-[#808082] w-[20px] h-[20px] rounded-[10px] group-hover:bg-[#e1ebff]" color="#FFF"></div>
-                                                        <div className={`${props?.result[0]?.id === item.id || user && props?.answer[user?.userId]?.id === item.id ? "": "hidden"} flex items-center justify-center absolute ${props?.result[0]?.id === item.id ? (props?.answer && props?.answer[user?.userId]?.id === item.id ? 'bg-[#34a853]' :'bg-[#2557a7]') : 'bg-[#b91c1c]'} w-[12px] h-[12px] rounded-[10px]`} color="#FFF"></div>
+                                                        <div className={`${props?.result[0]?.id === item.id || user && props?.answer && props?.answer[user?.userId]?.id === item.id ? "": "hidden"} flex items-center justify-center absolute ${props?.result[0]?.id <= item.id ? (props?.answer && props?.answer[user?.userId]?.id === item.id ? 'bg-[#34a853]' :'bg-[#2557a7]') : 'bg-[#b91c1c]'} w-[12px] h-[12px] rounded-[10px]`} color="#FFF"></div>
                                                     </div>
                                                 </div>
                                                 <span className="pl-5 text-base select-none text-[#696969]">{item.name}</span>
                                             </div>
-                                            {user && props?.answer[user.userId]?.id === item.id ? 
+                                            {user && props?.answer && props?.answer[user.userId]?.id === item.id ? 
                                                 <>
                                                     <img src={user?.avatar?.fileUrl ?? 'https://i.pinimg.com/564x/16/3e/39/163e39beaa36d1f9a061b0f0c5669750.jpg'} className="w-[25px] h-[25px] rounded-full shadow"></img>
                                                 </> : null
@@ -221,11 +221,11 @@ function QuestionAndAnswerItem({props, onTextChanged, userId, onCheckedRadio, se
                         </div>
                         <ul className='mt-2 z-10 rounded-md px-5 pb-5'>
                             {
-                                props?.result?.map((item, index) => {
+                                props?.selectList?.map((item, index) => {
                                     return (
                                         <div key={index} className="flex items-center justify-between">
                                             <li value={index} onClick={() => {}} className='flex flex-grow mr-2 items-center justify-between bg-white py-1 focus:outline-none text-base text-gray-900 hover:font-normal hover:opacity-90'>
-                                                <div className={`flex flex-row items-center justify-between cursor-pointer border w-full p-2 rounded-md group ${(user && props?.answer[user.userId]?.find(i => i.id === item.id && i.required!==item.required) ? 'border-[#34a853]' : 'border-[#b91c1c]')}`}>
+                                                <div className={`flex flex-row items-center justify-between cursor-pointer border w-full p-2 rounded-md group ${(user && props?.answer && props?.answer[user.userId]?.find(i => i.id === props?.result?.find((i) => i.id === item.id)?.id && i.required!==props?.result?.find((i) => i.id === item.id)?.required) ? 'border-[#34a853]' : props?.result?.find((i) => i.id === item.id)?.required ? 'border-[#b91c1c]' : '')}`}>
                                                     <div className="flex flex-row items-center">
                                                         <div className='ml-1'>
                                                             <div className="relative h-7 flex items-center">
@@ -235,7 +235,7 @@ function QuestionAndAnswerItem({props, onTextChanged, userId, onCheckedRadio, se
                                                         </div>
                                                         <span className="pl-9 text-[17px] select-none text-[#696969]">{item.name}</span>
                                                     </div>
-                                                    {user && props?.answer[user.userId]?.find(i => i.id === item.id) ? 
+                                                    {user && props?.answer && props?.answer[user.userId]?.find(i => i.id === item.id) ? 
                                                         <>
                                                             <img src={user?.avatar?.fileUrl ?? 'https://i.pinimg.com/564x/16/3e/39/163e39beaa36d1f9a061b0f0c5669750.jpg'} className="w-[25px] h-[25px] rounded-full shadow"></img>
                                                         </> : null
@@ -336,7 +336,7 @@ function QuestionAndAnswerItem({props, onTextChanged, userId, onCheckedRadio, se
                                                 </div>
                                                 {user && props?.answer ? 
                                                     <>
-                                                        <img src={user?.avatar?.fileUrl ?? 'https://i.pinimg.com/564x/16/3e/39/163e39beaa36d1f9a061b0f0c5669750.jpg'} className="absolute top-[12px] right-[40px] w-[25px] h-[25px] rounded-full shadow"></img>
+                                                        <img src={user?.avatar?.fileUrl ?? 'https://i.pinimg.com/564x/16/3e/39/163e39beaa36d1f9a061b0f0c5669750.jpg'} className="absolute top-[12px] right-[20px] w-[25px] h-[25px] rounded-full shadow"></img>
                                                     </> : null
                                                 }
                                             </div>  

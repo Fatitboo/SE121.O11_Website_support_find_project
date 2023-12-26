@@ -419,8 +419,10 @@ public class VacancyServices {
         if(jobPreScreen!=null){
             for (JobPreScreen preScreen : jobPreScreen) {
                 HashMap<Object, Object> hm = preScreen.getAnswer();
-                hm.remove(user.getUserId().toString());
-                preScreen.setAnswer(hm);
+                if(hm != null){
+                    hm.remove(user.getUserId().toString());
+                    preScreen.setAnswer(hm);
+                }
             }
             vacancy.setJobPreScreen(jobPreScreen);
         }
@@ -483,8 +485,10 @@ public class VacancyServices {
         if(jobPreScreen != null){
             for (JobPreScreen preScreen : jobPreScreen) {
                 HashMap<Object, Object> hm = preScreen.getAnswer();
-                hm.remove(user.getUserId().toString());
-                preScreen.setAnswer(hm);
+                if(hm != null){
+                    hm.remove(user.getUserId().toString());
+                    preScreen.setAnswer(hm);
+                }
             }
             vacancy.setJobPreScreen(jobPreScreen);
         }
