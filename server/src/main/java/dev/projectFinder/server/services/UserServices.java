@@ -698,7 +698,7 @@ public class UserServices {
         if(!isHas) {
             appliedVacancyList.add(new AppliedVacancy(vacancyId,LocalDateTime.now(),"pending"));
             List<String> appliedVacancies = user.getAppliedVacancies();
-            if(appliedVacancies.isEmpty()) appliedVacancies = new ArrayList<>();
+            if(appliedVacancies == null || appliedVacancies.isEmpty()) appliedVacancies = new ArrayList<>();
             if(!appliedVacancies.contains(vacancy.getVacancyId().toString()))
                 appliedVacancies.add(vacancy.getVacancyId().toString());
             user.setAppliedVacancies(appliedVacancies);
