@@ -185,7 +185,7 @@ function VacancyInfo() {
                     {/* Description  */}
                     <></>
                     <div>
-                        <h4 className="text-xl leading-6 text-[#202124] mb-5 font-semibold ">Vacancy description ({participants?.members? participants?.members.length : 0})</h4>
+                        <h4 className="text-xl leading-8 text-[#202124] mb-5 font-semibold ">Vacancy description ({participants?.members? participants?.members.length : 0})</h4>
                         <p className="text-[#696969] text-[15px] mb-6" dangerouslySetInnerHTML={{ __html: sltVacancy?.description }}>
 
                         </p>

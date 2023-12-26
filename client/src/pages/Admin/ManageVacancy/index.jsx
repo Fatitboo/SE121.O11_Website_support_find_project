@@ -427,7 +427,7 @@ function ManageVacancy() {
 
                                                                                     </> : item?.approvalStatus === 'approved' ? <>
 
-                                                                                        <li className="list-none relative mr-2 bg-red-300 border rounded-md border-red-300 px-1 pt-1 hover:bg-red-700 hover:text-white">
+                                                                                        <li className="list-none relative mr-2 bg-gray-50 border rounded-md border-gray-300 px-1 pt-1 hover:bg-red-700 hover:text-white">
                                                                                             <button onClick={() => handleBlockVacancy(item?.vacancyId)}> <CgLock fontSize={18} /> </button>
                                                                                         </li>
                                                                                     </> : <>
