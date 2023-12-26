@@ -524,9 +524,9 @@ function ManageVacancy() {
                 </div>
             </div>
 
-            <Modal open={modal} setModal={setModal}>
+            {/* <Modal open={modal} setModal={setModal}>
                 <JobReview/>
-            </Modal>
+            </Modal> */}
         </div>
     );
 }

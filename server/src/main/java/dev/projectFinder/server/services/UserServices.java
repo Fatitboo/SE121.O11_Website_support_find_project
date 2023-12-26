@@ -569,7 +569,7 @@ public class UserServices {
     public List<History> getAllHistoryTransaction(){
         return historyRepository.findAll();
     }
-    public void applyVacancy(String id, String vacancyId){
+    public String applyVacancy(String id, String vacancyId) {
         Optional<User> foundUser = userRepository.findById(new ObjectId(id));
         if(foundUser.isEmpty()){
             throw new DataIntegrityViolationException(MessageKeys.USER_NOT_FOUND);
@@ -590,7 +590,7 @@ public class UserServices {
 
         List<String> appVacancies = user.getAppliedVacancies();
         if(appVacancies == null || appVacancies.isEmpty())  appVacancies = new ArrayList<>();
-        if(appVacancies.contains(vacancy.getVacancyId().toString())) return;
+        if(appVacancies.contains(vacancy.getVacancyId().toString())) return "";
 
         //Phát
         // add applied vacancies list
@@ -647,8 +647,18 @@ public class UserServices {
             registants.add(user.getUserId().toString());
         vacancy.setRegistants(registants);
         vacancyRepository.save(vacancy);
+        try{
+            for(int i = 0; i < vacancy.getEmailReceivers().length; i++){
+                emailService.sendNotificationApply(vacancy.getEmailReceivers()[i], "Seeker Applicantion", user, vacancy.getVacancyName(), vacancy.getVacancyId().toString());
+            }
+            return "You have been apply successfully!";
+        }
+        catch (IOException e){
+            System.out.println(e.getMessage());
+        }
+        return "You have been apply successfully!";
     }
-    public void applyVacancyAndAnswers (String id, String vacancyId, JobPreScreen[] jobPreScreen){
+    public String applyVacancyAndAnswers (String id, String vacancyId, JobPreScreen[] jobPreScreen){
         Optional<User> foundUser = userRepository.findById(new ObjectId(id));
         if(foundUser.isEmpty()){
             throw new DataIntegrityViolationException(MessageKeys.USER_NOT_FOUND);
@@ -671,7 +681,7 @@ public class UserServices {
         // set list applied vacancy
         List<String> appVacancies = user.getAppliedVacancies();
         if(appVacancies == null || appVacancies.isEmpty())  appVacancies = new ArrayList<>();
-        if(appVacancies.contains(vacancy.getVacancyId().toString())) return;
+        if(appVacancies.contains(vacancy.getVacancyId().toString())) return "";
 
 
         // add applied vacancies list
@@ -728,6 +738,17 @@ public class UserServices {
         vacancy.setRegistants(registants);
         vacancy.setJobPreScreen(jobPreScreen);
         vacancyRepository.save(vacancy);
+
+        try{
+            for(int i = 0; i < vacancy.getEmailReceivers().length; i++){
+                emailService.sendNotificationApply(vacancy.getEmailReceivers()[i], "Seeker Applicantion", user, vacancy.getVacancyName(), vacancy.getVacancyId().toString());
+            }
+            return "You have been apply successfully!";
+        }
+        catch (IOException e){
+            System.out.println(e.getMessage());
+        }
+        return "You have been apply successfully!";
     }
     public void updateActiveCor(String id){
         Optional<User> foundUser = userRepository.findById(new ObjectId(id));

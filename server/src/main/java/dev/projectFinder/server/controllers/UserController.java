@@ -742,8 +742,8 @@ public class UserController {
     public ResponseEntity<?> applyVacancy(@PathVariable String id, @PathVariable String vacancyId) {
         HashMap<String, Object> response = new HashMap<>();
         try {
-            userServices.applyVacancy(id, vacancyId);
-            response.put("message", "Your applied has been send to corporator!");
+            String message = userServices.applyVacancy(id, vacancyId);
+            response.put("message", message);
             return ResponseEntity.status(HttpStatus.OK).body(response);
         } catch (Exception e) {
             response.put("message", e.getMessage());
@@ -767,8 +767,8 @@ public class UserController {
     public ResponseEntity<?> applyVacancyWithAnswer(@PathVariable String id, @PathVariable String vacancyId, @RequestBody JobPreScreen[] jobPreScreen) {
         HashMap<String, Object> response = new HashMap<>();
         try {
-            userServices.applyVacancyAndAnswers(id, vacancyId, jobPreScreen);
-            response.put("message", "Your applied has been send to corporator!");
+            String message = userServices.applyVacancyAndAnswers(id, vacancyId, jobPreScreen);
+            response.put("message", message);
             return ResponseEntity.status(HttpStatus.OK).body(response);
         } catch (Exception e) {
             response.put("message", e.getMessage());

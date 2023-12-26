@@ -306,7 +306,6 @@ function QuestionAndAnswerItem({props, onTextChanged, userId, onCheckedRadio, se
         case 'list-date':
             return ( 
                 <>
-                <button onClick={() => console.log(listDateTimeRange)}>onclick</button>
                     <div className="flex flex-col border border-gray-400 rounded-lg overflow-hidden my-6">
                         <div className="flex flex-row items-center justify-between p-3 bg-[#F3F2F1]">
                             <div className="flex flex-row items-top mr-3">

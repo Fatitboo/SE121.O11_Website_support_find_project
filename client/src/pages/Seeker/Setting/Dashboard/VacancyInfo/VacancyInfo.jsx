@@ -128,7 +128,7 @@ function VacancyInfo() {
 
     const handleApplied = () => {
         if (user && vacancyInfo) {
-            if(vacancyInfo.jobPreScreen){
+            if(vacancyInfo?.jobPreScreen && vacancyInfo?.jobPreScreen?.length !== 0){
                 setListQuestion(vacancyInfo.jobPreScreen)
                 setModal(true)    
             }
@@ -471,7 +471,6 @@ function VacancyInfo() {
                         </div>
                         <hr className="block h-1 w-full bg-[rgb(212, 210, 208)] mt-3" />
                         <div className="max-h-[400px] w-[600px] overflow-y-auto overflow-x-hidden mb-4 px-3">
-                            <button onClick={() => console.log(listQuestion)}>Click me</button>
                             {
                                 listQuestion.map((item, index) => {
                                     return <div key={index}>
@@ -512,7 +511,6 @@ function VacancyInfo() {
                         </div>
                         <hr className="block h-1 w-full bg-[rgb(212, 210, 208)] mt-3" />
                         <div className="max-h-[400px] w-[600px] overflow-y-auto overflow-x-hidden mb-4 px-3">
-                            <button onClick={() => console.log(listQuestion)}>Click me</button>
                             {
                                 listQuestion.map((item, index) => {
                                     return <div key={index}>
