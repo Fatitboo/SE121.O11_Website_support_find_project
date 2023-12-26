@@ -40,7 +40,11 @@ function CVManager() {
 
 
         console.log(file)
-        dispatch(updateUserCvAction(file))
+        const d = {
+            file : file,
+            notify: notify ?? null
+        }
+        dispatch(updateUserCvAction(d))
     }
 
     return (

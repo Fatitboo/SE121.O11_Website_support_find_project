@@ -316,7 +316,7 @@ function FindProjects() {
                         currentPrs?.filter((item) => item.project?.status === "approved" && !isExpired(item?.project?.datePost, item?.project)).map((item, index) => {
                             return <div key={index} className="relative">
                                 <div className="absolute top-[68px] right-7 text-[#5e6d55] text-[11px]">{getLength(item.project?.datePost, item?.project)}</div>
-                                <ProjectItem props={item} notify={notify}/>;
+                                <ProjectItem props={item} notify={notify}/>
                             </div>
                         })
                     }

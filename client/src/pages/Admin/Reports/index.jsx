@@ -1,7 +1,4 @@
-import { CustomButton, TextInput } from "../../../components";
-import { AiFillExclamationCircle, AiOutlineSearch} from "react-icons/ai";
-import { LiaTrashAltSolid } from "react-icons/lia";
-import { CiEdit } from 'react-icons/ci';
+import {  AiOutlineSearch} from "react-icons/ai";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import {LoadingComponent} from "../../../components";
@@ -13,6 +10,7 @@ import Swal from "sweetalert2";
 function ManageReport() {
     const dispatch = useDispatch();
     const { register, handleSubmit, setValue, reset, formState: { errors } } = useForm({ mode: 'onChange' });
+    const [filterKeyWord, setFilterKeyWord] = useState('');
 
     useEffect(() => {
         dispatch(getAllReportsAdminAction())
@@ -52,7 +50,7 @@ function ManageReport() {
                                         <form action="#" method="post"  >
                                             <div className="relative mb-0 leading-6">
                                                 <AiOutlineSearch fontSize={22} color="#a7a9ad" className="absolute l-3  h-11 justify-center ml-2 text-center z-10 " />
-                                                <input type='search' name="search-field" id="search-field" placeholder="Search" className="focus:bg-white relative mt-2 block w-72 border pt-1 pb-1 pl-10 h-10 pr-5 text-sm bg-[#f0f5f7] rounded-md" />
+                                                <input onChange={e => setFilterKeyWord(e.target.value)} type='search' name="search-field" id="search-field" placeholder="Search" className="focus:bg-white relative mt-2 block w-72 border pt-1 pb-1 pl-10 h-10 pr-5 text-sm bg-[#f0f5f7] rounded-md" />
                                             </div>
                                         </form>
                                     </div>
@@ -75,7 +73,13 @@ function ManageReport() {
                                         </thead>
                                         <tbody>
                                             {
-                                                vacProList?.map((item, index) => <VacProj item={item} key={index}/>)
+                                                (vacProList?.filter((item)=>(
+                                                    (item?.orgName?.toLocaleLowerCase()?.includes(filterKeyWord?.trim()?.toLocaleLowerCase()))
+                                                    || (item?.address?.toLocaleLowerCase()?.includes(filterKeyWord?.trim()?.toLocaleLowerCase()))
+                                                    || (item?.vacProName?.toLocaleLowerCase()?.includes(filterKeyWord?.trim()?.toLocaleLowerCase()))
+
+                                                )))
+                                                ?.map((item, index) => <VacProj item={item} key={index}/>)
                                             }
                                         </tbody>
                                     </table>

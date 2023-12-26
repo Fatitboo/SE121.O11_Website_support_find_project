@@ -465,20 +465,7 @@ function VacancyInfo() {
                 </div>
                 {/* category */}
                 <div className="col-span-4">
-                    <div className="grid grid-cols-3 gap-6 mb-3">
-                        <div className="flex items-center justify-center h-[53px] box-border bg-white px-[18px] py-[8px] w-full rounded-[8px] text-green-900 hover:bg-green-100 cursor-pointer border border-green-900">
-                            <span className="text-[15px] leading-none font-[400]">Edit </span>
-                        </div>
-                        <div className="flex items-center justify-center h-[53px] box-border bg-blue-700 px-[18px] py-[8px] w-full rounded-[8px] text-[#fff] hover:bg-blue-900 cursor-pointer">
-                            <span className="text-[15px] leading-none font-[400]">Post</span>
-                        </div>
-                        <div className="flex items-center justify-center h-[53px] box-border bg-red-50 px-[18px] py-[8px] w-full rounded-[8px] text-red-900 border border-red-900 hover:text-white hover:bg-red-900 cursor-pointer">
-                            <span className="text-[15px] leading-none font-[400]">Delete</span>
-                        </div>
-                        {/* <div className="item flex items-center justify-center w-[60px] h-[52px] rounded-[7px] bg-[rgba(25,103,210,.07)] ml-5 cursor-pointer opacity-80" color="#1967d3">
-                            <BiBookmark className="w-full h-full p-[14px] rounded-[7px]" color="#1967d3" />
-                        </div> */}
-                    </div>
+                   
                     <div className="p-6 bg-[#F5F6FC] rounded-lg mb-[30px]">
                         <div className="text-[#202124] text-[18px] font-semibold mb-4">Vacancy Overview</div>
                         <div className="flex flex-row mb-[30px]">
@@ -561,43 +548,7 @@ function VacancyInfo() {
                             </div>
                         </div>
                     </div>
-                    {/* <div>
-                        <div className="p-6 bg-[#F5F6FC] rounded-lg mb-[30px]">
-                            <span className="text-[#202124] text-[18px] font-semibold">Participants ({participants.length})</span>
-                            <div className="mt-3">
-                                {
-                                    // participants.map((item, index) => {
-                                    //     return <ParticipantItem key={index} firstName={item?.firstName} surName={item?.surName} position={item?.position} userAvatar={item?.userAvatar} />
-                                    // })
-                                }
-                            </div>
-                        </div>
-                    </div> */}
-                    {/* <div>
-                        <div className="p-6 bg-[#F5F6FC] rounded-lg mb-[30px]">
-                            <h4 className="text-[#202124] text-[18px] font-semibold mb-[30px]">Contact Us</h4>
-                            <div>
-                                <div >
-                                    <form>
-                                        <div>
-                                            <div className="w-full">
-                                                <input className="px-5 w-full mb-5 py-[15px] text-[15px] leading-[30px] text-[dimgray] rounded-lg border-[#ecedf2] border outline-none" type="text" name="username" placeholder="Your Name" required="" />
-                                            </div>
-                                            <div className="w-full">
-                                                <input className="px-5 w-full mb-5 py-[15px] text-[15px] leading-[30px] text-[dimgray] rounded-lg border-[#ecedf2] border outline-none" type="email" name="email" placeholder="Email Address" required="" />
-                                            </div>
-                                            <div className="w-full h-[160px] mb-5">
-                                                <textarea className="px-5 h-full w-full mb-5 py-[15px] text-[15px] leading-[30px] text-[dimgray] rounded-lg border-[#ecedf2] border outline-none" name="message" placeholder="Message"></textarea>
-                                            </div>
-                                            <div>
-                                                <button className="flex items-center justify-center h-[53px] box-border bg-[#1967d3] px-[18px] py-[8px] w-full rounded-[8px] text-[#fff] hover:bg-[#0d6efd]" type="submit" name="submit-form">Send Message</button>
-                                            </div>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                    </div> */}
+                   
                 </div>
             </div>
         </div>

@@ -15,6 +15,7 @@ import { isActiveSidebarAction } from '../../../redux/slices/skills/skillsSlices
 import RevenueChart from './RevenueChart';
 import { CiMoneyBill } from 'react-icons/ci';
 import { MdOutlineMoneyOffCsred } from 'react-icons/md';
+import { NewTabIcon } from '../../../assets/icons';
 
 
 const cbb = [
@@ -344,9 +345,9 @@ function Dashboard() {
                                 <tr className='w-full'>
                                     <th className="relative text-[#3a60bf] font-normal py-6 text-sm text-left w-4/12 pl-5 pr-0">Organizer Name</th>
                                     <th className="relative text-[#3a60bf] font-normal py-6 text-sm px-0 text-left w-3/12">Project Name</th>
-                                    <th className="relative text-[#3a60bf] font-normal py-6 text-sm text-left px-5 w-1/12">Status</th>
+                                    <th className="relative text-[#3a60bf] font-normal py-6 text-sm text-left px-5 w-2/12">Status</th>
                                     <th className="relative text-[#3a60bf] font-normal py-6 text-sm  w-2/12 text-center px-3">Upload date</th>
-                                    <th className="relative text-[#3a60bf] font-normal py-6 text-sm text-left pl-6">Action</th>
+                                    <th className="relative text-[#3a60bf] font-normal py-6 text-sm text-left ">Action</th>
                                 </tr>
                             </thead>
                             <tbody className='w-full'>
@@ -579,8 +580,11 @@ function Dashboard() {
                                                         </div>
                                                     </div>
                                                 </td>
-                                                <td className=" w-2/12">
-                                                    {item?.projectName ? <div className="font-medium text-ellipsis w-full line-clamp-2">{item?.projectName} </div> : <div className="font-light text-sm text-red-500 text-ellipsis w-full line-clamp-2 ">{'Not belong to any project'}  </div>}
+                                                <td className="w-2/12">
+                                                    {item?.project ? <a target="_blank" onClick={() => navigate("/Admin/approval-project/" + item?.project)} className="bg-green-100 border-green-300 border rounded-xl text-left cursor-pointer text-green-500 w-fit flex flex-row items-center justify-center self-center  gap-1">
+                                                        <div>In project</div>
+                                                        <img src={NewTabIcon} className="w-3 h-3 text-green-500" color="#22c55e" />
+                                                    </a> : <div className="font-light text-sm text-red-500 text-ellipsis w-full line-clamp-2 text-left">{'Not belong to any project'}  </div>}
                                                 </td>
                                                 <td className="pl-9 w-2/12 font-light text-gray-700 text-base">
                                                     <div>{item?.createdAt ? `${item?.createdAt[2]}/${item?.createdAt[1]}/${item?.createdAt[0]}` : ''}</div>
@@ -593,21 +597,48 @@ function Dashboard() {
                                                 </td>
 
                                                 <td className="w-3/24">
-                                                    {item?.approvalStatus ? <div className="bg-green-100 border-green-300 border rounded-xl text-center text-sm text-green-500 w-fit px-1">FullFill</div> : <div className="bg-red-100 border-red-300 w-fit  px-1 text-red-500 border rounded-xl text-center text-sm">Pending</div>}
+                                                    {
+                                                        item?.approvalStatus === 'pending' ?
+                                                            <div>
+                                                                <div className="bg-blue-100 mt-2 border-blue-300 border rounded-xl text-center  text-blue-500 w-fit px-1">
+                                                                    Pending
+                                                                </div>
+                                                            </div>
+                                                            : item?.approvalStatus === 'waitPayment' ?
+                                                                <div>
+                                                                    <div className="bg-orange-100  mt-2 border-orange-300 border rounded-xl text-center  text-orange-500 w-fit px-1">
+                                                                        Wait Payment
+                                                                    </div>
+                                                                </div>
+                                                                : item?.approvalStatus === 'rejected' ?
+                                                                    <div>
+                                                                        <div className="bg-orange-100 mt-2 border-orange-300 border rounded-xl text-center  text-orange-500 w-fit px-1">
+                                                                            Rejected
+                                                                        </div>
+                                                                    </div>
+                                                                    : item?.approvalStatus === 'approved' ?
+                                                                        <div>
+                                                                            <div className="bg-green-100 mt-2 border-green-300 border rounded-xl text-center  text-green-500 w-fit px-1">
+                                                                                Approved
+                                                                            </div>
+                                                                        </div>
+                                                                        : item?.approvalStatus === 'blocked' ?
+                                                                            <div>
+                                                                                <div className="bg-red-100 mt-2 border-red-300 border rounded-xl text-center  text-red-500 w-fit px-1">
+                                                                                    Blocked
+                                                                                </div>
+                                                                            </div>
+                                                                            : <>  </>
+                                                    }
                                                 </td>
 
                                                 <td className="w-3/24" >
-                                                    <div className="">
+                                                    <div className="pl-2">
                                                         <ul className="list-none flex relative item-center ">
                                                             <li className="list-none relative mr-2 bg-[#f5f7fc] border rounded-md border-[#e9ecf9] px-1 pt-1 hover:bg-[#5f86e9] hover:text-white">
                                                                 <Link to={`/Admin/manage-vacancy/${item.vacancyId}`}> <LiaEyeSolid fontSize={18} /> </Link>
                                                             </li>
-                                                            <li className="list-none relative mr-2 bg-[#f5f7fc] border rounded-md border-[#e9ecf9] px-1 pt-1 hover:bg-[#278646] hover:text-white">
-                                                                <button> <AiOutlineCheckCircle fontSize={18} /> </button>
-                                                            </li>
-                                                            <li className="list-none relative bg-[#f5f7fc] border rounded-md border-[#e9ecf9] px-1 pt-1 hover:bg-[#ce3e37] hover:text-white">
-                                                                <button > <LiaTrashAltSolid fontSize={18} /> </button>
-                                                            </li>
+
                                                         </ul>
                                                     </div>
                                                 </td>

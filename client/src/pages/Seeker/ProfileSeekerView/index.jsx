@@ -14,6 +14,10 @@ import { ArrowLeftIcon } from "@heroicons/react/20/solid";
 
 function ProfileSeekerView() {
     const { id } = useParams();
+    useEffect(() => {
+        window.scrollTo({top: 0, behavior: 'smooth'});
+            
+        }, [])
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const notify = (type, message) => toast(message, { type: type });

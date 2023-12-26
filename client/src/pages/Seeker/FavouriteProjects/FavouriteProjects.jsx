@@ -15,15 +15,11 @@ function FavouriteProjects() {
     const [filterKeyWord, setFilterKeyWord] = useState('');
     const [currentPage, setCurrentPage] = useState(0);
     const [pages, setPages] = useState([]);
-    // const [categoryList, setCategoryList] = useState([{ id: 0, name: 'All' }]);
     const notify = (type, message) => toast(message, { type: type });
 
-    const onFilterValueSelected = (filterValue) => {
-
-    }
     useEffect(() => {
         dispatch(getAllFavouriteProjectsAction())
-    }, [dispatch])
+    }, [])
     const storeData = useSelector(store => store?.projects);
     const { favouriteProjects, isSuccessFvr, appErr, isSuccess, loading } = storeData;
     useEffect(() => {
@@ -36,25 +32,15 @@ function FavouriteProjects() {
         if (isSuccess) {
             dispatch(resetSuccessAction());
             setFavouriteProjectsList([...favouriteProjects ?? []]);
-            // const uniqueFields = FavouriteProjects.reduce((result, company) => {
-            //     if (company.fields) {
-            //         company.fields.forEach(field => {
-            //             if (!result.find(item => item.name === field)) {
-            //                 result.push({ id: result.length + 1, name: field });
-            //             }
-            //         });
-            //     }
-            //     return result;
-            // }, []);
-            // setCategoryList([{ id: 0, name: 'All' }, ...uniqueFields]);
-            setPages([...favouriteProjects ?? [].slice(currentPage * 10, (currentPage + 1) * 10)])
+            setPages([...favouriteProjects ?? []].slice(currentPage * 10, (currentPage + 1) * 10))
         }
     }, [isSuccess])
     useEffect(() => {
         if (isSuccessFvr) {
             dispatch(resetSuccessAction())
             setFavouriteProjectsList([...favouriteProjects ?? []]);
-            setPages([...favouriteProjects ?? [].slice(currentPage * 10, (currentPage + 1) * 10)])
+            console.log(favouriteProjects)
+            setPages([...favouriteProjects ?? []].slice(currentPage * 10, (currentPage + 1) * 10))
             notify('success', 'Update favourite project successfully!')
         }
     }, [isSuccessFvr])

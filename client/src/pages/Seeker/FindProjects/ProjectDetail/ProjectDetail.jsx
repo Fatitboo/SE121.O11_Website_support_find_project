@@ -5,7 +5,7 @@ import { GoHourglass } from "react-icons/go";
 import { AiOutlineSetting } from 'react-icons/ai';
 import { CalendarIcon, ExpiryIcon, SalaryIcon } from "../../../../assets/icons";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { getParticipantsProject, getProjectSingle, updateFavouriteProjectAction } from "../../../../redux/slices/projects/projectsSlices";
+import { getParticipantsProject, getProjectSingle, resetSuccessAction, updateFavouriteProjectAction } from "../../../../redux/slices/projects/projectsSlices";
 import { useDispatch, useSelector } from "react-redux";
 import { CustomLoader, SmallItemLoader, VacancyItemLoader } from "../../../../components/Loader";
 import VacancyItem from "../../ProjectInfo/VacancyItem";
@@ -24,11 +24,12 @@ function ProjectDetailSeeker() {
     const [ctName, setCtName] = useState('')
     const [ctMssg, setCtMssg] = useState('')
     const notify = (type, message) => toast(message, { type: type });
-
+    const [vacanciesList, setVacancies] = useState(null)
     const project = useSelector((state) => state.projects.project?.project)
 
     const vacancies = useSelector((state) => state.projects.project?.vacancies)
     const corInfo = useSelector((state) => state.projects.project?.corInfo)
+
     const loading = useSelector((state) => state.projects.loading)
     const projectparticipants = useSelector(state => state.projects?.projectparticipants)
     let userAuth = useSelector((state) => state?.users?.userAuth)
@@ -39,7 +40,14 @@ function ProjectDetailSeeker() {
             dispatch(getParticipantsProject(id))
         }
     }, [id])
+    useEffect(() => {
+        setVacancies([...vacancies??[]])
 
+    }, [vacancies])
+    useEffect(() => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    }, [])
     const navigate = useNavigate()
     const checkFavourite = () => {
         const userId = userAuth?.user?.userId;
@@ -66,8 +74,8 @@ function ProjectDetailSeeker() {
     return (<>
 
         <div className="mx-[8%] pt-[50px]">
-                {loading && <LoadingComponent />}
-                <ToastContainer />
+            {loading && <LoadingComponent />}
+            <ToastContainer />
             <div className="static grid grid-cols-12 gap-4 m-auto box-border">
 
                 {/* left infomation */}
@@ -129,6 +137,7 @@ function ProjectDetailSeeker() {
 
                     {/* Share to social */}
                     <></>
+                    <br />
                     <div>
                         <div className="flex flex-row items-center mt-6">
                             <h4 className="text-base leading-6 text-[#202124] font-semibold">Share this project</h4>
@@ -172,8 +181,8 @@ function ProjectDetailSeeker() {
                                         )
                                     })
                                     :
-                                    vacancies?.map((item, index) => {
-                                        return <VacancyItem key={index} props={item} />
+                                    vacanciesList?.map((item, index) => {
+                                        return <VacancyItem key={index} props={item}  notify={notify} setFunc={setVacancies} />
                                     })
                             }
                         </div>

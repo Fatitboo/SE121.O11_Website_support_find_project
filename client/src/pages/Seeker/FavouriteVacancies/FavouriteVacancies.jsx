@@ -16,19 +16,11 @@ function FavouriteVacancies() {
     const [currentPage, setCurrentPage] = useState(0);
     const [pages, setPages] = useState([]);
     // const [categoryList, setCategoryList] = useState([{ id: 0, name: 'All' }]);
+    const notify = (type, message) => toast(message, { type: type });
     
-
-    const onFilterValueSelected = (filterValue) => {
-        // if (filterValue.name === 'All') {
-        //     setShortList([...shortListUsers ?? []]);
-        // }
-        // else {
-        //     setShortList([...shortListUsers.filter(item => (item?.fields?.filter(i => i.toLowerCase().includes(filterValue.name.toLowerCase())))?.length > 0)]);
-        // }
-    }
     useEffect(() => {
         dispatch(getAllFavouriteVacanciesAction())
-    }, [dispatch])
+    }, [])
     const storeData = useSelector(store => store?.vacancies);
     const { favouriteVacancies, isSuccessFvr, appErr, loadingFvr, isSuccess2, loading } = storeData;
     useEffect(() => {
@@ -40,25 +32,16 @@ function FavouriteVacancies() {
         if (isSuccess2) {
             dispatch(resetSuccessAction());
             setFavouriteVacanciesList([...favouriteVacancies ?? []]);
-            // const uniqueFields = favouriteVacancies.reduce((result, company) => {
-            //     if (company.fields) {
-            //         company.fields.forEach(field => {
-            //             if (!result.find(item => item.name === field)) {
-            //                 result.push({ id: result.length + 1, name: field });
-            //             }
-            //         });
-            //     }
-            //     return result;
-            // }, []);
-            // setCategoryList([{ id: 0, name: 'All' }, ...uniqueFields]);
-            setPages([...favouriteVacancies ?? [].slice(currentPage * 10, (currentPage + 1) * 10)])
+            setPages([...favouriteVacancies ?? []].slice(currentPage * 10, (currentPage + 1) * 10))
         }
     }, [isSuccess2])
     useEffect(() => {
         if (isSuccessFvr) {
             dispatch(resetSuccessAction())
             setFavouriteVacanciesList([...favouriteVacancies ?? []]);
-            setPages([...favouriteVacancies ?? [].slice(currentPage * 10, (currentPage + 1) * 10)])
+            console.log(favouriteVacancies)
+
+            setPages([...favouriteVacancies ?? []].slice(currentPage * 10, (currentPage + 1) * 10))
             notify('success', 'Update favourite vacancy successfully!')
         }
     }, [isSuccessFvr])

@@ -552,21 +552,27 @@ export const updateFavouriteVacancyAction = createAsyncThunk(
             );
             if (obj.setFunc) {
                 obj.setFunc(prev => {
-                    const arr = [...prev];
+                    var arr = [...prev];
                     const currentVacancy = arr.findIndex(item => item.vacancyId === data.vacancyId);
                     if (currentVacancy !== -1) {
                         if (data.isPush) {
-                            arr[currentVacancy].favouriteUsers.push(data.userId)
+                            if (arr[currentVacancy].favouriteUsers === null) {
+                                arr[currentVacancy] = { ...arr[currentVacancy], favouriteUsers: [data.userId] }
+                            }
+                            else {
+                                arr[currentVacancy] = { ...arr[currentVacancy], favouriteUsers: [...arr[currentVacancy].favouriteUsers, data.userId] }
+                            }
                         }
                         else {
-                            arr[currentVacancy].favouriteUsers.pop(data.userId)
+                            arr[currentVacancy] = { ...arr[currentVacancy], favouriteUsers: [...arr[currentVacancy].favouriteUsers.filter(item => item !== data.userId)] }
                         }
                     }
                     return arr;
                 })
             }
-            if(obj.notify)
+            if (obj.notify) {
                 obj.notify('success', 'Update favourite vacancy successfully!')
+            }
             return data;
         } catch (error) {
             if (!error?.response) {
@@ -605,7 +611,7 @@ export const getAllFavouriteVacanciesAction = createAsyncThunk(
 //get all applied vacancy
 export const getAllAppliedVacanciesAction = createAsyncThunk(
     "vacancies/getAllAppliedVacancies",
-    async (vacancyId, { rejectWithValue, getState, dispatch }) => {
+    async (userId, { rejectWithValue, getState, dispatch }) => {
         const user = getState()?.users;
         const { userAuth } = user;
         // http call 
@@ -615,10 +621,10 @@ export const getAllAppliedVacanciesAction = createAsyncThunk(
                 'Content-Type': 'application/json',
             },
         };
-
+        var id = userAuth?.user?.userId
+        if (userId) id = userId
         try {
-            const { data } = await axios.get(
-                `${baseUrl}/${apiPrefix}/get-applied-vacancies/${userAuth?.user?.userId}`, config);
+            const { data } = await axios.get(`${baseUrl}/${apiPrefix}/get-applied-vacancies/${id}`, config);
             return data;
         } catch (error) {
             if (!error?.response) {
@@ -704,7 +710,7 @@ export const deleteCompleteVacancy = createAsyncThunk(
                 `${baseUrl}/${apiPrefix}/delete-complete-vacancy/${obj}`,
                 config
             );
-           
+
             return data;
         } catch (error) {
             if (!error?.response) {
@@ -733,7 +739,7 @@ export const updateCompleteVacancy = createAsyncThunk(
                 obj,
                 config
             );
-           
+
             return data;
         } catch (error) {
             if (!error?.response) {
@@ -775,7 +781,7 @@ const vacanciesSlices = createSlice({
         incomplete: [],
         vacancyInfo: {},
         vacancies: [],
-        appliedVacancies:[]
+        appliedVacancies: []
     },
     reducers: {
         setValueSuccess: (state, action) => {
@@ -853,10 +859,14 @@ const vacanciesSlices = createSlice({
             builder.addCase(updateVacancyStatus.fulfilled, (state, action) => {
                 state.loading = false;
                 state.appErr = null;
-                let currentVacancy = state.vacancies.findIndex((v) => v.vacancyId === action?.payload?.updateVacancyId);
-                if (currentVacancy !== -1) state.vacancies[currentVacancy].approvalStatus = action?.payload?.status;
-                else {
+                if (state.vacancies.length === 0) {
                     state.vacProList.pop(item => item.vacProId === action?.payload?.updateVacancyId)
+                }
+                else {
+
+                    let currentVacancy = state.vacancies.findIndex((v) => v.vacancyId === action?.payload?.updateVacancyId);
+                    if (currentVacancy !== -1) state.vacancies[currentVacancy].approvalStatus = action?.payload?.status;
+
                 }
                 state.isSuccessUpd = true;
             }),
@@ -915,8 +925,8 @@ const vacanciesSlices = createSlice({
                 state.isSuccess2C = false;
             }),
 
-             //get vacancy cor
-             builder.addCase(getInCompleteVacancyCor.pending, (state, action) => {
+            //get vacancy cor
+            builder.addCase(getInCompleteVacancyCor.pending, (state, action) => {
                 state.loadingU = true;
                 state.isSuccess2U = false;
             }),
@@ -1168,21 +1178,19 @@ const vacanciesSlices = createSlice({
                 state.appErr = undefined;
                 state.isSuccessFvr = false;
                 state.loading = true;
-
             }),
 
             builder.addCase(updateFavouriteVacancyAction.fulfilled, (state, action) => {
                 state.loadingFvr = false;
                 state.loading = false;
                 state.appErr = undefined;
-                if(Object.keys(state.vacancyInfo).length === 0 && state.vacancyInfo.constructor === Object){
+                if (Object.keys(state.vacancyInfo).length === 0 && state.vacancyInfo.constructor === Object) {
                     var currentVacancy = state.vacancies.findIndex(vacancy => vacancy.vacancyId === action?.payload?.vacancyId)
                     if (currentVacancy !== -1) {
-                        // state.isSuccessFvr = true;
                         if (action?.payload?.isPush) {
-                            if(state.vacancies[currentVacancy].favouriteUsers)
+                            if (state.vacancies[currentVacancy].favouriteUsers)
                                 state.vacancies[currentVacancy].favouriteUsers.push(action?.payload?.userId);
-                            else state.vacancies[currentVacancy].favouriteUsers=[action?.payload?.userId]
+                            else state.vacancies[currentVacancy].favouriteUsers = [action?.payload?.userId]
                         }
                         else {
                             state.vacancies[currentVacancy].favouriteUsers.pop(action?.payload?.userId);
@@ -1191,26 +1199,28 @@ const vacanciesSlices = createSlice({
                     else {
                         if (state.favouriteVacancies) {
                             state.isSuccessFvr = true;
-                            state.favouriteVacancies.pop(item => item.vacancyId === action?.payload?.vacancyId)
+                            state.favouriteVacancies = state.favouriteVacancies.filter(item => item?.vacancyId !== action?.payload?.vacancyId)
                         }
                     }
                 }
-                else{
+                else {
                     if (action?.payload?.isPush) {
-                        state.vacancyInfo.favouriteUsers.push(action?.payload?.userId);
+                        if (state.vacancyInfo.favouriteUsers) {
+                            state.vacancyInfo.favouriteUsers.push(action?.payload?.userId);
+                        } else {
+                            state.vacancyInfo.favouriteUsers = [action?.payload?.userId];
+                        }
                     }
                     else {
                         state.vacancyInfo.favouriteUsers.pop(action?.payload?.userId);
                     }
                 }
-                
-                
             }),
             builder.addCase(updateFavouriteVacancyAction.rejected, (state, action) => {
                 state.loadingFvr = false;
                 state.appErr = action?.payload?.message;
                 state.isSuccessFvr = false;
-                state.loading = false ;
+                state.loading = false;
 
             })
 
@@ -1225,6 +1235,8 @@ const vacanciesSlices = createSlice({
                 state.loading = false;
                 state.appErr = undefined;
                 state.isSuccess2 = true;
+                state.vacancyInfo = {};
+                state.vacancies = [];
                 state.favouriteVacancies = action?.payload?.favouriteVacancies;
             }),
             builder.addCase(getAllFavouriteVacanciesAction.rejected, (state, action) => {
@@ -1267,10 +1279,10 @@ const vacanciesSlices = createSlice({
                 state.isSuccess2 = false;
             })
 
-            // get all rp
-            builder.addCase(searchVacancyAction.pending, (state, action) => {
-                state.loading = true;
-            }),
+        // get all rp
+        builder.addCase(searchVacancyAction.pending, (state, action) => {
+            state.loading = true;
+        }),
             builder.addCase(searchVacancyAction.fulfilled, (state, action) => {
                 state.loading = false;
                 state.vcSearch = action?.payload.vacancies;
@@ -1281,11 +1293,11 @@ const vacanciesSlices = createSlice({
                 state.appErr = action?.payload?.message;
             })
 
-            // get all rp
-            builder.addCase(updateCompleteVacancy.pending, (state, action) => {
-                state.loadingUDCL = true;
-                state.isSuccessUDCL = false;
-            }),
+        // get all rp
+        builder.addCase(updateCompleteVacancy.pending, (state, action) => {
+            state.loadingUDCL = true;
+            state.isSuccessUDCL = false;
+        }),
             builder.addCase(updateCompleteVacancy.fulfilled, (state, action) => {
                 state.loadingUDCL = false;
                 state.appErr = null;
@@ -1297,11 +1309,11 @@ const vacanciesSlices = createSlice({
                 state.isSuccessUDCL = false;
             })
 
-            // delete complete rp
-            builder.addCase(deleteCompleteVacancy.pending, (state, action) => {
-                state.loadingDLCL = true;
-                state.isSuccessDLCL = false;
-            }),
+        // delete complete rp
+        builder.addCase(deleteCompleteVacancy.pending, (state, action) => {
+            state.loadingDLCL = true;
+            state.isSuccessDLCL = false;
+        }),
             builder.addCase(deleteCompleteVacancy.fulfilled, (state, action) => {
                 state.loadingDLCL = false;
                 state.appErr = null;

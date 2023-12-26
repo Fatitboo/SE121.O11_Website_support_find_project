@@ -51,7 +51,7 @@ public class EmailService {
                         "        <div style=\"text-align: center; margin: 10px 0 20px 0;\">Please verify this email address by clicking button\n" +
                         "            below within 10 minutes.</div>\n" +
                         "        <div style=\"width: 100%; display: flex; align-items: center; justify-content: center; margin: 30px 0 40px 0;\">\n" +
-                        "            <a href='http://localhost:5173/user-auth/verify-account/"+token+"'" +
+                        "            <a href='https://findproject.21522448host.id.vn/user-auth/verify-account/"+token+"'" +
                         "                style=\"border: none; background-color: rgb(70, 70, 203); color: white; padding: 16px; font-size: 16px; border-radius: 6px; cursor: pointer; text-decoration: none;\">Verify \n" +
                         "                your email</a>\n" +
                         "        </div>\n" +
@@ -117,7 +117,7 @@ public class EmailService {
                 "        <div style=\"text-align: center; margin: 10px 0 20px 0;\">Please clicking button\n" +
                 "            below within 10 minutes to reset your password.</div>\n" +
                 "        <div style=\"width: 100%; display: flex; align-items: center; justify-content: center; margin: 30px 0 40px 0;\">\n" +
-                "            <a href='http://localhost:5173/user-auth/reset-password/"+token+"'" +
+                "            <a href='https://findproject.21522448host.id.vn/user-auth/reset-password/"+token+"'" +
                 "                style=\"border: none; background-color: rgb(70, 70, 203); color: white; padding: 16px; font-size: 16px; border-radius: 6px; cursor: pointer; text-decoration: none;\">Reset \n" +
                 "                your password</a>\n" +
                 "        </div>\n" +
@@ -248,9 +248,9 @@ public class EmailService {
         // specify the email details
         String fromEmail = "projectfinderweb@gmail.com";
         Email from = new Email(fromEmail);
-        String url = "http://localhost:5173/";
+        String url = "https://findproject.21522448host.id.vn/";
         String recName =  type.equals("vacancy") ? "vacancy "+ rcmname:"project "+ rcmname;
-        String pathLinkRcm = type.equals("vacancy") ? "http://localhost:5173/Seeker/vacancy-info/"+rcmId : "http://localhost:5173/Seeker/project-info/"+rcmId;
+        String pathLinkRcm = type.equals("vacancy") ? "https://findproject.21522448host.id.vn/Seeker/vacancy-info/"+rcmId : "https://findproject.21522448host.id.vn/Seeker/project-info/"+rcmId;
         Email to = new Email(toEmail);
         String emailVerifyHtml = "<!DOCTYPE html>\n" +
                 "<html lang=\"en\">\n" +

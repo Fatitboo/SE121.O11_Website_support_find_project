@@ -10,7 +10,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getDetailUserAction, resetSuccessAction, updateShortlistedUsersAction } from "../../../../redux/slices/users/usersSlices";
 import { LoadingComponent } from "../../../../components";
 import { ToastContainer, toast } from "react-toastify";
-import { getAllProjectsUser } from "../../../../redux/slices/projects/projectsSlices";
+import { getAllProjectsUser, resetValueAction } from "../../../../redux/slices/projects/projectsSlices";
 import ProjectItem from "./ProjectItem";
 import Swal from "sweetalert2";
 import handleEmailClick from "../../../../utils/handleEmailClick";
@@ -22,6 +22,10 @@ function CompanyProfile() {
     const [ctName, setCtName] = useState('')
     const [ctMssg, setCtMssg] = useState('')
     useEffect(() => {
+        window.scrollTo({top: 0, behavior: 'smooth'});
+            
+        }, [])
+    useEffect(() => {
         dispatch(getAllProjectsUser({ id: id }))
         dispatch(getDetailUserAction(id))
     }, [dispatch])
@@ -29,7 +33,7 @@ function CompanyProfile() {
     const projects = useSelector((state) => state.projects.projectsOfCor)
     const userAuth = useSelector(store => store?.users?.userAuth);
     const storeData = useSelector(store => store?.users);
-    const { loading, appErr, seletedUser, isSuccess } = storeData;
+    const { loading, appErr, seletedUser, isSuccess,isSuccessGetCompanyInfo } = storeData;
     const [sltCor, setSltCor] = useState({ ...seletedUser })
     const convertDate = (tt) => {
         const date = new Date(tt);
@@ -71,6 +75,12 @@ function CompanyProfile() {
             notify('success', 'Update shorted list users successfully!')
         }
     }, [isSuccess])
+    useEffect(() => {
+        if (isSuccessGetCompanyInfo) {
+            dispatch(resetValueAction())
+            dispatch(resetSuccessAction());
+        }
+    }, [isSuccessGetCompanyInfo])
     return (<>
         {loading && <LoadingComponent />}
         <ToastContainer />

@@ -167,7 +167,7 @@ function MyResume() {
                 titleName: item.occupationName,
                 dateInfo: item.startYear + ' - ' + item.endYear
             }]
-            if (index == cc.length) {
+            if (index == cc.length-1) {
                 return <BackgroundItem cbbMajorDetail={cbbMajorDetail} setCbbMajorDetail={setcbbMajorDetail} isEdit={true} setFunction={setExperience} index={index} type={'experience'} initList={Experience} detailMajors={item.detailMajor} key={index} isLast={true} title={title} subtitle={item.organizerName} description={item.description} textColor={"#1967d2"} bgColor={"#eff4fc"} />;
             }
             return <BackgroundItem cbbMajorDetail={cbbMajorDetail} setCbbMajorDetail={setcbbMajorDetail} isEdit={true} setFunction={setExperience} index={index} type={'experience'} initList={Experience} detailMajors={item.detailMajor} key={index} isLast={false} title={title} subtitle={item.organizerName} description={item.description} textColor={"#1967d2"} bgColor={"#eff4fc"} />;
@@ -180,7 +180,7 @@ function MyResume() {
                 titleName: item.certificationName,
                 dateInfo: item.year
             }]
-            if (index == Awards.length) {
+            if (index == Awards.length-1) {
                 return <BackgroundItem key={index} index={index} isEdit={true} setFunction={setAward} type={'award'} initList={Awards} isLast={true} title={title} subtitle={item.certifiedBy} description={item.description} textColor={"#f9ab00"} bgColor={"#fef2d9"} />;
             }
             return <BackgroundItem key={index} index={index} isEdit={true} setFunction={setAward} type={'award'} initList={Awards} isLast={false} title={title} subtitle={item.certifiedBy} description={item.description} textColor={"#f9ab00"} bgColor={"#fef2d9"} />;

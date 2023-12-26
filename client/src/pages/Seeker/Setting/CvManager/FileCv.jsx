@@ -16,7 +16,11 @@ function FileCV({ item, notify }) {
 
     const [isEdit, setIsEdit] = useState(false);
     const handleDelete = () => {
-        dispatch(deleteUserCvAction(item.publicId))
+        const d = {
+            publicId: item?.publicId,
+            notify: notify ?? null
+        }
+        dispatch(deleteUserCvAction(d))
     }
     const handleEditFilename = (data) => {
         

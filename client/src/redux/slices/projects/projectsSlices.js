@@ -224,8 +224,8 @@ export const updateFavouriteProjectAction = createAsyncThunk(
                 formData,
                 config
             );
-            if(obj.notify){
-                
+            if (obj.notify) {
+
                 obj.notify('success', 'Update favourite project successfully!');
             }
             return data;
@@ -302,6 +302,20 @@ export const resetSuccessAction = createAsyncThunk(
         }
     }
 );
+//Set value
+export const resetValueAction = createAsyncThunk(
+    "projects/resetValue",
+    async (data, { rejectWithValue, getState, dispatch }) => {
+        try {
+            return data;
+        } catch (error) {
+            if (!error?.response) {
+                throw error;
+            }
+            return rejectWithValue(error?.response?.data);
+        }
+    }
+);
 export function setValueSuccess(value) {
     return function setValueSuccess(dispatch, getState) {
         dispatch(projectsSlices.actions.setValueSuccess(value))
@@ -320,8 +334,8 @@ const projectsSlices = createSlice({
         loadingUD: false,
         loadingDL: false,
         loadingCR: false,
-        projectsAdmin:[],
-        projectparticipants:[]
+        projectsAdmin: [],
+        projectparticipants: []
     },
     reducers: {
         setValueSuccess: (state, action) => {
@@ -427,6 +441,7 @@ const projectsSlices = createSlice({
             builder.addCase(getProjectSingle.fulfilled, (state, action) => {
                 state.loading = false;
                 state.loadingPr = false;
+                state.projects = [];
                 state.project = action.payload.res;
             }),
             builder.addCase(getProjectSingle.rejected, (state, action) => {
@@ -454,6 +469,12 @@ const projectsSlices = createSlice({
                 state.isSuccessFvr = false;
                 state.isSuccessUpd = false;
             }),
+            builder.addCase(resetValueAction.fulfilled, (state, action) => {
+                console.log('cc')
+                state.project = null;
+                state.projects = [];
+
+            }),
             //update Favourite Project Action
             builder.addCase(updateFavouriteProjectAction.pending, (state, action) => {
                 state.loading = true;
@@ -464,35 +485,50 @@ const projectsSlices = createSlice({
             builder.addCase(updateFavouriteProjectAction.fulfilled, (state, action) => {
                 state.loading = false;
                 state.appErr = undefined;
-                if(state.project){
+                if (state.project) {
                     if (action?.payload?.isPush) {
-                        state.project.project.favouriteUsers.push(action?.payload?.userId);
+                        if (state.project.project.favouriteUsers) {
+                            state.project.project.favouriteUsers.push(action?.payload?.userId);
+                        } else {
+                            state.project.project.favouriteUsers = [action?.payload?.userId];
+                        }
                     }
                     else {
                         state.project.project.favouriteUsers.pop(action?.payload?.userId);
                     }
                 }
-                else{
-                    if(typeof(state.projectsOfCor) === 'undefined'){
+                else {
+                    if (typeof (state.projectsOfCor) === 'undefined') {
                         state.isSuccessFvr = true;
                         var currentProject = state.projects.findIndex(project => project.project.projectId === action?.payload?.projectId)
                         if (currentProject !== -1) {
                             if (action?.payload?.isPush) {
-                                state.projects[currentProject].project.favouriteUsers.push(action?.payload?.userId);
+                                if (state.projects[currentProject].project.favouriteUsers) {
+                                    state.projects[currentProject].project.favouriteUsers.push(action?.payload?.userId);
+                                } else {
+                                    state.projects[currentProject].project.favouriteUsers = [action?.payload?.userId];
+                                }
                             }
                             else {
                                 state.projects[currentProject].project.favouriteUsers.pop(action?.payload?.userId);
                             }
                         }
                         else {
-                            state.favouriteProjects.pop(item => item.project.projectId === action?.payload?.projectId)
+                            if(state.favouriteProjects){
+                                console.log(currentProject)
+                                state.favouriteProjects= state.favouriteProjects.filter(item => item.project.projectId !== action?.payload?.projectId)
+                            }
                         }
-                    }else{
+                    } else {
                         var currentProject = state.projectsOfCor.findIndex(project => project.projectId === action?.payload?.projectId)
-    
+
                         if (currentProject !== -1) {
                             if (action?.payload?.isPush) {
-                                state.projectsOfCor[currentProject].favouriteUsers.push(action?.payload?.userId);
+                                if (state.projectsOfCor[currentProject].favouriteUsers) {
+                                    state.projectsOfCor[currentProject].favouriteUsers.push(action?.payload?.userId);
+                                } else {
+                                    state.projectsOfCor[currentProject].favouriteUsers = [action?.payload?.userId];
+                                }
                             }
                             else {
                                 state.projectsOfCor[currentProject].favouriteUsers.pop(action?.payload?.userId);
@@ -518,6 +554,8 @@ const projectsSlices = createSlice({
                 state.loading = false;
                 state.appErr = undefined;
                 state.isSuccess = true;
+                state.projects = []
+                state.project = null
                 state.favouriteProjects = action?.payload?.favouriteProjects;
             }),
             builder.addCase(getAllFavouriteProjectsAction.rejected, (state, action) => {

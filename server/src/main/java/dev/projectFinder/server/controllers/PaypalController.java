@@ -36,8 +36,8 @@ public class PaypalController {
         try {
                 System.out.println("[POST_VACANCY_ID]: " + order.getVacancyId());
             Payment payment = service.createPayment(order.getPrice(), order.getCurrency(), order.getMethod(),
-                    order.getIntent(), order.getDescription(), "http://localhost:8088/api/v1/payment" + CANCEL_URL,
-                     "http://localhost:8088/api/v1/payment" + SUCCESS_URL + "/" + order.getVacancyId() + "/" + order.getLength());
+                    order.getIntent(), order.getDescription(), "http://localhost:8088" + CANCEL_URL,
+                     "http://localhost:8088" + SUCCESS_URL + "/" + order.getVacancyId() + "/" + order.getLength());
             for(Links link:payment.getLinks()) {
                 if(link.getRel().equals("approval_url")) {
                     return "" + link.getHref();
@@ -93,8 +93,8 @@ public class PaypalController {
         try {
             System.out.println("[POST_Project_ID]: " + order.getProjectId());
             Payment payment = service.createPayment(order.getPrice(), order.getCurrency(), order.getMethod(),
-                    order.getIntent(), order.getDescription(), "http://localhost:8088/api/v1/payment" + CANCEL_PROJECT_URL + "/" + order.getProjectId(),
-                    "http://localhost:8088/api/v1/payment" + SUCCESS_PROJECT_URL + "/" + order.getProjectId() + "/" + order.getLength());
+                    order.getIntent(), order.getDescription(), "http://localhost:8088" + CANCEL_PROJECT_URL + "/" + order.getProjectId(),
+                    "http://localhost:8088" + SUCCESS_PROJECT_URL + "/" + order.getProjectId() + "/" + order.getLength());
             service.updateProject(order.getDetail(), order.getProjectId());
             for(Links link:payment.getLinks()) {
                 if(link.getRel().equals("approval_url")) {

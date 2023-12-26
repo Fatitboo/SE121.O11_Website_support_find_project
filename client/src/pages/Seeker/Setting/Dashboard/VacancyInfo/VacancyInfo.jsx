@@ -20,6 +20,8 @@ import { FacebookShareButton, LinkedinShareButton, TwitterShareButton } from "re
 
 function VacancyInfo() {
     const { id } = useParams();
+    window.scrollTo({top: 0, behavior: 'smooth'});
+
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const [sltVacancy, setSltVacancy] = useState({});

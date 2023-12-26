@@ -19,7 +19,7 @@ function RecentProject({item}) {
             <td className=" w-3/12">
                 <div className="font-medium text-ellipsis w-full line-clamp-2">{item?.project?.projectName}</div>
             </td>
-            <td className="w-1/12">
+            <td className="w-2/12">
                 <div className="text-center">{item.project?.status}</div>
             </td>
            
@@ -27,17 +27,12 @@ function RecentProject({item}) {
                 <div>{item?.project?.createdAt?item?.project?.createdAt[2]+'/'+item?.project?.createdAt[1]+'/'+item?.project?.createdAt[0]:''}</div>
             </td>
             <td >
-                <div className="">
+                <div className="pl-2">
                     <ul className="list-none flex relative item-center ">
                         <li  className="list-none relative mr-2 bg-[#f5f7fc] border rounded-md border-[#e9ecf9] px-1 pt-1 hover:bg-[#5f86e9] hover:text-white">
                             <Link to={'/Admin/approval-project/'+item?.project?.projectId}> <LiaEyeSolid fontSize={18} /> </Link>
                         </li>
-                        <li className="list-none relative mr-2 bg-[#f5f7fc] border rounded-md border-[#e9ecf9] px-1 pt-1 hover:bg-[#278646] hover:text-white">
-                            <button> <AiOutlineCheckCircle fontSize={18} /> </button>
-                        </li>
-                        <li className="list-none relative bg-[#f5f7fc] border rounded-md border-[#e9ecf9] px-1 pt-1 hover:bg-[#ce3e37] hover:text-white">
-                            <button > <LiaTrashAltSolid fontSize={18} /> </button>
-                        </li>
+                       
                     </ul>
                 </div>
             </td>

@@ -14,6 +14,8 @@ import { ToastContainer, toast } from "react-toastify";
 import { ArrowLeftIcon } from "@heroicons/react/20/solid";
 import { CgClose } from "react-icons/cg";
 import CustomRadioBtnRecommendsx from "../../../components/Organizer/CustomRadioBtnRecommend.jsx";
+import { getAllAppliedVacanciesAction } from "../../../redux/slices/vacancies/vacanciesSlices.js";
+import VacancyItem from "../../Company/FindSeeker/VacancyItem.jsx";
 
 function SeekerProfile() {
     const { id } = useParams();
@@ -25,15 +27,17 @@ function SeekerProfile() {
 
     const notify = (type, message) => toast(message, { type: type });
     useEffect(() => {
+        dispatch(getAllAppliedVacanciesAction(id))
         dispatch(getDetailUserAction(id))
     }, [dispatch])
+    const appliedVacancies = useSelector(store => store?.vacancies?.appliedVacancies);
+   
     const storeData = useSelector(store => store?.users);
     const { loading, appErr, seletedUser, isSuccess, loadingRCM, recommends,isSuccessSendMail } = storeData;
     const [sltSeeker, setSltSeeker] = useState({})
     const { userAuth } = useSelector(store => store.users);
 
     useEffect(() => {
-
         setSltSeeker({ ...seletedUser })
     }, [seletedUser])
     useEffect(() => {
@@ -132,6 +136,7 @@ function SeekerProfile() {
     const linkCV = () => {
         var publicId = '';
         var name = ''
+        console.log(sltSeeker?.cvLinks)
         sltSeeker?.cvLinks.forEach(item => {
             if (item.isDefault) { publicId = item.publicId; name = item.filename }
         })
@@ -146,6 +151,8 @@ function SeekerProfile() {
         if (obj.name.includes('.')) {
             arr = obj.name.split('.')
         }
+        console.log(linkCV())
+
         const fileUrl = `https://res.cloudinary.com/dvnxdtrzn/raw/upload/f_auto/fl_attachment:CV_Seeker_${obj.publicId.slice(18)}${arr[arr.length - 1]}/v1700816040/${obj.publicId}`;
 
         // Tạo một phần tử a ẩn
@@ -259,7 +266,16 @@ function SeekerProfile() {
                         </p>
                     </div>
                     <></>
-
+                    <></>
+                    <div className="mb-10">
+                        <div className="text-lg leading-6 text-[#202124] mb-5 font-semibold">Participated Vacancies</div>
+                        {
+                            appliedVacancies?.filter(item=> item?.status==='received')?.map((i, index)=>{
+                                return <VacancyItem props={i?.appliedVacancy} isAvatar={true}/>
+                            })
+                        }
+                    </div>
+                    <></>
                     {/* Education */}
                     <></>
                     <div>
@@ -297,7 +313,7 @@ function SeekerProfile() {
                     {/* save and download cv  */}
                     <div className="flex flex-row mb-5">
                         {
-                            sltSeeker?.cvLinks ?
+                            sltSeeker?.cvLinks?.filter(item=>item.isDefault).length>=1 ?
                                 <>
                                     <div onClick={handleDownloadClick} className="flex items-center justify-center h-[53px] box-border bg-[#1967d3] px-[18px] py-[8px] w-full rounded-[8px] text-[#fff] hover:bg-[#0146a6] cursor-pointer">
                                         <span className="text-[15px] leading-none font-[400]">Download CV</span>
@@ -447,7 +463,7 @@ function SeekerProfile() {
                                         </>
                                     })
                                     : <>
-                                        <div className='-ml-4'>
+                                        <div className='-ml-4 h-[500px] overflow-y-auto'>
                                             <CustomRadioBtnRecommendsx listItem={recommends} filterValueChecked={handleCheckRecommned} />
                                         </div>
                                     </>
