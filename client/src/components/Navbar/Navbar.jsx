@@ -1,20 +1,14 @@
-import React, { Fragment, useState } from "react";
-import { Menu, Transition } from "@headlessui/react";
-import { BiChevronDown } from "react-icons/bi";
-import { CgProfile } from "react-icons/cg";
-import { HiMenuAlt3 } from "react-icons/hi";
-import { AiOutlineClose, AiOutlineLogout } from "react-icons/ai";
-import { Link } from "react-router-dom";
-import CustomButton from "../CustomButton";
+import React, { useState } from "react";
 import NavbarAdmin from "./NavbarAdmin";
 import NavbarUser from "./NavbarUser";
+import NavbarCor from "./NavbarCor";
 
-function Navbar() {
-    const isAdmin = false;
+function Navbar({user}) {
 
     return (
         <>
-            {isAdmin ? <NavbarAdmin/> : <NavbarUser/>}
+            {user?.userType === "admin" ? <NavbarAdmin /> : 
+            user?.userType === "organizer" ? <NavbarCor user={user}/>:<NavbarUser user={user}/>  }
         </>);
 }
 
