@@ -28,6 +28,8 @@ public class PaypalController {
     public String home(){
         return "home";
     }
+    // https://afraid-quilt-production.up.railway.app
+    // https://findproject.21522448host.id.vn
     //@PostMapping("/pay")
 //    @RequestMapping(value = "/pay", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
 //    @ResponseBody
@@ -36,8 +38,8 @@ public class PaypalController {
         try {
                 System.out.println("[POST_VACANCY_ID]: " + order.getVacancyId());
             Payment payment = service.createPayment(order.getPrice(), order.getCurrency(), order.getMethod(),
-                    order.getIntent(), order.getDescription(), "http://localhost:8088" + CANCEL_URL,
-                     "http://localhost:8088" + SUCCESS_URL + "/" + order.getVacancyId() + "/" + order.getLength());
+                    order.getIntent(), order.getDescription(), "https://afraid-quilt-production.up.railway.app" + CANCEL_URL,
+                     "https://afraid-quilt-production.up.railway.app" + SUCCESS_URL + "/" + order.getVacancyId() + "/" + order.getLength());
             for(Links link:payment.getLinks()) {
                 if(link.getRel().equals("approval_url")) {
                     return "" + link.getHref();
@@ -53,7 +55,7 @@ public class PaypalController {
     @GetMapping(value = CANCEL_URL)
     public RedirectView cancelPay() {
         RedirectView redirectView = new RedirectView();
-        redirectView.setUrl("http://localhost:5173/Organizer/payment/cancel");
+        redirectView.setUrl("https://findproject.21522448host.id.vn/Organizer/payment/cancel");
         return redirectView;
     }
 
@@ -66,7 +68,7 @@ public class PaypalController {
                 if (payment.getState().equals("approved")) {
                     service.saveHistotyPayment(payment.toJSON(), vacancyId, length);
                     RedirectView redirectView = new RedirectView();
-                    redirectView.setUrl("http://localhost:5173/Organizer/payment/success");
+                    redirectView.setUrl("https://findproject.21522448host.id.vn/Organizer/payment/success");
 
                     return redirectView;
                 }
@@ -78,7 +80,7 @@ public class PaypalController {
             System.out.println(ex.getMessage());
         }
         RedirectView redirectView = new RedirectView();
-        redirectView.setUrl("http://localhost:5173/Organizer/payment/cancel");
+        redirectView.setUrl("https://findproject.21522448host.id.vn/Organizer/payment/cancel");
         return redirectView;
     }
 
@@ -93,8 +95,8 @@ public class PaypalController {
         try {
             System.out.println("[POST_Project_ID]: " + order.getProjectId());
             Payment payment = service.createPayment(order.getPrice(), order.getCurrency(), order.getMethod(),
-                    order.getIntent(), order.getDescription(), "http://localhost:8088" + CANCEL_PROJECT_URL + "/" + order.getProjectId(),
-                    "http://localhost:8088" + SUCCESS_PROJECT_URL + "/" + order.getProjectId() + "/" + order.getLength());
+                    order.getIntent(), order.getDescription(), "https://afraid-quilt-production.up.railway.app" + CANCEL_PROJECT_URL + "/" + order.getProjectId(),
+                    "https://afraid-quilt-production.up.railway.app" + SUCCESS_PROJECT_URL + "/" + order.getProjectId() + "/" + order.getLength());
             service.updateProject(order.getDetail(), order.getProjectId());
             for(Links link:payment.getLinks()) {
                 if(link.getRel().equals("approval_url")) {
@@ -112,7 +114,7 @@ public class PaypalController {
     public RedirectView cancelProjectPay(@PathVariable String projectId) {
         RedirectView redirectView = new RedirectView();
         service.removeDetailPayment(projectId);
-        redirectView.setUrl("http://localhost:5173/Organizer/payment/project/cancel");
+        redirectView.setUrl("https://findproject.21522448host.id.vn/Organizer/payment/project/cancel");
         return redirectView;
     }
 
@@ -125,7 +127,7 @@ public class PaypalController {
                 if (payment.getState().equals("approved")) {
                     service.saveHistotyProjectPayment(payment.toJSON(), projectId, length);
                     RedirectView redirectView = new RedirectView();
-                    redirectView.setUrl("http://localhost:5173/Organizer/payment/project/success");
+                    redirectView.setUrl("https://findproject.21522448host.id.vn/Organizer/payment/project/success");
 
                     return redirectView;
                 }
@@ -138,7 +140,7 @@ public class PaypalController {
         }
         RedirectView redirectView = new RedirectView();
         service.removeDetailPayment(projectId);
-        redirectView.setUrl("http://localhost:5173/Organizer/payment/project/cancel");
+        redirectView.setUrl("https://findproject.21522448host.id.vn/Organizer/payment/project/cancel");
         return redirectView;
     }
 
