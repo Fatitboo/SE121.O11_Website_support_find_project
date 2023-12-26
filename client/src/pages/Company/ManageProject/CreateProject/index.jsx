@@ -382,7 +382,7 @@ function CreateProject() {
                                     
                                     <div>
                                         <div className="flex justify-end mt-10">
-                                        <button className="flex-row w-36 text-sm text-center justify-center px-4 p-3 text-[white] hover:bg-[#0146a6] bg-[#1967d3] flex items-center leading-7 font-bold rounded-lg " type="submit" >
+                                        <button className="flex-row w-44 text-sm text-center justify-center px-4 p-3 text-[white] hover:bg-[#0146a6] bg-[#1967d3] flex items-center leading-7 font-bold rounded-lg " type="submit" >
                                             {
                                                 loadingCR ?
                                                     <svg className="right-1 animate-spin h-6 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 24 24">
