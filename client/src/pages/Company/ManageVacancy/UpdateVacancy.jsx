@@ -434,7 +434,7 @@ function UpdateVacancy() {
                                     {/* //Salary - jobBenefit */}
                                     <div className="grid grid-cols-4 gap-7 mt-5">
                                         <div className="col-span-1">
-                                            <CBB listItem={showPayBy} selectItem={showPayBy.find(item => item.name === vacancyInfo?.salaryType)} name="showPayBy" filterValueSelected={(e) => {setSalaryType(e.name); if(e.name !== vacancyInfo?.salaryType) setValue("salarySecond", ""); setValue("salarySecond", vacancyInfo?.salarySecond)}} label="Show pay by" placeHolder={'Select an options. main'}/>
+                                            <CBB listItem={showPayBy} selectItem={showPayBy.find(item => item.name === vacancyInfo?.salaryType)} name="showPayBy" filterValueSelected={(e) => {setSalaryType(e.name); if(e.name !== vacancyInfo?.salaryType) setValue("salarySecond", ""); setValue("salarySecond", vacancyInfo?.salarySecond)}} label="Show pay by" placeHolder={'Select an options.'}/>
                                         </div>
                                         <div className="col-span-2 flex flex-row gap-2 items-start mt-1">
                                             <div className="w-full">

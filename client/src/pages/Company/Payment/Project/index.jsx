@@ -1,6 +1,6 @@
 import { FiMinus, FiPlus } from "react-icons/fi";
 import { JobPaymentImage, JobReviewImage } from "../../../../assets/images";
-import { CustomComboBox, TextInput } from "../../../../components";
+import { CustomComboBox, LoadingComponent, TextInput } from "../../../../components";
 import { useEffect, useState } from "react";
 import { AiFillExclamationCircle } from "react-icons/ai";
 import { PaypalIcon } from "../../../../assets/icons";
@@ -32,6 +32,7 @@ function PaymentProject({vacancy}) {
     const [durationType, setDurationType] = useState(period[1])    
     const [selected, setSelected] = useState([])
     let vacancies = useSelector((state) => state.vacancies.complete)
+    let loadingVC = useSelector((state) => state.vacancies.loading)
     const project = useSelector((state) => state.projects.project?.project)
 
     useEffect(() => {
@@ -159,7 +160,7 @@ function PaymentProject({vacancy}) {
     return ( 
         <>
             <div className="mx-[24%] mt-28">
-                <div onClick={() => console.log(selected)}>clcik</div>
+                {(loading || loadingVC) && <LoadingComponent/>}
                 <div className="flex flex-row justify-between bg-[#faf9f8] rounded-xl mx-4">
                     <div className="flex items-center m-8">
                         <span className="text-[#2D2D2D] text-[28px] font-bold">Sponsor</span>            
@@ -245,7 +246,7 @@ function PaymentProject({vacancy}) {
                                 <div className="flex flex-col mt-5">
                                     <p className='block leading-8 text-gray-900 text-base font-semibold'>Project Budget</p>
                                     <div className="flex flex-col gap-2">
-                                        <p className='block leading text-base font-normal'>Recommend budget <span className="font-semibold"> (${baseMoney})</span> based on your project title, location, require skills</p>
+                                        <p className='block leading text-base font-normal'>Recommend base budget <span className="font-semibold"> (${baseMoney})</span> for posting project</p>
                                         <div className="border w-56 border-[#2f2f2f] rounded-md flex items-center justify-between overflow-hidden text-center outline-none focus:border-[#2d2d2d] pl-2">
                                             $
                                             <input type="text" value={total} onChange={handleChangeTotal} className="w-20 rounded-lg flex justify-center h-9 text-left outline-none focus:border-[#2d2d2d] ml-1"/>
@@ -258,7 +259,7 @@ function PaymentProject({vacancy}) {
                             </div>
                             <div className="w-full bg-[#f0e6ed] p-5 mt-3">
                                 <div>
-                                    Daily spend may fluctuate based on your post's activity, but you will spend <span className="font-semibold">US$37.50/</span>week, max.
+                                    Daily spend may fluctuate based on your post's activity.
                                 </div>
                                 <div>
                                     You can change the amount, pause, or close your project ar any time.

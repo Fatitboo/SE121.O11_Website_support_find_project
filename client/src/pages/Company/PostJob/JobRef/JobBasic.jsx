@@ -5,6 +5,7 @@ import { JobBasicImage } from "../../../../assets/images";
 import { useDispatch, useSelector } from "react-redux";
 import { updateVacancyComponent, getVacancyComponent, setValueSuccess, resetComponent, saveLocation } from "../../../../redux/slices/vacancies/vacanciesSlices";
 import store from "../../../../redux/store/store";
+import { CheckIcon } from "@heroicons/react/20/solid";
 
 const numberHire = [{ id: 1, name:"1"}, { id: 2, name:"2"}, { id: 3, name: "3"}, { id: 4, name:"4"}, { id: 5, name:"5"}, { id: 6, name:"6"}, { id:7, name:"7"}, { id: 8, name:"8"}, { id: 9, name:"9"}, { id: 10, name:"10"}, { id: 11, name: "10+"}, { id: 12, name: "I have an ongoing need to fill this role"}]
 
@@ -17,7 +18,12 @@ function JobBasic({formSubmit, formId, flag, config, content, onDoneSubmit}) {
     const formJobBasic = useRef();
     let [jobLocation, setJobLocation] = useState(null)
     let [checkRemote, setCheckRemote] = useState(false)
+    const provinceApi = "https://provinces.open-api.vn/api/";
     let [errors, setErrors] = useState({})
+    const [provinces, setProvince] = useState([])
+    const [crProvinces, setCRProvince] = useState([])
+    const [selectedProvince, setSelectedProvince] = useState(null)
+    const [dropDown, setDropDown] = useState(false)
 
     let [inputsValues, setInputValues] = useState({   
         jobTitle: '',
@@ -56,6 +62,15 @@ function JobBasic({formSubmit, formId, flag, config, content, onDoneSubmit}) {
     }, [vacancyId]);
 
     useEffect(() => {
+        fetch(provinceApi)
+        .then((res) => res.json())
+        .then((json) => {
+            setProvince(json)
+            setCRProvince(json)
+        });
+    }, []);
+
+    useEffect(() => {
         if(currentJobComponent)
             setInputValues({...currentJobComponent})
     }, [currentJobComponent]);
@@ -75,6 +90,8 @@ function JobBasic({formSubmit, formId, flag, config, content, onDoneSubmit}) {
     }, [isSuccess])
 
     const handleChange = (e) => {
+        setCRProvince(provinces.filter(item => item.name.toLowerCase().includes(e.target.value.toLowerCase())))
+        setDropDown(true)
         const Element = e.target;
         const validationErrors = Validate(Element, ErrorMessages)
         const name = Element.getAttribute('name');
@@ -90,6 +107,7 @@ function JobBasic({formSubmit, formId, flag, config, content, onDoneSubmit}) {
     }
 
     function blurElement(e){
+        // setDropDown(false)
         const validationErrors = Validate(e.target, ErrorMessages)
         const name = e.target.getAttribute('name');
         if(errors[name]) delete errors[name]
@@ -123,6 +141,7 @@ function JobBasic({formSubmit, formId, flag, config, content, onDoneSubmit}) {
         }
     }
 
+
     return (  
         <>
             <div >
@@ -149,17 +168,43 @@ function JobBasic({formSubmit, formId, flag, config, content, onDoneSubmit}) {
                     {(content?.includes("location") || config === undefined) &&<CustomComboBox label="Which option best describes this vacancy's location?*" selectItem={currentJobComponent?.type} name="type" rules="requiredCbb" placeHolder={"Select an option."}  type='select' filterValueSelected={(e) => {filterValueSelected(e, "type"); configLocation(e); setCheckRemote(false)}} onblur={blurElement} listItem={JobLocation} error={errors.type}></CustomComboBox>}
                     {config ? null :  <div className="h-6"></div>}
                         {
-                            jobLocation === JobLocation[0].name ? <TextInput label="What is the street address for this location?*" type="text" rules="requiredText" name="location" value={inputsValues?.location} error={errors.location} onblur={blurElement}  onChange={handleChange}/> :
+                            jobLocation === JobLocation[0].name ? <TextInput label="What is the street address for this location?*" type="text" rules="requiredText" name="location" vl={inputsValues?.location} error={errors.location} onblur={blurElement}  onChange={handleChange}/> :
                             jobLocation === JobLocation[1].name ?(
                                 <CustomRadioButton listItem={remoteOption} name="isRequire" filterValueChecked={(e) => setCheckedValue(e)} selectedItem={currentJobComponent?.require} label="Are employees required to reside in a specific location?*"/>
                             ) :
                             jobLocation === JobLocation[2].name ? 
-                            (<div><TextInput label="What is the operating area for this vacancy?*" value={inputsValues?.location} type="text" rules="requiredText" name="location" error={errors.location} onblur={blurElement} onChange={handleChange}/></div>)
+                            (<div><TextInput label="What is the operating area for this vacancy?*" vl={inputsValues?.location} type="text" rules="requiredText" name="location" error={errors.location} onblur={blurElement} onChange={handleChange}/></div>)
                             : null
                         }
                     {config ? null : <div className="h-6"></div>}
-                        {checkRemote ? <TextInput label="In what location must employees reside?*" value={inputsValues?.location} type="text" rules="requiredText" name="location" error={errors.location} onblur={blurElement} onChange={handleChange}/> : null}
+                        {checkRemote ? <TextInput label="In what location must employees reside?*" vl={inputsValues?.location} type="text" rules="requiredText" name="location" error={errors.location} onblur={blurElement} onChange={handleChange}/> : null}
                     </form>
+                    {
+                        dropDown && 
+                        <div className="relative w-[full]">
+                            <ul className='absolute w-full z-[40] overflow-y-auto max-h-56 ring-1 ring-black ring-opacity-5 rounded-md'>
+                                {
+                                    crProvinces.map(item => item.name)?.map((item, index) => {
+                                        return (
+                                            <li key={index} value={index} onClick={() => {setSelectedProvince(item); setInputValues({...inputsValues, "location": item}); setDropDown(false)}} className='flex flex-row items-center justify-between bg-white py-3 px-5 shadow-lg focus:outline-none text-base hover:bg-[#f3f9ff] text-[#636363]'>
+                                                {
+                                                    item === selectedProvince ? <>
+                                                        <div>
+                                                            <span className='font-bold'>{item}</span>
+                                                        </div>
+                                                        <CheckIcon className="h-5 w-5" aria-hidden="true"/></>
+                                                    : 
+                                                        <div>
+                                                            <span>{item}</span>
+                                                        </div> 
+                                                }
+                                            </li>
+                                        )                        
+                                    })
+                                }
+                            </ul>
+                        </div>
+                    }
                 </div>
             </div>
         </>

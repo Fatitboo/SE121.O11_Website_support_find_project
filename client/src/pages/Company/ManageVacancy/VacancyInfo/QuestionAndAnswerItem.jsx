@@ -141,12 +141,12 @@ function QuestionAndAnswerItem({props, onTextChanged, userId, onCheckedRadio, se
                             {
                                 props?.selectList?.map((item, index) => {
                                     return (
-                                        <li key={index} value={index} onClick={() => {}} className={`flex cursor-pointer items-center justify-between bg-white py-1 px-5 focus:outline-none text-base text-gray-900 hover:font-normal border hover:opacity-90 rounded-md ${user && props?.answer && props?.answer[user.userId]?.id === item.id ? (props?.answer[user.userId]?.id === props?.result[0]?.id ? 'border-[#34a853]' : 'border-[#b91c1c]') : (props?.result[0]?.id === item.id ? 'border-[#2557a7]' : '')} group`}>
+                                        <li key={index} value={index} onClick={() => {}} className={`flex cursor-pointer items-center justify-between bg-white py-1 px-5 focus:outline-none text-base text-gray-900 hover:font-normal border hover:opacity-90 rounded-md ${user && props?.answer && props?.answer[user.userId]?.id === item.id ? (props?.answer[user.userId]?.id >= props?.result[0]?.id ? 'border-[#34a853]' : 'border-[#b91c1c]') : (props?.result[0]?.id === item.id ? 'border-[#2557a7]' : '')} group`}>
                                             <div className="flex flex-row items-center cursor-pointer mt-1">
                                                 <div>
                                                     <div className="relative h-7 flex items-center justify-center">
                                                         <div className="absolute bg-[#FFF] border border-[#808082] w-[20px] h-[20px] rounded-[10px] group-hover:bg-[#e1ebff]" color="#FFF"></div>
-                                                        <div className={`${props?.result[0]?.id === item.id || user && props?.answer[user?.userId]?.id === item.id ? "": "hidden"} flex items-center justify-center absolute ${props?.result[0]?.id === item.id ? (props?.answer && props?.answer[user?.userId]?.id === item.id ? 'bg-[#34a853]' :'bg-[#2557a7]') : 'bg-[#b91c1c]'} w-[12px] h-[12px] rounded-[10px]`} color="#FFF"></div>
+                                                        <div className={`${props?.result[0]?.id === item.id || user && props?.answer && props?.answer[user?.userId]?.id === item.id ? "": "hidden"} flex items-center justify-center absolute ${props?.result[0]?.id <= item.id ? (props?.answer && props?.answer[user?.userId]?.id === item.id ? 'bg-[#34a853]' :'bg-[#2557a7]') : 'bg-[#b91c1c]'} w-[12px] h-[12px] rounded-[10px]`} color="#FFF"></div>
                                                     </div>
                                                 </div>
                                                 <span className="pl-5 text-base select-none text-[#696969]">{item.name}</span>
@@ -221,11 +221,11 @@ function QuestionAndAnswerItem({props, onTextChanged, userId, onCheckedRadio, se
                         </div>
                         <ul className='mt-2 z-10 rounded-md px-5 pb-5'>
                             {
-                                props?.result?.map((item, index) => {
+                                props?.selectList?.map((item, index) => {
                                     return (
                                         <div key={index} className="flex items-center justify-between">
                                             <li value={index} onClick={() => {}} className='flex flex-grow mr-2 items-center justify-between bg-white py-1 focus:outline-none text-base text-gray-900 hover:font-normal hover:opacity-90'>
-                                                <div className={`flex flex-row items-center justify-between cursor-pointer border w-full p-2 rounded-md group ${(user && props?.answer && props?.answer[user.userId]?.find(i => i.id === item.id && i.required!==item.required) ? 'border-[#34a853]' : item.required ? 'border-[#b91c1c]' : '')}`}>
+                                                <div className={`flex flex-row items-center justify-between cursor-pointer border w-full p-2 rounded-md group ${(user && props?.answer && props?.answer[user.userId]?.find(i => i.id === props?.result?.find((i) => i.id === item.id)?.id && i.required!==props?.result?.find((i) => i.id === item.id)?.required) ? 'border-[#34a853]' : props?.result?.find((i) => i.id === item.id)?.required ? 'border-[#b91c1c]' : '')}`}>
                                                     <div className="flex flex-row items-center">
                                                         <div className='ml-1'>
                                                             <div className="relative h-7 flex items-center">
