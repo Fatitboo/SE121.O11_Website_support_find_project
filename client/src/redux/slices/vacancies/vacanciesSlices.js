@@ -605,7 +605,7 @@ export const getAllFavouriteVacanciesAction = createAsyncThunk(
 //get all applied vacancy
 export const getAllAppliedVacanciesAction = createAsyncThunk(
     "vacancies/getAllAppliedVacancies",
-    async (vacancyId, { rejectWithValue, getState, dispatch }) => {
+    async (userId, { rejectWithValue, getState, dispatch }) => {
         const user = getState()?.users;
         const { userAuth } = user;
         // http call 
@@ -615,10 +615,10 @@ export const getAllAppliedVacanciesAction = createAsyncThunk(
                 'Content-Type': 'application/json',
             },
         };
-
+        var id = userAuth?.user?.userId
+        if(userId) id = userId
         try {
-            const { data } = await axios.get(
-                `${baseUrl}/${apiPrefix}/get-applied-vacancies/${userAuth?.user?.userId}`, config);
+            const { data } = await axios.get(`${baseUrl}/${apiPrefix}/get-applied-vacancies/${id}`, config);
             return data;
         } catch (error) {
             if (!error?.response) {
