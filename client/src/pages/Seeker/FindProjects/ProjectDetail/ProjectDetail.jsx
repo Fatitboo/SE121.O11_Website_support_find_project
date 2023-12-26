@@ -132,6 +132,7 @@ function ProjectDetailSeeker() {
 
                     {/* Share to social */}
                     <></>
+                    <br/>
                     <div>
                         <div className="flex flex-row items-center mt-6">
                             <h4 className="text-base leading-6 text-[#202124] font-semibold">Share this project</h4>

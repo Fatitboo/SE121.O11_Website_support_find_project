@@ -4,7 +4,7 @@ import { PiSuitcaseSimpleThin, PiTargetLight } from 'react-icons/pi';
 import { GoHourglass } from "react-icons/go";
 import { BiBookmark, BiSolidFlag, BiTimeFive } from 'react-icons/bi';
 import { Candidate } from "../../../assets/images";
-import { MoneyIcon } from "../../../assets/icons";
+import { MoneyIcon, NewTabIcon } from "../../../assets/icons";
 import { useDispatch, useSelector } from "react-redux";
 import { applyVacancyAction, applyVacancyWithAnswersAction, getDetailUserAction } from "../../../redux/slices/users/usersSlices";
 import { Modal } from "../../../components";
@@ -15,6 +15,7 @@ import { BsBookmarkCheckFill } from "react-icons/bs";
 import { ReportOr } from "../ReportOr/ReportOr";
 import Swal from "sweetalert2";
 import { Link } from "react-router-dom";
+import DOMPurify from 'dompurify'
 
 const VacancyDetail = ({ props }) => {
     let [modal, setModal] = useState(false)
@@ -24,7 +25,6 @@ const VacancyDetail = ({ props }) => {
     const [listQuestion, setListQuestion] = useState(null)
     let user = useSelector((state) => state?.users?.userAuth?.user)
     const { isSuccessApplied, seletedUser, loadingAL, loadingGD } = useSelector((state) => state.users)
-
 
     useEffect(() => {
         if (props && props.jobPreScreen) {
@@ -47,10 +47,14 @@ const VacancyDetail = ({ props }) => {
         user && dispatch(getDetailUserAction(user?.userId))
     }, [])
     const handleApplied = () => {
-        if (user) {
-            listQuestion ? setModal(true)
-                :
+        if (user && props) {
+            if(props.jobPreScreen){
+                setListQuestion(props.jobPreScreen)
+                setModal(true)    
+            }
+            else{
                 props?.vacancyId && dispatch(applyVacancyAction(props.vacancyId))
+            }
         }
         else {
             Swal.fire({
@@ -127,17 +131,18 @@ const VacancyDetail = ({ props }) => {
                                 seletedUser?.appliedVacancies?.includes(props?.vacancyId) ?
                                     <div className="flex items-center justify-center w-[120px] box-border bg-[#1967d3] px-[10px] py-[3px] rounded-[8px] text-[#fff] cursor-not-allowed">
                                         {
-                                            !(loadingAL && loadingGD) ? <span className="text-[14px] leading-none font-bold">Applied</span>
+                                            !(loadingAL || loadingGD) ? <span className="text-[14px] leading-none font-bold">Applied</span>
                                                 : <svg className="right-1 animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 24 24">
                                                     <circle className="opacity-0" cx="12" cy="12" r="10" stroke="white" strokeWidth="4"></circle>
                                                     <path className="opacity-90" fill="white" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                                                 </svg>
                                         }
 
-                                    </div> :
+                                    </div> 
+                                    :
                                     <div className="flex items-center justify-center w-[120px] box-border bg-[#1967d3] px-[10px] py-[3px] rounded-[8px] text-[#fff] hover:bg-[#0146a6] cursor-pointer" onClick={handleApplied} >
                                         {
-                                            !(loadingAL && loadingGD) ? <span className="text-[14px] leading-none font-bold">Apply now</span>
+                                            !(loadingAL || loadingGD) ? <span className="text-[14px] leading-none font-bold">Apply now</span>
                                                 : <svg className="right-1 animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 24 24">
                                                     <circle className="opacity-0" cx="12" cy="12" r="10" stroke="white" strokeWidth="4"></circle>
                                                     <path className="opacity-90" fill="white" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
@@ -155,13 +160,19 @@ const VacancyDetail = ({ props }) => {
 
                                 </div>
                             </div>
+                            {props?.project && 
+                                <a target="_blank" rel="noreferrer" href={"/Seeker/project-info/" + props?.project} className="bg-green-100 border-green-300 border rounded-xl text-center cursor-pointer text-green-500 w-fit px-2 flex flex-row items-center justify-center self-center ml-10 gap-1">
+                                    <div>Open project relation</div>
+                                    <img src={NewTabIcon} className="w-3 h-3 text-green-500" color="#22c55e"/>
+                                </a>
+                            }
                         </div>
                     </div>
                 </div>
-                <div className="overflow-y-auto px-7">
+                <div className="overflow-y-auto overflow-x-auto px-7">
                     <div className="mt-3">
                         <span className="text-lg leading-6 text-[#202124] mb-3 mt-5 font-semibold">Description</span>
-                        <p className="bg-transparent" dangerouslySetInnerHTML={{ __html: props?.description }}>
+                        <p className="bg-transparent max-w-[500px]" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(props?.description) }}>
                         </p>
                     </div>
                     <div className="mt-5">

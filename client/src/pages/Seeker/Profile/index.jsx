@@ -14,6 +14,8 @@ import { ToastContainer, toast } from "react-toastify";
 import { ArrowLeftIcon } from "@heroicons/react/20/solid";
 import { CgClose } from "react-icons/cg";
 import CustomRadioBtnRecommendsx from "../../../components/Organizer/CustomRadioBtnRecommend.jsx";
+import { getAllAppliedVacanciesAction } from "../../../redux/slices/vacancies/vacanciesSlices.js";
+import VacancyItem from "../../Company/FindSeeker/VacancyItem.jsx";
 
 function SeekerProfile() {
     const { id } = useParams();
@@ -25,15 +27,17 @@ function SeekerProfile() {
 
     const notify = (type, message) => toast(message, { type: type });
     useEffect(() => {
+        dispatch(getAllAppliedVacanciesAction(id))
         dispatch(getDetailUserAction(id))
     }, [dispatch])
+    const appliedVacancies = useSelector(store => store?.vacancies?.appliedVacancies);
+   
     const storeData = useSelector(store => store?.users);
     const { loading, appErr, seletedUser, isSuccess, loadingRCM, recommends,isSuccessSendMail } = storeData;
     const [sltSeeker, setSltSeeker] = useState({})
     const { userAuth } = useSelector(store => store.users);
 
     useEffect(() => {
-
         setSltSeeker({ ...seletedUser })
     }, [seletedUser])
     useEffect(() => {
@@ -259,7 +263,16 @@ function SeekerProfile() {
                         </p>
                     </div>
                     <></>
-
+                    <></>
+                    <div className="mb-10">
+                        <div className="text-lg leading-6 text-[#202124] mb-5 font-semibold">Participated Vacancies</div>
+                        {
+                            appliedVacancies?.filter(item=> item?.status==='received')?.map((i, index)=>{
+                                return <VacancyItem props={i?.appliedVacancy} isAvatar={true}/>
+                            })
+                        }
+                    </div>
+                    <></>
                     {/* Education */}
                     <></>
                     <div>

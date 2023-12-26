@@ -5,8 +5,9 @@ import { useEffect, useState } from "react";
 import { FormErrors, Validate } from "./validator";
 import { useDispatch, useSelector } from "react-redux";
 import { getVacancyComponent, resetComponent, setValueSuccess, updateVacancyComponent } from "../../../../redux/slices/vacancies/vacanciesSlices";
+import { toast } from "react-toastify";
 
-function JobBenefit({formId, formSubmit, flag, config, content, onDoneSubmit}) {
+function JobBenefit({formId, formSubmit, flag, config, content, onDoneSubmit, skip, setSkip}) {
     const dispatch = useDispatch();
     const {currentJobComponent, vacancyId, isSuccess} = useSelector(store => store.vacancies)
     const showPayBy = [{ id: 1, name:"Range"}, { id: 2, name: "Starting amount"}, { id: 3, name: "Maximum amount"}, { id: 4, name: "Exact amount"}]
@@ -16,20 +17,16 @@ function JobBenefit({formId, formSubmit, flag, config, content, onDoneSubmit}) {
     let [textValue_1, setTextValue_1] = useState(currentJobComponent ? (currentJobComponent.pay_2 ? 'Minimum' : 'Amount') : 'Amount');
 
     let [inputsValues, setInputValues] = useState({
-            showPayBy: showPayBy[0],
+            showPayBy: {id: -1, name: ""},
             pay_1: '',
             pay_2: '',
-            rate: rates[0]
+            rate: {id: -1, name: ""}
         }   
     )
 
     let [errors, setErrors] = useState({})
 
-    let [ErrorMessages, setErrorMessages] = useState({
-        pay_1: 'Please fill in a value',
-        pay_2: 'Please fill finish hour',
-        duration: 'Add a duration',
-    })
+    let [ErrorMessages, setErrorMessages] = useState({})
 
     useEffect(() => {
         if(vacancyId) 
@@ -43,14 +40,31 @@ function JobBenefit({formId, formSubmit, flag, config, content, onDoneSubmit}) {
 
     function handleSubmit(e) {
         e.preventDefault();
-        const validationErrors = FormErrors(e.target, ErrorMessages)
-
-        setErrors(validationErrors);
-
-        if(Object.keys(validationErrors).length === 0){
-            dispatch(updateVacancyComponent({"id":vacancyId, "value": {"jobBenefit": inputsValues, "flag": flag}}))
+        if(skip){
+            setSkip(false)
+            dispatch(updateVacancyComponent({"id":vacancyId, "value": {"jobBenefit": null, "flag": flag}}))
+        }
+        else{
+            const validationErrors = FormErrors(e.target, ErrorMessages)
+    
+            setErrors(validationErrors);
+    
+            if(Object.keys(validationErrors).length === 0){
+                if(inputsValues?.showPayBy?.id === -1){
+                    notify("warning", "Please select the way to visible salary to seeker!")
+                    return;
+                }
+    
+                if(inputsValues?.rate?.id === -1){
+                    notify("warning", "Please select the expected period for salary!")
+                    return;
+                }
+                dispatch(updateVacancyComponent({"id":vacancyId, "value": {"jobBenefit": inputsValues, "flag": flag}}))
+            }
         }
     }
+    const notify = (type, message) => toast(message, { type: type });
+
 
     useEffect(() => {
         if(isSuccess){
@@ -101,6 +115,7 @@ function JobBenefit({formId, formSubmit, flag, config, content, onDoneSubmit}) {
                 setVisibleMax(false)
                 break;
         }
+        console.log(e)
         if(e?.id != (currentJobComponent ? currentJobComponent.showPayBy?.id : -1))
             setInputValues({
                 ...inputsValues,

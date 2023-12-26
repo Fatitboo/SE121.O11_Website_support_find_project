@@ -187,7 +187,7 @@ function JobDetail({formSubmit, formId, flag, config, content, onDoneSubmit}) {
                     config ? null :
                     <div className="flex flex-row justify-between bg-[#faf9f8] rounded-xl -mx-8">
                         <div className="flex items-center m-8">
-                            <span className="text-[#2D2D2D] text-[28px] font-bold">Add job details</span>                        
+                            <span className="text-[#2D2D2D] text-[28px] font-bold">Add vacancy details</span>                        
                         </div>
                         <div className="col-span-3 flex mr-8">
                             <img src={JobDetailImage} alt="" className="h-52 overflow-hidden"/>
@@ -196,7 +196,7 @@ function JobDetail({formSubmit, formId, flag, config, content, onDoneSubmit}) {
                 }
                 <div className="p-8">
                     <form id={formId} onSubmit={handleSubmit}>
-                        <CustomCheckBox listItem={jobTypes} name="jobTypes" rules="requiredCb" selectedItem={currentJobComponent?.jobTypes} error={errors.jobTypes} filterValueChecked={filterValueChecked} onBlur={blurElement} label="What type of job is it?*"/> 
+                        <CustomCheckBox listItem={jobTypes} name="jobTypes" rules="requiredCb" selectedItem={currentJobComponent?.jobTypes} error={errors.jobTypes} filterValueChecked={filterValueChecked} onBlur={blurElement} label="What type of vacancy is it?*"/> 
                         {
                             isPartTime ? 
                             (

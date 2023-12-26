@@ -8,14 +8,14 @@ import { getVacancyComponent, resetComponent, setValueSuccess, updateVacancyComp
 import { useDispatch, useSelector } from "react-redux";
 function JobPreScreen({formId, formSubmit, flag, config, content, onDoneSubmit}) {
     const dispatch = useDispatch();
-    const {currentJobComponent, vacancyId, isSuccess} = useSelector(store => store.vacancies)
+    const {currentJobComponent, vacancyId, isSuccess, location} = useSelector(store => store.vacancies)
     const questionPatterns = [
         {
             tagId: 1,
             tagName: 'Ability to Commute',
             type: 'info',
             boxType: 'Application question',
-            question: 'Will you be able to reliably commute to Beaufort, SC 29902 for this job?',
+            question: `Will you be able to reliably commute to ${location} for this vacancy?`,
             answerRequire: 'Applicant should be able to reliably commute.',
             dealBreakerBox: false,
             required: false,
@@ -42,7 +42,7 @@ function JobPreScreen({formId, formSubmit, flag, config, content, onDoneSubmit})
             tagName: 'Ability to Relocate',
             type: 'radio',
             boxType: 'Application question',
-            question: 'Will you be able to relocate to be within reasonable commuting distance from Beaufort, SC 29902?',
+            question: `Will you be able to relocate to be within reasonable commuting distance from ${location}?`,
             preAnswer: 'Applicant should be able to',
             selectList: [{id: 1, name: 'Relocate before starting work'}, {id: 2, name: 'Relocate with an employer provided relocation package'}],
             selectedItem: [{id: 1, name: 'Relocate before starting work'}],
@@ -140,7 +140,7 @@ function JobPreScreen({formId, formSubmit, flag, config, content, onDoneSubmit})
             tagName: 'Create custom question',
             type: 'long-text',
             boxType: 'Application question',
-            question: 'This is an employer-written question. You can report inappropriate questions to Indeed through the "Report Job" link at the bottom of the job description. " ... "',
+            question: 'This is an employer-written question. You can report inappropriate questions to Indeed through the "Report Job" link at the bottom of the vacancy description. " ... "',
             preAnswer: 'Write your own question to ask applicants. Do not ask questions that are discriminatory, illegal, or otherwise violate the Indeed site rules.',
             maxCharacters: 900,
             required: false,

@@ -53,6 +53,9 @@ public class UserServices {
         if(userRepository.existsByUsername(userDTO.getUsername())){
             throw new DataIntegrityViolationException("Username already exists");
         }
+        if(userRepository.existsByEmail(userDTO.getEmail())){
+            throw new DataIntegrityViolationException("Email already exists");
+        }
 
         User newAcc = User.builder()
                 .username(userDTO.getUsername())

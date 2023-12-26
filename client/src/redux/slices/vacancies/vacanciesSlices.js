@@ -605,7 +605,7 @@ export const getAllFavouriteVacanciesAction = createAsyncThunk(
 //get all applied vacancy
 export const getAllAppliedVacanciesAction = createAsyncThunk(
     "vacancies/getAllAppliedVacancies",
-    async (vacancyId, { rejectWithValue, getState, dispatch }) => {
+    async (userId, { rejectWithValue, getState, dispatch }) => {
         const user = getState()?.users;
         const { userAuth } = user;
         // http call 
@@ -615,10 +615,10 @@ export const getAllAppliedVacanciesAction = createAsyncThunk(
                 'Content-Type': 'application/json',
             },
         };
-
+        var id = userAuth?.user?.userId
+        if(userId) id = userId
         try {
-            const { data } = await axios.get(
-                `${baseUrl}/${apiPrefix}/get-applied-vacancies/${userAuth?.user?.userId}`, config);
+            const { data } = await axios.get(`${baseUrl}/${apiPrefix}/get-applied-vacancies/${id}`, config);
             return data;
         } catch (error) {
             if (!error?.response) {
@@ -754,6 +754,11 @@ export function resetComponent() {
         dispatch(vacanciesSlices.actions.resetComponent())
     }
 }
+export function saveLocation(location) {
+    return function saveLocation(dispatch, getState) {
+        dispatch(vacanciesSlices.actions.saveLocation(location))
+    }
+}
 export function setVacancyId(value) {
     return function setVacancyId(dispatch, getState) {
         dispatch(vacanciesSlices.actions.setVacancyId(value))
@@ -778,8 +783,12 @@ const vacanciesSlices = createSlice({
             state.loadingUD = action.payload
             state.isSuccess3 = action.payload
         },
+        saveLocation: (state, action) => {
+            state.location = action.payload
+        },
         resetComponent: (state, action) => {
             delete state.currentJobComponent
+            delete state.flag
         },
         setVacancyId: (state, action) => {
             state.vacancyId = action.payload
