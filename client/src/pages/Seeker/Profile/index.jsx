@@ -136,6 +136,7 @@ function SeekerProfile() {
     const linkCV = () => {
         var publicId = '';
         var name = ''
+        console.log(sltSeeker?.cvLinks)
         sltSeeker?.cvLinks.forEach(item => {
             if (item.isDefault) { publicId = item.publicId; name = item.filename }
         })
@@ -150,6 +151,8 @@ function SeekerProfile() {
         if (obj.name.includes('.')) {
             arr = obj.name.split('.')
         }
+        console.log(linkCV())
+
         const fileUrl = `https://res.cloudinary.com/dvnxdtrzn/raw/upload/f_auto/fl_attachment:CV_Seeker_${obj.publicId.slice(18)}${arr[arr.length - 1]}/v1700816040/${obj.publicId}`;
 
         // Tạo một phần tử a ẩn
@@ -310,7 +313,7 @@ function SeekerProfile() {
                     {/* save and download cv  */}
                     <div className="flex flex-row mb-5">
                         {
-                            sltSeeker?.cvLinks ?
+                            sltSeeker?.cvLinks?.filter(item=>item.isDefault).length>=1 ?
                                 <>
                                     <div onClick={handleDownloadClick} className="flex items-center justify-center h-[53px] box-border bg-[#1967d3] px-[18px] py-[8px] w-full rounded-[8px] text-[#fff] hover:bg-[#0146a6] cursor-pointer">
                                         <span className="text-[15px] leading-none font-[400]">Download CV</span>
@@ -460,7 +463,7 @@ function SeekerProfile() {
                                         </>
                                     })
                                     : <>
-                                        <div className='-ml-4'>
+                                        <div className='-ml-4 h-[500px] overflow-y-auto'>
                                             <CustomRadioBtnRecommendsx listItem={recommends} filterValueChecked={handleCheckRecommned} />
                                         </div>
                                     </>

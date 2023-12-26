@@ -1069,13 +1069,14 @@ const usersSlices = createSlice({
                 state.loading = true;
                 state.loadingGD = true;
                 state.appErr = undefined;
-                state.isSuccess = false;
+                state.isSuccessGetCompanyInfo = false;
 
             }),
             builder.addCase(getDetailUserAction.fulfilled, (state, action) => {
                 state.loading = false;
                 state.loadingGD = false;
                 state.seletedUser = action?.payload?.userDetail;
+                state.isSuccessGetCompanyInfo = true;
 
                 state.appErr = undefined;
 
@@ -1083,6 +1084,7 @@ const usersSlices = createSlice({
             builder.addCase(getDetailUserAction.rejected, (state, action) => {
                 state.loading = false;
                 state.loadingGD = false;
+                state.isSuccessGetCompanyInfo = false;
                 state.appErr = action?.payload?.message;
 
             }),
@@ -1124,6 +1126,7 @@ const usersSlices = createSlice({
 
         });
         builder.addCase(resetSuccessAction.fulfilled, (state, action) => {
+            state.isSuccessGetCompanyInfo = false;
             state.isSuccess = false;
             state.isSuccessUpd = false;
             state.isSuccessApplied = false;
