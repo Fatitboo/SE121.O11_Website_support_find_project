@@ -301,7 +301,7 @@ function ProjectDetailSeeker() {
                             <div className="mt-3">
                                 {
                                     projectparticipants.map((item, index) => {
-                                        return <ParticipantItem key={index} item={item} firstName={item?.fullName} position={item?.jobTitle ?? 'Not information'} userAvatar={item?.avatar?.fileUrl ?? 'https://i.pinimg.com/564x/16/3e/39/163e39beaa36d1f9a061b0f0c5669750.jpg'} />
+                                        return <ParticipantItem key={index} item={item} type={'Seeker'} firstName={item?.fullName} position={item?.jobTitle ?? 'Not information'} userAvatar={item?.avatar?.fileUrl ?? 'https://i.pinimg.com/564x/16/3e/39/163e39beaa36d1f9a061b0f0c5669750.jpg'} />
                                     })
                                 }
                             </div>

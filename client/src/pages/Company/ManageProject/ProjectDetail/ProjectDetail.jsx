@@ -13,103 +13,6 @@ import { getProjectSingle } from "../../../../redux/slices/projects/projectsSlic
 import { useDispatch, useSelector } from "react-redux";
 import { CustomLoader, SmallItemLoader, VacancyItemLoader } from "../../../../components/Loader";
 
-const vacancies = [
-    {
-        vacancyId: 1,
-        vacancyName: "Technical Leader", 
-        description: "As a Product Designer, you will work within a Product Delivery Team fused with UX, engineering, product and data talent. You will help the team design beautiful interfaces that solve business challenges for our clients. We work with a number of Tier 1 banks on building web-based applications for AML, KYC and Sanctions List management workflows. This role is ideal if you are looking to segue your career into the FinTech or Big Data arenas.",
-        skillsRequired:[
-            {
-                skillName: "Manager",
-                level: "Advanced",
-            },
-            {
-                skillName: "Python",
-                level: "Medium",
-            },
-            {
-                skillName: "Bootstrap",
-                level: "Basic",
-            },
-            {
-                skillName: "Android",
-                level: "Basic",
-            },
-            {
-                skillName: "C++",
-                level: "Advanced",
-            },
-        ],
-        maxRequired: 1,
-        salary: "$45k-$100k",
-        registant:[
-            {
-                userId: 1,
-                firstName: "Le Quang",
-                surName: 'Nhan',
-                avatar: 'https://scontent.fsgn19-1.fna.fbcdn.net/v/t39.30808-6/305117982_819079809468330_6882772732131573332_n.jpg?_nc_cat=105&ccb=1-7&_nc_sid=a2f6c7&_nc_ohc=_tz73DXI83kAX8-wZsI&_nc_ht=scontent.fsgn19-1.fna&oh=00_AfCo2vH4GN6Tt7KXpVymIL9tEGH-MCebjb2VZfZjP_w6Xw&oe=651DF1E8'
-            },
-            {
-                userId: 2,
-                firstName: "Wade",
-                surName: 'Warren',
-                avatar: 'https://superio-nextjs.netlify.app/images/resource/candidate-2.png'
-            }
-        ]
-    },
-    {
-        vacancyId: 1,
-        vacancyName: "Software Engineering", 
-        description: "As a Product Designer, you will work within a Product Delivery Team fused with UX, engineering, product and data talent. You will help the team design beautiful interfaces that solve business challenges for our clients. We work with a number of Tier 1 banks on building web-based applications for AML, KYC and Sanctions List management workflows. This role is ideal if you are looking to segue your career into the FinTech or Big Data arenas.",
-        skillsRequired:[
-            {
-                skillName: "Javascript",
-                level: "Advanced",
-            },
-            {
-                skillName: "Python",
-                level: "Medium",
-            },
-            {
-                skillName: "Bootstrap",
-                level: "Basic",
-            },
-        ],
-        maxRequired: 3,
-        salary: "$45k-$100k",
-        registant:[
-            {
-                userId: 1,
-                firstName: "Le Quang",
-                surName: 'Nhan',
-                avatar: 'https://scontent.fsgn19-1.fna.fbcdn.net/v/t39.30808-6/305117982_819079809468330_6882772732131573332_n.jpg?_nc_cat=105&ccb=1-7&_nc_sid=a2f6c7&_nc_ohc=_tz73DXI83kAX8-wZsI&_nc_ht=scontent.fsgn19-1.fna&oh=00_AfCo2vH4GN6Tt7KXpVymIL9tEGH-MCebjb2VZfZjP_w6Xw&oe=651DF1E8'
-            },
-            {
-                userId: 2,
-                firstName: "Wade",
-                surName: 'Warren',
-                avatar: 'https://superio-nextjs.netlify.app/images/resource/candidate-2.png'
-            }
-        ]
-    }
-];
-
-const participants = [
-    {
-        userId: 1,
-        userAvatar: 'https://scontent.fsgn19-1.fna.fbcdn.net/v/t39.30808-6/305117982_819079809468330_6882772732131573332_n.jpg?_nc_cat=105&ccb=1-7&_nc_sid=a2f6c7&_nc_ohc=_tz73DXI83kAX8-wZsI&_nc_ht=scontent.fsgn19-1.fna&oh=00_AfCo2vH4GN6Tt7KXpVymIL9tEGH-MCebjb2VZfZjP_w6Xw&oe=651DF1E8',
-        firstName: 'Le Quang',
-        surName: 'Nhan',
-        position: 'CEO'
-    },
-    {
-        userId: 2,
-        userAvatar: 'https://scontent.fsgn19-1.fna.fbcdn.net/v/t39.30808-6/305117982_819079809468330_6882772732131573332_n.jpg?_nc_cat=105&ccb=1-7&_nc_sid=a2f6c7&_nc_ohc=_tz73DXI83kAX8-wZsI&_nc_ht=scontent.fsgn19-1.fna&oh=00_AfCo2vH4GN6Tt7KXpVymIL9tEGH-MCebjb2VZfZjP_w6Xw&oe=651DF1E8',
-        firstName: 'Nguyen Van',
-        surName: 'Phat',
-        position: 'Assistant'
-    }
-];
 function ProjectDetail() {
 
     const id = useParams()
@@ -119,6 +22,7 @@ function ProjectDetail() {
     const vacancies = useSelector((state) => state.projects.project?.vacancies)
     const loading = useSelector((state) => state.projects.loading)  
     let user = useSelector((state) => state.users.userAuth.user)
+    const projectparticipants = useSelector(state => state.projects?.projectparticipants)
 
 
     useEffect(() => {
@@ -361,11 +265,11 @@ function ProjectDetail() {
                     </div>
                     <div>
                         <div className="p-6 bg-[#F5F6FC] rounded-lg mb-[30px]">
-                            <span className="text-[#202124] text-[18px] font-semibold">Participants ({participants.length})</span>
+                            <span className="text-[#202124] text-[18px] font-semibold">Participants ({projectparticipants.length})</span>
                             <div className="mt-3">
                                 {
-                                    participants.map((item, index) => {
-                                        return <ParticipantItem key={index} firstName={item.firstName} surName={item.surName} position={item.position} userAvatar={item.userAvatar}/>
+                                    projectparticipants.map((item, index) => {
+                                        return <ParticipantItem type={'Organizer'} key={index} item={item} firstName={item?.fullName} position={item?.jobTitle ?? 'Not information'} userAvatar={item?.avatar?.fileUrl ?? 'https://i.pinimg.com/564x/16/3e/39/163e39beaa36d1f9a061b0f0c5669750.jpg'} />
                                     })
                                 }
                             </div>

@@ -116,7 +116,7 @@ const VacancyItem = ({ props, isAvatar, active, notify, isEditProject, setFunc, 
                         <CiLocationOn className="w-[18px] h-[18px] mr-[5px]" />
                         {props?.location}
                     </div>
-                    <div className="mt-2 min-h-[60px] w-[96%]">
+                    <div className="mt-2 min-h-[60px] max-w-[450px]">
                         <p className="line-clamp-3 bg-transparent text-ellipsis " dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(props?.description) }}>
                         </p>
                     </div>
