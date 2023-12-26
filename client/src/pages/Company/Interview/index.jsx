@@ -91,9 +91,9 @@ function Interview() {
                                         <div className="w-40 mr-5">
                                             <ComboBox listItem={listPostedCbb} filterValueSelected={onFilterlistPostedCbb} />
                                         </div>
-                                        <div className="w-40">
+                                        {/* <div className="w-40">
                                             <ComboBox listItem={listApprovedCbb} filterValueSelected={onFilterlistApprovedCbb} />
-                                        </div>
+                                        </div> */}
                                     </div>
                                     <div className="mt-4 mb-4 mx-3 font-medium text-lg flex justify-between">
                                         Applicant
