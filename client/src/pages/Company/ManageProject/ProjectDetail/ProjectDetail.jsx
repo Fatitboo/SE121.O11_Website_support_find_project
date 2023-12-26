@@ -9,7 +9,7 @@ import VacancyItem from "../../../Seeker/ProjectInfo/VacancyItem";
 import ParticipantItem from "../../../Seeker/ProjectInfo/ParticipantItem";
 import { ArrowLeftIcon } from "@heroicons/react/20/solid";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { getProjectSingle } from "../../../../redux/slices/projects/projectsSlices";
+import { getParticipantsProject, getProjectSingle } from "../../../../redux/slices/projects/projectsSlices";
 import { useDispatch, useSelector } from "react-redux";
 import { CustomLoader, SmallItemLoader, VacancyItemLoader } from "../../../../components/Loader";
 
@@ -26,7 +26,10 @@ function ProjectDetail() {
 
 
     useEffect(() => {
-        if(id) dispatch(getProjectSingle(id))
+        if(id) {
+            dispatch(getProjectSingle(id))
+            dispatch(getParticipantsProject(id))
+        }
     }, [id])
 
     const navigate = useNavigate()
