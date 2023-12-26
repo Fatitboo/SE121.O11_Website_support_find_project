@@ -132,17 +132,9 @@ function ProfileSeekerView() {
         {loading && <LoadingComponent />}
         <ToastContainer />
         {/* Start title of page  */}
-        <div className="mb-8 px-10">
-            <div className="font-medium text-3xl text-gray-900 mb-2 leading-10 flex items-center">
-                <ArrowLeftIcon className="h-8 cursor-pointer mr-2" onClick={() => navigate(-1)} />
-                Seeker Info!
-            </div>
-
-
-            <div className="text-sm leading-6 font-normal m-0 right-0 flex justify-between items-center ">Ready to jump back in?</div>
-        </div>
+       
         <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/uicons-regular-rounded/css/uicons-regular-rounded.css'></link>
-        <div className="px-10 pt-[50px] mx-14  bg-white py-10 rounded-xl shadow">
+        <div className="px-20 pt-[20px] mx-14  bg-white py-10 rounded-xl ">
             <div className="static grid grid-cols-12 gap-4 m-auto box-border">
                 {/* left infomation */}
                 <div className="col-span-8 pr-[30px]">
