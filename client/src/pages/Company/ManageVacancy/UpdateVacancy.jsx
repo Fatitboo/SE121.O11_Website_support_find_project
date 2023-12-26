@@ -126,8 +126,7 @@ function UpdateVacancy() {
         }
 
         if(validateForm(main)){
-            //dispatch(updateCompleteVacancy(main))
-            console.log("update successful", main)
+            dispatch(updateCompleteVacancy(main))
         }
     }
 

@@ -196,7 +196,7 @@ function JobDetail({formSubmit, formId, flag, config, content, onDoneSubmit}) {
                 }
                 <div className="p-8">
                     <form id={formId} onSubmit={handleSubmit}>
-                        <CustomCheckBox listItem={jobTypes} name="jobTypes" rules="requiredCb" selectedItem={currentJobComponent?.jobTypes} error={errors.jobTypes} filterValueChecked={filterValueChecked} onBlur={blurElement} label="What type of job is it?*"/> 
+                        <CustomCheckBox listItem={jobTypes} name="jobTypes" rules="requiredCb" selectedItem={currentJobComponent?.jobTypes} error={errors.jobTypes} filterValueChecked={filterValueChecked} onBlur={blurElement} label="What type of vacancy is it?*"/> 
                         {
                             isPartTime ? 
                             (

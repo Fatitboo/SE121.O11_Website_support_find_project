@@ -73,12 +73,12 @@ function JobReview({formId, formSubmit, flag}) {
             <div className="p-8">
                 <form id={formId} onSubmit={handleSubmit}>
                     <hr className="block h-1 bg-[rgb(212, 210, 208)] my-6"/>
-                    <p className='block leading-8 text-gray-900 text-xl font-bold mb-1'>Job details</p>
+                    <p className='block leading-8 text-gray-900 text-xl font-bold mb-1'>Vacancy details</p>
                     <div className="flex flex-col gap-6">
-                        <JobReviewItem title={"Job title"} name="vacancyName" value={vacancy?.jobBasic?.jobTitle} onClick={() => configModal("jobBasic", "jobTitle", 0)}/>
+                        <JobReviewItem title={"Vacancy title"} name="vacancyName" value={vacancy?.jobBasic?.jobTitle} onClick={() => configModal("jobBasic", "jobTitle", 0)}/>
                         <JobReviewItem title={"Number of openings"} name="maxRequired" value={vacancy?.jobBasic?.numberParticipants?.name} onClick={() => configModal("jobBasic", "numberParticipants", 0)}/>
                         <JobReviewItem title={"Location"} name="location|locationType|locationSpecificRequired" value={vacancy?.jobBasic?.location} onClick={() => configModal("jobBasic", "location", 0)}/>
-                        <JobReviewItem title={"Job type"} html name="timeLength|timePeriod|timeFirst|timeSecond|timeType" value={
+                        <JobReviewItem title={"Vacancy type"} html name="timeLength|timePeriod|timeFirst|timeSecond|timeType" value={
                             `<p>${vacancy?.jobDetail?.jobTypes?.map(item => 
                                 item.name === "Part-time" ? 
                                 `${item.name}: ${vacancy?.jobDetail?.showBy_1}${vacancy?.jobDetail?.showBy_2 ? ' - ' + vacancy?.jobDetail?.showBy_2 : ''} hours/week`
@@ -89,18 +89,22 @@ function JobReview({formId, formSubmit, flag}) {
                             ).join("<p></p>")}</p>`
                             
                         } onClick={() => configModal("jobDetail", "jobTypes", 1)}/>
-                        <JobReviewItem title={"Pay"} name="salaryType|salaryFirst|salarySecond|salaryRate" value={
-                            vacancy?.jobBenefit?.showPayBy?.name === "Range" ? 
-                                `$${vacancy?.jobBenefit?.pay_1} - $${vacancy?.jobBenefit?.pay_2} ${vacancy?.jobBenefit?.rate?.name}`
-                            : 
-                            vacancy?.jobBenefit?.showPayBy?.name === "Starting amount" ? 
-                                `From $${vacancy?.jobBenefit?.pay_1} ${vacancy?.jobBenefit?.rate?.name}`
-                            :
-                            vacancy?.jobBenefit?.showPayBy?.name === "Maximum amount" ? 
-                                `Up to $${vacancy?.jobBenefit?.pay_1} ${vacancy?.jobBenefit?.rate?.name}`
-                            : `$${vacancy?.jobBenefit?.pay_1} ${vacancy?.jobBenefit?.rate?.name}`
-                            
-                        } onClick={() => configModal("jobBenefit", "showPayBy|pay_1|pay_2|rate", 2)}/>
+                        {
+                            vacancy?.jobBenefit ?
+                            <JobReviewItem title={"Pay"} name="salaryType|salaryFirst|salarySecond|salaryRate" value={
+                                vacancy?.jobBenefit?.showPayBy?.name === "Range" ? 
+                                    `$${vacancy?.jobBenefit?.pay_1} - $${vacancy?.jobBenefit?.pay_2} ${vacancy?.jobBenefit?.rate?.name}`
+                                : 
+                                vacancy?.jobBenefit?.showPayBy?.name === "Starting amount" ? 
+                                    `From $${vacancy?.jobBenefit?.pay_1} ${vacancy?.jobBenefit?.rate?.name}`
+                                :
+                                vacancy?.jobBenefit?.showPayBy?.name === "Maximum amount" ? 
+                                    `Up to $${vacancy?.jobBenefit?.pay_1} ${vacancy?.jobBenefit?.rate?.name}`
+                                : `$${vacancy?.jobBenefit?.pay_1} ${vacancy?.jobBenefit?.rate?.name}`
+                                
+                            } onClick={() => configModal("jobBenefit", "showPayBy|pay_1|pay_2|rate", 2)}/>
+                            : null
+                        }
                         <JobReviewItem title={"Skills required"} name="skillsRequired" html={true} value={`<p>${vacancy?.jobDes?.skills?.map(item => item).join('</p><p>')}</p>`} onClick={() => configModal("jobDes", "skills", 3)}/>
                         <JobReviewItem title={"Description"} name="description" value={vacancy?.jobDes?.description} html={true} onClick={() => configModal("jobDes", "description", 3)}/>
                     </div>
@@ -108,7 +112,7 @@ function JobReview({formId, formSubmit, flag}) {
                     <p className='block leading-8 text-gray-900 text-xl font-bold mb-3 mt-5'>Setting</p>
                     <div className="flex flex-col gap-6">
                         <JobReviewItem title={"Applicantion via"} name="emailReceivers|canReceiveApplied|canContactViaEmail" html value={`<p>${vacancy?.jobRef?.emails?.map(item => item).join("<p></p>")}</p>`} onClick={() => configModal("jobRef", "emails", 4)}/>
-                        <JobReviewItem title={"Required resume"} name="requireResume" value={vacancy?.jobRef?.resume?.name} onClick={() => configModal("jobRef", "resume", 4)}/>
+                        <JobReviewItem title={"Required CV"} name="requireResume" value={vacancy?.jobRef?.resume?.name} onClick={() => configModal("jobRef", "resume", 4)}/>
                         <JobReviewItem title={"Application updates"} name="canReceiveApplied" value={vacancy?.jobRef?.emailApply ? 'Send daily update to your email' : 'Do nothing'} onClick={() => configModal("jobRef", "emailApply", 4)}/>
                         <JobReviewItem title={"Candidates contact you"} name="canContactViaEmail" value={vacancy?.jobRef?.emailContact ? 'Yes, at email address provided' : 'No'} onClick={() => configModal("jobRef", "emailContact", 4)}/>
                         <JobReviewItem title={"Hiring timeline"} name="hiringTimeline" value={vacancy?.jobRef?.hiringTimeline?.name} onClick={() => configModal("jobRef", "hiringTimeline", 4)}/>

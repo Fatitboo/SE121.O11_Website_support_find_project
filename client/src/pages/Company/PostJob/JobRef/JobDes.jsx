@@ -102,7 +102,7 @@ function JobDes({formId, formSubmit, flag, config, content, onDoneSubmit}) {
                 config ? null :
                 <div className="flex flex-row justify-between bg-[#faf9f8] rounded-xl -mx-8">
                     <div className="flex items-center m-8">
-                        <span className="text-[#2D2D2D] text-[28px] font-bold">Describe the job</span>            
+                        <span className="text-[#2D2D2D] text-[28px] font-bold">Describe the vacancy</span>            
                     </div>
                     <div className="col-span-3 flex mr-8">
                         <img src={JobDesImage} alt="" className="h-52 overflow-hidden"/>
@@ -153,13 +153,13 @@ function JobDes({formId, formSubmit, flag, config, content, onDoneSubmit}) {
                         {config ? null : <div className="h-6"></div>}
                     {(content?.includes("description") || config === undefined) && 
                         <div>
-                            <p className='block leading-8 text-gray-900 text-base font-semibold mb-1'  style={{color: `${errors.jobDes ? "#a9252b": ''}`}}>Job description*</p>
+                            <p className='block leading-8 text-gray-900 text-base font-semibold mb-1'  style={{color: `${errors.jobDes ? "#a9252b": ''}`}}>Vacancy description*</p>
                             <div ref={editor} name="jobDes" className='border border-[black] rounded-md overflow-hidden h-96' style={{borderColor: `${errors.jobDes ? "#a9252b" : ''}`, outlineColor: `${errors.jobDes ? "#a9252b" : ''}`}}>
                                 <FroalaEditor
                                     model={value}
                                     onModelChange={( event, editor ) => {handleChange(event, editor)}}
                                     config={{
-                                        placeholderText: 'Provide a comprehensive job description, outlining the roles, responsibilities, qualifications, and any additional information relevant to the job.',    
+                                        placeholderText: 'Provide a comprehensive vacancy description, outlining the roles, responsibilities, qualifications, and any additional information relevant to the job.',    
                                         charCounterCount: true,
                                         toolbarButtons: {
                                             moreParagraph: {
