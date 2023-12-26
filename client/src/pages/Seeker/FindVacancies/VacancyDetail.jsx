@@ -48,7 +48,7 @@ const VacancyDetail = ({ props }) => {
     }, [])
     const handleApplied = () => {
         if (user && props) {
-            if(props.jobPreScreen){
+            if(props?.jobPreScreen && props?.jobPreScreen?.length !== 0){
                 setListQuestion(props.jobPreScreen)
                 setModal(true)    
             }
@@ -289,7 +289,6 @@ const VacancyDetail = ({ props }) => {
                             </div>
                             <hr className="block h-1 w-full bg-[rgb(212, 210, 208)] mt-3" />
                             <div className="max-h-[400px] w-[600px] overflow-y-auto overflow-x-hidden mb-4 px-3">
-                                <button onClick={() => console.log(listQuestion)}>Click me</button>
                                 {
                                     listQuestion.map((item, index) => {
                                         return <div key={index}>

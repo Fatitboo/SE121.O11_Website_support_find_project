@@ -99,7 +99,7 @@ const ProjectItem = ({ props, notify }) => {
 
     const handleApplied = (ques, selected) => {
         if (userAuth) {
-            ques ? setModal(true)
+            ques && ques.length !== 0 ? setModal(true)
                 :
                 selected?.vacancyId && dispatch(applyVacancyAction(selected.vacancyId))
         }
@@ -288,7 +288,6 @@ const ProjectItem = ({ props, notify }) => {
                             </div>
                             <hr className="block h-1 w-full bg-[rgb(212, 210, 208)] mt-3" />
                             <div className="max-h-[400px] w-[600px] overflow-y-auto overflow-x-hidden mb-4 px-3">
-                                <button onClick={() => console.log(listQuestion)}>Click me</button>
                                 {
                                     listQuestion.map((item, index) => {
                                         return <div key={index}>
