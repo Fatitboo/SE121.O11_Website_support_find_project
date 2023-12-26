@@ -121,7 +121,7 @@ const corRoutes = [
     { path: '/Organizer/payment', component: Payment, layout: LayoutNoSidebar },
     { path: '/Organizer/interview', component: Interview, layout: LayoutHasSidebar },
     { path: '/Organizer/payment/:id', component: Payment, layout: LayoutNoSidebar },
-    { path: '/Organizer/payment/success/:id', component: SuccessPayment, layout: LayoutNoSidebar },
+    { path: '/Organizer/payment/success', component: SuccessPayment, layout: LayoutNoSidebar },
     { path: '/Organizer/payment/cancel', component: CancelPayment, layout: LayoutNoSidebar },
 
     { path: '/Organizer/payment/project/:id', component: PaymentProject, layout: LayoutNoSidebar },
