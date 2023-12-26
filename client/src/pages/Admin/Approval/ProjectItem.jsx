@@ -1,5 +1,5 @@
 import { AiOutlineCheckCircle } from "react-icons/ai";
-import { LiaEyeSolid, LiaTrashAltSolid } from "react-icons/lia";
+import { LiaBanSolid, LiaEyeSolid, LiaTrashAltSolid } from "react-icons/lia";
 import { BiMap } from "react-icons/bi";
 import { Link } from "react-router-dom";
 import { FaBan } from "react-icons/fa";
@@ -7,6 +7,7 @@ import { updateProjectStatus } from "../../../redux/slices/projects/projectsSlic
 import { useDispatch } from "react-redux";
 import { BsLock } from "react-icons/bs";
 import Swal from "sweetalert2";
+import { HiOutlineLockClosed } from "react-icons/hi";
 function ProjectItem({ item }) {
     const dispatch = useDispatch();
     const handleUpdateStatusProject = (id, status, action) => {
@@ -74,13 +75,13 @@ function ProjectItem({ item }) {
                                 <button onClick={() => handleUpdateStatusProject(item?.project?.projectId, 'waitPayment', 'Accept')}> <AiOutlineCheckCircle fontSize={20} /> </button>
                             </li>
                             <li className="list-none relative bg-[#f5f7fc] border rounded-md border-[#e9ecf9] px-1 pt-1 hover:bg-orange-300 hover:text-black">
-                                <button onClick={() => handleUpdateStatusProject(item?.project?.projectId, 'rejected', 'Reject')}> <FaBan fontSize={20} /> </button>
+                                <button onClick={() => handleUpdateStatusProject(item?.project?.projectId, 'rejected', 'Reject')}> <LiaBanSolid fontSize={20} /> </button>
                             </li>
 
                         </> : item.project?.status === 'waitPayment' ?
                             <>
                                 <li className="list-none relative bg-[#f5f7fc] border rounded-md border-[#e9ecf9] px-1 pt-1 hover:bg-orange-300 hover:text-black">
-                                    <button onClick={() => handleUpdateStatusProject(item?.project?.projectId, 'rejected', 'Reject')}> <FaBan fontSize={20} /> </button>
+                                    <button onClick={() => handleUpdateStatusProject(item?.project?.projectId, 'rejected', 'Reject')}> <LiaBanSolid fontSize={20} /> </button>
                                 </li>
 
                             </> : item.project?.status === 'rejected' ?
@@ -93,11 +94,11 @@ function ProjectItem({ item }) {
                                     <>
 
                                         <li className="list-none relative bg-[#f5f7fc] border rounded-md border-[#e9ecf9] px-1 pt-1 hover:bg-[#ce3e37] hover:text-white">
-                                            <button onClick={() => handleUpdateStatusProject(item?.project?.projectId, 'blocked', 'Block')}> <BsLock fontSize={18} /> </button>
+                                            <button onClick={() => handleUpdateStatusProject(item?.project?.projectId, 'blocked', 'Block')}> <HiOutlineLockClosed fontSize={18} /> </button>
                                         </li>
                                     </> : <>
                                         <li className="list-none relative bg-[#f5f7fc] border rounded-md border-[#e9ecf9] px-1 pt-1 hover:bg-orange-300 hover:text-black">
-                                            <button onClick={() => handleUpdateStatusProject(item?.project?.projectId, 'approved', 'approve again')}> <FaBan fontSize={20} /> </button>
+                                            <button onClick={() => handleUpdateStatusProject(item?.project?.projectId, 'approved', 'approve again')}> <LiaBanSolid fontSize={20} /> </button>
                                         </li>
                                     </>
                         }

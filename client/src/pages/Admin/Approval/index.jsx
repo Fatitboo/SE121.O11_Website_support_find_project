@@ -138,12 +138,12 @@ function Approval() {
                                     <table className="relative w-full overflow-y-hidden overflow-x-hidden rounded-md mb-8 bg-white border-0 ">
                                         <thead className="bg-[#f5f7fc] color-white border-transparent border-0 w-full">
                                             <tr className="w-full">
-                                                <th className="relative text-[#3a60bf] font-normal py-6 text-base text-left w-3/12 pl-5">Originazer Name</th>
-                                                <th className="relative text-[#3a60bf] font-normal py-6 text-base px-0 text-left w-3/12 ">Project Name</th>
-                                                <th className="relative text-[#3a60bf] font-normal py-6 text-base text-left w-1/12 ">Participants</th>
-                                                <th className="relative text-[#3a60bf] font-normal py-6 text-base  w-2/12 text-center ">Upload date</th>
-                                                <th className="relative text-[#3a60bf] font-normal py-6 text-base text-left  w-3/24">Status</th>
-                                                <th className="relative text-[#3a60bf] font-normal py-6 text-base text-left ">Action</th>
+                                                <th className="relative text-[#3a60bf] font-medium py-6 text-base text-left w-3/12 pl-5">Originazer Name</th>
+                                                <th className="relative text-[#3a60bf] font-medium py-6 text-base px-0 text-left w-3/12 ">Project Name</th>
+                                                <th className="relative text-[#3a60bf] font-medium py-6 text-base text-left w-1/12 ">Participants</th>
+                                                <th className="relative text-[#3a60bf] font-medium py-6 text-base  w-2/12 text-center ">Upload date</th>
+                                                <th className="relative text-[#3a60bf] font-medium py-6 text-base text-left  w-3/24">Status</th>
+                                                <th className="relative text-[#3a60bf] font-medium py-6 text-base text-left ">Action</th>
                                             </tr>
                                         </thead>
                                         <tbody>

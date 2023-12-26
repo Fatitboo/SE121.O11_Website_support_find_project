@@ -38,8 +38,8 @@ public class PaypalController {
         try {
                 System.out.println("[POST_VACANCY_ID]: " + order.getVacancyId());
             Payment payment = service.createPayment(order.getPrice(), order.getCurrency(), order.getMethod(),
-                    order.getIntent(), order.getDescription(), "https://afraid-quilt-production.up.railway.app" + CANCEL_URL,
-                     "https://afraid-quilt-production.up.railway.app" + SUCCESS_URL + "/" + order.getVacancyId() + "/" + order.getLength());
+                    order.getIntent(), order.getDescription(), "https://afraid-quilt-production.up.railway.app/api/v1/payment" + CANCEL_URL,
+                     "https://afraid-quilt-production.up.railway.app/api/v1/payment" + SUCCESS_URL + "/" + order.getVacancyId() + "/" + order.getLength());
             for(Links link:payment.getLinks()) {
                 if(link.getRel().equals("approval_url")) {
                     return "" + link.getHref();
@@ -95,8 +95,8 @@ public class PaypalController {
         try {
             System.out.println("[POST_Project_ID]: " + order.getProjectId());
             Payment payment = service.createPayment(order.getPrice(), order.getCurrency(), order.getMethod(),
-                    order.getIntent(), order.getDescription(), "https://afraid-quilt-production.up.railway.app" + CANCEL_PROJECT_URL + "/" + order.getProjectId(),
-                    "https://afraid-quilt-production.up.railway.app" + SUCCESS_PROJECT_URL + "/" + order.getProjectId() + "/" + order.getLength());
+                    order.getIntent(), order.getDescription(), "https://afraid-quilt-production.up.railway.app/api/v1/payment" + CANCEL_PROJECT_URL + "/" + order.getProjectId(),
+                    "https://afraid-quilt-production.up.railway.app/api/v1/payment" + SUCCESS_PROJECT_URL + "/" + order.getProjectId() + "/" + order.getLength());
             service.updateProject(order.getDetail(), order.getProjectId());
             for(Links link:payment.getLinks()) {
                 if(link.getRel().equals("approval_url")) {

@@ -8,7 +8,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { AiOutlineCheckCircle } from "react-icons/ai";
 import { LiaEyeSolid, LiaTrashAltSolid } from "react-icons/lia";
 import { HiOutlineLocationMarker } from "react-icons/hi";
-import { acceptApplicantVacancy, removeApplicantVacancy } from "../../../redux/slices/vacancies/vacanciesSlices";
+import { acceptApplicantVacancy, removeApplicantVacancy, resetSuccessAction } from "../../../redux/slices/vacancies/vacanciesSlices";
 
 const InterviewItem = ({ props }) => {
     let [dropDownTags, setDropDownTags] = useState(false)
@@ -16,15 +16,15 @@ const InterviewItem = ({ props }) => {
     const navigate = useNavigate()
     const dispatch = useDispatch();
     const { userAuth } = useSelector(store => store.users);
-    let [applicants, setApplicants] = useState(null)
+    let [applicantsList, setApplicants] = useState(null)
     const apiPrefix = 'api/v1/vacancies';
     const [selected, setSelected] = useState(null)
-    const {loadingACAP, loadingRMAP, isSuccessRM } = useSelector(store => store?.vacancies);
+    const {loadingACAP, loadingRMAP, isSuccessRM, applicants, isSuccessACAP } = useSelector(store => store?.vacancies);
     const handleGetAllParticipants = async () => {
         try {
             setLoading(true);
             if (!dropDownTags) {
-                if (!applicants) {
+                if (!applicantsList) {
                     if (props.vacancyId) {
                         const res = await axios.get(`${baseUrl}/${apiPrefix}/get-all-applicants-vacancy/${props?.vacancyId}`);
                         if (res.data) {
@@ -50,15 +50,42 @@ const InterviewItem = ({ props }) => {
     }
 
     useEffect(() => {
-        if(isSuccessRM && selected && applicants){
-            const newArr = applicants.filter(item => item.userId !== selected.userId)
+        if(isSuccessRM && selected && applicantsList){
+            const newArr = applicantsList.filter(item => item.userId !== selected.userId)
             setApplicants(newArr)
         }
     }, [isSuccessRM])
 
+    useEffect(() => {
+        if(isSuccessACAP){
+            if (props.vacancyId) {
+                fetch(`${baseUrl}/${apiPrefix}/get-all-applicants-vacancy/${props?.vacancyId}`)
+                .then((res) => {
+                    if (res.data) {
+                        setApplicants(res.data.applicants);
+                    }
+                });
+            }
+            dispatch(resetSuccessAction())
+        }
+    }, [isSuccessACAP])
+
+    useEffect(() => {
+        if(applicants){
+            console.log("doo")
+            setApplicants(applicants.map(i => i))
+        }
+    }, [applicants])
+
     const handleApplyApplicant = (item) => {
         setSelected(item)
-        props && item?.userId && dispatch(acceptApplicantVacancy({"vacancyId": props.vacancyId, "id": item?.userId}))
+        if(props){
+            if(props?.participants?.length === props?.maxRequired){
+                console.log("doo")
+                return;
+            }
+            item?.userId && dispatch(acceptApplicantVacancy({"vacancyId": props.vacancyId, "id": item?.userId}))
+        }
     }
     const handleDeleteApplicant = (item) => {
         setSelected(item)
@@ -84,7 +111,7 @@ const InterviewItem = ({ props }) => {
                         <div className="relative text-[#3a60bf] font-medium py-6 text-base text-left w-2/12 ">Required(s): {props?.maxRequired}</div>
                         <div className="relative text-[#3a60bf] font-medium py-6 text-base text-left w-2/12 ">Member(s): {props?.participants ? props?.participants.length : 0}</div>
                         <div className="relative text-[#34a853] font-medium py-6 text-base text-left w-2/12 ">Applicant(s): {props?.registants ? props?.registants.length : 0}</div>
-                        <div className="relative text-[#d93025] font-medium py-6 text-base text-left w-2/12 ">Rejected(s): {props?.participants && props?.registants ? props?.participants.length : 0}</div>
+                        {/* <div className="relative text-[#d93025] font-medium py-6 text-base text-left w-2/12 ">Rejected(s): {props?.participants && props?.registants ? props?.participants.length : 0}</div> */}
                         <div className="relative text-[#3a60bf] font-medium py-6 text-base text-left w-2/12 flex flex-row items-center cursor-pointer gap-2" onClick={() => handleGetAllParticipants()}><span className="w-24">{dropDownTags ? 'More detail' : 'Less detail'}</span>
                             <input type="checkbox" className="peer" checked={dropDownTags} hidden onChange={() => {}} />
                             <div className="h-full self-start mt-[2px] cursor-pointer">
@@ -105,12 +132,12 @@ const InterviewItem = ({ props }) => {
                 </div>
                 <div className="flex flex-col mt-3">
                     <input type="checkbox" className="peer" checked={dropDownTags} hidden onChange={() => { }} />
-                    <div className={`no-scrollbar rounded-ee-lg rounded-es-lg border-gray-400 bg-[white] border-t-0 gap-y-2 transition-all duration-500 ease-in-out opacity-0 max-h-0 peer-checked:max-h-[500px] peer-checked:opacity-100`}>
+                    <div className={`no-scrollbar rounded-ee-lg rounded-es-lg border-gray-400 bg-[white] border-t-0 gap-y-2 transition-all duration-500 ease-in-out opacity-0 max-h-0 peer-checked:max-h-[900px] peer-checked:opacity-100`}>
                         {
-                            applicants &&
+                            applicantsList &&
                             <div className="my-1 mt-2 gap-y-3 flex flex-row flex-wrap justify-between">
                                 {
-                                    applicants.map((item, index) => {
+                                    applicantsList.map((item, index) => {
                                         return (
                                             <div onClick={() => navigate(`/Organizer/seeker-profile/${item?.userId}`)} key={index} className="relative w-[49%] overflow-visible">
                                                     {item?.isVerify ?

@@ -74,7 +74,7 @@ function JobReferences({formId, formSubmit, flag, config, content, onDoneSubmit}
     useEffect(() => {
         if(currentJobComponent){
             const a = {...currentJobComponent}
-            a.emails = currentJobComponent.emails.map(i => i)
+            a.emails = currentJobComponent?.emails?.map(i => i)
             setInputValues(a)
 
         }

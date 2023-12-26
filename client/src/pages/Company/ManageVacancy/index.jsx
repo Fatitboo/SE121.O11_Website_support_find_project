@@ -1,5 +1,5 @@
 import { AiFillExclamationCircle, AiOutlineSearch } from "react-icons/ai";
-import { ComboBox, CustomButton, LoadingComponent, Modal, PaginationButtons } from "../../../components";
+import { ComboBox, CustomButton, LoadingComponent,  PaginationButtons } from "../../../components";
 import { BiDotsVerticalRounded, BiEdit, BiMap, BiPackage, BiPencil, BiTrash } from "react-icons/bi";
 import { CiDollar } from "react-icons/ci";
 import { LiaEyeSolid, LiaTrashAltSolid } from "react-icons/lia";
@@ -10,7 +10,6 @@ import Swal from "sweetalert2";
 import { deleteCompleteVacancy, deleteuncompletedVacancyAction, getCompleteVacancyCor, getInCompleteVacancyCor, resetSuccessAction } from "../../../redux/slices/vacancies/vacanciesSlices";
 import { Link, useNavigate } from "react-router-dom";
 import { NewTabIcon } from "../../../assets/icons";
-import { JobReview } from "../PostJob/JobRef";
 
 const listPostedCbb = [ { id: 1,name: 'All'},{id: 2,name: 'Posted'},{id: 3, name: 'UnPosted' }]
 const listApprovedCbb = [ { id: 1,name: 'All', value: "All"},{id: 2,name: 'Approved', value: "approved"},{id: 3, name: 'Pending', value: "pending"}, {id: 4, name: 'WaitPayment', value: "waitPayment" }, {id: 5, name: 'Rejected', value: "rejected" }, {id: 6, name: 'Blocked', value: "blocked"}]
@@ -287,7 +286,7 @@ function ManageVacancy() {
                                         <thead className="bg-[#f5f7fc] color-white border-transparent border-0 w-full">
                                             <tr className="w-full">
                                                 <th className="relative text-[#3a60bf] font-medium py-6 text-base text-left w-3/12 pl-5 ">Vacancy Name</th>
-                                                <th className="relative text-[#3a60bf] font-medium py-6 text-base text-left w-2/12 ">Project Name</th>
+                                                <th className="relative text-[#3a60bf] font-medium py-6 text-base text-left w-2/12 pl-8">Project Name</th>
                                                 <th className="relative text-[#3a60bf] font-medium py-6 text-base text-left w-2/12 ">Created & Duration</th>
                                                 <th className="relative text-[#3a60bf] font-medium py-6 text-base text-left w-1/24 ">Applicants</th>
                                                 <th className="relative text-[#3a60bf] font-medium py-6 text-base text-left w-3/24">Status</th>
@@ -414,24 +413,24 @@ function ManageVacancy() {
                                                                     </div>
                                                                 </div>
                                                             </td>
-                                                            <td className="w-2/12">
-                                                                {item?.project ? <a target="_blank" href={"/Organizer/manage-project/project-detail/" + item?.project} rel="noreferrer" className="bg-green-100 border-green-300 border rounded-xl text-center cursor-pointer text-green-500 w-fit px-3 flex flex-row items-center justify-center self-center ml-10 gap-1">
+                                                            <td className="w-2/12 ">
+                                                                {item?.project ? <a target="_blank" href={"/Organizer/manage-project/project-detail/" + item?.project} rel="noreferrer" className="bg-green-100 border-green-300 border rounded-xl text-center cursor-pointer text-green-500 w-fit px-3 flex flex-row items-center justify-center self-center ml-7 gap-1">
                                                                                             <div>In project</div>
                                                                                             <img src={NewTabIcon} className="w-3 h-3 text-green-500" color="#22c55e"/>
-                                                                                        </a> : <div className="font-light text-sm text-red-500 text-ellipsis w-full line-clamp-2 text-center">{'Not belong to any project'}  </div>}
+                                                                                        </a> : <div className="font-light text-sm text-red-500 text-ellipsis w-[80%] pl-8 line-clamp-2 text-left">{'Not belong to any project'}  </div>}
                                                             </td>
-                                                            <td className="pl-9 w-2/12 font-light text-gray-700 text-base">
+                                                            <td className="pl-9 w-2/12 font-normal text-gray-700 text-base">
                                                                 <div>{item?.createdAt ? `${item?.createdAt[2]}/${item?.createdAt[1]}/${item?.createdAt[0]}` : ''}</div>
                                                                 {
-                                                                    item.post ? 
+                                                                    item?.post ? 
                                                                     <div>{item?.length + ' days' ?? '1 to 2 weeks'}</div>
                                                                     :
                                                                     <div>{item?.hiringTimeline ?? '1 to 2 weeks'}</div>
                                                                 }
                                                             </td>
-                                                            <td className="font-light text-blue-700 w-1/24  ">
+                                                            <td className="font-normal text-blue-700 w-1/24  ">
                                                                 <div className="flex h-full items-center pl-8">
-                                                                    <div className="mr-1">{item.numOfApplicants ?? 0}</div>
+                                                                    <div className="mr-1">{item?.registants ? item?.registants?.length : 0}</div>
                                                                 </div>
                                                             </td>
 

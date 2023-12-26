@@ -1068,6 +1068,7 @@ const vacanciesSlices = createSlice({
                 state.isSuccessFvr = false;
                 state.isSuccessUDCL = false;
                 state.isSuccessCR = false;
+                state.isSuccessACAP = false;
 
             }),
 
@@ -1075,7 +1076,7 @@ const vacanciesSlices = createSlice({
 
             builder.addCase(acceptApplicantVacancy.pending, (state, action) => {
                 state.loadingACAP = true;
-                state.isSuccessAL = false;
+                state.isSuccessACAP = false;
             }),
             builder.addCase(acceptApplicantVacancy.fulfilled, (state, action) => {
                 state.loadingACAP = false;
@@ -1085,10 +1086,12 @@ const vacanciesSlices = createSlice({
                     state?.participants?.members.push(a)
                     state.applicants = state?.applicants?.filter(item => item.userId !== action.payload.id)
                 }
+                state.isSuccessACAP = true;
             }),
             builder.addCase(acceptApplicantVacancy.rejected, (state, action) => {
                 state.loadingACAP = false;
                 state.appErr = action?.payload?.message;
+                state.isSuccessACAP = false;
             }),
 
             builder.addCase(removeApplicantVacancy.pending, (state, action) => {

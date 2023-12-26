@@ -201,11 +201,11 @@ public class EmailService {
                 "\n" +
                 "        <!--  -->\n" +
                 "\n" +
-                "        <div style=\"text-align: left; margin: 20px 150px 12px 150px;\">Le Quang Nhan (click <a href=\"" + "http://localhost:5173/Organizer/seeker-profile/" + user.getUserId() + "\">here</a> to see profile seeker) have applied to" + vacancyName + ".\n" +
+                "        <div style=\"text-align: left; margin: 20px 150px 12px 150px;\">Le Quang Nhan (click <a href=\"" + "https://findproject.21522448host.id.vn/Organizer/seeker-profile/" + user.getUserId() + "\">here</a> to see profile seeker) have applied to" + vacancyName + ".\n" +
                 "            <br/> He look forward to cooperating with you. You may be interested in this seeker.</div>\n" +
                 "        <div style=\"text-align: left; margin: 20px 450px 12px 150px;\">You can click the button below to see project or vacancy details.</div>\n" +
                 "        <div style=\"width: 100%; display: flex; align-items: left; justify-content: left; margin: 20px 150px 40px 150px;\">\n" +
-                "            <a href=\"" + "http://localhost:5173/Organizer/vacancy-info/" + vacancyId + "\" style=\"border: none; background-color: rgb(69, 109, 205); color: white; padding: 16px; font-size: 16px; border-radius: 6px; cursor: pointer; text-decoration: none;\">View Detail</a>\n" +
+                "            <a href=\"" + "https://findproject.21522448host.id.vn/Organizer/vacancy-info/" + vacancyId + "\" style=\"border: none; background-color: rgb(69, 109, 205); color: white; padding: 16px; font-size: 16px; border-radius: 6px; cursor: pointer; text-decoration: none;\">View Detail</a>\n" +
                 "        </div>\n" +
                 "        <div style=\"border-top: 1px solid #ccc; padding: 40px 40px 0px 40px; margin: 10px 150px 0px 150px; font-size: 13px; color: #7a7a7a;\">\n" +
                 "            <div style=\"text-align: center; margin-top: 10px;\">Need help? Ask at <span style=\"text-decoration: underline; color: rgb(70, 70, 203); cursor: pointer;\">projectFinder@gmail.com</span> or visit Help Center.</div>\n" +
