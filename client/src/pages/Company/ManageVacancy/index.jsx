@@ -423,7 +423,7 @@ function ManageVacancy() {
                                                             <td className="pl-9 w-2/12 font-light text-gray-700 text-base">
                                                                 <div>{item?.createdAt ? `${item?.createdAt[2]}/${item?.createdAt[1]}/${item?.createdAt[0]}` : ''}</div>
                                                                 {
-                                                                    item.post ? 
+                                                                    item?.post ? 
                                                                     <div>{item?.length + ' days' ?? '1 to 2 weeks'}</div>
                                                                     :
                                                                     <div>{item?.hiringTimeline ?? '1 to 2 weeks'}</div>
@@ -431,7 +431,7 @@ function ManageVacancy() {
                                                             </td>
                                                             <td className="font-light text-blue-700 w-1/24  ">
                                                                 <div className="flex h-full items-center pl-8">
-                                                                    <div className="mr-1">{item.numOfApplicants ?? 0}</div>
+                                                                    <div className="mr-1">{item?.registants ? item?.registants?.length : 0}</div>
                                                                 </div>
                                                             </td>
 

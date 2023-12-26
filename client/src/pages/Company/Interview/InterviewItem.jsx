@@ -59,10 +59,12 @@ const InterviewItem = ({ props }) => {
     useEffect(() => {
         if(isSuccessACAP){
             if (props.vacancyId) {
-                const res = axios.get(`${baseUrl}/${apiPrefix}/get-all-applicants-vacancy/${props?.vacancyId}`);
-                if (res.data) {
-                    setApplicants(res.data.applicants);
-                }
+                fetch(`${baseUrl}/${apiPrefix}/get-all-applicants-vacancy/${props?.vacancyId}`)
+                .then((res) => {
+                    if (res.data) {
+                        setApplicants(res.data.applicants);
+                    }
+                });
             }
             dispatch(resetSuccessAction())
         }
