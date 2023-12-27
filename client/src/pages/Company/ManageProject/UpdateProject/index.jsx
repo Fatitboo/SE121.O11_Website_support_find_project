@@ -105,6 +105,7 @@ function UpdateProject() {
     }
 
     const onSubmitForm = (data) => {
+
         const main = {
             ...data, 
             description: value, 
@@ -112,10 +113,10 @@ function UpdateProject() {
             startDate: dateValue,
             vacancies: selected.map(item => item.vacancyId),
             period: durationType.name,
+            status: project?.status,
             occupations: occupationSelected
         }
         if(validateForm(main)){
-            console.log(main)
             dispatch(updateProject({"value": main, "id": id.id}))
         }
     }
