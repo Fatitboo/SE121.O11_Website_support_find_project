@@ -116,8 +116,8 @@ function UpdateProject() {
         }
         if(validateForm(main)){
             console.log(main)
+            dispatch(updateProject({"value": main, "id": id.id}))
         }
-        //dispatch(updateProject({"value": main, "id": id.id}))
     }
 
     const handleChangeDate = (e) => {
